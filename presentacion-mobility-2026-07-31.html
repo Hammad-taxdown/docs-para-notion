@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bot Beckham · Sesión Mobility · 31 de julio de 2026</title>
+<style>
+:root{
+  --dark:#3D3A62; --dark-700:#2C2A49; --dark-300:#6E6B90;
+  --tax:#0FD48E; --tax-100:#E4FBF2; --tax-700:#0AA46E;
+  --sand:#FF7F63; --sand-100:#FFEDE8; --sand-700:#D95B3E;
+  --sky:#5A74D0; --sky-100:#EAEEFA; --sky-700:#3B54AA;
+  --moon-50:#FAFAFC; --moon-100:#F2F2F7; --moon-200:#E4E4EE; --moon-300:#C9C9D8; --moon-500:#8A8AA3;
+  --ink:#1D1B33;
+  /* verde de DATOS, validado para deuteranopía (no es Tax-500) */
+  --data-green:#086A47;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --fs-title:clamp(1.9rem,4.4vw,3.5rem);
+  --fs-h:clamp(1.5rem,3.1vw,2.5rem);
+  --fs-lead:clamp(.95rem,1.55vw,1.3rem);
+  --fs-b:clamp(.86rem,1.32vw,1.1rem);
+  --fs-s:clamp(.68rem,.92vw,.82rem);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:#fff;color:var(--ink);
+  font:400 16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;overflow:hidden;
+}
+.deck{width:100vw;height:100vh;height:100dvh;position:relative}
+section{
+  position:absolute;inset:0;height:100vh;height:100dvh;overflow:hidden;
+  padding:clamp(28px,4.4vh,56px) clamp(28px,5vw,88px) clamp(52px,7vh,76px);
+  display:flex;flex-direction:column;
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .28s var(--ease);
+}
+section.on{opacity:1;visibility:visible;pointer-events:auto}
+
+/* ---------- tipografía y bloques ---------- */
+.eyebrow{font-size:var(--fs-s);letter-spacing:.15em;text-transform:uppercase;font-weight:700;color:var(--dark-300);margin-bottom:clamp(8px,1.4vh,16px)}
+.eyebrow b{color:var(--tax-700)}
+h1{font-size:var(--fs-title);line-height:1.06;letter-spacing:-.025em;font-weight:700;color:var(--dark)}
+h2{font-size:var(--fs-h);line-height:1.12;letter-spacing:-.022em;font-weight:700;color:var(--dark);max-width:30ch}
+.lead{font-size:var(--fs-lead);line-height:1.42;color:#4A4863;max-width:62ch;margin-top:clamp(10px,1.8vh,20px)}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:clamp(10px,1.8vh,22px);min-height:0;margin-top:clamp(12px,2vh,24px)}
+ul.pts{list-style:none;display:flex;flex-direction:column;gap:clamp(7px,1.35vh,15px);max-width:74ch}
+ul.pts li{font-size:var(--fs-b);line-height:1.4;padding-left:1.5em;position:relative;color:#37354F}
+ul.pts li::before{content:"";position:absolute;left:0;top:.52em;width:.62em;height:.62em;border-radius:2px;background:var(--tax)}
+ul.pts li.no::before{background:var(--sand)}
+ul.pts li.q::before{background:var(--sky)}
+ul.pts li.n::before{background:var(--moon-300)}
+ul.pts li b{color:var(--dark)}
+.src{position:absolute;left:clamp(28px,5vw,88px);right:clamp(28px,5vw,88px);bottom:clamp(20px,3vh,30px);
+  font-size:var(--fs-s);color:var(--moon-500);line-height:1.35;border-top:1px solid var(--moon-200);padding-top:8px}
+.src b{color:var(--dark-300)}
+
+/* ---------- portada ---------- */
+.cover{justify-content:center;background:var(--dark);color:#fff}
+.cover .eyebrow{color:var(--tax)}
+.cover h1{color:#fff;max-width:26ch}
+.cover .lead{color:#C9C7DE;max-width:56ch}
+.cover .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:clamp(18px,3vh,32px)}
+.cover .chips span{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:999px;
+  padding:6px 14px;font-size:var(--fs-s);font-weight:600}
+.cover .src{color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.18)}
+
+/* ---------- separador de bloque ---------- */
+.divider{justify-content:center;background:var(--moon-50)}
+.divider .num{font-size:clamp(3rem,9vw,7rem);font-weight:800;color:var(--moon-200);line-height:.9;letter-spacing:-.04em}
+.divider h1{max-width:24ch;margin-top:.2em}
+
+/* ---------- tarjetas ---------- */
+.cards{display:grid;gap:clamp(8px,1.4vw,16px);grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.card{border:1px solid var(--moon-200);border-radius:12px;padding:clamp(12px,1.9vh,20px);background:#fff;
+  border-top:3px solid var(--moon-300);display:flex;flex-direction:column;gap:.4em}
+.card.ok{border-top-color:var(--tax)} .card.no{border-top-color:var(--sand)}
+.card.q{border-top-color:var(--sky)} .card.dk{border-top-color:var(--dark)}
+.card h3{font-size:var(--fs-b);color:var(--dark);font-weight:700;letter-spacing:-.01em}
+.card p{font-size:calc(var(--fs-b) * .93);color:#4A4863;line-height:1.38}
+.card .tagline{font-size:var(--fs-s);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--moon-500)}
+
+/* ---------- KPI ---------- */
+.kpis{display:grid;gap:clamp(8px,1.4vw,16px);grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))}
+.kpi{border:1px solid var(--moon-200);border-radius:12px;padding:clamp(12px,1.9vh,20px);background:var(--moon-50)}
+.kpi b{display:block;font-size:clamp(1.4rem,3vw,2.4rem);line-height:1;letter-spacing:-.03em;color:var(--dark);font-variant-numeric:tabular-nums}
+.kpi b.g{color:var(--data-green)} .kpi b.r{color:var(--sand-700)}
+.kpi span{display:block;margin-top:.45em;font-size:var(--fs-s);color:var(--moon-500);text-transform:uppercase;letter-spacing:.07em;font-weight:700;line-height:1.3}
+
+/* ---------- estados ---------- */
+.states{display:grid;gap:clamp(8px,1.4vw,16px);grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.state{border-radius:12px;padding:clamp(12px,1.9vh,20px);border:1px solid var(--moon-200)}
+.state .lbl{font-size:var(--fs-s);font-weight:800;letter-spacing:.09em;text-transform:uppercase;margin-bottom:.5em}
+.state p{font-size:calc(var(--fs-b)*.95);line-height:1.38;color:#4A4863}
+.s1{background:var(--moon-100)} .s1 .lbl{color:var(--moon-500)}
+.s2{background:var(--sand-100);border-color:#FFD2C6} .s2 .lbl{color:var(--sand-700)}
+.s3{background:var(--tax-100);border-color:#B9F0DA} .s3 .lbl{color:var(--tax-700)}
+
+/* ---------- callout ---------- */
+.callout{border-left:3px solid var(--sand);background:var(--sand-100);padding:clamp(11px,1.7vh,17px) clamp(14px,1.6vw,20px);
+  border-radius:0 10px 10px 0;font-size:calc(var(--fs-b)*.97);line-height:1.42;color:#3A3853;max-width:84ch}
+.callout.info{border-color:var(--sky);background:var(--sky-100)}
+.callout.ok{border-color:var(--tax);background:var(--tax-100)}
+.callout b{color:var(--dark)}
+.warn{font-weight:800;color:var(--sand-700)}
+
+/* ---------- carriles de arquitectura ---------- */
+.lanes{display:grid;gap:clamp(8px,1.4vw,16px);grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
+.lane{border:1px solid var(--moon-200);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.lane h3{padding:9px 14px;font-size:var(--fs-s);letter-spacing:.1em;text-transform:uppercase;color:#fff;font-weight:800}
+.lane.a h3{background:var(--sky)} .lane.b h3{background:var(--dark)} .lane.c h3{background:var(--data-green)}
+.lane ul{list-style:none;padding:clamp(10px,1.6vh,16px) clamp(12px,1.4vw,16px);display:flex;flex-direction:column;gap:.55em}
+.lane li{font-size:calc(var(--fs-b)*.93);line-height:1.36;color:#4A4863;padding-left:1em;position:relative}
+.lane li::before{content:"·";position:absolute;left:.15em;color:var(--moon-300);font-weight:800}
+.lane li b{color:var(--dark)}
+.flow{border:1px dashed var(--moon-300);background:var(--moon-50);border-radius:10px;
+  padding:clamp(10px,1.6vh,16px) clamp(13px,1.5vw,20px);font-size:calc(var(--fs-b)*.95);color:#4A4863;line-height:1.5}
+.flow b{color:var(--dark)}
+
+/* ---------- barras (etiqueta directa, nunca solo color) ---------- */
+.bars{display:flex;flex-direction:column;gap:clamp(8px,1.5vh,16px);max-width:74ch}
+.bar-row{display:grid;grid-template-columns:minmax(9ch,19ch) 1fr;gap:clamp(8px,1.2vw,16px);align-items:center}
+.bar-row .name{font-size:calc(var(--fs-b)*.95);font-weight:700;color:var(--dark);line-height:1.25}
+.bar-track{background:var(--moon-100);border-radius:6px;height:clamp(24px,3.6vh,38px);position:relative;overflow:hidden}
+.bar-fill{position:absolute;inset:0 auto 0 0;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;
+  padding:0 10px;color:#fff;font-size:calc(var(--fs-b)*.9);font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bar-fill.g{background:var(--data-green)} .bar-fill.d{background:var(--dark)} .bar-fill.s{background:var(--sand-700)}
+.bar-fill.n{background:var(--moon-500)}
+.bar-out{position:absolute;top:0;bottom:0;display:flex;align-items:center;padding-left:10px;
+  font-size:calc(var(--fs-b)*.9);font-weight:800;color:var(--dark);font-variant-numeric:tabular-nums}
+
+/* ---------- tabla ---------- */
+table{border-collapse:collapse;width:100%;font-size:calc(var(--fs-b)*.93)}
+th{text-align:left;padding:8px 12px;font-size:var(--fs-s);letter-spacing:.07em;text-transform:uppercase;
+  color:var(--moon-500);border-bottom:1px solid var(--moon-200);font-weight:800}
+td{padding:9px 12px;border-bottom:1px solid var(--moon-100);vertical-align:top;line-height:1.36;color:#4A4863}
+td b{color:var(--dark)}
+tr:last-child td{border-bottom:0}
+.tag{display:inline-block;font-size:var(--fs-s);font-weight:800;padding:2px 8px;border-radius:5px;letter-spacing:.04em;white-space:nowrap}
+.t-ok{background:var(--tax-100);color:var(--tax-700)} .t-no{background:var(--sand-100);color:var(--sand-700)}
+.t-mid{background:var(--sky-100);color:var(--sky-700)} .t-off{background:var(--moon-100);color:var(--moon-500)}
+
+/* ---------- cierre ---------- */
+.closing{justify-content:center;background:var(--dark);color:#fff}
+.closing .eyebrow{color:var(--sand)}
+.closing h1{color:#fff;max-width:34ch;font-size:clamp(1.5rem,3.2vw,2.7rem);line-height:1.2}
+.closing .src{color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.18)}
+
+/* ---------- navegación ---------- */
+.hud{position:fixed;bottom:0;left:0;right:0;height:4px;background:var(--moon-100);z-index:20}
+.hud i{display:block;height:100%;background:var(--tax);transition:width .28s var(--ease)}
+.count{position:fixed;right:clamp(14px,2vw,26px);bottom:clamp(12px,2vh,20px);z-index:21;
+  font-size:var(--fs-s);font-weight:800;color:var(--moon-500);font-variant-numeric:tabular-nums;letter-spacing:.06em}
+section.cover ~ .count{color:#fff}
+.hint{position:fixed;left:clamp(14px,2vw,26px);bottom:clamp(12px,2vh,20px);z-index:21;
+  font-size:var(--fs-s);color:var(--moon-300);letter-spacing:.04em}
+
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  body{overflow:visible}
+  .deck{height:auto}
+  section{position:relative;opacity:1!important;visibility:visible!important;page-break-after:always;height:100vh}
+  .hud,.count,.hint{display:none}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- 01 · PORTADA -->
+<section class="cover on">
+  <p class="eyebrow">TaxDown · Mobility · Régimen Beckham</p>
+  <h1>El bot ya guarda. Y hoy sabemos exactamente qué falta.</h1>
+  <p class="lead">Sesión de trabajo del 31 de julio de 2026. Qué se ha cerrado hoy y está verificado contra
+    el sistema real, qué decidimos ayer, cuánto cuesta y qué necesito de cada uno de vosotros.</p>
+  <div class="chips">
+    <span>7 bloques · 27 diapositivas de contenido</span>
+    <span>50 min + 10 de preguntas</span>
+    <span>Sin datos personales</span>
+  </div>
+  <p class="src">Fuente de todo el material: mapa de Work Packages regenerado el 31/07, informe de costes ampliado el 31/07,
+    y las 47 decisiones del 30/07. <b>Nada de lo que se afirma aquí sin fuente al pie.</b></p>
+</section>
+
+<!-- 02 · DIVISOR B1 -->
+<section class="divider">
+  <p class="num">01</p>
+  <p class="eyebrow">Bloque uno</p>
+  <h1>Por qué existe este proyecto</h1>
+  <p class="lead">Tres diapositivas para dejar una sola idea: lo que vendemos aquí no es una conversación, es
+    un plazo que nadie te recuerda.</p>
+</section>
+
+<!-- 03 -->
+<section>
+  <p class="eyebrow">Bloque 1 · por qué existe</p>
+  <h2>El régimen Beckham vale seis años de ahorro fiscal</h2>
+  <div class="body">
+    <div class="kpis">
+      <div class="kpi"><b>24 %</b><span>Tipo fijo sobre rendimientos del trabajo</span></div>
+      <div class="kpi"><b>600.000 €</b><span>Límite anual al que se aplica ese tipo</span></div>
+      <div class="kpi"><b>6</b><span>Ejercicios de duración máxima</span></div>
+      <div class="kpi"><b>45 %</b><span>Lo que se paga en el exceso sobre 600.000 €</span></div>
+    </div>
+    <ul class="pts">
+      <li>Es el régimen especial para trabajadores desplazados a territorio español: <b>tipo fijo en lugar de la escala progresiva del IRPF</b> de residentes.</li>
+      <li>La Ley de Startups de 2023 lo amplió: entraron <b>emprendedores, nómadas digitales y familiares</b> del desplazado.</li>
+      <li>Requisito de entrada, descarte duro: <b>no haber sido residente fiscal en España los 5 años anteriores</b>.</li>
+      <li class="n">Cuánta gente lo solicita al año: <b>dato pendiente</b>. No existe estadística pública de la AEAT sobre modelos 149 presentados, así que no damos ninguna cifra de mercado.</li>
+    </ul>
+  </div>
+  <p class="src"><b>Fuente:</b> Estudio de costes 31/07, apartado 7.1 y 7.2 (sede electrónica de la AEAT, procedimiento G606).
+    La ausencia de estadística de volumen está declarada expresamente como dato no disponible.</p>
+</section>
+
+<!-- 04 -->
+<section>
+  <p class="eyebrow">Bloque 1 · por qué existe</p>
+  <h2>Todo lo decide un plazo de seis meses que nadie te recuerda</h2>
+  <div class="body">
+    <div class="callout"><b>El requisito que gobierna el producto:</b> hay que presentar el modelo 149
+      <b>en los seis meses siguientes al alta en la Seguridad Social</b>. Es un plazo de caducidad
+      <span class="warn">corto, silencioso e improrrogable</span>.</div>
+    <ul class="pts">
+      <li class="no"><b>Corto:</b> seis meses desde un trámite que el cliente ni asocia con Hacienda.</li>
+      <li class="no"><b>Silencioso:</b> nadie avisa. No hay carta, no hay recordatorio oficial, no hay aviso en la app.</li>
+      <li class="no"><b>Improrrogable:</b> quien lo deja pasar <b>pierde el régimen entero</b>, y con él los seis años de ahorro.</li>
+      <li>Y son clientes que <b>ya han pagado</b> — desde 300 € al año. Avisarles de su propio plazo es asesoramiento, no marketing.</li>
+    </ul>
+  </div>
+  <p class="src"><b>Fuente:</b> Estudio de costes 31/07, apartado 7.1. Encaje con la decisión M1/M3 del 30/07
+    («no es promocional: son clientes que pagan»).</p>
+</section>
+
+<!-- 05 -->
+<section>
+  <p class="eyebrow">Bloque 1 · la tesis</p>
+  <h2>El plazo es el producto</h2>
+  <div class="body">
+    <div class="cards">
+      <div class="card no">
+        <p class="tagline">Lo que NO estamos construyendo</p>
+        <h3>Un chatbot de soporte</h3>
+        <p>Algo que contesta preguntas y cuyo éxito se mide en conversaciones resueltas y en minutos de agente ahorrados.</p>
+      </div>
+      <div class="card ok">
+        <p class="tagline">Lo que SÍ estamos construyendo</p>
+        <h3>Un producto que evita una pérdida concreta y cuantificable</h3>
+        <p>Detecta si cumples, calcula tu fecha límite, guarda el dato completo y hace que alguien te avise antes de que venza.</p>
+      </div>
+    </div>
+    <div class="callout info">Esto no es retórica: cambia las prioridades. Si el bot no <b>guarda</b> el plazo,
+      no hay producto — solo una conversación agradable. Por eso el trabajo de estas semanas ha ido a la
+      persistencia y no a que el bot hable mejor.</div>
+  </div>
+  <p class="src"><b>Fuente:</b> Estudio de costes 31/07, apartado 7.1, párrafo de cierre; y la reordenación de
+    olas del mapa de WP del 31/07, donde la ola 0 es «desatascar la escritura».</p>
+</section>
+
+<!-- 06 · DIVISOR B2 -->
+<section class="divider">
+  <p class="num">02</p>
+  <p class="eyebrow">Bloque dos</p>
+  <h1>Dónde estábamos</h1>
+  <p class="lead">Sin dramatizar y sin adornar. Lo que costó caro y la regla que nos dejó.</p>
+</section>
+
+<!-- 07 -->
+<section>
+  <p class="eyebrow">Bloque 2 · dónde estábamos</p>
+  <h2>El bot hablaba, pero no guardaba nada</h2>
+  <div class="body">
+    <div class="kpis">
+      <div class="kpi"><b class="r">100 %</b><span>De las escrituras en Airtable fallaban</span></div>
+      <div class="kpi"><b class="r">400</b><span>El código de error que devolvía cada intento</span></div>
+      <div class="kpi"><b>1</b><span>Bloqueo que retenía 10 paquetes de trabajo</span></div>
+      <div class="kpi"><b>15</b><span>Líneas de código que lo desatascaban</span></div>
+    </div>
+    <ul class="pts">
+      <li class="no">El agente respondía y se presentaba en conversaciones reales: <b>eso funcionaba desde el 28/07</b>.</li>
+      <li class="no">Pero cada vez que intentaba dejar el expediente en Airtable, la petición se rechazaba entera. <b>Cero filas escritas.</b></li>
+      <li class="no">Consecuencia: nada de lo construido encima se podía probar. Cuatro ramas de captura y seis paquetes de la Fase 2, <b>todos esperando lo mismo</b>.</li>
+      <li class="q">Lección de método que ya nos había costado: en n8n, «ejecución correcta» <b>no</b> significa «funciona». Hubo cinco ejecuciones marcadas como correctas con el circuito roto.</li>
+    </ul>
+  </div>
+  <p class="src"><b>Fuente:</b> Mapa de WP 31/07, bloque de estado y WP-05/WP-09. Estudio de costes 31/07, apartado 1
+    («el riesgo del proyecto nunca ha sido el coste, es la fiabilidad»).</p>
+</section>
+
+<!-- 08 -->
+<section>
+  <p class="eyebrow">Bloque 2 · el aprendizaje más caro</p>
+  <h2>Cinco días y cinco hipótesis muertas por un dato que no viajaba</h2>
+  <div class="body">
+    <div class="callout info"><b>En lenguaje llano:</b> Intercom tiene unas piezas que llaman a nuestro sistema y traen
+      la respuesta de vuelta. Esa respuesta se queda <b>solo en el camino</b> donde vive la pieza que preguntó.
+      Dos pasos más adelante, en otra rama del mismo flujo, ese dato simplemente <b>no existe</b> — y no da error:
+      llega vacío.</div>
+    <ul class="pts">
+      <li class="no">Síntoma: la rama que decidía si el cliente estaba en plazo <b>nunca detectaba el veredicto</b>, aunque el cálculo era correcto.</li>
+      <li class="no">Murieron cinco hipótesis por el camino: el formato del dato, el tipo, el operador de la condición, la configuración del campo, el orden de los pasos.</li>
+      <li>Lo cerró un experimento tonto: cambiar la condición a <b>«¿tiene algún valor?»</b>. Siguió fallando → todas las hipótesis sobre <i>qué</i> valor eran irrelevantes de golpe.</li>
+      <li>La solución final fue de una pestaña de configuración: pedirle a la pieza que <b>escriba el resultado en un dato de la conversación</b>, no solo en su propio camino.</li>
+    </ul>
+  </div>
+  <p class="src"><b>Fuente:</b> Mapa de WP 31/07, WP-04 («el aprendizaje más importante del proyecto») e informe de
+    sesión del 28/07, secciones «las cinco hipótesis que no eran» y «la causa raíz». Verificado en dos conversaciones reales.</p>
+</section>
+
+<!-- 09 -->
+<section>
+  <p class="eyebrow">Bloque 2 · la regla que salió de ahí</p>
+  <h2>Preguntar «¿hay algo?» antes de «¿es correcto?»</h2>
+  <div class="body">
+    <ul class="pts">
+      <li>Antes de discutir si un dato es correcto, comprobar si el dato <b>ha llegado</b>. Son dos preguntas distintas y la segunda no tiene sentido sin la primera.</li>
+      <li>Un fallo por <b>ausencia</b> se disfraza de fallo por <b>formato</b>, y el formato tiene infinitas hipótesis. La ausencia tiene una.</li>
+      <li>Esa regla es la que ha hecho productivos los últimos días: <b>un cambio, una prueba</b>, y nada se da por bueno sin evidencia en el sistema real.</li>
+      <li class="q">Corolario que hoy ha vuelto a pagar: cuando la herramienta te ofrece información, <b>pregúntale lo correcto</b> — lo veréis en la diapositiva de los tickets.</li>
+    </ul>
+    <div class="callout ok"><b>Y la regla dura de este proyecto, que voy a usar durante toda la presentación:</b>
+      «diagnosticado» no es «arreglado», y «arreglado» no es «arreglado y verificado en producción». Voy a decir
+      siempre en cuál de los tres estados está cada cosa.</div>
+  </div>
+  <p class="src"><b>Fuente:</b> Runbook 30/07, sección «recordatorios de método (no negociables en este proyecto)».</p>
+</section>
+
+<!-- 10 · DIVISOR B3 -->
+<section class="divider">
+  <p class="num">03</p>
+  <p class="eyebrow">Bloque tres</p>
+  <h1>Qué hemos superado hoy</h1>
+  <p class="lead">Cinco diapositivas. Cuatro de cosas cerradas y verificadas contra el sistema real, y una
+    —obligatoria— de lo que sigue abierto.</p>
+</section>
+
+<!-- 11 -->
+<section>
+  <p class="eyebrow">Bloque 3 · <b>hecho y verificado hoy</b></p>
+  <h2>El bot ya guarda</h2>
+  <div class="body">
+    <div class="callout info"><b>Qué pasaba, sin jerga:</b> Intercom nos mandaba los datos <b>en un sobre que nuestro
+      sistema no sabía abrir</b>. El contenido era correcto; el envoltorio, no. Nuestro lado miraba dentro del sobre,
+      no encontraba nada y rechazaba la petición entera.</div>
+    <ul class="pts">
+      <li>Arreglado en un solo sitio: ahora nuestro lado <b>reconoce el sobre y lo abre</b> antes de mirar el contenido. Quince líneas.</li>
+      <li>Publicado hoy en el sistema real, con la versión anterior anotada para poder volver atrás en un clic.</li>
+      <li><b>20 comprobaciones automáticas en verde</b> lanzadas contra el sistema de producción, no contra una simulación.</li>
+      <li>Y no duplica: mandar el mismo cliente dos veces por los dos caminos distintos <b>actualiza la misma ficha</b> en lugar de crear una segunda.</li>
+      <li>Efecto de cadena: esto desbloquea de golpe <b>las 4 ramas de captura y los 6 paquetes de la Fase 2</b> que estaban esperando.</li>
+    </ul>
+  </div>
+  <p class="src"><b>Fuente:</b> Mapa de WP 31/07, WP-201 (estado «terminado», con evidencia citada) y guion de las 20
+    comprobaciones en <code>scripts/contract-test.sh</code>. Estado: <b>arreglado y verificado en producción</b>.</p>
+</section>
+
+<!-- 12 -->
+<section>
+  <p class="eyebrow">Bloque 3 · <b>hecho y verificado hoy</b></p>
+  <h2>Ya no puede inventarse categorías en la base real</h2>
+  <div class="body">
+    <div class="callout"><b>El riesgo que había, y era el peor de la lista:</b> el desplegable «motivo de descarte»
+      de la tabla de empleados. Si el bot escribía el motivo con una errata de una sola letra, la base
+      <b>creaba una opción nueva en silencio</b>. Sin error, sin aviso, en la tabla real con datos de empleados reales.</div>
+    <ul class="pts">
+      <li>Ahora hay una <b>lista cerrada</b>: los 4 motivos válidos y los 6 puntos del flujo, leídos hoy del esquema real de la base, no de memoria.</li>
+      <li>Cualquier cosa fuera de esa lista se <b>rechaza antes de tocar la base</b>. No se escribe nada.</li>
+      <li><b>Verificado contando:</b> el desplegable tenía 4 opciones antes de la prueba y <b>sigue teniendo 4</b> después de lanzarle una errata a propósito.</li>
+      <li>Bonus de diseño: los datos de negocio (¿está de alta? ¿es lead? ¿por qué se descarta?) los <b>deduce nuestro lado</b> a partir del punto del flujo. Intercom ya no lleva ninguna constante de negocio.</li>
+      <li class="n"><b>Dato pendiente:</b> qué campo escribe exactamente cada punto del flujo es hoy una <b>propuesta</b>, no una decisión cerrada. Verificados están los 4 motivos y los 6 puntos.</li>
+    </ul>
+  </div>
+  <p class="src"><b>Fuente:</b> Mapa de WP 31/07, WP-206a («8/8 en verde · el desplegable sigue teniendo exactamente 4 opciones,
+    contadas contra el esquema en vivo»). Estado: <b>arreglado y verificado en producción</b>.</p>
+</section>
+
+<!-- 13 -->
+<section>
+  <p class="eyebrow">Bloque 3 · <b>hecho y verificado hoy</b></p>
+  <h2>Tres cierres más, y uno de ellos borra trabajo del plan</h2>
+  <div class="body">
+    <div class="cards">
+      <div class="card ok">
+        <p class="tagline">Verificado · 3 de 3</p>
+        <h3>Valida la forma del identificador, no solo que exista</h3>
+        <p>Antes bastaba con que el identificador de usuario no viniera vacío. Ahora se comprueba que
+          <b>tenga la forma correcta</b>: un identificador mal formado no llega a usarse como clave de búsqueda
+          en una tabla con datos de empleados reales.</p>
+      </div>
+      <div class="card ok">
+        <p class="tagline">Medido · duda cerrada</p>
+        <h3>Mandar solo algunos datos NO borra los que ya estaban</h3>
+        <p>Se midió campo a campo: texto, fecha y casilla marcada. Los campos que no enviamos
+          <b>quedan intactos</b>. Resultado directo: <b>un trabajo que estaba previsto en el plan dejó de ser necesario</b>.</p>
+      </div>
+      <div class="card ok">
+        <p class="tagline">Verificado en conversación real</p>
+        <h3>El agente ya sabe qué día es hoy</h3>
+        <p>Recibía literalmente el texto <i>«fecha de hoy»</i> sin resolver. Hablaba de un plazo improrrogable
+          <b>sin saber la fecha</b>. Hoy, en el mensaje que salió al modelo: <b>«Fecha de hoy: 31/07/2026»</b>.</p>
+      </div>
+    </div>
+    <div class="callout info"><b>El del medio merece un segundo:</b> es la única vez en este proyecto en que
+      medir algo ha <b>quitado</b> trabajo en lugar de añadirlo. Había un hueco declarado en la medición
+      —el desplegable de descarte no se probó con un valor real— y ese hueco lo tapó la lista cerrada de la diapositiva anterior.</div>
+  </div>
+  <p class="src"><b>Fuente:</b> Mapa de WP 31/07 · WP-205a (3/3 en verde), WP-T8 (diferencia campo a campo) y WP-204
+    (conversación real no-Preview, con su ejecución correlativa). Los tres en estado <b>verificado</b>.</p>
+</section>
+
+<!-- 14 -->
+<section>
+  <p class="eyebrow">Bloque 3 · <b>hecho y verificado hoy</b></p>
+  <h2>Los tickets que se abrían solos: resueltos, y la herramienta nos dio la respuesta</h2>
+  <div class="body">
+    <ul class="pts">
+      <li class="no">El síntoma llevaba semanas: cualquier conversación del bot <b>acababa convertida en un ticket de pruebas</b>, y ese ticket <b>mandaba un correo al cliente</b>.</li>
+      <li class="q">Cómo se encontró: al intentar archivar ese tipo de ticket, <b>Intercom nos dijo qué tres bots lo estaban usando</b>. Uno de ellos era un workflow ajeno que reparte los mensajes entrantes.</li>
+      <li class="no">Dentro de él, <b>las tres ramas convergían en un mismo paso</b> cuya única acción era «convertir en ticket de pruebas». No importaba lo que dijera el cliente: acababa en ticket.</li>
+      <li>Se borró <b>ese único paso</b>. El workflow ajeno sigue vivo, así que no se ha roto el reparto de mensajes de nadie.</li>
+      <li><b>Verificado hoy en conversación real:</b> mensaje libre del cliente → <b>sin ticket</b> y <b>sin correo</b>.</li>
+    </ul>
+    <div class="callout ok"><b>La buena historia de método:</b> durante dos días dijimos «el síntoma no se reproduce,
+      algo habrá cambiado». No había cambiado nada — <b>el workflow culpable estaba pausado por nosotros mismos</b>.
+      La precondición de la prueba y el bug eran el mismo objeto. Atribución honesta: se tocaron tres cosas a la vez,
+      así que la causa no está aislada al 100 %; pero el workflow ha vuelto a correr y ya no crea ticket.</div>
+  </div>
+  <p class="src"><b>Fuente:</b> Mapa de WP 31/07, WP-10a (estado «terminado», evidencia: conversación no-Preview del 31/07
+    sin ticket y sin correo). Estado: <b>arreglado y verificado en producción</b>, con la salvedad de atribución declarada.</p>
+</section>
+
+<!-- 15 -->
+<section>
+  <p class="eyebrow">Bloque 3 · <b class="warn">lo que sigue abierto</b></p>
+  <h2>Tres estados, no dos: y aquí está lo que no está resuelto</h2>
+  <div class="body">
+    <div class="states">
+      <div class="state s1"><p class="lbl">Diagnosticado</p>
+        <p><b>El turno 2 todavía no funciona.</b> Causa raíz encontrada <b>hoy</b>, con la cita literal que el propio
+          sistema deja en la conversación: el workflow de reparto «sale sin haber distribuido el mensaje a ningún
+          agente». Y <b>nada vuelve a llamar al agente</b>. No es un misterio: es un hueco de diseño localizado, y
+          el arreglo está identificado.</p></div>
+      <div class="state s2"><p class="lbl">Arreglado y revertido</p>
+        <p><b>Un cambio de hoy provocó una regresión.</b> Al cerrar del todo la validación de datos, la base empezó
+          a rechazar las fechas. Revertido <b>en minutos</b> y reverificado: 20 de 20 otra vez en verde.
+          <b>Cero datos dañados</b> — el rechazo tira la petición completa, así que no se escribió nada.</p></div>
+      <div class="state s3"><p class="lbl">Arreglado y verificado</p>
+        <p>Todo lo de las cuatro diapositivas anteriores. Cada uno con su evidencia citada en el mapa:
+          batería de comprobaciones contra producción, conteo del esquema real o conversación real no simulada.</p></div>
+    </div>
+    <div class="callout"><b>El aprendizaje de la regresión, que es el que vale dinero:</b> una opción de configuración
+      que parecía decorativa estaba en realidad <b>sosteniendo el formato de las fechas</b> desde hace días. El plan
+      la trataba como un cambio suelto de una línea; eran <b>dos cambios acoplados</b>. Que se detectara en minutos y
+      no en producción es exactamente el método funcionando: <b>una prueba por cambio, verificar siempre</b>.</div>
+  </div>
+  <p class="src"><b>Fuente:</b> Mapa de WP 31/07 · WP-10b (causa raíz con cita literal, arreglo pendiente) y
+    WP-206b (intentado → regresión → revertido, con la reverificación 20/20).</p>
+</section>
+
+<!-- 16 · DIVISOR B4 -->
+<section class="divider">
+  <p class="num">04</p>
+  <p class="eyebrow">Bloque cuatro</p>
+  <h1>Qué decidimos ayer</h1>
+  <p class="lead">46 de 47 decisiones cerradas en una mañana. Seis de ellas reescriben el plan.</p>
+</section>
+
+<!-- 17 -->
+<section>
+  <p class="eyebrow">Bloque 4 · las decisiones</p>
+  <h2>46 de 47 cerradas en una mañana, y dos de ellas quitan trabajo</h2>
+  <div class="body">
+    <div class="kpis">
+      <div class="kpi"><b class="g">46 / 47</b><span>Decisiones cerradas el 30/07</span></div>
+      <div class="kpi"><b>1</b><span>Sigue sin respuesta · depende de un tercero</span></div>
+      <div class="kpi"><b class="g">1</b><span>Paquete de trabajo cancelado entero</span></div>
+      <div class="kpi"><b class="g">3</b><span>Paquetes nuevos de alcance</span></div>
+    </div>
+    <div class="cards">
+      <div class="card ok">
+        <p class="tagline">Cancela trabajo</p>
+        <h3>El follow-up de leads se automatiza en Airtable</h3>
+        <p>Lo montan <b>Alina e Iciar</b>, que son las expertas. Nuestro trabajo se reduce a que el dato llegue
+          <b>completo</b> de Intercom a Airtable. <b>Un bloque de trabajo entero se cae del plan</b>, con toda su cadena.</p>
+      </div>
+      <div class="card ok">
+        <p class="tagline">Desbloquea el camino crítico</p>
+        <h3>El corpus fiscal ES el System Prompt de Paula</h3>
+        <p>No hay que escribir un documento nuevo ni construir un buscador de documentos. <b>Desaparece esa pieza
+          y su coste</b>, y el paquete pasa de «grande y bloqueado» a «pequeño y desbloqueado». Ya hay una versión en uso.</p>
+      </div>
+    </div>
+  </div>
+  <p class="src"><b>Fuente:</b> Documento de las 47 decisiones (30/07) y mapa de WP 31/07, apartado 02
+    («qué cambió hoy con tus 46 decisiones») — decisiones M1 y M4.</p>
+</section>
+
+<!-- 18 -->
+<section>
+  <p class="eyebrow">Bloque 4 · las decisiones</p>
+  <h2>La seguridad se demuestra contando cables, no leyendo un prompt</h2>
+  <div class="body">
+    <div class="callout info"><b>La tensión que había que resolver:</b> se pidió que el modo preguntas y el modo
+      solicitud los atienda <b>el mismo agente</b>. Pero hay un requisito duro: quien está solo preguntando dudas
+      <b>no debe poder provocar que le creemos o modifiquemos un expediente</b>. Las dos cosas chocaban.</div>
+    <ul class="pts">
+      <li>Se resuelve por <b>topología</b>: dos puestos de trabajo del mismo agente. Mismo modelo, mismo prompt base, misma identidad, mismo hilo.</li>
+      <li>La única diferencia: <b>al puesto de preguntas no le llega el cable de escritura</b>. No es que no quiera escribir — es que no puede.</li>
+      <li>Por qué importa: «el modo preguntas no puede escribir» pasa de ser una <b>promesa del prompt</b> a ser una <b>comprobación mecánica</b> que se hace contando conexiones.</li>
+      <li>Coste de migrar a este diseño: <b>cero</b>. El agente que está vivo hoy tiene cero herramientas conectadas.</li>
+      <li class="q">Se declara por escrito la letra pequeña: las capas de defensa 2 y 3 comparten origen con la 1, así que protegen contra errores de cableado. <b>La defensa independiente es la topológica.</b></li>
+    </ul>
+  </div>
+  <p class="src"><b>Fuente:</b> Decisión M5 = (a) del 30/07 y mapa de WP 31/07, WP-218 y WP-219
+    (criterio de verificación: «conteo de conexiones del grafo, no lectura del prompt»).</p>
+</section>
+
+<!-- 19 -->
+<section>
+  <p class="eyebrow">Bloque 4 · las decisiones</p>
+  <h2>Todos son clientes full VIP: simplifica el diseño y sube el coste de fallar</h2>
+  <div class="body">
+    <table>
+      <thead><tr><th style="width:34%">Decisión de ayer</th><th>Qué simplifica</th><th>Qué encarece</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>Todos los usuarios llegan logueados y son full VIP</b></td>
+          <td>El identificador de usuario <b>existe siempre</b>. No hace falta inventar una clave alternativa ni gestionar usuarios anónimos.</td>
+          <td>Un rechazo por falta de identificador deja de ser un caso normal y pasa a ser <b>señal de un fallo</b>, con aviso. <b>No hay ni un usuario al que perder sin consecuencias.</b></td>
+        </tr>
+        <tr>
+          <td><b>El triaje incluye detectar cambio de tono</b> y pasar a una persona</td>
+          <td>Deja de ser «una reunión pendiente» y pasa a ser una regla que se puede construir.</td>
+          <td>Hay que definirlo bien: insultos, mayúsculas sostenidas, repetición condescendiente. Y detrás tiene que haber <b>un equipo real</b> con un plazo firmado.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout info"><b>El par que conviene tener presente:</b> saber que el identificador existe siempre nos
+      ahorra una capa entera de complejidad — pero también significa que <b>cada fallo le pasa a un cliente que ya paga</b>.
+      No hay usuarios de prueba entre los reales.</div>
+  </div>
+  <p class="src"><b>Fuente:</b> Decisiones U3, N15 y U6 del 30/07; mapa de WP 31/07, apartado 02 y WP-205a / WP-223.</p>
+</section>
+
+<!-- 20 · ALCANCE NUEVO -->
+<section>
+  <p class="eyebrow">Bloque 4 · las decisiones</p>
+  <h2>Y se aceptó alcance que no existía en ningún plan</h2>
+  <div class="body">
+    <div class="cards">
+      <div class="card q">
+        <p class="tagline">Paquete nuevo</p>
+        <h3>El agente cualifica la complejidad del caso</h3>
+        <p>Marca si el cliente aplica al régimen y si el caso es <b>sencillo o necesita revisión humana</b>, a partir de
+          lo que ha ido recogiendo en la conversación. Un caso complejo dispara un aviso por correo al equipo.</p>
+      </div>
+      <div class="card no">
+        <p class="tagline">Paquete nuevo · el más grande del plan</p>
+        <h3>Rellenar los modelos oficiales 030 y 149</h3>
+        <p>Con los datos que el bot ha recogido. <b>Nada se envía a Hacienda desde el bot:</b> se genera un borrador y
+          lo valida una persona.</p>
+      </div>
+      <div class="card no">
+        <p class="tagline">Paquete nuevo</p>
+        <h3>Un PDF-resguardo final para el cliente</h3>
+        <p>Con los datos que ha dado y sus obligaciones fiscales. Requiere aprobación humana antes de enviarse:
+          es un documento que el cliente va a guardar.</p>
+      </div>
+    </div>
+    <div class="callout"><b>Dos avisos que van con este alcance, y los digo hoy:</b>
+      <b>(1)</b> los modelos 030 y 149 tocan campos que <b>ya gobierna otro proceso</b>. Escribir ahí nos convierte en
+      <b>segundo escritor</b> — el patrón que ya nos ha costado dos errores. Antes de escribir un solo campo, hablamos con su dueño.
+      <b>(2)</b> las <b>plantillas de los dos modelos y del resguardo no existen todavía</b>. Es el motivo por el que este
+      bloque va al final del plan y con la firmeza más baja de los tres hitos.</div>
+  </div>
+  <p class="src"><b>Fuente:</b> Decisiones N10 y N14.2 del 30/07 → mapa de WP 31/07, WP-234, WP-235 y WP-236, marcados
+    como «alcance que no existía en ningún PRD», con el riesgo del segundo escritor declarado en el propio paquete.</p>
+</section>
+
+<!-- 20 -->
+<section>
+  <p class="eyebrow">Bloque 4 · el valor de revisar</p>
+  <h2>Revisar el prompt evitó cinco comportamientos erróneos, y uno era de negocio</h2>
+  <div class="body">
+    <div class="callout ok">Hoy llegó la <b>versión 2 del prompt del agente</b> escrita por Paula y se revisó entera,
+      línea a línea, contra las decisiones de ayer. Aparecieron <b>cinco incoherencias</b> que habrían dado
+      comportamiento erróneo en producción. <b>Ninguna era un descuido evitable:</b> son contradicciones que solo
+      se ven cuando cruzas el texto con las decisiones tomadas <i>después</i> de escribirlo.</div>
+    <ul class="pts">
+      <li class="no"><b>La importante para el negocio:</b> quien todavía <b>no</b> está de alta en la Seguridad Social
+        se estaba tratando como <b>descartado</b> — cuando la decisión de ayer dice que es exactamente <b>un lead que
+        hay que conservar</b> y al que hay que avisar cuando se acerque su plazo. Ese es el corazón del producto.</li>
+      <li class="no">Dos secciones se contradecían entre sí sobre el tratamiento de las inversiones extranjeras.</li>
+      <li class="no">Una condición del enrutado usaba un dato que <b>ninguna pregunta del flujo recogía</b>: nunca se habría cumplido.</li>
+      <li class="no">Numeración de filtros incorrecta, que llevaba al agente a repetir preguntas ya hechas.</li>
+      <li>Además: los enlaces del prompt llegaban al cliente <b>sin destino</b>, porque nuestro lado limpia el formato del texto antes de enviarlo. Ahora van en texto plano.</li>
+    </ul>
+    <div class="callout info"><b>Cómo quiero que se lea esto:</b> es el valor de tener dos pares de ojos y de versionar
+      el prompt en el repositorio. El contenido fiscal es de Paula; cruzarlo con las decisiones de producto es mi trabajo.
+      <b>El proceso funcionó.</b></div>
+  </div>
+  <p class="src"><b>Fuente:</b> <code>docs/prompt-paula-v2-2026-07-31.txt</code> (418 líneas) y mapa de WP 31/07, WP-204,
+    nota de las cinco correcciones. Verificado en conversación real con su ejecución correlativa.</p>
+</section>
+
+<!-- 21 · DIVISOR B5 -->
+<section class="divider">
+  <p class="num">05</p>
+  <p class="eyebrow">Bloque cinco</p>
+  <h1>La arquitectura, en tres límites</h1>
+  <p class="lead">Sin jerga. Tres piezas, cada una con un trabajo, y un contrato entre ellas que se puede comprobar.</p>
+</section>
+
+<!-- 22 -->
+<section>
+  <p class="eyebrow">Bloque 5 · la arquitectura</p>
+  <h2>Tres límites, escritos como contrato</h2>
+  <div class="body">
+    <div class="lanes">
+      <div class="lane a">
+        <h3>Intercom · presenta y enruta</h3>
+        <ul>
+          <li>La <b>recepción</b>: menú, botones, mensajes y recogida de datos.</li>
+          <li>Decide <b>por qué puerta entra</b> cada conversación.</li>
+          <li><b>Cero cálculo. Cero constantes de negocio.</b></li>
+          <li>Nunca decide el estado de un ticket.</li>
+        </ul>
+      </div>
+      <div class="lane b">
+        <h3>n8n · toda la lógica</h3>
+        <ul>
+          <li>El <b>cerebro</b>: fechas, plazos, veredictos, el agente y las decisiones.</li>
+          <li>Deduce en qué modo está la conversación <b>preguntándoselo a Intercom</b>, no creyéndose lo que le llega.</li>
+          <li>Aquí vive el <b>único escritor</b> de datos.</li>
+          <li>Y aquí van los avisos cuando algo se rompe.</li>
+        </ul>
+      </div>
+      <div class="lane c">
+        <h3>Airtable · almacena y hace seguimiento</h3>
+        <ul>
+          <li>El <b>archivo</b>: una ficha por cliente. Ninguna tabla nueva.</li>
+          <li><b>Cero estado de la conversación</b>: llegaría tarde y desincronizado.</li>
+          <li>Vista de leads potenciales, con precisión de fecha y ventana.</li>
+          <li>Y aquí vive el <b>follow-up</b> — dueñas: Alina e Iciar.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout info"><b>La analogía:</b> Intercom es el mostrador de recepción, n8n es el despacho donde se
+      piensa y se decide, y Airtable es el archivador. La recepción <b>no</b> rellena expedientes y el archivador
+      <b>no</b> opina. Cada vez que en este proyecto hemos cruzado esa línea, hemos pagado un error.</div>
+  </div>
+  <p class="src"><b>Fuente:</b> Mapa de WP 31/07, apartado 01 «arquitectura que se sigue», actualizado con las decisiones M1, M4 y M5.</p>
+</section>
+
+<!-- 23 -->
+<section>
+  <p class="eyebrow">Bloque 5 · la regla que más errores evita</p>
+  <h2>Un solo escritor de datos</h2>
+  <div class="body">
+    <ul class="pts">
+      <li>Solo <b>una pieza</b> en todo el sistema tiene permiso para escribir en la ficha del cliente. Todo lo demás le pide a ella que escriba.</li>
+      <li>Por qué: cuando dos piezas escriben el mismo campo, aparecen estados imposibles. <b>Y ya tenemos la prueba</b>: hay una ficha real que dice a la vez «está de alta», «está descartado» y «tiene fecha prevista de alta».</li>
+      <li>Ese único escritor es también el sitio donde viven <b>todas las salvaguardas</b>: la lista cerrada de categorías, la validación del identificador y la comprobación de duplicados.</li>
+      <li class="q">Es la razón por la que los modelos 030 y 149 son delicados: allí <b>ya hay otro escritor</b>. Convertirnos en el segundo es el patrón que nos ha costado dos errores.</li>
+      <li class="n"><b>Todavía por construir</b> dentro de ese escritor: la comprobación de duplicados. Hoy el identificador de cliente <b>no es único</b> en la tabla, porque los formularios no lo rellenan.</li>
+    </ul>
+    <div class="flow"><b>El recorrido de una conversación, de punta a punta:</b> el cliente entra por el menú →
+      elige camino (calculadora · preguntas · solicitud) → Intercom avisa a n8n con <b>un solo dato: por qué puerta ha entrado</b> →
+      n8n deduce el modo, prepara el contexto, llama al agente correcto y decide → <b>el escritor único</b> deja la ficha en Airtable →
+      la respuesta vuelve al cliente en el mismo hilo.</div>
+  </div>
+  <p class="src"><b>Fuente:</b> Mapa de WP 31/07 · apartado 01, WP-205b (comprobación de duplicados, pendiente),
+    WP-226 (estado imposible con la ficha real conservada a propósito como caso de prueba) y WP-235 (riesgo del segundo escritor).</p>
+</section>
+
+<!-- 24bis · DÓNDE VIVE EL ESTADO -->
+<section>
+  <p class="eyebrow">Bloque 5 · la arquitectura</p>
+  <h2>El agente no recuerda nada: la conversación se reconstruye en cada turno</h2>
+  <div class="body">
+    <div class="callout info"><b>Cómo funciona, con una analogía:</b> el agente no tiene memoria propia. En cada turno
+      es como un asesor nuevo al que le entregas <b>la carpeta completa</b> antes de que hable: el historial del hilo,
+      lo que ya sabemos del expediente y en qué modo está la conversación. Responde, y se olvida.</div>
+    <ul class="pts">
+      <li><b>Por qué es una buena noticia:</b> no hay un estado escondido que se pueda desincronizar. Si algo va mal, está en la carpeta y se puede leer.</li>
+      <li>El «en qué modo estamos» vive como <b>una etiqueta de la conversación en Intercom</b>, y nuestro lado la
+        <b>relee preguntando a Intercom</b> en cada turno — nunca se cree lo que le llega en la petición.</li>
+      <li class="q">Airtable tiene <b>cero estado conversacional</b>, y es a propósito: llegaría tarde y desincronizado. El archivador guarda hechos, no el hilo.</li>
+      <li>Si falta la etiqueta del modo, el sistema cae al <b>modo de mínimo privilegio</b> (solo preguntas) <b>en memoria</b> y avisa. Ese estado de emergencia <b>nunca se guarda</b>: un reinicio fallido no debe atrapar a nadie.</li>
+      <li class="n"><b>Consecuencia de coste, no solo de diseño:</b> si el historial crece sin techo, la carpeta que entregamos crece con él en cada turno. Poner ese corte es un trabajo ya planificado, y resulta que también es el que evita que el coste crezca de forma no lineal.</li>
+    </ul>
+  </div>
+  <p class="src"><b>Fuente:</b> Mapa de WP 31/07 · WP-210, WP-211 (deducción del modo y fail-closed no persistido),
+    WP-228 («no hay nodo de memoria: el historial se reconstruye de la API en cada turno») y WP-222.
+    Estudio de costes 31/07, apartado 6, punto 2.</p>
+</section>
+
+<!-- 25 -->
+<section>
+  <p class="eyebrow">Bloque 5 · cómo se demuestra</p>
+  <h2>Las invariantes van como criterios de aceptación, no como buenas intenciones</h2>
+  <div class="body">
+    <div class="callout info">Una <b>invariante</b> es una frase que tiene que ser verdad <b>siempre</b>, y que se puede
+      comprobar. La diferencia con una buena intención es que la invariante <b>tiene una prueba asociada</b> y sin esa
+      prueba en verde el trabajo no se considera terminado.</div>
+    <ul class="pts">
+      <li>El modo de la conversación se deduce <b>preguntando a Intercom</b>, nunca creyéndose lo que llega en la petición. <span class="tag t-mid">prueba: petición falsificada → se ignora</span></li>
+      <li><b>Nunca hay dos piezas escribiendo el modo a la vez.</b> <span class="tag t-mid">prueba: tabla de transiciones sin ninguna celda con dos dueños</span></li>
+      <li>Cualificar a un cliente <b>no cierra</b> la conversación, y ninguna rama toca el estado de un ticket. <span class="tag t-mid">prueba: recorrido real por cada rama</span></li>
+      <li>El prompt <b>nunca nombra una herramienta que no esté conectada</b> a su agente. <span class="tag t-mid">prueba: revisión mecánica antes de publicar</span></li>
+      <li>Ninguna escritura se reintenta antes de comprobar que hay <b>exactamente una</b> ficha que coincide. <span class="tag t-mid">prueba: identificador duplicado → rechazo sin escribir</span></li>
+    </ul>
+    <div class="callout ok"><b>Y la regla de evidencia que aplica a todo:</b> nada se considera terminado sin
+      una conversación real —no una simulación— y su ejecución correlativa. Cada paquete marcado como hecho en el
+      mapa de hoy <b>lleva su evidencia citada</b>. Si no la lleva, no está hecho.</div>
+  </div>
+  <p class="src"><b>Fuente:</b> Mapa de WP 31/07, «ocho invariantes que van como criterios de aceptación, no como buenas
+    intenciones»; y Runbook 30/07, quality gates.</p>
+</section>
+
+<!-- 25 · DIVISOR B6 -->
+<section class="divider">
+  <p class="num">06</p>
+  <p class="eyebrow">Bloque seis</p>
+  <h1>Costes y dimensionamiento</h1>
+  <p class="lead">Tres capas, en orden: el marco de escala, la escasez medida y la decisión económica del proyecto.
+    Con lo que no sabemos declarado en la propia diapositiva.</p>
+</section>
+
+<!-- 26 -->
+<section>
+  <p class="eyebrow">Bloque 6 · capa 1 · marco de escala</p>
+  <h2>La base sobre la que construimos ya es cara — y esto NO es coste del bot</h2>
+  <div class="body">
+    <div class="callout"><span class="warn">⚠️ AVISO, EN LA MISMA FRASE:</span> las cifras de esta diapositiva son
+      <b>gasto de uso general de TODA la empresa TaxDown</b> en las tres herramientas del stack.
+      <b>NO son coste del proyecto Beckham.</b> Presentarlas como coste del proyecto lo infla en
+      <b>dos órdenes de magnitud</b>. Sirven para una sola cosa: dar la escala real del gasto que ya existe.</div>
+    <div class="bars">
+      <div class="bar-row"><span class="name">OpenAI</span>
+        <div class="bar-track"><div class="bar-fill d" style="width:47.0%">71.334,93 € · 47,0 %</div></div></div>
+      <div class="bar-row"><span class="name">Airtable</span>
+        <div class="bar-track"><div class="bar-fill g" style="width:42.5%">64.448,65 € · 42,5 %</div></div></div>
+      <div class="bar-row"><span class="name">n8n</span>
+        <div class="bar-track"><div class="bar-fill n" style="width:10.5%"></div><div class="bar-out" style="left:10.5%">15.933,88 € · 10,5 %</div></div></div>
+    </div>
+    <ul class="pts">
+      <li><b>151.717,46 €</b> de facturación documentada en n8n, Airtable y OpenAI, de los que <b>130.324,11 € (85,9 %) siguen pendientes de recibir</b>.</li>
+      <li>Detalle que favorece a nuestra arquitectura: <b>n8n, donde vive toda la lógica del bot, es la partida más pequeña de las tres</b>. La orquestación es la parte barata.</li>
+      <li class="n"><b>Dato pendiente:</b> el total <b>no es un gasto mensual</b> — las tres partidas cubren periodos distintos. El gasto mensual normalizado por proveedor es desconocido.</li>
+    </ul>
+  </div>
+  <p class="src"><b>Fuente:</b> Estudio de costes 31/07, apartado 2.1 y 2.2 · 9 facturas leídas de la herramienta de
+    facturación interna el 31/07. <b>Gasto de empresa, no del proyecto.</b> Sin datos personales. Cada serie va con etiqueta
+    directa: la identidad nunca depende solo del color.</p>
+</section>
+
+<!-- 27 -->
+<section>
+  <p class="eyebrow">Bloque 6 · capa 2 · escasez medida</p>
+  <h2>El techo del presupuesto ya se está cruzando: 5,82 veces por encima</h2>
+  <div class="body">
+    <div class="bars">
+      <div class="bar-row"><span class="name">Presupuesto configurado</span>
+        <div class="bar-track"><div class="bar-fill n" style="width:17.2%">2.000,00 $</div></div></div>
+      <div class="bar-row"><span class="name">Gasto de julio</span>
+        <div class="bar-track"><div class="bar-fill s" style="width:100%">11.632,54 $ · 5,82×</div></div></div>
+    </div>
+    <ul class="pts">
+      <li class="no"><b>Esto es dato medido, no estimación.</b> Y es lo que convierte «optimizar coste» de buena práctica en <b>restricción real</b>.</li>
+      <li>Consumo medido en la ventana del 16 al 31 de julio: <b>348.043 peticiones</b> y <b>11.364.925.066 tokens</b> → ≈ 0,0143 $ por petición.</li>
+      <li class="q"><b>El mensaje, en una frase: queremos bajar el coste, no subirlo.</b> El bot no es una línea nueva de gasto: es la alternativa barata a una que sí lo habría sido.</li>
+      <li class="n"><span class="warn">Discrepancia abierta, la declaro aquí:</span> las facturas de OpenAI de julio suman
+        <b>≈ 71.335 €</b> pero el panel de consumo dice <b>11.632,54 $</b>. <b>Una sola factura es el 99,4 % de julio.</b>
+        Hipótesis más probable: un compromiso anual. <b>Sin confirmar.</b> Si alguien pregunta: lo estamos confirmando.</li>
+    </ul>
+    <div class="callout info">Recordatorio de honestidad: <b>no convierto € a $ en voz alta</b>. No hay tipo de cambio
+      declarado, así que ninguna de las dos cifras se presenta como «el gasto de OpenAI». Y todo esto sigue siendo
+      <b>gasto de empresa, no del bot</b>.</div>
+  </div>
+  <p class="src"><b>Fuente:</b> Estudio de costes 31/07, apartados 2.3 y 2.4 · panel de uso de OpenAI, organización TaxDown,
+    ventana 16/07–31/07, consultado el 31/07. Serie única de datos contra referencia neutra en gris: no hay pareja confundible.</p>
+</section>
+
+<!-- 28 -->
+<section>
+  <p class="eyebrow">Bloque 6 · capa 3 · la decisión económica</p>
+  <h2>Construir el agente nosotros ahorra entre 950 y 9.950 $ al año</h2>
+  <div class="body">
+    <div class="bars">
+      <div class="bar-row"><span class="name">Nuestro agente<br><span style="font-weight:400;color:var(--moon-500);font-size:.88em">pagamos por uso</span></span>
+        <div class="bar-track"><div class="bar-fill g" style="width:1.2%"></div><div class="bar-out" style="left:1.2%">≈ 46 $/año</div></div></div>
+      <div class="bar-row"><span class="name">Fin · como resolución<br><span style="font-weight:400;color:var(--moon-500);font-size:.88em">0,99 $ por resultado</span></span>
+        <div class="bar-track"><div class="bar-fill n" style="width:9.9%"></div><div class="bar-out" style="left:9.9%">≈ 990 $/año</div></div></div>
+      <div class="bar-row"><span class="name">Fin · como cualificar leads<br><span style="font-weight:400;color:var(--moon-500);font-size:.88em">9,99 $ por resultado</span></span>
+        <div class="bar-track"><div class="bar-fill s" style="width:100%">≈ 9.990 $/año</div></div></div>
+    </div>
+    <ul class="pts">
+      <li>Escenario: <b>1.000 clientes al año</b>. El proveedor cobra <b>por resultado</b>; nosotros pagamos por uso.</li>
+      <li>Y el detalle que encaja incómodamente bien: <b>su resultado más caro (9,99 $) es justamente «cualificar leads»</b> — que es lo único que hace este bot.</li>
+      <li class="q"><b>Hay UNA medición real de hoy:</b> una conversación real consumió <b>8.363 tokens de entrada y 55 de salida</b>
+        con un modelo mini. Es el primer dato instrumentado de verdad, y sostiene que el coste de tokens es de <b>dos cifras de dólares al año</b>.</li>
+      <li class="n"><b>El resto son escenarios, no mediciones</b> — lo digo explícitamente. Los tokens de entrada eran hasta hoy una estimación de diseño.</li>
+      <li class="no"><b>Y ese ahorro se paga en horas de ingeniería.</b> El otro producto funciona el día 1; el nuestro lleva semanas. El ahorro es real, pero no es gratis.</li>
+    </ul>
+    <div class="callout"><b>El único techo que no se compra con dinero:</b> <b>5 peticiones por segundo por base</b> en Airtable,
+      idéntico en todos los planes, y <b>compartido con otra automatización ajena</b> de la misma base. Ese no se arregla pagando más.
+      Por eso hace falta la red de avisos de error: hoy, si se cruza, se pierde un expediente sin traza.</div>
+  </div>
+  <p class="src"><b>Fuente:</b> Estudio de costes 31/07, apartados 3.2, 3.4, 4.3, 4.4 y 2.5 · tarifas de lista consultadas el 30/07.
+    Medición de tokens: conversación real no simulada del 31/07. Etiqueta directa en cada barra.</p>
+</section>
+
+<!-- 29 · DIVISOR B7 -->
+<section class="divider">
+  <p class="num">07</p>
+  <p class="eyebrow">Bloque siete</p>
+  <h1>Hacia dónde vamos</h1>
+  <p class="lead">Tres hitos con <b>firmeza distinta</b>: uno es un hecho, uno es un compromiso y uno es una
+    estimación con dependencias de terceros. Los presento como tal.</p>
+</section>
+
+<!-- 30 -->
+<section>
+  <p class="eyebrow">Bloque 7 · los hitos</p>
+  <h2>Un hecho, un compromiso y una estimación</h2>
+  <div class="body">
+    <div class="states">
+      <div class="state s3"><p class="lbl">Hecho · hoy</p>
+        <p><b>«El bot guarda».</b> La cañería escribe, no duplica, valida y no puede corromper la tabla.
+          <b>Verificado con 20 comprobaciones automáticas</b> contra el sistema real.<br><br>
+          <b>Lo que queda de esa cañería son 3 piezas concretas:</b> la guarda de duplicados, la red de avisos de error
+          — bloqueada porque no podemos leer qué credenciales existen — y <b>el turno 2</b>, que es el que convierte
+          esto en un bot conversacional de verdad.</p></div>
+      <div class="state s2"><p class="lbl">Compromiso · 28 de agosto</p>
+        <p><b>MVP conversacional</b>, sin los documentos oficiales. El menú, el modo preguntas contra el prompt de Paula,
+          la persistencia enganchada en los cuatro puntos y el escalado a una persona que <b>de verdad asigna</b>.<br><br>
+          <b>Condicionado a las vacaciones de agosto</b>, y lo digo antes de que lo pregunte nadie. Es un compromiso, no un hecho.</p></div>
+      <div class="state s1"><p class="lbl">Estimación · octubre</p>
+        <p><b>Alcance completo.</b> Cualificación automática de la complejidad del caso, los modelos 030 y 149, y el
+          PDF-resguardo al cliente.<br><br>
+          <b>Va como bloque aparte y con menos firmeza a propósito:</b> depende de plantillas que <b>todavía no existen</b>
+          y de campos que gobierna otro proceso. Es una estimación con dependencias de terceros, no una fecha firmada.</p></div>
+    </div>
+    <div class="callout info"><b>Por qué el turno 2 es el hito real y no un detalle:</b> hoy el cliente puede tener
+      <b>un</b> intercambio con el agente. Hasta que un segundo mensaje llegue solo al agente, esto es un formulario
+      conversacional, no un bot con el que se conversa. La causa raíz está localizada y el arreglo identificado.</div>
+  </div>
+  <p class="src"><b>Fuente:</b> Mapa de WP 31/07 · WP-201 y las 20 comprobaciones (hecho) · WP-205b, WP-202, WP-10b (lo que queda) ·
+    olas 3 a 5 (MVP) · ola 6, WP-234/235/236 (alcance completo). Fechas replanteadas con lo cerrado hoy.</p>
+</section>
+
+<!-- 31 -->
+<section>
+  <p class="eyebrow">Bloque 7 · lo que necesito</p>
+  <h2>Peticiones concretas, con nombre</h2>
+  <div class="body">
+    <table>
+      <thead><tr><th style="width:22%">A quién</th><th style="width:40%">Qué pido</th><th>Qué desbloquea</th></tr></thead>
+      <tbody>
+        <tr><td><b>Al manager</b></td>
+          <td>El <b>SLA exacto de Ops_Mobility</b> para clientes full VIP: cuánto tiempo prometemos.</td>
+          <td>El <b>texto</b> que el bot le dice al cliente al escalar. El mecanismo no espera — se construye igual. Hoy hay un mensaje vivo que promete «un compañero te escribirá» y <b>no asigna a nadie</b>.</td></tr>
+        <tr><td><b>Al dueño del tipo de ticket de pruebas</b></td>
+          <td><b>Archivarlo</b> o quitarle la marca de «visible para el cliente». Es la <b>única de las 47 decisiones que sigue sin respuesta</b>.</td>
+          <td>Que el problema de los tickets y los correos al cliente <b>no vuelva sin avisar</b>. Está arreglado por otra vía, pero la pieza que lo permitía sigue ahí.</td></tr>
+        <tr><td><b>A Alina e Iciar</b></td>
+          <td>El <b>esquema final del campo de complejidad</b> del caso. Yo propongo tres valores: fácil, complejo, a revisar.</td>
+          <td>Que el agente pueda marcar si un caso es sencillo o necesita revisión humana, y que un caso complejo dispare un aviso.</td></tr>
+        <tr><td><b>A Alina</b></td>
+          <td><b>Dónde vive la calculadora</b> de Beckham: dentro de la app de TaxDown o fuera.</td>
+          <td>El enlace final de la rama de calculadora, que es el punto de máxima intención comercial del menú. No urgente.</td></tr>
+        <tr><td><b>Al dueño del workflow de reparto de mensajes</b></td>
+          <td>Avisarle de dos cosas: <b>le hemos quitado un paso</b> (el que convertía todo en ticket de pruebas) y su rama de «no distribuido» es un <b>callejón sin salida silencioso</b>.</td>
+          <td>Que no lo revierta sin hablar con nosotros, y que sepa que ese workflow <b>está tocando conversaciones del bot</b> y no solo las de soporte.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="src"><b>Fuente:</b> Mapa de WP 31/07, apartado 05 «lo que sigue pendiente de otra persona»; decisiones M6, N6, P2 y U6
+    del 30/07; y WP-10b, nota final. Sin nombres de clientes ni identificadores técnicos.</p>
+</section>
+
+<!-- 32 · CIERRE -->
+<section class="closing">
+  <p class="eyebrow">Y la frase que evita la conversación incómoda de dentro de tres semanas</p>
+  <h1>El alcance acordado el 30 de julio incluye rellenar dos modelos oficiales y generar un resguardo al cliente
+    — y eso <b style="color:var(--sand)">no estaba dentro de la estimación inicial de un mes</b>.</h1>
+  <p class="lead">Lo digo hoy, con el alcance recién acordado y con margen para replanificar, y no en septiembre
+    cuando la fecha ya no dé. El bot ya guarda; el resto es un plan con tres hitos de firmeza distinta y cinco
+    peticiones con nombre.</p>
+  <p class="src"><b>Fuente:</b> decisiones N10 y N14.2 del 30/07 → paquetes WP-234, WP-235 y WP-236, marcados en el mapa
+    del 31/07 como <b>alcance que no existía en ningún plan previo</b>. Gracias. Preguntas.</p>
+</section>
+
+</div>
+
+<div class="hud"><i id="bar"></i></div>
+<div class="count" id="count">1 / 32</div>
+<div class="hint">← → para navegar</div>
+
+<script>
+(function(){
+  var s = Array.prototype.slice.call(document.querySelectorAll('section'));
+  var i = 0, bar = document.getElementById('bar'), cnt = document.getElementById('count');
+  function go(n){
+    n = Math.max(0, Math.min(s.length-1, n));
+    s[i].classList.remove('on'); i = n; s[i].classList.add('on');
+    bar.style.width = ((i+1)/s.length*100)+'%';
+    cnt.textContent = (i+1)+' / '+s.length;
+    cnt.style.color = s[i].classList.contains('cover')||s[i].classList.contains('closing') ? 'rgba(255,255,255,.6)' : '';
+    if (location.hash !== '#'+(i+1)) history.replaceState(null,'','#'+(i+1));
+  }
+  document.addEventListener('keydown', function(e){
+    var k = e.key;
+    if (k==='ArrowRight'||k==='ArrowDown'||k===' '||k==='PageDown'||k==='Enter'){ e.preventDefault(); go(i+1); }
+    else if (k==='ArrowLeft'||k==='ArrowUp'||k==='PageUp'||k==='Backspace'){ e.preventDefault(); go(i-1); }
+    else if (k==='Home'){ e.preventDefault(); go(0); }
+    else if (k==='End'){ e.preventDefault(); go(s.length-1); }
+  });
+  var x0=null;
+  document.addEventListener('touchstart',function(e){ x0=e.touches[0].clientX; },{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(x0===null) return; var dx=e.changedTouches[0].clientX-x0;
+    if(Math.abs(dx)>50) go(i + (dx<0?1:-1)); x0=null;
+  },{passive:true});
+  document.addEventListener('click',function(e){
+    if(e.clientX > window.innerWidth*0.72) go(i+1);
+    else if(e.clientX < window.innerWidth*0.14) go(i-1);
+  });
+  var h = parseInt((location.hash||'').replace('#',''),10);
+  go(isNaN(h)?0:h-1);
+})();
+</script>
+</body>
+</html>

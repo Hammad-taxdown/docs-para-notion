@@ -1,0 +1,993 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bot Beckham · Análisis de costes y mercado</title>
+<style>
+:root{
+  --dark:#3D3A62; --sky:#5A74D0; --tax:#0FD48E; --sand:#FF7F63;
+  /* series validadas para datos (ver nota de paleta al final) */
+  --s1:#086A47; --s2:#5A74D0; --s3:#FF7F63;
+  --hl:#086A47; --muted:#C9C9D8;
+  --surface:#FFFFFF; --panel:#FAFAFC; --line:#E4E4EE; --grid:#EDEDF3;
+  --ink:#1D1B33; --ink2:#55536E; --ink3:#8A8AA3;
+  --good-bg:#E4FBF2; --good-ink:#0A6B49;
+  --warn-bg:#FFEDE8; --warn-ink:#B4482C;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --s1:#0CAA72; --s2:#5A74D0; --s3:#B25945;
+    --hl:#0CAA72; --muted:#3A3856;
+    --surface:#15142A; --panel:#1D1B36; --line:#302E4C; --grid:#282640;
+    --ink:#F0EFF7; --ink2:#B9B7CE; --ink3:#8987A3;
+    --good-bg:#0E3D2C; --good-ink:#5FE0AE;
+    --warn-bg:#43241C; --warn-ink:#FFA894;
+  }
+}
+:root[data-theme="dark"]{
+  --s1:#0CAA72; --s2:#5A74D0; --s3:#B25945;
+  --hl:#0CAA72; --muted:#3A3856;
+  --surface:#15142A; --panel:#1D1B36; --line:#302E4C; --grid:#282640;
+  --ink:#F0EFF7; --ink2:#B9B7CE; --ink3:#8987A3;
+  --good-bg:#0E3D2C; --good-ink:#5FE0AE;
+  --warn-bg:#43241C; --warn-ink:#FFA894;
+}
+:root[data-theme="light"]{
+  --s1:#086A47; --s2:#5A74D0; --s3:#FF7F63;
+  --hl:#086A47; --muted:#C9C9D8;
+  --surface:#FFFFFF; --panel:#FAFAFC; --line:#E4E4EE; --grid:#EDEDF3;
+  --ink:#1D1B33; --ink2:#55536E; --ink3:#8A8AA3;
+  --good-bg:#E4FBF2; --good-ink:#0A6B49;
+  --warn-bg:#FFEDE8; --warn-ink:#B4482C;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface);color:var(--ink);
+  font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px 90px}
+
+header{background:var(--dark);color:#fff;padding:38px 0 32px}
+header .wrap{padding-bottom:0}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--tax);font-weight:700;margin:0 0 10px}
+h1{margin:0 0 10px;font-size:31px;line-height:1.15;letter-spacing:-.02em}
+header p{margin:0;color:#C9C7DE;max-width:74ch}
+.tools{margin-top:20px;display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.tools button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;
+  border-radius:999px;padding:6px 14px;font:inherit;font-size:12.5px;cursor:pointer}
+.tools button:hover{background:rgba(255,255,255,.18)}
+.tools span{font-size:12px;color:#A9A6C4}
+
+h2{font-size:20px;margin:46px 0 6px;letter-spacing:-.01em}
+h2 .n{color:var(--ink3);font-weight:600;margin-right:8px}
+.lede{color:var(--ink2);margin:0 0 18px;max-width:80ch}
+hr.rule{height:1px;background:var(--line);border:0;margin:42px 0 0}
+
+/* stat tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:13px;margin:26px 0 6px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:17px 18px;background:var(--panel)}
+.tile .lab{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.tile .val{font-size:31px;line-height:1.06;letter-spacing:-.025em;margin:9px 0 4px;
+  font-variant-numeric:tabular-nums}
+.tile .sub{font-size:12.5px;color:var(--ink2)}
+.tile.hero{background:var(--good-bg);border-color:transparent}
+.tile.hero .val{color:var(--good-ink)}
+.tile.hero .lab{color:var(--good-ink);opacity:.85}
+.tile.hero .sub{color:var(--good-ink);opacity:.9}
+
+/* figure */
+figure{margin:22px 0 0;border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden}
+figcaption{padding:15px 20px 3px}
+figcaption .t{font-size:16px;font-weight:650;letter-spacing:-.01em}
+figcaption .s{font-size:13px;color:var(--ink2);margin-top:4px;max-width:82ch}
+.plot{padding:6px 20px 8px;position:relative}
+.legend{display:flex;gap:16px;flex-wrap:wrap;padding:2px 20px 12px;font-size:12.5px;color:var(--ink2)}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.fnote{padding:0 20px 15px;font-size:12.5px;color:var(--ink3);max-width:88ch}
+.tbtn{background:none;border:1px solid var(--line);color:var(--ink2);border-radius:7px;
+  padding:4px 11px;font:inherit;font-size:12px;cursor:pointer;margin:0 20px 15px}
+.tbtn:hover{color:var(--ink);border-color:var(--ink3)}
+.tview{display:none;padding:0 20px 16px}
+.tview.on{display:block}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font:inherit;font-size:12px;fill:var(--ink2)}
+svg .val{font-size:12px;font-weight:650;fill:var(--ink)}
+svg .ax{font-size:11.5px;fill:var(--ink3)}
+svg .gl{stroke:var(--grid);stroke-width:1}
+svg .bl{stroke:var(--line);stroke-width:1}
+.hit{fill:transparent;cursor:pointer}
+
+/* tooltip */
+.tip{position:absolute;pointer-events:none;opacity:0;transition:opacity .09s;
+  background:var(--ink);color:var(--surface);border-radius:8px;padding:8px 11px;
+  font-size:12.5px;line-height:1.4;white-space:nowrap;z-index:9;
+  box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.tip b{font-weight:650}
+.tip.on{opacity:1}
+
+/* tables */
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:13.2px;min-width:520px}
+th{background:var(--panel);text-align:left;padding:10px 13px;font-size:11px;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--ink3);border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 13px;border-bottom:1px solid var(--grid);vertical-align:top;
+  font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right}
+td b{color:var(--ink)}
+code{background:var(--panel);border:1px solid var(--line);padding:1px 5px;border-radius:4px;font-size:12.2px}
+
+.callout{border-left:3px solid var(--sand);background:var(--warn-bg);color:var(--warn-ink);
+  padding:14px 18px;border-radius:0 9px 9px 0;margin:20px 0;font-size:14px}
+.callout.ok{border-color:var(--tax);background:var(--good-bg);color:var(--good-ink)}
+.callout p{margin:0 0 8px}.callout p:last-child{margin:0}
+.callout b{font-weight:700}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--panel)}
+.card h3{margin:0 0 9px;font-size:14.5px}
+.card ul{margin:0;padding-left:19px;font-size:13.5px;color:var(--ink2)}
+.card li{margin-bottom:7px}
+.card li:last-child{margin-bottom:0}
+
+/* meters */
+.meter{margin:14px 0 0}
+.meter .mh{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+.meter .mh b{font-variant-numeric:tabular-nums}
+.meter .track{height:11px;border-radius:6px;background:var(--muted);overflow:hidden}
+.meter .fill{height:100%;border-radius:6px;background:var(--hl)}
+
+footer{margin-top:50px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink3)}
+footer a{color:var(--s2)}
+footer ul{padding-left:19px}
+@media(max-width:800px){.cols{grid-template-columns:1fr}h1{font-size:25px}}
+@media print{.tools,.tbtn{display:none}.tview{display:block!important}}
+</style>
+
+<header>
+  <div class="wrap">
+    <p class="eyebrow">TaxDown · Mobility · Bot Beckham</p>
+    <h1>Análisis de costes y dimensionamiento</h1>
+    <p>Cuánto cuesta operar el bot, qué ahorra la decisión de arquitectura que ya está tomada, y dónde
+      está el único techo técnico que no se puede comprar con dinero. Precios de proveedor verificados el
+      30 de julio de 2026, con fuente. <b>Nuevo el 31 de julio:</b> la sección 02 añade
+      <b>facturación y consumo reales</b> — que son <b>gasto de uso general de toda la empresa TaxDown,
+      no del bot</b>.</p>
+    <div class="tools">
+      <button id="theme">Modo oscuro</button>
+      <button id="alltables">Ver todos los datos en tabla</button>
+      <span>Escenario 500–1.000 clientes/año · facturación real = gasto de EMPRESA, no del bot · sin datos
+        personales</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<h2><span class="n">01</span>Las cuatro cifras que importan</h2>
+<p class="lede">A volumen de 1.000 conversaciones al año, con el modelo más caro de los evaluados.</p>
+
+<div class="tiles">
+  <div class="tile hero">
+    <div class="lab">Ahorro por no usar Fin</div>
+    <div class="val">950–9.950 $</div>
+    <div class="sub">al año · según cómo tarifique Intercom cada conversación</div>
+  </div>
+  <div class="tile">
+    <div class="lab">Coste del modelo</div>
+    <div class="val">≈ 46 $</div>
+    <div class="sub">al año, con GPT-4o. Con un modelo mini, 2,80 $</div>
+  </div>
+  <div class="tile">
+    <div class="lab">Sobre el ingreso gestionado</div>
+    <div class="val">&lt; 0,1 %</div>
+    <div class="sub">≈ 225.000 € de ingreso a 750 clientes × 300 €</div>
+  </div>
+  <div class="tile">
+    <div class="lab">Margen del plan n8n Starter</div>
+    <div class="val">6×</div>
+    <div class="sub">5.000 de 30.000 ejecuciones/año consumidas</div>
+  </div>
+</div>
+
+<div class="callout ok">
+  <p><b>La conclusión, en una frase:</b> el coste no es la palanca de decisión de este proyecto. El coste
+  variable es de dos cifras de dólares al año y la decisión que más dinero ahorra —construir el agente en
+  n8n en vez de delegarlo en Fin— ya está tomada. <b>El riesgo del proyecto es la fiabilidad, no el
+  precio:</b> hoy, con el bug del content-type sin arreglar, el 100 % de las escrituras en Airtable falla.</p>
+</div>
+
+<hr class="rule">
+
+<h2><span class="n">02</span>La base ya es cara · facturación REAL de la stack</h2>
+<p class="lede">Facturas y consumo medido, leídos el 31 de julio de 2026 de la herramienta de facturación y
+  del dashboard de OpenAI. Esto es <b>el suelo sobre el que construimos</b>: la stack ya cuesta dinero de
+  verdad antes de que el bot escriba su primera fila.</p>
+
+<div class="callout" style="border-left-width:5px">
+  <p><b>⚠️ AVISO 1 · ESTO NO ES COSTE DEL BOT.</b> Todas las cifras de esta sección son <b>costes de uso
+  general de TODA la empresa TaxDown</b> en n8n, Airtable y OpenAI. <b>No son coste del proyecto Beckham</b>
+  y no se pueden presentar como tal: el coste variable del bot es el de las secciones 04 y 05, <b>dos cifras
+  de dólares al año</b>. Atribuir estas facturas al bot <b>infla su coste en dos órdenes de magnitud</b>.</p>
+  <p>Están aquí para dos cosas y solo dos: <b>(a)</b> dar la escala real del gasto que ya existe;
+  <b>(b)</b> sostener el argumento de eficiencia y escasez — cada decisión de diseño suma sobre una base que
+  ya es cara.</p>
+</div>
+
+<div class="callout" style="border-left-width:5px">
+  <p><b>⚠️ AVISO 2 · DATO A CONFIRMAR, NO RESUELTO.</b> Las facturas de OpenAI de julio suman
+  <b>≈ 71.334,93 €</b> y el «July spend» del dashboard marca <b>11.632,54 $</b>. <b>Son magnitudes que no
+  cuadran</b> y no está resuelto por qué (detalle abajo). <b>No presentar ninguna de las dos como «el gasto
+  de OpenAI» sin decir que hay una discrepancia abierta.</b></p>
+</div>
+
+<div class="tiles">
+  <div class="tile">
+    <div class="lab">Facturación documentada · empresa</div>
+    <div class="val">151.717,46 €</div>
+    <div class="sub">9 facturas · n8n + Airtable + OpenAI · periodos distintos, no es un gasto mensual</div>
+  </div>
+  <div class="tile">
+    <div class="lab">Pendiente de recibir</div>
+    <div class="val">130.324,11 €</div>
+    <div class="sub">85,9 % del total documentado · 3 de las 9 facturas</div>
+  </div>
+  <div class="tile hero" style="background:var(--warn-bg)">
+    <div class="lab" style="color:var(--warn-ink)">Presupuesto de OpenAI superado</div>
+    <div class="val" style="color:var(--warn-ink)">5,8×</div>
+    <div class="sub" style="color:var(--warn-ink)">11.632,54 $ de julio sobre 2.000,00 $/mes configurados ·
+      <b>dato medido</b></div>
+  </div>
+  <div class="tile">
+    <div class="lab">Consumo medido · 16–31 julio</div>
+    <div class="val">348.043</div>
+    <div class="sub">requests · 11.364.925.066 tokens · 4.981,67 $ en la ventana</div>
+  </div>
+</div>
+
+<figure>
+  <figcaption>
+    <div class="t">Peso relativo de cada proveedor · facturación documentada, en euros</div>
+    <div class="s">Total 151.717,46 €. Gasto de uso general de la empresa, <b>no del bot</b>. Las tres
+      partidas cubren periodos distintos (n8n mayo · Airtable abril y julio · OpenAI julio), así que esto es
+      un reparto de lo documentado, no un gasto mensual.</div>
+  </figcaption>
+  <div class="plot" id="p-prov"></div>
+  <div class="legend" id="l-prov"></div>
+  <p class="fnote"><b>Lectura:</b> los dos proveedores que dominan el gasto son justamente los dos donde el
+    bot toca de verdad —el modelo de lenguaje y la base de datos—, y <b>n8n, que es donde vive toda la lógica
+    del bot, es la partida más pequeña de las tres (10,5 %)</b>. La orquestación es la parte barata.</p>
+  <button class="tbtn" data-tbl="t-prov">Ver los datos en tabla</button>
+  <div class="tview" id="t-prov"></div>
+</figure>
+
+<figure>
+  <figcaption>
+    <div class="t">El techo que ya se está cruzando · presupuesto de OpenAI frente al gasto real, en dólares</div>
+    <div class="s">Presupuesto configurado en el dashboard de la organización: 2.000,00 $/mes. Gasto de julio
+      de 2026: 11.632,54 $. La barra del dashboard sale en naranja porque el presupuesto está superado.</div>
+  </figcaption>
+  <div class="plot" id="p-budget"></div>
+  <p class="fnote"><b>Esto es dato medido, no estimación.</b> Es lo que convierte «optimizar coste» de buena
+    práctica en <b>restricción real</b>: hay un techo configurado y el gasto de la empresa lo multiplica por
+    5,8. En ese contexto, un bot cuyo coste variable son dos cifras de dólares al año es la opción que
+    <b>baja</b> el coste, no la que lo sube.</p>
+  <button class="tbtn" data-tbl="t-budget">Ver los datos en tabla</button>
+  <div class="tview" id="t-budget"></div>
+</figure>
+
+<div class="cols">
+  <div class="card">
+    <h3>Consumo de la ventana · media contra pico</h3>
+    <div class="meter">
+      <div class="mh"><span>Gasto medio por día (16–31 jul.)</span><b>311,35 $</b></div>
+      <div class="track"><div class="fill" style="width:51%"></div></div>
+    </div>
+    <div class="meter">
+      <div class="mh"><span>Día de mayor gasto</span><b>610,47 $</b></div>
+      <div class="track"><div class="fill" style="width:100%;background:var(--s3)"></div></div>
+    </div>
+    <div class="mh" style="display:flex;justify-content:space-between;font-size:13px;margin-top:14px;
+      padding-top:12px;border-top:1px solid var(--line)">
+      <span>El pico frente a la media</span><b style="font-variant-numeric:tabular-nums">1,96×</b></div>
+    <p class="fnote" style="padding:14px 0 0"><b>Supuesto declarado:</b> la ventana 16/07–31/07 se cuenta como
+      <b>16 días</b>, ambos extremos incluidos (<code>4.981,67 ÷ 16 = 311,35</code>). Si el dashboard la
+      contara como 15 días, la media sería 332,11 $/día y el ratio 1,84×. La conclusión no cambia.
+      Un solo día de pico se come el <b>30,5 %</b> del presupuesto mensual entero.</p>
+  </div>
+  <div class="card">
+    <h3>Derivadas del consumo · con la aritmética a la vista</h3>
+    <div class="tblwrap" style="margin:0">
+    <table style="min-width:0">
+      <thead><tr><th>Derivada</th><th>Cálculo</th><th class="num">Resultado</th></tr></thead>
+      <tbody>
+        <tr><td>Coste medio por request</td><td><code>4.981,67 $ ÷ 348.043</code></td><td class="num"><b>≈ 0,0143 $</b></td></tr>
+        <tr><td>Coste medio por millón de tokens</td><td><code>4.981,67 $ ÷ 11.364,925 M</code></td><td class="num"><b>≈ 0,4383 $</b></td></tr>
+        <tr><td>Tokens por request</td><td><code>11.364.925.066 ÷ 348.043</code></td><td class="num"><b>≈ 32.654</b></td></tr>
+        <tr><td>Sobrepaso del presupuesto</td><td><code>11.632,54 ÷ 2.000,00</code></td><td class="num"><b>≈ 5,82×</b></td></tr>
+        <tr><td>Exceso sobre el presupuesto</td><td><code>11.632,54 − 2.000,00</code></td><td class="num"><b>9.632,54 $</b></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="fnote" style="padding:12px 0 0"><b>LECTURA (inferencia, no dato):</b> 0,4383 $ por millón de
+      tokens combinados está muy por debajo del precio de entrada de GPT-4o (2,50 $/1M). Eso apunta a que el
+      consumo agregado de la empresa está dominado por <b>modelos mini o entrada cacheada</b> — pero es una
+      inferencia sobre dos agregados, <b>no una medición de la mezcla de modelos</b>. No presentarlo como
+      hecho. Todas las cifras en dólares, <b>sin convertir: no hay tipo de cambio declarado</b>.</p>
+  </div>
+</div>
+
+<figure>
+  <figcaption>
+    <div class="t">Las 9 facturas documentadas</div>
+    <div class="s">Todas en euros. Estado tal y como aparece en la herramienta de facturación: «pendiente de
+      recibir» es un estado del documento, <b>no</b> una afirmación sobre si el servicio está pagado.</div>
+  </figcaption>
+  <div class="tblwrap" style="margin:0 20px 16px">
+  <table>
+    <thead><tr><th>Proveedor</th><th>Documento</th><th>Fecha</th><th class="num">Importe</th><th>Estado</th><th class="num">Pendiente</th></tr></thead>
+    <tbody>
+      <tr><td><b>n8n GmbH</b></td><td><code>001574</code></td><td>26/05/2026</td><td class="num">15.933,88 €</td><td>pago manual / reembolso, conciliado</td><td class="num">0,00 €</td></tr>
+      <tr><td><b>Airtable</b> <span style="color:var(--ink3)">(FORMAGRID INC DBA AIRTABLE)</span></td><td><code>INV10049098</code></td><td>02/07/2026</td><td class="num">59.400,30 €</td><td><b>pendiente de recibir</b></td><td class="num">59.400,30 €</td></tr>
+      <tr><td><b>Airtable</b> <span style="color:var(--ink3)">(FORMAGRID INC DBA AIRTABLE)</span></td><td><code>INV10045971</code></td><td>08/04/2026</td><td class="num">5.048,35 €</td><td>pago manual (reembolso)</td><td class="num">0,00 €</td></tr>
+      <tr><td><b>OpenAI</b></td><td><code>INV-WPQA1L2W-000003</code></td><td>03/07/2026</td><td class="num">70.904,80 €</td><td><b>pendiente de recibir</b></td><td class="num">70.904,80 €</td></tr>
+      <tr><td><b>OPENAI, LLC</b></td><td><code>B271846C-0020</code></td><td>17/07/2026</td><td class="num">200,00 €</td><td>conciliado</td><td class="num">0,00 €</td></tr>
+      <tr><td><b>OpenAI</b></td><td><code>M6TFYCPR-0008</code></td><td>12/07/2026</td><td class="num">85,12 €</td><td>conciliado</td><td class="num">0,00 €</td></tr>
+      <tr><td><b>OpenAI</b></td><td><code>FWKUFTHJ-0003</code></td><td>11/07/2026</td><td class="num">103,00 €</td><td>ticket, conciliado</td><td class="num">0,00 €</td></tr>
+      <tr><td><b>OpenAI</b></td><td><code>7EB0QN6N-0011</code></td><td>11/07/2026</td><td class="num">19,01 €</td><td><b>pendiente de recibir</b></td><td class="num">19,01 €</td></tr>
+      <tr><td><b>OpenAI</b></td><td><code>PND4VT8F-0006</code></td><td>06/07/2026</td><td class="num">23,00 €</td><td>ticket, conciliado</td><td class="num">0,00 €</td></tr>
+      <tr><td colspan="3"><b>Total documentado</b></td><td class="num"><b>151.717,46 €</b></td><td>conciliado: 21.393,35 €</td><td class="num"><b>130.324,11 €</b></td></tr>
+    </tbody>
+  </table>
+  </div>
+</figure>
+
+<div class="callout" style="border-left-width:5px">
+  <p><b>La discrepancia de OpenAI, acotada.</b> Facturas de julio: <b>71.334,93 €</b>. «July spend» del
+  dashboard: <b>11.632,54 $</b>. No se pueden comparar directamente —divisas distintas y <b>tipo de cambio
+  DESCONOCIDO, así que no se convierte</b>— pero la diferencia es de un factor <b>≈ 6×</b>, y ningún tipo de
+  cambio €/$ plausible explica un factor 6.</p>
+  <p><b>Dónde está concentrada, que es el dato útil:</b> la factura <code>INV-WPQA1L2W-000003</code>
+  (70.904,80 €) es por sí sola el <b>99,4 %</b> de lo facturado por OpenAI en julio. Las otras cinco suman
+  <b>430,13 €</b> — y <b>ese resto sí es del orden de magnitud</b> de un consumo mensual de API como el que
+  describe el dashboard. La factura grande no lo es.</p>
+  <p><b>Hipótesis, ninguna confirmada:</b> (1) es un compromiso anual/plurianual o una licencia de plataforma,
+  no consumo de API del mes; (2) son cuentas u organizaciones distintas, la facturada y la del dashboard;
+  (3) es un criterio temporal distinto. <b>Cómo cerrarlo:</b> abrir el detalle de líneas de esa factura y
+  comprobar concepto y periodo. Hasta entonces, en la presentación esto se dice como pregunta abierta.</p>
+</div>
+
+<div class="callout ok">
+  <p><b>El ángulo, en cuatro frases.</b> <b>(1)</b> La stack ya cuesta dinero de verdad a nivel empresa:
+  151.717,46 € documentados, 130.324,11 € pendientes de recibir. <b>(2)</b> El presupuesto de OpenAI está en
+  2.000 $/mes y julio va por 11.632,54 $ — hay un techo que ya se está cruzando, y es dato medido.
+  <b>(3)</b> Por eso la decisión de no usar Fin es <i>la</i> decisión económica del proyecto: Fin cobra
+  0,99 $ por resolución y 9,99 $ por <i>lead qualification</i> —literalmente lo que hace este bot— y no
+  usarlo ahorra ≈ 950–9.950 $/año a 1.000 clientes, mientras el coste de tokens de nuestro agente propio se
+  queda en dos cifras de dólares al año: <b>irrelevante al lado de estas facturas</b>. <b>(4)</b> El mensaje
+  es <b>«queremos bajar el coste, no subirlo»</b>: el bot no es una línea nueva de gasto material, es la
+  alternativa barata a una línea que sí lo habría sido.</p>
+  <p><b>Y el único techo que no se compra con dinero sigue siendo el mismo:</b> los 5 peticiones/segundo por
+  base de Airtable, idénticos en todos los planes, compartidos con una automatización ajena de la misma base.
+  Ese no se arregla pagando más — ver sección 06.</p>
+</div>
+
+<hr class="rule">
+
+<h2><span class="n">03</span>Nuestra arquitectura frente a Fin</h2>
+<p class="lede">Intercom tarifica su agente Fin <b>por resultado</b>; nosotros pagamos <b>por token</b>. Esa
+  diferencia de modelo de negocio, y no la calidad del modelo, es de donde sale todo el ahorro.</p>
+
+<figure>
+  <figcaption>
+    <div class="t">Coste anual a 1.000 conversaciones</div>
+    <div class="s">Escala lineal. La barra de nuestra arquitectura mide 46 $ — es real, no un error de
+      dibujo: son tres órdenes de magnitud de diferencia.</div>
+  </figcaption>
+  <div class="plot" id="p-fin"></div>
+  <p class="fnote"><b>Y hay un detalle de tarifa que encaja incómodamente bien con nuestro caso:</b>
+    <i>lead qualification</i> es el outcome más caro de Fin (9,99 $), y cualificar leads es literalmente lo
+    único que hace este bot. Si esto se hubiera montado sobre Fin, habría escalado por la vía más cara de
+    su tarifa.</p>
+  <button class="tbtn" data-tbl="t-fin">Ver los datos en tabla</button>
+  <div class="tview" id="t-fin"></div>
+</figure>
+
+<div class="callout">
+  <p><b>La comparación honesta incluye las horas.</b> Fin funciona el día 1. Nuestro bot lleva semanas y
+  hoy todavía no escribe en Airtable. El ahorro es real y crece con el volumen, pero se paga en trabajo de
+  ingeniería y en riesgo operativo. Quien presente solo la cifra de ahorro está contando media película.</p>
+</div>
+
+<hr class="rule">
+
+<h2><span class="n">04</span>Coste del modelo por volumen</h2>
+<p class="lede">Tres modelos, tres volúmenes. Un gráfico por modelo para que las escalas no se pisen —
+  el mini más barato cuesta 1,40 $ al año y desaparecería al lado de los 230 $ del modelo grande.</p>
+
+<figure>
+  <figcaption>
+    <div class="t">Coste anual del modelo de lenguaje, en dólares</div>
+    <div class="s">Supuesto: 4 llamadas por conversación, 3.000 tokens de entrada y 400 de salida por
+      llamada. Cada panel tiene su propia escala.</div>
+  </figcaption>
+  <div class="plot" id="p-models"></div>
+  <p class="fnote"><b>Lectura contraintuitiva:</b> optimizar el modelo para ahorrar 40 $ al año sería una
+    mala decisión si cuesta calidad de respuesta en un producto de 300 €/cliente. La recomendación es la
+    contraria de lo que suele salir en estos estudios: <b>usar el modelo bueno</b>. El sitio donde
+    optimizar no es el precio por token.</p>
+  <button class="tbtn" data-tbl="t-models">Ver los datos en tabla</button>
+  <div class="tview" id="t-models"></div>
+</figure>
+
+<hr class="rule">
+
+<h2><span class="n">05</span>El único parámetro que merece vigilancia</h2>
+<p class="lede">Al confirmarse que el corpus fiscal <b>es el System Prompt</b> y no un buscador externo,
+  todo el conocimiento del régimen viaja <b>dentro del prompt, en cada llamada</b>. Así que el prompt va a
+  crecer — y el coste crece con él, de forma lineal.</p>
+
+<figure>
+  <figcaption>
+    <div class="t">Sensibilidad al tamaño del prompt · coste anual a 1.000 conversaciones</div>
+    <div class="s">Eje horizontal: tokens de entrada por llamada. El escenario base son 3.000.</div>
+  </figcaption>
+  <div class="plot" id="p-sens"></div>
+  <div class="legend" id="l-sens"></div>
+  <p class="fnote">Duplicar el prompt duplica la factura, pero la factura sigue siendo pequeña: incluso a
+    24.000 tokens por llamada, GPT-4o se queda en 256 $/año. <b>La conclusión no es que haya que recortar
+    el prompt</b> —recortar conocimiento fiscal para ahorrar 200 $ sería absurdo— sino que
+    <code>corte_contexto_bot</code> (WP-222) deja de ser solo higiene de calidad y pasa a ser también lo
+    que evita que el historial haga crecer la entrada sin techo en cada turno.</p>
+  <button class="tbtn" data-tbl="t-sens">Ver los datos en tabla</button>
+  <div class="tview" id="t-sens"></div>
+</figure>
+
+<hr class="rule">
+
+<h2><span class="n">06</span>Consumo de infraestructura y el techo que no se compra</h2>
+
+<div class="cols">
+  <div class="card">
+    <h3>Ejecuciones de n8n · sobra plan</h3>
+    <div class="meter">
+      <div class="mh"><span>500 conversaciones/año</span><b>2.500 · 8 %</b></div>
+      <div class="track"><div class="fill" style="width:8.3%"></div></div>
+    </div>
+    <div class="meter">
+      <div class="mh"><span>1.000 conversaciones/año</span><b>5.000 · 17 %</b></div>
+      <div class="track"><div class="fill" style="width:16.7%"></div></div>
+    </div>
+    <div class="meter">
+      <div class="mh"><span>Techo del plan Starter</span><b>30.000/año</b></div>
+      <div class="track"><div class="fill" style="width:100%;background:var(--muted)"></div></div>
+    </div>
+    <p class="fnote" style="padding:14px 0 0">El plan Starter (24 €/mes) sobra con 6× de margen en el
+      escenario alto. Y desde abril de 2026 n8n quitó el límite de workflows activos: <b>solo se paga por
+      ejecuciones</b>, así que extraer subworkflows (WP-207) no cuesta más por existir — un argumento a
+      favor de la arquitectura modular que ya habíamos elegido por otras razones.</p>
+  </div>
+  <div class="card">
+    <h3>Airtable · 5 peticiones/segundo por base</h3>
+    <p style="font-size:13.5px;color:var(--ink2);margin:0 0 10px">Es el techo técnico más bajo de todo el
+      stack y <b>el único que no se puede comprar</b>: es idéntico en todos los planes, del gratuito al
+      Business. Al excederlo, Airtable devuelve <code>429</code> y hay que esperar <b>30 segundos</b>.</p>
+    <p style="font-size:13.5px;color:var(--ink2);margin:0 0 10px">Y es <b>por base</b>, no por integración:
+      lo compartimos con la automatización ajena que crea filas hijas y con los formularios que escriben
+      en la misma tabla.</p>
+    <p style="font-size:13.5px;color:var(--ink2);margin:0">A nuestro volumen (≈ 2 escrituras por
+      conversación) el consumo medio es irrelevante. Lo que no se dimensiona por media son los
+      <b>picos de concurrencia</b> — y ahí está el riesgo real, que además no lo controlamos nosotros.</p>
+  </div>
+</div>
+
+<div class="callout">
+  <p><b>Consecuencia directa para el diseño, ya recogida en WP-202:</b> el nodo de Airtable no tiene hoy
+  <code>retryOnFail</code> ni <code>onError</code>, y <code>beckham_bot</code> no tiene
+  <code>errorWorkflow</code>. Un <code>429</code> mata la ejecución en silencio, sin responder al Data
+  Connector y sin avisar a nadie. A volumen bajo casi nunca pasará; el día que pase, se perderá un
+  expediente sin traza. <b>No es un problema de coste, es un problema de coste oculto.</b></p>
+</div>
+
+<hr class="rule">
+
+<h2><span class="n">07</span>Precios de proveedor verificados</h2>
+<p class="lede">Julio de 2026. Los precios cambian: volver a verificarlos antes de usarlos en cualquier
+  documento contractual.</p>
+
+<div class="tblwrap">
+<table>
+  <thead><tr><th>Proveedor</th><th>Concepto</th><th class="num">Precio</th><th>Nota</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="4"><b>OpenAI</b></td><td>GPT-4o</td><td class="num">2,50 $ / 10,00 $ por 1M</td><td>entrada / salida</td></tr>
+    <tr><td>GPT-4.1</td><td class="num">2,00 $ / 8,00 $ por 1M</td><td>ventana de 1M de tokens</td></tr>
+    <tr><td>GPT-4.1 mini</td><td class="num">0,40 $ / 1,60 $ por 1M</td><td>entrada cacheada a 0,10 $ — <b>75 % menos</b></td></tr>
+    <tr><td>GPT-4o mini</td><td class="num">0,15 $ / 0,60 $ por 1M</td><td>el más barato evaluado</td></tr>
+    <tr><td rowspan="3"><b>Intercom</b></td><td>Asiento Essential / Advanced / Expert</td><td class="num">29 / 85 / 132 $ mes</td><td>facturación anual · se pagan igual, el Inbox se usa</td></tr>
+    <tr><td>Fin · resolución, handoff o descalificación</td><td class="num">0,99 $ por outcome</td><td><b>no lo usamos</b></td></tr>
+    <tr><td>Fin · lead qualification</td><td class="num">9,99 $ por outcome</td><td><b>el outcome más caro, y es justo lo que hace el bot</b></td></tr>
+    <tr><td rowspan="3"><b>n8n Cloud</b></td><td>Starter</td><td class="num">24 € / mes</td><td>2.500 ejecuciones/mes</td></tr>
+    <tr><td>Pro</td><td class="num">60 € / mes</td><td>10.000 ejecuciones/mes</td></tr>
+    <tr><td>Business</td><td class="num">800 € / mes</td><td>40.000 ejecuciones/mes</td></tr>
+    <tr><td rowspan="3"><b>Airtable</b></td><td>Asiento Team / Business</td><td class="num">20 / 45 $ mes</td><td>facturación anual</td></tr>
+    <tr><td>Límite de API por base</td><td class="num">5 req/s</td><td><b>igual en todos los planes</b></td></tr>
+    <tr><td>Límite por token de acceso personal</td><td class="num">50 req/s</td><td>al exceder: 429 y esperar 30 s</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout">
+  <p><b>Dato que falta y no se ha inventado:</b> no se ha localizado el modelo exacto configurado hoy en
+  el sub-nodo <code>David Beckham</code> de <code>beckham_bot</code>. Por eso todos los cálculos se dan
+  para tres modelos en vez de afirmar uno. Confirmarlo es abrir el nodo: 10 segundos.</p>
+  <p>Y tampoco hay instrumentación de tokens: <b>el apartado 04 y el 05 son estimaciones de diseño, no
+  mediciones.</b> Con WP-231 hecho, la próxima conversación sobre coste se tendrá con datos medidos.</p>
+</div>
+
+<hr class="rule">
+
+<h2><span class="n">08</span>Dónde optimizar de verdad</h2>
+<p class="lede">Ordenado por impacto real, no por precio de lista.</p>
+
+<div class="cols">
+  <div class="card">
+    <h3>Las que no tienen contrapartida</h3>
+    <ul>
+      <li><b>Prompt caching de la parte estable.</b> El System Prompt es idéntico en cada llamada y es la
+        mayor parte de la entrada. Cachearlo la baja un 75 % con <b>cero</b> pérdida de calidad. Es la
+        única optimización gratis.</li>
+      <li><b>Corte de contexto (WP-222).</b> Sin él, el historial crece sin techo y arrastra la entrada
+        con él en cada turno. Un WP que estaba planificado por calidad y que además evita que el coste
+        crezca de forma no lineal.</li>
+      <li><b>No añadir el RAG que no hace falta.</b> Al confirmarse que el corpus es el System Prompt, se
+        cae la tool de búsqueda y con ella el vector store, sus embeddings y su almacenamiento. Esta
+        decisión ya ha eliminado una línea de coste entera.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Las que exigen criterio</h3>
+    <ul>
+      <li><b>Modelo distinto por tarea.</b> El agente que habla con el cliente merece el modelo bueno. La
+        detección de tono del triaje y la clasificación de complejidad del caso son tareas de
+        clasificación: funcionan con un mini a una fracción del precio. Mismo agente de cara al usuario,
+        modelo distinto para lo mecánico.</li>
+      <li><b>Cero reintentos ciegos de escritura.</b> Reintentar sobre un <code>429</code> sin backoff
+        multiplica peticiones contra un límite que no se puede comprar. La guarda de unicidad va
+        <b>antes</b> de cualquier reintento, por diseño.</li>
+      <li><b>Instrumentar tokens antes de volver a hablar de coste.</b> Todo lo anterior es estimación.</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="rule">
+
+<h2><span class="n">09</span>Contexto de mercado</h2>
+
+<div class="cols">
+  <div class="card">
+    <h3>Por qué el plazo es el producto</h3>
+    <p style="font-size:13.5px;color:var(--ink2);margin:0 0 10px">El régimen especial para trabajadores
+      desplazados permite tributar al <b>24 % fijo sobre los rendimientos del trabajo hasta 600.000 €</b>
+      (45 % en el exceso) durante un máximo de <b>6 ejercicios</b>, en lugar de la escala progresiva del
+      IRPF de residentes.</p>
+    <p style="font-size:13.5px;color:var(--ink2);margin:0 0 10px">Requisitos que el bot ya comprueba, en
+      este orden: no haber sido residente fiscal en España los 5 años anteriores (descarte duro) · que el
+      desplazamiento sea por motivos laborales · <b>presentar el modelo 149 en los 6 meses siguientes al
+      alta en la Seguridad Social</b>.</p>
+    <p style="font-size:13.5px;color:var(--ink2);margin:0"><b>Ese tercer punto es la razón de existir de
+      todo el producto.</b> Es un plazo corto, silencioso e improrrogable: quien lo deja pasar pierde el
+      régimen entero, y con él seis años de ahorro fiscal. Un bot que calcula ese plazo y avisa antes de
+      que venza no es un asistente de soporte — evita una pérdida concreta y cuantificable.</p>
+  </div>
+  <div class="card">
+    <h3>Tamaño de mercado · lo que se puede y no se puede decir</h3>
+    <p style="font-size:13.5px;color:var(--ink2);margin:0 0 10px">La Ley de Startups (2023) amplió el
+      régimen más allá del trabajador por cuenta ajena clásico: entraron <b>emprendedores, nómadas
+      digitales y familiares</b> del desplazado. La base de potenciales solicitantes creció por norma, no
+      por ciclo económico.</p>
+    <div class="callout" style="margin:0">
+      <p><b>DATO NO DISPONIBLE.</b> No se ha localizado una estadística pública de la Agencia Tributaria
+      con el número de modelos 149 presentados por ejercicio. La sede electrónica documenta el
+      procedimiento pero no publica el volumen.</p>
+      <p><b>Recomendación: no dar ninguna cifra de mercado total en la presentación.</b> Es exactamente el
+      número que alguien pregunta de dónde sale. Si hace falta, la vía es el portal de estadísticas
+      tributarias de la AEAT.</p>
+    </div>
+    <p style="font-size:13.5px;color:var(--ink2);margin:10px 0 0">Lo que sí se sostiene: el escenario de
+      trabajo son <b>500–1.000 clientes/año</b> fijado por el equipo, y todos son clientes ya logueados y
+      ya pagando. Eso simplifica el diseño (el identificador de usuario existe siempre) y a la vez
+      <b>sube el coste de un fallo</b>: no hay ni un solo usuario anónimo al que perder sin consecuencias.</p>
+  </div>
+</div>
+
+<hr class="rule">
+
+<h2><span class="n">10</span>Guion para la reunión</h2>
+<div class="cols">
+  <div class="card">
+    <h3 style="color:var(--good-ink)">Decir</h3>
+    <ul>
+      <li>El coste variable del bot es de dos cifras de dólares al año. No es una palanca de decisión.</li>
+      <li>No usar Fin ahorra entre ≈ 950 y ≈ 9.950 $/año a 1.000 clientes, y se sostiene con la tarifa
+        publicada de Intercom.</li>
+      <li>El plan Starter de n8n sobra con 6× de margen.</li>
+      <li>El único techo que no se puede comprar son los 5 req/s por base de Airtable, y se comparte con
+        otros procesos que no controlamos.</li>
+      <li>Todo lo anterior son escenarios: no hay instrumentación de tokens todavía.</li>
+      <li><b>Que la stack ya es cara a nivel empresa: 151.717,46 € documentados en las tres herramientas y
+        130.324,11 € pendientes de recibir</b> — diciendo en la misma frase que es gasto de empresa, no del
+        bot.</li>
+      <li><b>Que el presupuesto de OpenAI está configurado en 2.000 $/mes y julio va por 11.632,54 $: 5,8×
+        por encima. Eso es dato medido, no estimación</b>, y es el techo que ya se está cruzando.</li>
+      <li><b>El consumo medido de la organización: 348.043 requests, 11.364.925.066 tokens, ≈ 0,0143 $ por
+        request y ≈ 0,4383 $ por millón de tokens</b> en la ventana del 16 al 31 de julio.</li>
+      <li><b>Que la discrepancia de OpenAI está detectada y acotada</b> (el 99,4 % en una sola factura) y
+        pendiente de confirmar. Decirlo como pregunta abierta es fuerza, no debilidad.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3 style="color:var(--warn-ink)">No decir</h3>
+    <ul>
+      <li>Ninguna cifra de mercado total de solicitantes del régimen: no hay fuente pública.</li>
+      <li><b>Ninguna cifra de cuota de mercado de modelos 149: no existe estadística pública que la
+        sostenga.</b></li>
+      <li><b>Estas facturas NO se presentan como coste del proyecto Beckham.</b> Son de uso general de toda la
+        empresa; atribuirlas al bot infla su coste en <b>dos órdenes de magnitud</b>. Es el error a evitar a
+        toda costa en esta parte.</li>
+      <li><b>No dar por buena ninguna de las dos cifras de OpenAI como «el gasto de OpenAI»</b> mientras la
+        discrepancia esté abierta, ni afirmar la causa: las tres hipótesis están sin verificar.</li>
+      <li><b>No convertir € a $ ni al revés en voz alta:</b> no hay tipo de cambio declarado.</li>
+      <li>Ningún coste «real» por conversación como si estuviera medido. No lo está.</li>
+      <li>Que el ahorro frente a Fin es gratis: se paga en horas de ingeniería, y el proyecto lleva
+        semanas sin poder escribir en Airtable.</li>
+      <li>Que el proyecto está «casi listo» por que el coste sea bajo. Son dos cosas distintas.</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p><b>Nota sobre la paleta de los gráficos.</b> Los colores de datos se validaron con el script de
+  accesibilidad (banda de luminosidad, suelo de croma, separación bajo protanopía y deuteranopía simuladas
+  por el modelo Machado 2009, suelo de visión normal y contraste sobre el fondo). <b>Hallazgo:</b> el
+  verde Tax-500 <code>#0FD48E</code> y el coral Sand-500 <code>#FF7F63</code> de la guía de marca quedan a
+  ΔE 5,8 bajo deuteranopía, por debajo del mínimo de 8 — es decir, <b>un lector con deuteranopía no
+  distingue esas dos series</b>. Para datos se usa un verde más profundo (<code>#086A47</code> en claro,
+  <code>#0CAA72</code> en oscuro), que sube la separación a ΔE 17,3 y pasa todas las comprobaciones. El
+  coral de marca se conserva; su contraste sobre blanco (2,48:1) obliga a etiquetas visibles y vista de
+  tabla, y las dos cosas están en este informe. Los colores de marca se siguen usando sin cambios en
+  cabeceras y elementos no-datos.</p>
+  <p>Los gráficos añadidos el 31/07 (peso por proveedor, presupuesto contra gasto) <b>reutilizan exactamente
+  esas mismas series ya validadas</b>, sin introducir ningún color nuevo, y llevan etiqueta directa con
+  importe y porcentaje además de la leyenda y la vista de tabla, de modo que la identidad de cada serie nunca
+  depende solo del color. El gráfico de presupuesto usa una sola serie de datos contra una referencia neutra
+  en gris, así que no hay pareja confundible.</p>
+  <p><b>Fuentes de facturación y consumo real (sección 02) — internas, sin URL pública:</b></p>
+  <ul>
+    <li>Herramienta de facturación interna de TaxDown · 9 facturas de n8n GmbH, FORMAGRID INC DBA AIRTABLE y
+      OpenAI / OPENAI, LLC · leídas el 2026-07-31. <b>Gasto de uso general de la empresa, no del
+      proyecto.</b></li>
+    <li>Dashboard de uso de OpenAI, organización TaxDown · ventana 16/07/2026 – 31/07/2026 · consultado el
+      2026-07-31. <b>Consumo de toda la organización, no del bot.</b></li>
+  </ul>
+  <p><b>Fuentes de precios de lista y contexto:</b></p>
+  <ul>
+    <li><a href="https://www.cloudzero.com/blog/openai-pricing/">OpenAI API Pricing In 2026 — CloudZero</a></li>
+    <li><a href="https://pecollective.com/tools/openai-api-pricing/">OpenAI API Pricing 2026 — PE Collective</a></li>
+    <li><a href="https://pricepertoken.com/pricing-page/model/openai-gpt-4o-mini">GPT-4o mini API Pricing 2026 — PricePerToken</a></li>
+    <li><a href="https://chatarmin.com/en/blog/intercom-pricing">Intercom Pricing 2026: Seats, Fin AI &amp; Channel Costs — Chatarmin</a></li>
+    <li><a href="https://www.dragapp.com/blog/intercom-pricing/">Intercom Pricing 2026: Fin AI Outcomes &amp; the Real Total — Drag</a></li>
+    <li><a href="https://www.featurebase.app/blog/fin-ai-pricing">How Much Does Intercom's Fin AI Cost? — Featurebase</a></li>
+    <li><a href="https://www.lowcode.agency/blog/n8n-pricing">n8n Pricing 2026: All Plans &amp; Real Costs — LowCode</a></li>
+    <li><a href="https://www.nocode.mba/articles/n8n-pricing">n8n Pricing 2026: Cloud Plans and Self-Hosting — No Code MBA</a></li>
+    <li><a href="https://tinycommand.com/blogs/airtable-pricing-explained">Airtable Pricing 2026: Seats, Records, Real Monthly Cost — TinyCommand</a></li>
+    <li><a href="https://support.airtable.com/docs/managing-api-call-limits-in-airtable">Managing API Call Limits in Airtable — soporte oficial</a></li>
+    <li><a href="https://airtable.com/developers/web/api/rate-limits">API rate limit — documentación oficial de Airtable</a></li>
+    <li><a href="https://sede.agenciatributaria.gob.es/Sede/procedimientoini/G606.shtml">Modelo 149 · régimen especial de trabajadores desplazados — Sede electrónica de la AEAT</a></li>
+    <li><a href="https://payfit.com/es/contenido-practico/ley-beckham-regimen-especial-tributacion/">La Ley Beckham: el régimen especial de tributación — PayFit</a></li>
+    <li><a href="https://www.ineaf.es/tribuna/la-ley-beckham-el-regimen-para-los-impatriados/">Ley Beckham 2026: requisitos, ventajas y modelos — INEAF</a></li>
+  </ul>
+  <p>Precios consultados el 2026-07-30 · Bot Beckham · Intercom + n8n + Airtable · sin datos personales.</p>
+</footer>
+</div>
+
+<script>
+const F = n => n.toLocaleString('es-ES',
+  {maximumFractionDigits: n<10?2:0, useGrouping:'always'});
+const usd = n => F(n)+' $';
+const SVG = 'http://www.w3.org/2000/svg';
+const el = (t,a={})=>{const e=document.createElementNS(SVG,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+
+/* ── tooltip compartido ─────────────────────────────────────── */
+function tipFor(host){
+  const t=document.createElement('div'); t.className='tip'; host.appendChild(t);
+  return {
+    show(html,x,y){ t.innerHTML=html; t.classList.add('on');
+      const r=host.getBoundingClientRect(), w=t.offsetWidth, h=t.offsetHeight;
+      t.style.left=Math.max(4,Math.min(r.width-w-4,x-w/2))+'px';
+      t.style.top=Math.max(4,y-h-12)+'px'; },
+    hide(){ t.classList.remove('on'); }
+  };
+}
+function attach(host,svg,shape,html){
+  const tp=host._tp||(host._tp=tipFor(host));
+  shape.addEventListener('mouseenter',ev=>{
+    const r=host.getBoundingClientRect();
+    tp.show(html, ev.clientX-r.left, ev.clientY-r.top);
+  });
+  shape.addEventListener('mousemove',ev=>{
+    const r=host.getBoundingClientRect();
+    tp.show(html, ev.clientX-r.left, ev.clientY-r.top);
+  });
+  shape.addEventListener('mouseleave',()=>tp.hide());
+}
+
+/* ── 1 · barras horizontales · nuestra arquitectura vs Fin ──── */
+const FIN=[
+  {k:'Nuestra arquitectura · agente en n8n', v:46,   ours:true,  d:'GPT-4o · 4 llamadas/conversación'},
+  {k:'Fin · tarificado como resolución',      v:990,  ours:false, d:'0,99 $ × 1.000 outcomes'},
+  {k:'Fin · tarificado como lead qualification', v:9990, ours:false, d:'9,99 $ × 1.000 outcomes'},
+];
+(function(){
+  const host=document.getElementById('p-fin');
+  const W=920,PADL=290,PADR=96,H=FIN.length*62+26,BH=26;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img',
+    'aria-label':'Coste anual a 1.000 conversaciones: nuestra arquitectura 46 dólares, Fin como resolución 990, Fin como lead qualification 9.990'});
+  const max=9990, sx=v=>(W-PADL-PADR)*v/max;
+  FIN.forEach((d,i)=>{
+    const y=18+i*62;
+    svg.appendChild(el('text',{x:PADL-14,y:y+BH/2+4,'text-anchor':'end'})).textContent=d.k;
+    const w=Math.max(3,sx(d.v));
+    const r=el('rect',{x:PADL,y,width:w,height:BH,rx:4,
+      fill:d.ours?'var(--hl)':'var(--muted)'});
+    svg.appendChild(r);
+    const lab=el('text',{x:PADL+w+10,y:y+BH/2+4,class:'val'}); lab.textContent=usd(d.v);
+    svg.appendChild(lab);
+    const hit=el('rect',{x:PADL,y:y-8,width:W-PADL-PADR,height:BH+16,class:'hit'});
+    svg.appendChild(hit);
+    attach(host,svg,hit,`<b>${d.k}</b><br>${usd(d.v)} al año<br><span style="opacity:.75">${d.d}</span>`);
+  });
+  svg.appendChild(el('line',{x1:PADL,y1:10,x2:PADL,y2:H-10,class:'bl'}));
+  host.appendChild(svg);
+  document.getElementById('t-fin').innerHTML=
+    '<div class="tblwrap"><table><thead><tr><th>Opción</th><th class="num">Coste anual</th>'
+    +'<th class="num">Veces más caro</th><th>Base del cálculo</th></tr></thead><tbody>'
+    +FIN.map(d=>`<tr><td><b>${d.k}</b></td><td class="num">${usd(d.v)}</td>`
+      +`<td class="num">${d.ours?'—':'×'+F(d.v/46)}</td><td>${d.d}</td></tr>`).join('')
+    +'</tbody></table></div>';
+})();
+
+/* ── 2 · small multiples · coste por modelo y volumen ───────── */
+const MODELS=[
+  {m:'GPT-4o',       vals:[23,46,230], price:'2,50 $ / 10,00 $ por 1M'},
+  {m:'GPT-4.1 mini', vals:[3.7,7.4,37], price:'0,40 $ / 1,60 $ por 1M'},
+  {m:'GPT-4o mini',  vals:[1.4,2.8,14], price:'0,15 $ / 0,60 $ por 1M'},
+];
+const VOLS=['500','1.000','5.000'];
+(function(){
+  const host=document.getElementById('p-models');
+  const wrap=document.createElement('div');
+  wrap.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px';
+  MODELS.forEach(mo=>{
+    const cell=document.createElement('div'); cell.style.position='relative';
+    const ttl=document.createElement('div');
+    ttl.style.cssText='font-size:13px;font-weight:650;margin:0 0 2px';
+    ttl.textContent=mo.m; cell.appendChild(ttl);
+    const sb=document.createElement('div');
+    sb.style.cssText='font-size:11.5px;color:var(--ink3);margin:0 0 8px';
+    sb.textContent='máx. '+usd(Math.max(...mo.vals)); cell.appendChild(sb);
+    const W=300,H=176,PADB=34,PADT=24,PADL=8,BW=54,GAP=30;
+    const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img',
+      'aria-label':`${mo.m}: ${mo.vals.map((v,i)=>VOLS[i]+' conversaciones '+usd(v)).join(', ')}`});
+    const max=Math.max(...mo.vals)*1.18, sy=v=>(H-PADB-PADT)*v/max;
+    [0,.5,1].forEach(f=>{
+      const y=H-PADB-(H-PADB-PADT)*f;
+      svg.appendChild(el('line',{x1:PADL,y1:y,x2:W-8,y2:y,class:'gl'}));
+    });
+    mo.vals.forEach((v,i)=>{
+      const x=PADL+22+i*(BW+GAP), h=Math.max(2,sy(v)), y=H-PADB-h;
+      const r=el('rect',{x,y,width:BW,height:h,rx:4,fill:'var(--s2)'});
+      svg.appendChild(r);
+      const lb=el('text',{x:x+BW/2,y:y-7,'text-anchor':'middle',class:'val'});
+      lb.textContent=usd(v); svg.appendChild(lb);
+      const ax=el('text',{x:x+BW/2,y:H-PADB+17,'text-anchor':'middle',class:'ax'});
+      ax.textContent=VOLS[i]; svg.appendChild(ax);
+      const hit=el('rect',{x:x-GAP/2,y:PADT,width:BW+GAP,height:H-PADB-PADT,class:'hit'});
+      svg.appendChild(hit);
+      attach(cell,svg,hit,`<b>${mo.m}</b><br>${VOLS[i]} conversaciones/año<br>${usd(v)} · ${mo.price}`);
+    });
+    svg.appendChild(el('line',{x1:PADL,y1:H-PADB,x2:W-8,y2:H-PADB,class:'bl'}));
+    cell.appendChild(svg);
+    const cap=document.createElement('div');
+    cap.style.cssText='font-size:11.5px;color:var(--ink3);margin-top:6px';
+    cap.textContent='conversaciones/año'; cell.appendChild(cap);
+    wrap.appendChild(cell);
+  });
+  host.appendChild(wrap);
+  document.getElementById('t-models').innerHTML=
+    '<div class="tblwrap"><table><thead><tr><th>Modelo</th><th>Precio entrada / salida</th>'
+    +VOLS.map(v=>`<th class="num">${v} conv.</th>`).join('')
+    +'<th class="num">$/conversación</th></tr></thead><tbody>'
+    +MODELS.map(mo=>`<tr><td><b>${mo.m}</b></td><td>${mo.price}</td>`
+      +mo.vals.map(v=>`<td class="num">${usd(v)}</td>`).join('')
+      +`<td class="num">${(mo.vals[1]/1000).toFixed(4)} $</td></tr>`).join('')
+    +'</tbody></table></div>';
+})();
+
+/* ── 3 · líneas · sensibilidad al tamaño del prompt ─────────── */
+const TOK=[3000,6000,12000,24000];
+const SENS=[
+  {m:'GPT-4o',       c:'var(--s3)', v:[46,76,136,256]},
+  {m:'GPT-4.1 mini', c:'var(--s2)', v:[7.4,12.2,21.8,41.0]},
+  {m:'GPT-4o mini',  c:'var(--s1)', v:[2.8,4.6,8.2,15.4]},
+];
+(function(){
+  const host=document.getElementById('p-sens');
+  const W=920,H=330,PADL=62,PADR=132,PADT=22,PADB=48;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img',
+    'aria-label':'Coste anual a 1.000 conversaciones según los tokens de entrada por llamada, para tres modelos. Crece de forma lineal en los tres.'});
+  const max=280;
+  const sx=i=>PADL+(W-PADL-PADR)*i/(TOK.length-1);
+  const sy=v=>H-PADB-(H-PADB-PADT)*v/max;
+  [0,70,140,210,280].forEach(v=>{
+    const y=sy(v);
+    svg.appendChild(el('line',{x1:PADL,y1:y,x2:W-PADR,y2:y,class:'gl'}));
+    const t=el('text',{x:PADL-12,y:y+4,'text-anchor':'end',class:'ax'}); t.textContent=usd(v);
+    svg.appendChild(t);
+  });
+  TOK.forEach((tk,i)=>{
+    const t=el('text',{x:sx(i),y:H-PADB+20,'text-anchor':'middle',class:'ax'});
+    t.textContent=(tk/1000)+'k'; svg.appendChild(t);
+  });
+  const xl=el('text',{x:(PADL+W-PADR)/2,y:H-PADB+40,'text-anchor':'middle',class:'ax'});
+  xl.textContent='tokens de entrada por llamada'; svg.appendChild(xl);
+  // marca del escenario base
+  svg.appendChild(el('line',{x1:sx(0),y1:PADT,x2:sx(0),y2:H-PADB,
+    stroke:'var(--ink3)','stroke-width':1,'stroke-dasharray':'3 4'}));
+  const bt=el('text',{x:sx(0)+8,y:PADT+12,class:'ax'}); bt.textContent='escenario base';
+  svg.appendChild(bt);
+  SENS.forEach(s=>{
+    const d=s.v.map((v,i)=>`${i?'L':'M'}${sx(i)},${sy(v)}`).join(' ');
+    svg.appendChild(el('path',{d,fill:'none',stroke:s.c,'stroke-width':2,
+      'stroke-linecap':'round','stroke-linejoin':'round'}));
+    s.v.forEach((v,i)=>{
+      svg.appendChild(el('circle',{cx:sx(i),cy:sy(v),r:5,fill:s.c,
+        stroke:'var(--panel)','stroke-width':2}));
+      const hit=el('circle',{cx:sx(i),cy:sy(v),r:15,class:'hit'});
+      svg.appendChild(hit);
+      attach(host,svg,hit,`<b>${s.m}</b><br>${(TOK[i]/1000)}k tokens de entrada/llamada<br>${usd(v)} al año`);
+    });
+    const lab=el('text',{x:sx(TOK.length-1)+12,y:sy(s.v.at(-1))+4});
+    lab.setAttribute('class','val'); lab.textContent=s.m; svg.appendChild(lab);
+  });
+  svg.appendChild(el('line',{x1:PADL,y1:H-PADB,x2:W-PADR,y2:H-PADB,class:'bl'}));
+  host.appendChild(svg);
+  document.getElementById('l-sens').innerHTML=
+    SENS.map(s=>`<span><i style="background:${s.c}"></i>${s.m}</span>`).join('');
+  document.getElementById('t-sens').innerHTML=
+    '<div class="tblwrap"><table><thead><tr><th>Modelo</th>'
+    +TOK.map(t=>`<th class="num">${t/1000}k tok.</th>`).join('')
+    +'<th class="num">×  de 3k a 24k</th></tr></thead><tbody>'
+    +SENS.map(s=>`<tr><td><b>${s.m}</b></td>`
+      +s.v.map(v=>`<td class="num">${usd(v)}</td>`).join('')
+      +`<td class="num">×${(s.v.at(-1)/s.v[0]).toFixed(1)}</td></tr>`).join('')
+    +'</tbody></table></div>';
+})();
+
+/* ── 4 · barras · peso relativo por proveedor (facturación EMPRESA) ──
+   Aviso: gasto de uso general de toda la empresa, NO del bot Beckham. */
+const F2  = n => n.toLocaleString('es-ES',
+  {minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:'always'});
+const eur = n => F2(n)+' €';
+const usd2= n => F2(n)+' $';
+const pct = n => n.toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:1})+' %';
+
+const PROV_TOT = 151717.46;
+const PROV=[
+  {k:'OpenAI',   v:71334.93, c:'var(--s1)', d:'6 facturas de julio de 2026'},
+  {k:'Airtable', v:64448.65, c:'var(--s2)', d:'2 facturas · abril y julio de 2026'},
+  {k:'n8n',      v:15933.88, c:'var(--s3)', d:'1 factura · mayo de 2026'},
+];
+(function(){
+  const host=document.getElementById('p-prov');
+  const W=920,PADL=118,PADR=210,H=PROV.length*62+26,BH=26;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img',
+    'aria-label':'Reparto de la facturación documentada de la empresa: OpenAI 71.334,93 euros el 47 por ciento, Airtable 64.448,65 euros el 42,5 por ciento, n8n 15.933,88 euros el 10,5 por ciento'});
+  const max=PROV[0].v, sx=v=>(W-PADL-PADR)*v/max;
+  PROV.forEach((d,i)=>{
+    const y=18+i*62, sh=d.v/PROV_TOT*100;
+    svg.appendChild(el('text',{x:PADL-14,y:y+BH/2+4,'text-anchor':'end'})).textContent=d.k;
+    const w=Math.max(3,sx(d.v));
+    svg.appendChild(el('rect',{x:PADL,y,width:w,height:BH,rx:4,fill:d.c}));
+    const lab=el('text',{x:PADL+w+10,y:y+BH/2+4,class:'val'});
+    lab.textContent=eur(d.v)+'  ·  '+pct(sh); svg.appendChild(lab);
+    const hit=el('rect',{x:PADL,y:y-8,width:W-PADL-PADR,height:BH+16,class:'hit'});
+    svg.appendChild(hit);
+    attach(host,svg,hit,`<b>${d.k}</b><br>${eur(d.v)} · ${pct(sh)} del total<br>`
+      +`<span style="opacity:.75">${d.d} · gasto de EMPRESA, no del bot</span>`);
+  });
+  svg.appendChild(el('line',{x1:PADL,y1:10,x2:PADL,y2:H-10,class:'bl'}));
+  host.appendChild(svg);
+  document.getElementById('l-prov').innerHTML=
+    PROV.map(d=>`<span><i style="background:${d.c}"></i>${d.k}</span>`).join('');
+  document.getElementById('t-prov').innerHTML=
+    '<div class="tblwrap"><table><thead><tr><th>Proveedor</th><th class="num">Importe</th>'
+    +'<th class="num">Peso</th><th>Aritmética</th><th>Periodo cubierto</th></tr></thead><tbody>'
+    +PROV.map(d=>`<tr><td><b>${d.k}</b></td><td class="num">${eur(d.v)}</td>`
+      +`<td class="num">${pct(d.v/PROV_TOT*100)}</td>`
+      +`<td><code>${F2(d.v)} ÷ 151.717,46</code></td><td>${d.d}</td></tr>`).join('')
+    +`<tr><td><b>Total documentado</b></td><td class="num"><b>${eur(PROV_TOT)}</b></td>`
+    +'<td class="num"><b>100,0 %</b></td><td colspan="2">Gasto de uso general de la empresa · '
+    +'periodos distintos, no es un gasto mensual</td></tr>'
+    +'</tbody></table></div>';
+})();
+
+/* ── 5 · barras · presupuesto de OpenAI contra gasto real ($) ── */
+const BUDGET=2000.00;
+const SPEND=[
+  {k:'Presupuesto configurado', v:BUDGET,   ref:true,
+   d:'límite mensual fijado en el dashboard de la organización'},
+  {k:'Ventana 16–31 jul. (subconjunto del mes)', v:4981.67, ref:false,
+   d:'ya son 2,49× el presupuesto con medio mes'},
+  {k:'«July spend» · mes completo', v:11632.54, ref:false,
+   d:'5,82× el presupuesto · 9.632,54 $ de exceso'},
+];
+(function(){
+  const host=document.getElementById('p-budget');
+  const W=920,PADL=300,PADR=168,H=SPEND.length*62+40,BH=26;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img',
+    'aria-label':'Presupuesto de OpenAI 2.000 dólares al mes frente al gasto real: 4.981,67 dólares en la ventana del 16 al 31 de julio y 11.632,54 dólares en julio completo, 5,8 veces el presupuesto'});
+  const max=11632.54*1.02, sx=v=>(W-PADL-PADR)*v/max;
+  SPEND.forEach((d,i)=>{
+    const y=18+i*62;
+    svg.appendChild(el('text',{x:PADL-14,y:y+BH/2+4,'text-anchor':'end'})).textContent=d.k;
+    const w=Math.max(3,sx(d.v));
+    svg.appendChild(el('rect',{x:PADL,y,width:w,height:BH,rx:4,
+      fill:d.ref?'var(--muted)':'var(--s3)'}));
+    const lab=el('text',{x:PADL+w+10,y:y+BH/2+4,class:'val'});
+    lab.textContent=usd2(d.v)+(d.ref?'':'  ·  ×'+F2(d.v/BUDGET));
+    svg.appendChild(lab);
+    const hit=el('rect',{x:PADL,y:y-8,width:W-PADL-PADR,height:BH+16,class:'hit'});
+    svg.appendChild(hit);
+    attach(host,svg,hit,`<b>${d.k}</b><br>${usd2(d.v)}<br>`
+      +`<span style="opacity:.75">${d.d}</span>`);
+  });
+  // línea de referencia del presupuesto, cruzando todo el plot
+  const bx=PADL+sx(BUDGET);
+  svg.appendChild(el('line',{x1:bx,y1:8,x2:bx,y2:H-26,
+    stroke:'var(--ink3)','stroke-width':1,'stroke-dasharray':'3 4'}));
+  const bt=el('text',{x:bx+7,y:H-12,class:'ax'});
+  bt.textContent='techo del presupuesto · 2.000,00 $/mes'; svg.appendChild(bt);
+  svg.appendChild(el('line',{x1:PADL,y1:8,x2:PADL,y2:H-26,class:'bl'}));
+  host.appendChild(svg);
+  document.getElementById('t-budget').innerHTML=
+    '<div class="tblwrap"><table><thead><tr><th>Concepto</th><th class="num">Dólares</th>'
+    +'<th class="num">Veces el presupuesto</th><th>Nota</th></tr></thead><tbody>'
+    +SPEND.map(d=>`<tr><td><b>${d.k}</b></td><td class="num">${usd2(d.v)}</td>`
+      +`<td class="num">${d.ref?'—':'×'+F2(d.v/BUDGET)}</td><td>${d.d}</td></tr>`).join('')
+    +`<tr><td><b>Exceso sobre el presupuesto en julio</b></td><td class="num"><b>${usd2(11632.54-BUDGET)}</b></td>`
+    +'<td class="num">—</td><td><code>11.632,54 − 2.000,00</code> · dato medido, no estimación</td></tr>'
+    +'</tbody></table></div>';
+})();
+
+/* ── controles ──────────────────────────────────────────────── */
+document.querySelectorAll('.tbtn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const t=document.getElementById(b.dataset.tbl);
+    const on=t.classList.toggle('on');
+    b.textContent=on?'Ocultar la tabla':'Ver los datos en tabla';
+  });
+});
+document.getElementById('alltables').addEventListener('click',e=>{
+  const any=[...document.querySelectorAll('.tview')].some(t=>!t.classList.contains('on'));
+  document.querySelectorAll('.tview').forEach(t=>t.classList.toggle('on',any));
+  document.querySelectorAll('.tbtn').forEach(b=>
+    b.textContent=any?'Ocultar la tabla':'Ver los datos en tabla');
+  e.target.textContent=any?'Ocultar todas las tablas':'Ver todos los datos en tabla';
+});
+const tb=document.getElementById('theme');
+tb.addEventListener('click',()=>{
+  const cur=document.documentElement.getAttribute('data-theme')
+    || (matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  tb.textContent=next==='dark'?'Modo claro':'Modo oscuro';
+});
+if(matchMedia('(prefers-color-scheme:dark)').matches) tb.textContent='Modo claro';
+</script>

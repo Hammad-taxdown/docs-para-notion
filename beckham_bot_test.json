@@ -1,0 +1,500 @@
+{
+  "name": "beckham_bot_test",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## DEBOUNCE",
+        "height": 272,
+        "width": 512,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1856,
+        2320
+      ],
+      "typeVersion": 1,
+      "id": "efb05e79-d714-4d7b-a05b-1abea00b035b",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "rule-F1",
+                    "leftValue": "={{ $json.pregunta_pendiente }}",
+                    "rightValue": "F1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "rule-F2",
+                    "leftValue": "={{ $json.pregunta_pendiente }}",
+                    "rightValue": "F2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "rule-F3",
+                    "leftValue": "={{ $json.pregunta_pendiente }}",
+                    "rightValue": "F3",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        32,
+        2336
+      ],
+      "id": "5f6d5889-c854-46b5-9509-82cf4d65b712",
+      "name": "Filtro_Eliminatorio1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Determinar_Pregunta_Pendiente\n// Recibe el Expediente (recien creado o ya existente) y decide,\n// mirando que campos estan vacios, a que pregunta esta respondiendo\n// el usuario en este turno de la conversacion.\n\nconst item = $input.first().json;\n\n// Orden fijo de preguntas. El primer campo vacio = la pregunta pendiente.\n// Ajustar los nombres de \"campo\" en cuanto Paula confirme el esquema real de Airtable.\nconst orden = [\n  { paso: \"F1\", campo: \"alta_ss\" },\n  { paso: \"F2\", campo: \"fecha_alta_ss\" },\n  { paso: \"F3\", campo: \"residente_5_anios\" }\n  // Mas adelante: D1, D2, D3... en el mismo orden\n];\n\nlet pregunta_pendiente = \"completo\";\n\nfor (const paso of orden) {\n  const valor = item[paso.campo];\n  if (valor === undefined || valor === null || valor === \"\") {\n    pregunta_pendiente = paso.paso;\n    break;\n  }\n}\n\nreturn [{\n  json: {\n    ...item,\n    pregunta_pendiente\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -112,
+        2320
+      ],
+      "id": "f94c2204-7401-4bd9-9d45-332cd24d80af",
+      "name": "Determinar_Pregunta_Pendiente1"
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "intercom_contact_id": "={{ $json.user_id }}",
+            "email": "={{ $json.user_email }}",
+            "conversation_id": "={{ $('Webhook1').item.json.body.conversation_id }}",
+            "estado_expediente": "pendiente de formulario usuario"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -304,
+        2112
+      ],
+      "id": "e19ad01a-1462-42d0-a6aa-f415c6e25692",
+      "name": "Crear_Expediente1",
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "JLWWxsTjGsgGrbQP",
+          "name": "JMS"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "eb847f86-0771-49d0-bf42-4a0c26c9efde",
+              "leftValue": "id",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -624,
+        2320
+      ],
+      "id": "73d58402-b797-4be8-a3fb-b3253efcb117",
+      "name": "Existe_Expediente1"
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "filterByFormula": "={intercom_contact_id} = \"{{ $json.user_id }}\"",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -848,
+        2336
+      ],
+      "id": "36e99164-ce56-408e-b0a4-097123b93f60",
+      "name": "Search records2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "JLWWxsTjGsgGrbQP",
+          "name": "JMS"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// --- FUNCIONES AUXILIARES ---\nfunction pickParts(conv) {\n    const parts = [];\n    if (conv?.source) parts.push(conv.source);\n    if (conv?.conversation_parts?.conversation_parts) {\n        parts.push(...conv.conversation_parts.conversation_parts);\n    }\n    return parts;\n}\n\nfunction ext(name = '') {\n    const m = String(name).toLowerCase().match(/\\.(\\w+)$/);\n    return m ? m[1] : '';\n}\n\nfunction isPdf(att) {\n    const ct = (att.content_type || '').toLowerCase();\n    const e = ext(att.name || att.filename);\n    return ct.includes('pdf') || e === 'pdf';\n}\n\nfunction isTextLike(att) {\n    const ct = (att.content_type || '').toLowerCase();\n    const e = ext(att.name || att.filename);\n    return ct.includes('csv') || ct.includes('text/plain') || ct.includes('text/csv')\n        || e === 'csv' || e === 'txt' || e === 'tsv';\n}\n\nfunction isSpreadsheet(att) {\n    const ct = (att.content_type || '').toLowerCase();\n    const e = ext(att.name || att.filename);\n    return ct.includes('vnd.ms-excel')\n        || ct.includes('vnd.openxmlformats-officedocument.spreadsheetml.sheet')\n        || ct.includes('vnd.oasis.opendocument.spreadsheet')\n        || e === 'xls' || e === 'xlsx' || e === 'ods';\n}\n\nfunction isZip(att) {\n    const ct = (att.content_type || '').toLowerCase();\n    const e = ext(att.name || att.filename);\n    return ct.includes('zip') || ct.includes('compressed') || e === 'zip';\n}\n\nfunction isImage(att) {\n    const ct = (att.content_type || '').toLowerCase();\n    const e = ext(att.name || att.filename);\n    return ct.includes('image/')\n        || ['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp'].includes(e);\n}\n\nfunction classifyAttachment(att) {\n    const ct = (att.content_type || '').toLowerCase();\n    const genericTypes = [\n        'application/force-download',\n        'application/octet-stream',\n        'application/download',\n        'binary/octet-stream',\n    ];\n    if (!genericTypes.includes(ct)) {\n        if (isPdf(att)) return 'pdf';\n        if (isTextLike(att)) return 'text';\n        if (isSpreadsheet(att)) return 'spreadsheet';\n        if (isZip(att)) return 'zip';\n        if (isImage(att)) return 'image';\n        return 'unknown';\n    }\n    const e = ext(att.name || att.filename);\n    if (e === 'pdf') return 'pdf';\n    if (['csv', 'txt', 'tsv'].includes(e)) return 'text';\n    if (['xls', 'xlsx', 'ods'].includes(e)) return 'spreadsheet';\n    if (e === 'zip') return 'zip';\n    if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp'].includes(e)) return 'image';\n    return 'unknown';\n}\n\nasync function fetchBuffer(url) {\n    const res = await this.helpers.httpRequest({\n        method: 'GET',\n        url,\n        json: false,\n        encoding: null,\n    });\n    return Buffer.isBuffer(res) ? res : Buffer.from(res);\n}\n\nasync function fetchText(url) {\n    const buf = await fetchBuffer.call(this, url);\n    let txt = buf.toString('utf8');\n    const MAX = 200000;\n    if (txt.length > MAX) {\n        txt = txt.slice(0, MAX) + '\\n[TRUNCADO]';\n    }\n    return txt;\n}\n\nfunction inflateRaw(compressed) {\n    const zlib = require('zlib');\n    return zlib.inflateRawSync(Buffer.from(compressed));\n}\n\nasync function processZip(url, zipName) {\n    const results = [];\n    try {\n        const buf = await fetchBuffer.call(this, url);\n        let offset = 0;\n        const entries = [];\n        while (offset < buf.length - 4) {\n            if (buf.readUInt32LE(offset) !== 0x04034b50) break;\n            const compressionMethod = buf.readUInt16LE(offset + 8);\n            const compressedSize = buf.readUInt32LE(offset + 18);\n            const nameLen = buf.readUInt16LE(offset + 26);\n            const extraLen = buf.readUInt16LE(offset + 28);\n            const fileName = buf.toString('utf8', offset + 30, offset + 30 + nameLen);\n            const dataStart = offset + 30 + nameLen + extraLen;\n            const dataEnd = dataStart + compressedSize;\n            const rawData = buf.slice(dataStart, dataEnd);\n            let fileData;\n            if (compressionMethod === 0) {\n                fileData = rawData;\n            } else if (compressionMethod === 8) {\n                try { fileData = inflateRaw(rawData); } catch (e) { fileData = null; }\n            } else {\n                fileData = null;\n            }\n            if (fileData && !fileName.endsWith('/')) {\n                entries.push({ name: fileName, data: fileData });\n            }\n            offset = dataEnd;\n        }\n        for (const entry of entries) {\n            const e = ext(entry.name);\n            if (['csv', 'txt', 'tsv'].includes(e)) {\n                const txt = entry.data.toString('utf8');\n                const sampled = sampleCsvLines(txt, 30);\n                results.push({ type: 'text', text: `Contenido '${zipName} -> ${entry.name}':\\n---\\n${sampled}` });\n            } else if (['xls', 'xlsx', 'ods'].includes(e)) {\n                results.push({ type: 'text', text: `METADATOS (EXCEL dentro de ZIP): ${JSON.stringify({ zip: zipName, nombre: entry.name, extension: e, size: entry.data.length })}` });\n            } else if (e === 'pdf') {\n                results.push({ type: 'text', text: `Archivo PDF dentro de ZIP '${zipName}': ${entry.name} [NO SE PUEDE PREVISUALIZAR DESDE ZIP]` });\n            } else {\n                results.push({ type: 'text', text: `Archivo dentro de ZIP '${zipName}': ${entry.name} [FORMATO: .${e}]` });\n            }\n        }\n        if (entries.length === 0) {\n            results.push({ type: 'text', text: `ZIP '${zipName}': [NO SE PUDIERON EXTRAER ARCHIVOS]` });\n        }\n    } catch (e) {\n        results.push({ type: 'text', text: `ZIP '${zipName}': [ERROR AL DESCOMPRIMIR: ${e.message}]` });\n    }\n    return results;\n}\n\nfunction sampleCsvLines(csvText, sampleSize = 30) {\n    const lines = csvText.split(\"\\n\").filter(l => l.trim());\n    if (lines.length <= sampleSize) return lines.join(\"\\n\");\n    const head = lines.slice(0, Math.ceil(sampleSize / 3));\n    const midStart = Math.floor(lines.length / 2) - Math.floor(sampleSize / 6);\n    const mid = lines.slice(midStart, midStart + Math.ceil(sampleSize / 3));\n    const tail = lines.slice(-Math.ceil(sampleSize / 3));\n    return [...head, ...mid, ...tail].join(\"\\n\");\n}\n\nfunction htmlToPlain(s = '') {\n    return String(s)\n        .replace(/<p[^>]*>/gi, '\\n')\n        .replace(/<br[^>]*>/gi, '\\n')\n        .replace(/<[^>]*>/g, '')\n        .replace(/&nbsp;/g, ' ')\n        .replace(/&lt;/g, '<')\n        .replace(/&gt;/g, '>')\n        .replace(/&amp;/g, '&')\n        .trim();\n}\n\nfunction stripEmailQuotes(text) {\n    const patterns = [\n        /.+escribi[oó]:\\s*$/m,\n        /.+wrote:\\s*$/m,\n        /-{3,}\\s*(?:Forwarded|Reenviad).+/i,\n    ];\n    let earliest = text.length;\n    for (const pat of patterns) {\n        const match = text.match(pat);\n        if (match && match.index < earliest) earliest = match.index;\n    }\n    return text.slice(0, earliest).trim();\n}\n\nconst conv = items[0].json;\nconst parts = pickParts(conv);\nconst userEmail = conv?.source?.author?.email || '';\nconst userId = conv?.contacts?.contacts?.[0]?.external_id || '';\n\nlet lastBotWithBodyIndex = -1;\nfor (let i = parts.length - 1; i >= 0; i--) {\n    const p = parts[i];\n    const isBot = p.author && p.author.type !== 'user';\n    const rawBody = p.body || '';\n    const cleanBody = htmlToPlain(rawBody);\n    if (isBot && cleanBody.length > 0) { lastBotWithBodyIndex = i; break; }\n}\n\nlet chatHistoryText = \"\";\nfor (let i = 0; i < parts.length; i++) {\n    const p = parts[i];\n    const partType = p.part_type || '';\n    if (partType !== 'comment' && partType !== '' && partType !== 'conversation' && partType !== 'open') continue;\n    const isUser = p.author && p.author.type === 'user';\n    const role = isUser ? 'Usuario' : 'Agente';\n    const rawBody = p.body || p.source?.body || '';\n    let cleanBody = htmlToPlain(rawBody);\n    if (isUser) cleanBody = stripEmailQuotes(cleanBody);\n    if (cleanBody) chatHistoryText += `${role}: ${cleanBody}\\n`;\n}\n\nconst userMessagesPending = [];\nfor (let i = lastBotWithBodyIndex + 1; i < parts.length; i++) {\n    const p = parts[i];\n    if (p.author && p.author.type === 'user') {\n        const rawBody = p.body || '';\n        let cleanBody = htmlToPlain(rawBody);\n        cleanBody = stripEmailQuotes(cleanBody);\n        if (cleanBody) userMessagesPending.push(cleanBody);\n        const atts = Array.isArray(p.attachments) ? p.attachments : [];\n        for (const a of atts) {\n            const nombre = a.name || a.filename || 'archivo';\n            userMessagesPending.push(`[Attachment: \"${nombre}\"]`);\n        }\n    }\n}\n\nlet lastMessageContent = userMessagesPending.join('\\n');\nif (!lastMessageContent) {\n    lastMessageContent = $('Webhook1').item.json.body.message || '';\n}\n\nconst attachmentsList = [];\nconst contentBlocks = [];\nconst seenUrls = new Set();\nfor (let i = lastBotWithBodyIndex + 1; i < parts.length; i++) {\n    const p = parts[i];\n    if (p.author && p.author.type === 'user') {\n        const atts = Array.isArray(p.attachments) ? p.attachments : [];\n        for (const a of atts) {\n            const url = a.url || a.download_url;\n            if (!url || seenUrls.has(url)) continue;\n            seenUrls.add(url);\n            const nombre = a.name || a.filename || 'archivo';\n            attachmentsList.push({ name: nombre, url });\n            const tipo = classifyAttachment(a);\n            switch (tipo) {\n                case 'pdf':\n                    contentBlocks.push({ type: 'image_url', image_url: { url } });\n                    break;\n                case 'spreadsheet':\n                    contentBlocks.push({ type: 'text', text: `METADATOS (EXCEL): ${JSON.stringify({ nombre, content_type: a.content_type || '', extension: ext(nombre) })}` });\n                    break;\n                case 'text':\n                    try {\n                        const txt = await fetchText.call(this, url);\n                        const sampled = sampleCsvLines(txt, 30);\n                        contentBlocks.push({ type: 'text', text: `Contenido '${nombre}':\\n---\\n${sampled}` });\n                    } catch (e) {\n                        contentBlocks.push({ type: 'text', text: `Contenido '${nombre}': [NO ACCESIBLE: ${e.message}]` });\n                    }\n                    break;\n                case 'zip':\n                    try {\n                        const zipBlocks = await processZip.call(this, url, nombre);\n                        contentBlocks.push(...zipBlocks);\n                    } catch (e) {\n                        contentBlocks.push({ type: 'text', text: `ZIP '${nombre}': [ERROR: ${e.message}]` });\n                    }\n                    break;\n                case 'image':\n                    contentBlocks.push({ type: 'image_url', image_url: { url } });\n                    break;\n                default:\n                    contentBlocks.push({ type: 'text', text: `Archivo '${nombre}' (${a.content_type || 'tipo desconocido'}): [FORMATO NO SOPORTADO]` });\n                    break;\n            }\n        }\n    }\n}\n\nreturn [{\n    json: {\n        last_message_content: lastMessageContent,\n        chat_history: chatHistoryText,\n        user_email: userEmail,\n        user_id: userId,\n        attachments_list: attachmentsList,\n        files_analysis_blocks: contentBlocks\n    }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1168,
+        2464
+      ],
+      "id": "157e8ec2-84b1-48fb-8bc6-ee1c55bfef82",
+      "name": "Formatear_conversacion1",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.intercom.io/conversations/{{ $json.body.conversation_id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "intercomApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1344,
+        2464
+      ],
+      "id": "026b3dfb-95bd-4c29-b7c9-1d3a43d4e408",
+      "name": "Traer_Conversacion_intercom1",
+      "retryOnFail": true,
+      "credentials": {
+        "intercomApi": {
+          "id": "aq9D3QMXfZhSrojV",
+          "name": "Intercom Spain TEST"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1488,
+        2336
+      ],
+      "id": "e4c1517c-02dd-4f57-a906-4e977912d2ad",
+      "name": "Wait2",
+      "webhookId": "0593b647-0d38-44e0-8e97-098c88b9d3e9"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cd275718-a9dd-47c7-8dd6-ed5deb24d2fe",
+              "leftValue": "={{ $json.body.conversation_part_id_debounce }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1632,
+        2448
+      ],
+      "id": "8c9f66f7-82c5-41d0-8189-7b86987bb689",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "22de1fbd-bada-40b3-a120-41e519442139",
+        "options": {}
+      },
+      "id": "aec66f6b-77a3-4ab7-8280-791a35db47a4",
+      "name": "Webhook1",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1792,
+        2432
+      ],
+      "webhookId": "22de1fbd-bada-40b3-a120-41e519442139",
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {
+    "Webhook1": [
+      {
+        "json": {
+          "headers": {
+            "x-forwarded-for": "34.197.76.213",
+            "x-forwarded-proto": "https",
+            "x-forwarded-port": "443",
+            "host": "es.synapse.rentax.es",
+            "x-amzn-trace-id": "Root=1-6a5ddad0-374d522554d687691a0343bb",
+            "content-length": "229",
+            "x-intercom-source-app-id": "q3bhdtoi",
+            "x-intercom-source-dataconnector-id": "",
+            "content-type": "application/json",
+            "user-agent": "Faraday v2.14.2",
+            "accept": "*/*",
+            "accept-encoding": "gzip,deflate",
+            "date": "Mon, 20 Jul 2026 08:22:40 GMT"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "conversation_id": "1",
+            "user_id": "1",
+            "conversationPartId": "1",
+            "message": "1",
+            "nombre_apellidos": "1",
+            "telefono": "dasdsad1",
+            "user_email": "1",
+            "partner": "1",
+            "conversation_part_id_debounce": "1",
+            "First Message ID": "1",
+            "plan": "1",
+            "forales": "1"
+          },
+          "webhookUrl": "https://es.synapse.rentax.es/webhook/22de1fbd-bada-40b3-a120-41e519442139",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Determinar_Pregunta_Pendiente1": {
+      "main": [
+        [
+          {
+            "node": "Filtro_Eliminatorio1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear_Expediente1": {
+      "main": [
+        [
+          {
+            "node": "Determinar_Pregunta_Pendiente1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Existe_Expediente1": {
+      "main": [
+        [
+          {
+            "node": "Crear_Expediente1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Determinar_Pregunta_Pendiente1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records2": {
+      "main": [
+        [
+          {
+            "node": "Existe_Expediente1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear_conversacion1": {
+      "main": [
+        [
+          {
+            "node": "Search records2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Traer_Conversacion_intercom1": {
+      "main": [
+        [
+          {
+            "node": "Formatear_conversacion1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Traer_Conversacion_intercom1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Traer_Conversacion_intercom1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0df034b6-6596-4240-a91b-50dffa1455eb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ad8c47420b3f6b213e5e059cce9c792649b9caff6448f91d0804f0583605b6f4"
+  },
+  "id": "3HE0vkd896Gd4HOA",
+  "tags": []
+}

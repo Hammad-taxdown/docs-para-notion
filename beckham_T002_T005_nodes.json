@@ -1,0 +1,793 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const raw = ($('Formatear_conversacion1').item.json.last_message_content || '').toString().toLowerCase();\nconst norm = raw.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');\nconst tokens = norm.split(/[^a-z]+/).filter(Boolean);\nconst has = (w) => tokens.includes(w);\n\nconst esNo = has('no') || has('nop') || has('negativo') || /todavia no|aun no|no estoy|no me he/.test(norm);\nconst esSi = has('si') || has('claro') || has('afirmativo') || has('correcto') || has('sip') || has('yes') || has('exacto') || /estoy dado|ya estoy|asi es|ya me di|por supuesto/.test(norm);\n\nlet resultado = 'reintento';\nif (esNo && !esSi) resultado = 'descarta';\nelse if (esSi && !esNo) resultado = 'avanza';\n\nreturn [{ json: { ...$input.first().json, resultado } }];\n"
+      },
+      "id": "orch-interpretar_f1",
+      "name": "Interpretar_F1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        1980
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "Ruta_F1-avanza",
+                    "leftValue": "={{ $json.resultado }}",
+                    "rightValue": "avanza",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "Ruta_F1-descarta",
+                    "leftValue": "={{ $json.resultado }}",
+                    "rightValue": "descarta",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "Ruta_F1-reintento",
+                    "leftValue": "={{ $json.resultado }}",
+                    "rightValue": "reintento",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "orch-ruta_f1",
+      "name": "Ruta_F1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1620,
+        1980
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aset-001",
+              "name": "message",
+              "value": "¿Qué día te diste de alta en la Seguridad Social?",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "orch-set_f1_avanza",
+      "name": "Set_F1_avanza",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1840,
+        1860
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aset-002",
+              "name": "message",
+              "value": "Antes tienes que darte de alta en la Seguridad Social 📋. Ese es el primer paso: en cuanto tengas tu alta, el plazo de 6 meses empieza a correr y podremos tramitar tu solicitud. Vuelve entonces y seguimos.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "orch-set_f1_descarta",
+      "name": "Set_F1_descarta",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1840,
+        1980
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aset-003",
+              "name": "message",
+              "value": "Perdona, no acabo de entenderte 🤔. ¿Estás dado de alta en la Seguridad Social española? Respóndeme con un sí o un no, por favor.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "orch-set_f1_reintento",
+      "name": "Set_F1_reintento",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1840,
+        2100
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = ($('Formatear_conversacion1').item.json.last_message_content || '').toString().trim();\nconst meses = { enero:1, febrero:2, marzo:3, abril:4, mayo:5, junio:6, julio:7, agosto:8, septiembre:9, setiembre:9, octubre:10, noviembre:11, diciembre:12 };\nlet d = null, m = null, y = null;\n\nlet mm = raw.match(/(\\d{1,2})[\\/\\-.](\\d{1,2})[\\/\\-.](\\d{2,4})/);\nif (mm) { d = +mm[1]; m = +mm[2]; y = +mm[3]; if (y < 100) y += 2000; }\nif (d === null) {\n  const iso = raw.match(/(\\d{4})[\\/\\-.](\\d{1,2})[\\/\\-.](\\d{1,2})/);\n  if (iso) { y = +iso[1]; m = +iso[2]; d = +iso[3]; }\n}\nif (d === null) {\n  const t = raw.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');\n  const dm = t.match(/(\\d{1,2})\\s*(?:de)?\\s*([a-z]+)\\s*(?:de)?\\s*(\\d{4})/);\n  if (dm && meses[dm[2]]) { d = +dm[1]; m = meses[dm[2]]; y = +dm[3]; }\n}\n\nlet resultado = 'reintento';\nlet fecha_alta_norm = null;\nif (d && m && y) {\n  const fecha = new Date(Date.UTC(y, m - 1, d));\n  if (!isNaN(fecha) && fecha.getUTCDate() === d && (fecha.getUTCMonth() + 1) === m) {\n    fecha_alta_norm = fecha.toISOString().slice(0, 10);\n    const limite = new Date(fecha);\n    limite.setUTCMonth(limite.getUTCMonth() + 6);\n    const hoy = new Date();\n    hoy.setUTCHours(0, 0, 0, 0);\n    resultado = (limite >= hoy) ? 'avanza' : 'descarta';\n  }\n}\n\nreturn [{ json: { ...$input.first().json, resultado, fecha_alta_norm } }];\n"
+      },
+      "id": "orch-calcular_plazo_f2",
+      "name": "Calcular_Plazo_F2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        2256
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "Ruta_F2-avanza",
+                    "leftValue": "={{ $json.resultado }}",
+                    "rightValue": "avanza",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "Ruta_F2-descarta",
+                    "leftValue": "={{ $json.resultado }}",
+                    "rightValue": "descarta",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "Ruta_F2-reintento",
+                    "leftValue": "={{ $json.resultado }}",
+                    "rightValue": "reintento",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "orch-ruta_f2",
+      "name": "Ruta_F2",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1620,
+        2256
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aset-004",
+              "name": "message",
+              "value": "¿Has sido residente fiscal en España en los últimos 5 años?",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "orch-set_f2_avanza",
+      "name": "Set_F2_avanza",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1840,
+        2256
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aset-005",
+              "name": "message",
+              "value": "Ups… no puedes acogerte al régimen 😕. ¿Te ayudamos con tu declaración? ¿Necesitas ayuda? Contáctanos.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "orch-set_f2_descarta",
+      "name": "Set_F2_descarta",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1840,
+        2376
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aset-006",
+              "name": "message",
+              "value": "Perdona, no he podido leer bien la fecha 🤔. ¿Me dices el día en que te diste de alta en la Seguridad Social? Por ejemplo: 15/03/2024.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "orch-set_f2_reintento",
+      "name": "Set_F2_reintento",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1840,
+        2496
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = ($('Formatear_conversacion1').item.json.last_message_content || '').toString().toLowerCase();\nconst norm = raw.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');\nconst tokens = norm.split(/[^a-z]+/).filter(Boolean);\nconst has = (w) => tokens.includes(w);\n\nconst esNo = has('no') || has('nop') || has('negativo') || /no he sido|nunca|jamas|no residente/.test(norm);\nconst esSi = has('si') || has('claro') || has('afirmativo') || has('correcto') || has('sip') || has('yes') || /si he sido|he sido|he residido|resido/.test(norm);\n\n// Invertido: NO cualifica (avanza); SI descarta (residente_5_anios)\nlet resultado = 'reintento';\nif (esNo && !esSi) resultado = 'avanza';\nelse if (esSi && !esNo) resultado = 'descarta';\n\nreturn [{ json: { ...$input.first().json, resultado } }];\n"
+      },
+      "id": "orch-interpretar_f3",
+      "name": "Interpretar_F3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        2620
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "Ruta_F3-avanza",
+                    "leftValue": "={{ $json.resultado }}",
+                    "rightValue": "avanza",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "Ruta_F3-descarta",
+                    "leftValue": "={{ $json.resultado }}",
+                    "rightValue": "descarta",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "Ruta_F3-reintento",
+                    "leftValue": "={{ $json.resultado }}",
+                    "rightValue": "reintento",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "orch-ruta_f3",
+      "name": "Ruta_F3",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1620,
+        2620
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aset-007",
+              "name": "message",
+              "value": "¡Perfecto! Cumples los requisitos de esta primera parte ✅. Seguimos con el siguiente paso…",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "orch-set_f3_avanza",
+      "name": "Set_F3_avanza",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1840,
+        2620
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aset-008",
+              "name": "message",
+              "value": "Ups… no puedes acogerte al régimen 😕. ¿Te ayudamos con tu declaración? ¿Necesitas ayuda? Contáctanos.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "orch-set_f3_descarta",
+      "name": "Set_F3_descarta",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1840,
+        2740
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aset-009",
+              "name": "message",
+              "value": "Perdona, no acabo de entenderte 🤔. ¿Has sido residente fiscal en España en los últimos 5 años? Respóndeme con un sí o un no, por favor.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "orch-set_f3_reintento",
+      "name": "Set_F3_reintento",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1840,
+        2860
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aset-010",
+              "name": "message",
+              "value": "¡Perfecto! Cumples los requisitos de esta primera parte ✅. Seguimos con el siguiente paso…",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "orch-set_fallback_continuar",
+      "name": "Set_Fallback_continuar",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1620,
+        3020
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "orch-converger_bloque1",
+      "name": "Converger_Bloque1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        2720
+      ]
+    }
+  ],
+  "connections": {
+    "Interpretar_F1": {
+      "main": [
+        [
+          {
+            "node": "Ruta_F1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ruta_F1": {
+      "main": [
+        [
+          {
+            "node": "Set_F1_avanza",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set_F1_descarta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set_F1_reintento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular_Plazo_F2": {
+      "main": [
+        [
+          {
+            "node": "Ruta_F2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ruta_F2": {
+      "main": [
+        [
+          {
+            "node": "Set_F2_avanza",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set_F2_descarta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set_F2_reintento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interpretar_F3": {
+      "main": [
+        [
+          {
+            "node": "Ruta_F3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ruta_F3": {
+      "main": [
+        [
+          {
+            "node": "Set_F3_avanza",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set_F3_descarta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set_F3_reintento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_F1_avanza": {
+      "main": [
+        [
+          {
+            "node": "Converger_Bloque1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_F1_descarta": {
+      "main": [
+        [
+          {
+            "node": "Converger_Bloque1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_F1_reintento": {
+      "main": [
+        [
+          {
+            "node": "Converger_Bloque1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_F2_avanza": {
+      "main": [
+        [
+          {
+            "node": "Converger_Bloque1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_F2_descarta": {
+      "main": [
+        [
+          {
+            "node": "Converger_Bloque1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_F2_reintento": {
+      "main": [
+        [
+          {
+            "node": "Converger_Bloque1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_F3_avanza": {
+      "main": [
+        [
+          {
+            "node": "Converger_Bloque1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_F3_descarta": {
+      "main": [
+        [
+          {
+            "node": "Converger_Bloque1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_F3_reintento": {
+      "main": [
+        [
+          {
+            "node": "Converger_Bloque1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_Fallback_continuar": {
+      "main": [
+        [
+          {
+            "node": "Converger_Bloque1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro_Eliminatorio1": {
+      "main": [
+        [
+          {
+            "node": "Interpretar_F1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Calcular_Plazo_F2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Interpretar_F3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Converger_Bloque1": {
+      "main": [
+        [
+          {
+            "node": "Callback_Intercom",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "beckham-orch"
+  }
+}

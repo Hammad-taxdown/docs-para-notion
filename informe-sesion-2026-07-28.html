@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bot Beckham · Informe de sesión 28/07/2026</title>
+<style>
+  :root{
+    --dark:#3D3A62; --dark-soft:#5b5885;
+    --tax:#0FD48E; --tax-dim:#e6fbf3;
+    --sand:#FF7F63; --sand-dim:#fff0ec;
+    --sky:#5A74D0;  --sky-dim:#eef1fc;
+    --moon-50:#fafafc; --moon-100:#f2f2f7; --moon-200:#e6e6ee; --moon-400:#a8a8b8;
+    --ink:#22203a; --ink-soft:#5f5c78;
+    --shadow:0 1px 2px rgba(61,58,98,.06), 0 8px 24px rgba(61,58,98,.07);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:#fff; color:var(--ink);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1000px; margin:0 auto; padding:0 28px 96px}
+
+  header{padding:64px 0 40px; border-bottom:1px solid var(--moon-200)}
+  .kicker{font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--sky); font-weight:700}
+  h1{margin:12px 0 8px; font-size:40px; line-height:1.15; letter-spacing:-.02em; color:var(--dark)}
+  .sub{font-size:18px; color:var(--ink-soft); margin:0}
+  .meta{margin-top:20px; font-size:13.5px; color:var(--moon-400)}
+
+  h2{margin:56px 0 6px; font-size:26px; letter-spacing:-.015em; color:var(--dark)}
+  h2 .num{color:var(--moon-400); font-weight:600; margin-right:10px; font-variant-numeric:tabular-nums}
+  h3{margin:32px 0 6px; font-size:18px; color:var(--dark)}
+  h4{margin:22px 0 4px; font-size:15px; color:var(--dark-soft); text-transform:uppercase; letter-spacing:.06em}
+  p{margin:12px 0}
+  .lead{font-size:17.5px; color:var(--ink-soft)}
+  code{
+    font:13.5px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    background:var(--moon-100); padding:2px 6px; border-radius:5px; color:var(--dark)
+  }
+  pre{
+    background:var(--moon-50); border:1px solid var(--moon-200); border-left:3px solid var(--sky);
+    border-radius:10px; padding:16px 18px; overflow-x:auto;
+    font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--ink)
+  }
+  pre code{background:none; padding:0; font-size:inherit}
+
+  /* Stats */
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin:32px 0}
+  .stat{background:var(--moon-50); border:1px solid var(--moon-200); border-radius:12px; padding:18px 20px}
+  .stat .n{font-size:30px; font-weight:700; letter-spacing:-.03em; color:var(--dark); line-height:1.1}
+  .stat .l{font-size:13px; color:var(--ink-soft); margin-top:4px}
+  .stat.ok .n{color:#0a9c68}
+  .stat.warn .n{color:#c85a41}
+
+  /* Callouts */
+  .box{border-radius:12px; padding:18px 22px; margin:22px 0; box-shadow:var(--shadow)}
+  .box p:first-child{margin-top:0} .box p:last-child{margin-bottom:0}
+  .box.win{background:var(--tax-dim); border:1px solid #9fe9cd}
+  .box.blocked{background:var(--sand-dim); border:1px solid #ffc4b5}
+  .box.note{background:var(--sky-dim); border:1px solid #c3cdf3}
+  .box.lesson{background:var(--moon-50); border:1px solid var(--moon-200); border-left:3px solid var(--dark)}
+  .box .t{font-weight:700; color:var(--dark); display:block; margin-bottom:6px}
+
+  /* Tables */
+  table{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px}
+  th,td{text-align:left; padding:11px 14px; border-bottom:1px solid var(--moon-200); vertical-align:top}
+  th{font-size:12px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-soft); background:var(--moon-50)}
+  tbody tr:hover{background:var(--moon-50)}
+  .tw{overflow-x:auto}
+
+  /* Timeline */
+  .tl{list-style:none; padding:0; margin:26px 0 0; position:relative}
+  .tl::before{content:""; position:absolute; left:74px; top:6px; bottom:6px; width:2px; background:var(--moon-200)}
+  .tl li{position:relative; padding:0 0 26px 104px; min-height:34px}
+  .tl .h{position:absolute; left:0; top:0; width:56px; text-align:right; font:600 13px/1.5 ui-monospace,Menlo,monospace; color:var(--moon-400)}
+  .tl .d{position:absolute; left:68px; top:6px; width:14px; height:14px; border-radius:50%; background:#fff; border:3px solid var(--sky)}
+  .tl li.ok .d{border-color:var(--tax)} .tl li.bad .d{border-color:var(--sand)}
+  .tl b{color:var(--dark)}
+
+  /* Pills */
+  .pill{display:inline-block; font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:999px; letter-spacing:.03em; white-space:nowrap}
+  .p-done{background:var(--tax); color:#07301f}
+  .p-build{background:var(--sand); color:#3a1409}
+  .p-spec{background:var(--sky); color:#fff}
+  .p-skel{background:var(--moon-200); color:var(--dark)}
+  .p-dead{background:#f2f2f7; color:#8a8798; text-decoration:line-through}
+
+  ul,ol{padding-left:22px} li{margin:7px 0}
+  hr{border:0; border-top:1px solid var(--moon-200); margin:44px 0}
+  footer{margin-top:64px; padding-top:24px; border-top:1px solid var(--moon-200); font-size:13.5px; color:var(--moon-400)}
+  a{color:var(--sky)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">TaxDown · Mobility · Bot Beckham</div>
+  <h1>De un bug de semanas a un agente que conversa</h1>
+  <p class="sub">Informe de la sesión del martes 28 de julio de 2026 — algo menos de 10 horas de trabajo.</p>
+  <p class="meta">Intercom (workspace TEST <code>q3bhdtoi</code>) · n8n <code>es.synapse.rentax.es</code> · Airtable <code>Empleados</code></p>
+</header>
+
+<h2><span class="num">01</span>Resumen</h2>
+<p class="lead">
+  El día empezó con un bug que llevaba desde el 23 de julio bloqueando el filtro de cualificación, y con
+  cinco hipótesis fallidas a la espalda. Terminó con ese bug <b>arreglado y verificado</b>, con el circuito
+  entre Intercom y n8n <b>funcionando por primera vez</b>, y con un <b>agente conversacional construido</b>
+  que se presenta solo cuando un usuario cualifica.
+</p>
+<p>
+  También terminó con un bloqueo nuevo que no depende de nosotros, y con dos conclusiones propias
+  corregidas: ambas cosas están en este informe, porque saber qué <i>no</i> era el problema ha valido tanto
+  tiempo como saber qué sí.
+</p>
+
+<div class="stats">
+  <div class="stat ok"><div class="n">1</div><div class="l">bug de semanas cerrado y verificado (WP-04)</div></div>
+  <div class="stat ok"><div class="n">6/6</div><div class="l">saltos del circuito conversacional validados</div></div>
+  <div class="stat warn"><div class="n">5</div><div class="l">hipótesis descartadas antes de dar con la buena</div></div>
+  <div class="stat"><div class="n">7</div><div class="l">agentes de IA lanzados en paralelo (Council + n8n)</div></div>
+</div>
+
+<h2><span class="num">02</span>Cronología</h2>
+<ul class="tl">
+  <li>
+    <span class="h">mañana</span><span class="d"></span>
+    <b>Arranque y verificación.</b> Se retoma el proyecto desde la bitácora. Se comprueba en pantalla que
+    <code>Custom value</code> existe en los Data Connectors, que "Map action inputs" <b>no</b> acepta literales,
+    y que <b>no existe ningún atributo duplicado</b> a nivel de app — enterrando una hipótesis que llevaba
+    semanas abierta.
+  </li>
+  <li class="bad">
+    <span class="h">12:00</span><span class="d"></span>
+    <b>Falsa alarma.</b> Se aplica el fix del chip <code>veredicto</code>, se publica y "no funciona".
+    Más tarde se descubre que <b>la prueba se hizo en Preview</b>, que usa respuestas mock: la conclusión
+    era inválida y hubo que revertirla en tres ficheros.
+  </li>
+  <li>
+    <span class="h">13:00</span><span class="d"></span>
+    <b>Council de arquitectura.</b> Cinco agentes independientes (integración, datos, seguridad,
+    simplicidad, adversarial) auditan el diseño de persistencia en paralelo, más uno de implementación en n8n.
+    Cuatro de cinco convergen en la misma opción.
+  </li>
+  <li class="ok">
+    <span class="h">16:10</span><span class="d"></span>
+    <b>El hallazgo que lo cambia todo.</b> Los logs del Data Connector muestran que con <code>fuera_plazo</code>
+    también falla. Si fallan los <i>dos</i> valores, el branch no lee mal: <b>lee vacío</b>.
+  </li>
+  <li class="ok">
+    <span class="h">17:00</span><span class="d"></span>
+    <b>WP-04 resuelto.</b> Se descubre <code>Object mapping</code> y se verifica en conversación real,
+    en las dos ramas.
+  </li>
+  <li class="ok">
+    <span class="h">18:30</span><span class="d"></span>
+    <b>El circuito responde.</b> Primera vez que un mensaje generado en n8n aparece en la conversación
+    de Intercom.
+  </li>
+  <li class="ok">
+    <span class="h">19:15</span><span class="d"></span>
+    <b>El agente habla.</b> Responde a preguntas y, al cualificar, <b>se presenta solo</b> sin que el
+    usuario escriba nada.
+  </li>
+  <li class="bad">
+    <span class="h">19:45</span><span class="d"></span>
+    <b>Bloqueo nuevo.</b> El segundo turno no llega: la conversación es un <code>Customer ticket</code> y
+    sobre un ticket no se disparan los triggers de mensaje. Nace WP-10.
+  </li>
+</ul>
+
+<hr>
+
+<h2><span class="num">03</span>El bug de F3: cómo se resolvió</h2>
+
+<h3>El síntoma</h3>
+<p>
+  Un usuario decía que sí tenía alta en la Seguridad Social, escribía su fecha, y el bot le contestaba
+  <i>"No he entendido bien la fecha"</i> y se la volvía a pedir. Siempre. Con cualquier fecha.
+</p>
+<p>
+  Lo desconcertante era que <b>el cálculo funcionaba</b>: los logs del Data Connector mostraban la respuesta
+  correcta de n8n, con el veredicto, la fecha límite y los días, y encima Intercom decía
+  <i>"API attributes mapped successfully"</i>. El dato llegaba bien y el bot lo ignoraba.
+</p>
+
+<h3>Las cinco hipótesis que no eran</h3>
+<div class="tw">
+<table>
+  <thead><tr><th>Hipótesis</th><th>Por qué era razonable</th><th>Cómo cayó</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><span class="pill p-dead">Atributos duplicados</span></td>
+      <td>Se habían creado atributos a nivel de app con los mismos nombres; el branch podría estar leyendo el vacío</td>
+      <td>Búsqueda en <code>Settings → Data</code>: <b>cero</b> atributos con ese nombre, ni en People ni en Conversations</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-dead">Pill Conversion Error</span></td>
+      <td>Documentado: un chip escrito a mano se pinta bien pero resuelve a <code>null</code></td>
+      <td>Se reinsertó el chip desde el selector. Siguió fallando. Un único resultado en el picker, agrupado bajo el connector</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-dead">Desajuste de tipo</span></td>
+      <td>Es el modo de fallo recurrente del proyecto: <code>contains</code> sobre un no-string devuelve false en silencio</td>
+      <td>Fallaban <b>los dos</b> valores, y ambos son cadenas</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-dead">El operador</span></td>
+      <td>Quizá <code>contains</code> no casaba con el valor recibido</td>
+      <td>Se cambió a <code>has any value</code> — "que tenga cualquier valor" — y <b>siguió cayendo al else</b></td>
+    </tr>
+    <tr>
+      <td><span class="pill p-dead">Cosa del entorno TEST</span></td>
+      <td>La sospecha natural cuando nada cuadra</td>
+      <td>Nada en un workspace de pruebas cambia cómo se evalúa un branch</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="box note">
+  <span class="t">El experimento que lo cerró</span>
+  <p>
+    Cambiar la condición a <code>has any value</code> fue la prueba decisiva, y es una idea que merece
+    guardarse: en vez de seguir afinando <i>con qué</i> se compara, se preguntó <b>si había algo que comparar</b>.
+    Al seguir fallando, quedaron descartadas de golpe todas las hipótesis sobre el valor, el chip, el tipo y
+    el operador. Solo quedaba una explicación: <b>ahí no llega nada</b>.
+  </p>
+</div>
+
+<h3>La causa raíz</h3>
+<p>
+  Los <b>outputs de un Data Connector son atributos locales del path donde vive el connector</b>. El connector
+  estaba en el path <code>F</code> y el branch en <code>I. Path</code>, un path distinto. El valor nunca cruzaba.
+  No era un bug: era una regla de Intercom que no conocíamos.
+</p>
+<p>
+  Eso explicó de paso un bloqueo que arrastraba desde el 24 de julio: por qué <code>fecha_limite</code> y
+  <code>dias_pasados</code> no aparecían en el selector del mensaje de descarte. Misma causa, un solo arreglo.
+</p>
+
+<h3>La solución</h3>
+<p>
+  En la pestaña <b>2 Data</b> del Data Connector, al final, hay una sección llamada <b>Object mapping</b> que
+  permite volcar campos de la respuesta a <b>atributos reales de Intercom</b> en lugar de a variables locales.
+  Un atributo de conversación persiste en la conversación y es legible desde cualquier path.
+</p>
+<pre><code>Intercom object: Conversation      API object: Root
+
+  veredicto_f2       ←  veredicto
+  fecha_limite_f2    ←  fecha_limite
+  dias_pasados_f2    ←  dias_pasados</code></pre>
+<p>
+  Los tres se crearon como <b>Conversation attributes de tipo Text</b> — incluido <code>dias_pasados_f2</code>,
+  que es un número, a propósito: los desajustes de tipo ya habían causado dos bugs en este proyecto y no
+  merecía la pena arriesgar por elegancia.
+</p>
+
+<div class="box win">
+  <span class="t">Verificado en conversaciones reales, no en Preview</span>
+  <div class="tw">
+  <table style="margin:8px 0 0">
+    <thead><tr><th>Entrada</th><th><code>veredicto_f2</code></th><th><code>fecha_limite_f2</code></th><th><code>dias_pasados_f2</code></th><th>Resultado</th></tr></thead>
+    <tbody>
+      <tr><td>21/06/2025</td><td>fuera_plazo</td><td>21/12/2025</td><td>219</td><td>Mensaje de plazo vencido con los datos correctos</td></tr>
+      <tr><td>01/04/2026</td><td>en_plazo</td><td>01/10/2026</td><td>0</td><td>Cualifica y asigna al equipo Mobility</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="margin-top:12px">Ambas cifras comprobadas a mano. Y ambas conversaciones con <code>Workflow: Preview = false</code>.</p>
+</div>
+
+<hr>
+
+<h2><span class="num">04</span>El circuito conversacional: lo que estaba roto</h2>
+<p class="lead">
+  Al arreglar el filtro, la conversación pasaba al "bloque 2" — el agente conversacional. Y ahí no había nadie.
+</p>
+<p>
+  Una auditoría de la cadena de n8n reveló que <b>el agente estaba desactivado y sin ninguna conexión de
+  entrada</b>. Existía en el canvas, con su modelo y cinco herramientas colgando, pero desconectado del flujo.
+  El "bloque 2" no estaba a medias: no existía en ejecución.
+</p>
+<p>
+  Y había un segundo fallo, más silencioso. El nodo que devuelve la respuesta a Intercom mandaba esto:
+</p>
+<pre><code>{{ { "data": { "mensajeUsuario": $json.message } } }}</code></pre>
+<p>
+  Pero el nodo anterior no emite <code>message</code>, emite <code>last_message_content</code>. Así que el body
+  que salía era literalmente <code>{"data":{}}</code>, Intercom respondía <b>400 Invalid Request</b>, y la
+  conversación se quedaba colgada esperando para siempre. <b>Llevaba así desde antes de esta sesión</b>, y
+  nadie lo había visto porque el usuario solo percibía silencio.
+</p>
+
+<h3>Los tres arreglos que lo desbloquearon</h3>
+<div class="tw">
+<table>
+  <thead><tr><th>#</th><th>Qué</th><th>Dónde</th><th>Detalle</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>1</td><td>Campo de origen del callback</td><td>n8n · <code>Callback_Intercom</code></td>
+      <td><code>$json.message</code> → <code>$json.last_message_content</code></td>
+    </tr>
+    <tr>
+      <td>2</td><td>Tres inputs <code>Required</code> → <code>Optional</code></td><td>Intercom · DC <code>n8n_bot_mobility</code></td>
+      <td><code>Required</code> es condición de ejecución: si falta el valor, el connector <b>no se ejecuta</b>. En el handoff no hay mensaje del usuario, así que llegaban vacíos</td>
+    </tr>
+    <tr>
+      <td>3</td><td>Dos conexiones que faltaban</td><td>n8n · canvas</td>
+      <td><code>Formatear_conversacion1 → Preparar_Prompt → Callback_Intercom</code></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="box lesson">
+  <span class="t">Trampa que costó tiempo: <code>Number</code> no puede ser opcional</span>
+  <p>
+    Uno de los tres inputs tenía formato <code>Number</code> e Intercom se negaba a hacerlo opcional:
+    <i>"Non-text parameters must be required for this HTTP method"</i>. Hubo que cambiarlo primero a
+    <code>Text</code>. Seguro, porque en el body ya viajaba entre comillas y ningún nodo de n8n lo usa.
+  </p>
+</div>
+
+<div class="box lesson">
+  <span class="t">Lección incómoda: <code>success</code> en n8n no significa que funcione</span>
+  <p>
+    Hubo <b>cinco ejecuciones seguidas con estado <code>success</code></b> mientras el circuito estaba roto.
+    Todas verdes. Porque <code>success</code> solo significa "hice todo lo que tenía cableado", y lo cableado
+    terminaba a mitad de camino sin llamar al callback. Verde no es prueba de nada.
+  </p>
+</div>
+
+<h3>La prueba del eco</h3>
+<p>
+  Para validar los seis saltos del circuito sin meter todavía un agente en medio, se hizo que n8n devolviera
+  <b>el propio mensaje del usuario</b>. Absurdo como producto, perfecto como diagnóstico: si el eco aparece,
+  los seis saltos funcionan y lo único que falta es generar una respuesta de verdad en vez de repetir.
+</p>
+<pre><code>usuario escribe  →  reuse_mobility  →  DC n8n_bot_mobility  →  webhook n8n
+   →  traer conversación  →  formatear  →  callback  →  mensaje publicado</code></pre>
+<p>Funcionó. Y con eso, montar el agente pasó a ser sustituir una pieza en una tubería que ya se sabía estanca.</p>
+
+<hr>
+
+<h2><span class="num">05</span>Lo que se implementó en n8n</h2>
+
+<h4>Cadena final de la conversación</h4>
+<pre><code>Webhook1 → If2 → (Wait2 3s | directo) → Traer_Conversacion_intercom1
+         → Formatear_conversacion1 → Preparar_Prompt → AI Agent → Callback_Intercom
+                            └─ (salida de error) → Mensaje_fallback → Callback_Intercom</code></pre>
+
+<div class="tw">
+<table>
+  <thead><tr><th>Nodo</th><th>Estado</th><th>Qué hace / qué se cambió</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><code>Preparar_Prompt</code></td><td><span class="pill p-done">nuevo</span></td>
+      <td>Detecta el <b>arranque en frío</b> (sin mensaje del usuario) y manda una instrucción de
+        presentación en vez de un prompt vacío. Además inyecta un bloque <b>"DATOS QUE YA CONOCEMOS"</b>
+        con nombre, email, teléfono, veredicto y fecha límite, para que el agente deje de preguntar lo
+        que el sistema ya sabe.</td>
+    </tr>
+    <tr>
+      <td><code>AI Agent</code></td><td><span class="pill p-done">nuevo</span></td>
+      <td>Tools Agent, <code>promptType: define</code>, texto <code>{{ $json.prompt }}</code>, System Message
+        con el prompt v1 de Paula. <b>Sin nodo de Memory</b>: el historial se reconstruye desde la API de
+        Intercom en cada turno, así que el agente es sin estado por diseño. Se creó desde cero, sin
+        reutilizar el viejo.</td>
+    </tr>
+    <tr>
+      <td><code>Mensaje_fallback</code></td><td><span class="pill p-done">nuevo</span></td>
+      <td>Red de seguridad en la salida de error del formateador. Sin esto, una excepción dejaba la
+        conversación muda esperando indefinidamente.</td>
+    </tr>
+    <tr>
+      <td><code>Callback_Intercom</code></td><td><span class="pill p-build">corregido</span></td>
+      <td>Body arreglado (dos veces: primero al eco, luego a la salida del agente) y añadida limpieza de
+        etiquetas HTML.</td>
+    </tr>
+    <tr>
+      <td><code>Existe_Expediente1</code></td><td><span class="pill p-skel">retirado</span></td>
+      <td>Era un <b>no-op</b>: su condición comparaba la cadena literal <code>"id"</code> con "está vacío",
+        así que siempre salía por la misma rama, y ambas ramas iban al mismo nodo. Se saca de la cadena
+        pero <b>se deja en el canvas</b> — ya hubo un incidente en este proyecto por borrar nodos sin
+        comprobar sus conexiones.</td>
+    </tr>
+    <tr>
+      <td><code>Agente_conversacional</code></td><td><span class="pill p-skel">intacto</span></td>
+      <td>El viejo. Se deja desactivado como referencia, por decisión del usuario. Su configuración apunta
+        al webhook equivocado (resto de un rename anterior), así que copiarlo habría arrastrado el error.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h4>Otros errores del workflow detectados y corregidos</h4>
+<div class="tw">
+<table>
+  <thead><tr><th>Problema</th><th>Diagnóstico</th><th>Estado</th></tr></thead>
+  <tbody>
+    <tr><td>El agente escribía <code>&lt;b&gt;…&lt;/b&gt;</code> y salía literal al usuario</td>
+        <td>El atributo de Intercom inserta el texto como plano, no renderiza HTML</td>
+        <td><span class="pill p-done">arreglado</span> limpieza en el callback + regla en el prompt</td></tr>
+    <tr><td>El agente volvía a pedir nombre y fecha de llegada</td>
+        <td>El prompt no recibía nada de lo que el sistema ya conocía</td>
+        <td><span class="pill p-done">arreglado</span> bloque de datos conocidos</td></tr>
+    <tr><td>El sticky note dice "DEBOUNCE" pero no hay debounce</td>
+        <td><code>If2</code> solo comprueba si un id está vacío; falta el re-chequeo posterior que lo haría uno. Es un retardo fijo de 3 s</td>
+        <td><span class="pill p-skel">documentado</span> no molesta hoy</td></tr>
+    <tr><td><code>Respond OK</code> devuelve los 68 campos de la fila de Airtable</td>
+        <td>Incluye PII y URLs de formularios con datos prefijados, y queda en los logs de Intercom 7–14 días</td>
+        <td><span class="pill p-spec">pendiente</span> recortar a <code>{ok, record_id}</code></td></tr>
+    <tr><td>El nodo de Airtable no tiene <code>retryOnFail</code> ni <code>onError</code></td>
+        <td>Un 429 mata la ejecución sin responder al connector y sin alerta</td>
+        <td><span class="pill p-spec">pendiente</span></td></tr>
+    <tr><td>Una fecha inválida responde <code>ok:true</code></td>
+        <td>El Code node la descarta en silencio: Intercom ve éxito y el dato no se guarda</td>
+        <td><span class="pill p-spec">pendiente</span></td></tr>
+  </tbody>
+</table>
+</div>
+
+<hr>
+
+<h2><span class="num">06</span>El Council de arquitectura</h2>
+<p>
+  Antes de construir el conector de persistencia se lanzaron <b>cinco agentes independientes</b> con lentes
+  distintas — integración, modelo de datos, seguridad, simplicidad operativa y revisión adversarial — más uno
+  de implementación en n8n. Cada uno verificó el estado real de los sistemas en vez de creerse la documentación
+  del repo.
+</p>
+
+<div class="box note">
+  <span class="t">Decisión: 4 Data Connectors finos con discriminador <code>punto</code></span>
+  <p>
+    Cuatro de cinco convergieron. Ninguna constante de negocio vive en Intercom: cada conector manda un
+    discriminador (<code>descarte_residencia</code>, <code>lead</code>, <code>cualifica</code>,
+    <code>descarte_plazo</code>) y n8n deriva de ahí los valores. <b>El criterio que decidió fue la
+    testabilidad</b>: así el 90% del comportamiento se prueba por curl, sin navegador — y en este proyecto
+    curl ha cazado bugs el mismo día, mientras Intercom acumula tres fixes publicados que fallaron.
+  </p>
+</div>
+
+<h4>Descartado, y por qué</h4>
+<ul>
+  <li><b>Constantes dentro de Intercom.</b> Con <code>typecast</code> activado, una errata en el nombre de una
+    opción <b>crea una opción nueva</b> en el desplegable de Airtable, en silencio. Y son campos que no se
+    pueden probar.</li>
+  <li><b>Un solo conector con atributos de conversación.</b> Habría apostado el diseño al mismo mecanismo
+    que ese mismo día estaba fallando.</li>
+  <li><b>Un workflow separado para leads potenciales</b> (propuesta del usuario). Serían <b>dos escritores
+    sobre la misma fila</b> de Airtable, duplicando la normalización de fechas y booleanos — los dos sitios
+    exactos donde ya habían aparecido bugs. Se conserva la intención con una <b>vista de Airtable</b> filtrada
+    sobre la que otra persona monta los recordatorios, sin tocar n8n.</li>
+</ul>
+
+<h4>Agujeros que el Council destapó y que nadie había listado</h4>
+<ul>
+  <li><b>Ninguna rama limpia las marcas de otra.</b> Quien fue lead potencial y luego cualifica se queda
+    marcado como lead para siempre. Hay una fila real con tres estados contradictorios a la vez.</li>
+  <li><b><code>UserId</code> no es único.</b> Una automatización de formularios crea filas hijas y las borra,
+    y los formularios no rellenan ese campo — así que un empleado ya registrado que hable con el bot
+    generaría una fila duplicada.</li>
+  <li><b>El webhook de escritura es público</b>, sin autenticación y con una ruta adivinable, sobre una tabla
+    con datos reales.</li>
+</ul>
+
+<hr>
+
+<h2><span class="num">07</span>Dos conclusiones propias que hubo que corregir</h2>
+<p>
+  Las dos se documentaron y se revirtieron en los ficheros del proyecto, porque una conclusión falsa
+  guardada como hecho cuesta más que no tener nada.
+</p>
+<div class="box blocked">
+  <span class="t">1 · "El fix del chip no funciona"</span>
+  <p>
+    Se dio por refutada una hipótesis correcta. La prueba se había hecho en <b>Preview</b>, que usa respuestas
+    mock: el connector reportó éxito sin llamar a n8n. Se detectó cruzando las conversaciones del día
+    (las cinco eran de Preview) con las ejecuciones reales de n8n.
+  </p>
+  <p><b>Regla adoptada:</b> ninguna conclusión sobre este bot se acepta sin conversación <u>no-Preview</u>
+    y ejecución correlativa en n8n.</p>
+</div>
+<div class="box blocked">
+  <span class="t">2 · "El <code>else</code> reintenta"</span>
+  <p>
+    Toda la documentación del proyecto decía que la rama de fallo volvía a pedir la fecha. <b>Es falso:</b>
+    manda el mensaje y <b>cierra la conversación</b> en el mismo segundo. Con el bug vivo, el 100% de quienes
+    llegaban a ese punto acababan en un callejón sin salida y sin quedar registrados.
+  </p>
+</div>
+
+<hr>
+
+<h2><span class="num">08</span>Aprendizajes que sirven más allá de hoy</h2>
+<ol>
+  <li><b>Los outputs de un Data Connector no salen de su path.</b> Para que un valor viaje por el workflow hay
+    que mapearlo a un atributo de conversación con <code>Object mapping</code>. Esto reaparecerá en cada
+    conector nuevo.</li>
+  <li><b>Preview miente.</b> Usa mocks. Ya invalidó dos diagnósticos en este proyecto, el 23 y el 28 de julio.</li>
+  <li><b>Las "Simulations" no existen para Custom Bots</b> — son una herramienta de Fin. La única validación
+    real es una conversación en el Messenger, con dos minutos de cooldown entre pruebas.</li>
+  <li><b><code>success</code> en n8n no es prueba de nada:</b> significa "hice lo que tenía cableado".</li>
+  <li><b>Preguntar "hay algo?" antes de "es correcto?"</b> — el operador <code>has any value</code> descartó
+    cuatro hipótesis de una sola prueba.</li>
+  <li><b>Asumir el tipo del dato de entrada es la fuente principal de fallos silenciosos</b> en estas
+    integraciones. Tres de los bugs del proyecto vienen de ahí.</li>
+  <li><b>El timeline de la conversación, leído por API, es la mejor herramienta de diagnóstico</b> de
+    Intercom: nombra los workflows que actúan, marca las llamadas a connectors y da timestamps al segundo.</li>
+</ol>
+
+<hr>
+
+<h2><span class="num">09</span>Estado del proyecto</h2>
+<div class="tw">
+<table>
+  <thead><tr><th>WP</th><th>Título</th><th>Estado</th><th>Nota</th></tr></thead>
+  <tbody>
+    <tr><td>WP-01</td><td>Filtro F1–F3 en Intercom</td><td><span class="pill p-done">done</span></td><td></td></tr>
+    <tr><td>WP-02</td><td>Esquema Airtable del bot</td><td><span class="pill p-done">done</span></td><td></td></tr>
+    <tr><td>WP-03</td><td>F4: fecha prevista de alta</td><td><span class="pill p-done">done</span></td><td></td></tr>
+    <tr><td>WP-04</td><td>Fix del branch de F3</td><td><span class="pill p-done">done</span></td><td><b>Cerrado hoy</b>, verificado en las dos ramas</td></tr>
+    <tr><td>WP-05</td><td><code>upsert_expediente</code> en n8n</td><td><span class="pill p-done">done</span></td><td>Cerrado el 27/07</td></tr>
+    <tr><td>WP-06</td><td>DC principal en Intercom</td><td><span class="pill p-spec">specified</span></td><td>Diseño acordado por el Council. Sin bloqueos</td></tr>
+    <tr><td>WP-07</td><td><code>get_expediente</code></td><td><span class="pill p-build">building</span></td><td>Existe un borrador en n8n <b>sin verificar</b></td></tr>
+    <tr><td>WP-08</td><td>Prueba e2e y publicación</td><td><span class="pill p-skel">skeleton</span></td><td>Depende de WP-06</td></tr>
+    <tr><td>WP-09</td><td>Agente IA conversacional</td><td><span class="pill p-build">building</span></td><td><b>Construido hoy.</b> Turno 1 OK, turno 2 bloqueado</td></tr>
+    <tr><td>WP-10</td><td>Enrutado de mensajes en Intercom</td><td><span class="pill p-spec">specified</span></td><td><b>Nuevo.</b> Es el desbloqueo real</td></tr>
+    <tr><td>WP-11</td><td>Método de triaje</td><td><span class="pill p-skel">skeleton</span></td><td><b>Nuevo.</b> A definir con Alina</td></tr>
+  </tbody>
+</table>
+</div>
+<p style="font-size:14px;color:var(--ink-soft)">
+  Camino crítico: <code>WP-02 → WP-05 → WP-09 → WP-11</code>. El primer eslabón no terminado es WP-09,
+  y lo que lo bloquea es WP-10. Mapa interactivo en <code>docs/prds/map.html</code>.
+</p>
+
+<hr>
+
+<h2><span class="num">10</span>Siguientes pasos</h2>
+
+<h3>1 · Arreglar el asunto del ticket <span class="pill p-spec">WP-10 · lo primero</span></h3>
+<p>
+  Es lo que impide que el agente mantenga una conversación. La conversación nace como
+  <code>Customer ticket</code> y sobre un ticket no se disparan los triggers de mensaje, así que el segundo
+  turno nunca llega a n8n. Y al pasar el ticket a <i>Submitted</i>, <b>Intercom manda un correo al cliente</b>
+  diciéndole que le contestarán por otro canal — eso no puede llegar a producción.
+</p>
+<p><b>Dato que acota la búsqueda:</b> la conversación de las 19:04 no era ticket y funcionó; las de las 19:19
+  en adelante sí lo son. Algo cambió en el workspace entre esas dos horas, y no fue trabajo de este proyecto.</p>
+<p>Sitios a revisar, por probabilidad — y <b>desactivando de uno en uno, probando entre medias</b>:</p>
+<ol>
+  <li><b>Fin AI Agent → Deploy → Messenger.</b> El Messenger muestra "Powered by Fin" al pie; Fin puede estar
+    creando el ticket cuando no sabe resolver.</li>
+  <li><b>Settings → Tickets → <code>Prueba Fer</code>.</b> Si es tipo por defecto, customer-facing, o tiene
+    formulario en el Messenger.</li>
+  <li><b>Settings → Channels → Messenger.</b> Si las conversaciones entrantes se crean como ticket.</li>
+  <li><b>Workflows (Live).</b> Triggers de "customer sends any message" y "customer starts a conversation";
+    cualquier paso <i>Create ticket</i>.</li>
+  <li><b>Simple automations</b> y <b>Settings → Inbox → Rules</b>.</li>
+  <li><b>Settings → Apps</b>: la app <code>adri-app-test</code> inyecta notas en todas las conversaciones.</li>
+</ol>
+<p>
+  Y falta cerrar la otra mitad: <b>reactivar el workflow <code>distribuidor - usuario envia mensaje</code></b>
+  (hoy está pausado, y pausado no reparte los mensajes de nadie en el workspace) y <b>dar de alta el bot en
+  él</b>, con una rama del tipo <i>si la conversación tiene <code>veredicto_f2</code> → pasar a
+  <code>n8n_BOT_mobility</code></i>.
+</p>
+<p>
+  <b>Mientras esté abierto</b>, el agente se puede seguir validando lanzando el reusable a mano desde el
+  Inbox después de cada respuesta.
+</p>
+
+<h3>2 · Implementar el método de triaje <span class="pill p-skel">WP-11 · con Alina</span></h3>
+<p>
+  Acordado con Alina; el detalle se recoge en la próxima sesión. Son reglas <b>de negocio</b>, así que hay
+  que sacarlas de ella y no inventarlas. Lo que hará falta saber:
+</p>
+<ul>
+  <li>Qué <b>categorías</b> hay y cómo se llaman exactamente.</li>
+  <li>Con qué <b>criterios</b> se asigna cada una, y de dónde sale cada dato.</li>
+  <li><b>Quién decide</b>: reglas deterministas, el agente, o una persona.</li>
+  <li>Qué <b>cambia</b> según la categoría: camino, prioridad, equipo, documentación que se pide.</li>
+  <li><b>Dónde se guarda</b> — conviene mirar primero el campo <code>Status</code>, que ya existe en Airtable
+    y que hoy el bot no rellena, antes de crear uno nuevo.</li>
+</ul>
+<p>
+  Dos avisos ya anotados: si el triaje escribe en Airtable debe hacerlo <b>a través del único escritor</b>,
+  y si puede reclasificar un caso hay que definir <b>qué se borra</b> al cambiar de categoría — porque hoy
+  ninguna rama limpia las marcas de otra.
+</p>
+
+<h3>3 · Los Work Packages que faltan</h3>
+<div class="tw">
+<table>
+  <thead><tr><th>WP</th><th>Qué queda</th><th>Bloqueos</th></tr></thead>
+  <tbody>
+    <tr><td><b>WP-06</b></td>
+        <td>Construir los 4 Data Connectors finos según la decisión del Council y conectarlos en
+          <code>D</code>, <code>H</code>, <code>G</code> y <code>N</code>. Se puede reutilizar el borrador
+          que ya existe como uno de los cuatro</td>
+        <td>Ninguno. <b>Es lo más productivo si WP-10 se atasca</b></td></tr>
+    <tr><td><b>WP-07</b></td>
+        <td>Revisar el borrador de <code>beckham_get_expediente</code>: tiene cero triggers, así que
+          probablemente está incompleto. Asignar la credencial de Airtable a mano y probarlo por curl</td>
+        <td>Ninguno. Además es la futura herramienta de consulta del agente</td></tr>
+    <tr><td><b>WP-08</b></td>
+        <td>Prueba end-to-end de los 4 escenarios y publicación</td>
+        <td>WP-06</td></tr>
+    <tr><td><b>WP-09</b></td>
+        <td>Cerrar el <b>contrato de herramientas</b> para que Paula escriba el prompt sobre algo firme.
+          Faltan dos respuestas: si la tool de datos es <i>consultar</i> Airtable o <i>preguntar</i> al
+          usuario, y el quién/cómo/cuándo del reporte. También falta decidir quién cierra la conversación
+          al terminar</td>
+        <td>WP-10 para probar de verdad</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h4>Y la deuda pequeña, apuntada para no perderla</h4>
+<ul>
+  <li>El mensaje de descarte por plazo tiene los chips pegados al texto (<code>21/12/2025y han pasado: 219días</code>).</li>
+  <li><code>M. Path</code> vuelve a llamar al connector sin necesidad — desde el arreglo de hoy ya no hace falta. Cambio aparte.</li>
+  <li>Cuatro filas de prueba y una vacía en Airtable, a limpiar antes del primer test de extremo a extremo.</li>
+  <li><code>Respond OK</code> devolviendo los 68 campos, sin <code>retryOnFail</code> en Airtable, y la fecha inválida que responde <code>ok:true</code>.</li>
+</ul>
+
+<footer>
+  Bot Beckham · Departamento Mobility · TaxDown — informe generado el 28 de julio de 2026.<br>
+  Trazabilidad completa en <code>.spartax/log.md</code> · bitácora en <code>Trabajo.md</code> ·
+  Work Packages en <code>docs/prds/</code> · mapa interactivo en <code>docs/prds/map.html</code>.
+</footer>
+
+</div>
+</body>
+</html>

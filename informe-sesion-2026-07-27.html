@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bot Beckham — Informe de sesión 27/07</title>
+<style>
+  :root{
+    color-scheme:light;
+    --bg:#ffffff;
+    --surface-2:#F7F7F7;
+    --surface-3:#FBFBFB;
+    --ink:#3D3A62;
+    --ink-soft:#5A5780;
+    --muted:#888888;
+    --border:#E6E6E6;
+    --border-strong:#D9D9D9;
+    --sky:#5A74D0;
+    --sky-bg:#EEF7FD;
+    --mint:#0FD48E;
+    --mint-dark:#0C7A60;
+    --mint-bg:#DFF8E9;
+    --coral:#FF7F63;
+    --coral-bg:#FFEDE9;
+    --coral-dark:#B76A2F;
+    --shadow:0 1px 2px rgba(61,58,98,.06), 0 6px 20px rgba(61,58,98,.06);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;}
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px 100px;}
+
+  /* ── Cabecera ── */
+  header{
+    background:linear-gradient(160deg, var(--sky-bg) 0%, var(--mint-bg) 100%);
+    padding:56px 24px 44px; margin:0 -24px 56px;
+    border-radius:0 0 22px 22px;
+  }
+  .header-inner{max-width:752px; margin:0 auto;}
+  .brandmark{display:flex; align-items:center; gap:9px; margin-bottom:28px;}
+  .brandmark .d{width:11px;height:11px;transform:rotate(45deg);border-radius:2px;}
+  .brandmark .d1{background:var(--sky);} .brandmark .d2{background:var(--mint);} .brandmark .d3{background:var(--coral);}
+  .brandmark span{font-family:ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft); font-weight:700;}
+  .eyebrow{font-family:ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--sky); font-weight:700; margin:0 0 14px;}
+  h1{font-size:clamp(30px,4.6vw,46px); line-height:1.06; letter-spacing:-.02em; font-weight:800; margin:0 0 16px; text-wrap:balance; max-width:19ch;}
+  .deck{color:var(--ink-soft); font-size:16.5px; max-width:60ch; margin:0 0 26px;}
+  .meta-row{display:flex; flex-wrap:wrap; gap:10px;}
+  .meta-pill{
+    background:#fff; border:1px solid var(--border); border-radius:999px;
+    padding:7px 14px; font-size:12.5px; color:var(--ink-soft); display:flex; align-items:center; gap:6px;
+    box-shadow:var(--shadow);
+  }
+  .meta-pill b{color:var(--ink);}
+
+  /* ── Secciones ── */
+  section{margin-bottom:52px;}
+  .s-head{display:flex; align-items:baseline; gap:12px; margin-bottom:6px;}
+  .s-num{font-family:ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; color:var(--sky); letter-spacing:.04em;}
+  h2{font-size:23px; letter-spacing:-.01em; font-weight:750; margin:0; text-wrap:balance;}
+  .s-sub{color:var(--muted); font-size:13.5px; margin:6px 0 22px; max-width:65ch;}
+  p{max-width:66ch; font-size:15px; color:var(--ink-soft);}
+  p.tight{margin:0 0 12px;}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.92em; background:var(--surface-2); border-radius:4px; padding:1px 5px; color:var(--ink);}
+
+  /* ── Diagrama de flujo (texto estructurado) ── */
+  .flow{
+    background:var(--surface-3); border:1px solid var(--border); border-radius:14px;
+    padding:24px 26px; margin:22px 0; overflow-x:auto;
+  }
+  .flow-row{display:flex; align-items:center; gap:10px; font-family:ui-monospace,Menlo,monospace; font-size:13px; white-space:nowrap; margin-bottom:4px;}
+  .flow-row.indent1{margin-left:22px;}
+  .flow-row.indent2{margin-left:44px;}
+  .flow-node{background:#fff; border:1px solid var(--border-strong); border-radius:7px; padding:4px 10px; font-weight:600; color:var(--ink);}
+  .flow-node.branch{border-color:var(--sky); color:var(--sky); background:color-mix(in srgb, var(--sky) 8%, white);}
+  .flow-node.ok{border-color:var(--mint-dark); color:var(--mint-dark); background:var(--mint-bg);}
+  .flow-node.bad{border-color:var(--coral-dark); color:var(--coral-dark); background:var(--coral-bg);}
+  .flow-arrow{color:var(--muted);}
+  .flow-label{color:var(--muted); font-size:12px;}
+
+  /* ── Panel de evidencia (lo más importante del día) ── */
+  .evidence{
+    display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:26px 0;
+  }
+  @media (max-width:680px){ .evidence{grid-template-columns:1fr;} }
+  .ev-card{
+    border-radius:14px; border:1px solid var(--border); overflow:hidden; box-shadow:var(--shadow); background:#fff;
+    display:flex; flex-direction:column;
+  }
+  .ev-head{
+    padding:12px 16px; font-size:12px; font-weight:700; letter-spacing:.03em;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .ev-head.log{background:var(--mint-bg); color:var(--mint-dark);}
+  .ev-head.chat{background:var(--coral-bg); color:var(--coral-dark);}
+  .ev-time{font-family:ui-monospace,Menlo,monospace; font-weight:700;}
+  .ev-body{padding:16px; flex:1;}
+  pre.json{
+    margin:0; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12.5px;
+    line-height:1.65; color:var(--ink); white-space:pre-wrap; word-break:break-word;
+  }
+  .json .k{color:var(--sky);} .json .v{color:var(--mint-dark); font-weight:600;} .json .p{color:var(--muted);}
+  .ev-note{font-size:12px; color:var(--muted); margin-top:10px; padding-top:10px; border-top:1px dashed var(--border);}
+  .bubble{
+    background:var(--surface-2); border-radius:10px; padding:9px 13px; font-size:13px;
+    color:var(--ink); margin-bottom:8px; max-width:92%;
+  }
+  .bubble.user{background:#FFF4D6; margin-left:auto; text-align:right;}
+  .ts{font-size:10.5px; color:var(--muted); margin-top:3px; font-family:ui-monospace,Menlo,monospace;}
+
+  .verdict{
+    margin-top:20px; padding:18px 20px; border-radius:12px; background:var(--ink); color:#fff;
+    font-size:14.5px; line-height:1.55;
+  }
+  .verdict b{color:var(--coral);}
+
+  /* ── Tabla ── */
+  table{width:100%; border-collapse:collapse; font-size:13.5px; margin:18px 0;}
+  th{text-align:left; font-family:ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:600; padding:8px 12px; border-bottom:1.5px solid var(--border-strong);}
+  td{padding:10px 12px; border-bottom:1px solid var(--border); color:var(--ink-soft); vertical-align:top;}
+  td b{color:var(--ink);}
+  .status-chip{font-family:ui-monospace,Menlo,monospace; font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; padding:2px 7px; border-radius:5px;}
+  .status-chip.done{background:var(--mint-bg); color:var(--mint-dark);}
+  .status-chip.spec{background:var(--sky-bg); color:var(--sky);}
+  .status-chip.skel{background:var(--surface-2); color:var(--muted);}
+  .table-wrap{overflow-x:auto;}
+
+  /* ── Lista de checklist ── */
+  .checklist{list-style:none; margin:16px 0; padding:0; display:flex; flex-direction:column; gap:10px;}
+  .checklist li{display:flex; gap:10px; align-items:flex-start; font-size:14.5px; color:var(--ink-soft);}
+  .checklist .tick{
+    flex:none; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:800; margin-top:1px;
+  }
+  .checklist .tick.done{background:var(--mint); color:#fff;}
+  .checklist .tick.pending{background:var(--surface-2); color:var(--muted); border:1.5px solid var(--border-strong);}
+
+  .not-touched{
+    background:var(--surface-2); border-radius:12px; padding:18px 20px; margin-top:18px;
+    font-size:13.5px; color:var(--ink-soft);
+  }
+  .not-touched b{color:var(--ink);}
+
+  footer{
+    margin-top:60px; padding-top:24px; border-top:1px solid var(--border);
+    font-size:12px; color:var(--muted); font-family:ui-monospace,Menlo,monospace;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="header-inner">
+      <div class="brandmark"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span>TaxDown · Mobility Beckham</span></div>
+      <p class="eyebrow">Informe de sesión</p>
+      <h1>Auditoría de Intercom y causa raíz de F3 confirmada</h1>
+      <p class="deck">Antes de reconstruir el Data Connector de persistencia (WP-06), se auditó por
+        Chrome —en modo solo lectura— la estructura real del bot en Intercom. De paso, se encontró y
+        confirmó con evidencia directa la causa del bug que llevaba semanas bloqueado.</p>
+      <div class="meta-row">
+        <span class="meta-pill">📅 <b>27 de julio de 2026</b></span>
+        <span class="meta-pill">🗺️ Workspace <b>TaxDown [TEST]</b></span>
+        <span class="meta-pill">🔍 Solo lectura — nada publicado</span>
+        <span class="meta-pill" style="background:var(--coral-bg);border-color:var(--coral);color:var(--coral-dark)">🐞 Bug de F3 <b style="color:var(--coral-dark)">sigue activo</b></span>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="s-head"><span class="s-num">01</span><h2>Objetivo de la sesión</h2></div>
+    <p class="s-sub">Por qué hacía falta abrir Intercom antes de tocar nada más.</p>
+    <p class="tight">La memoria del proyecto tenía la estructura de <code>OnClick Mobility</code>
+      desactualizada — nombres de paths que ya no coincidían con el editor real, y una hipótesis sobre
+      el bug de F3 (atributos duplicados) que llevaba semanas en disputa sin verificar. Antes de
+      diseñar el nuevo Data Connector (WP-06) había que confirmar la estructura real y, si se podía,
+      cerrar el diagnóstico de F3 de una vez.</p>
+  </section>
+
+  <section>
+    <div class="s-head"><span class="s-num">02</span><h2>Persistencia en n8n: nodos, Airtable y pruebas por curl</h2></div>
+    <p class="s-sub">Trabajo de esta mañana (WP-05), cerrado y verificado — es el cimiento sobre el que se apoya todo lo demás.</p>
+    <p class="tight">Dentro del workflow <code>beckham_bot</code> (n8n, producción) se construyó a mano una
+      cadena nueva e independiente de la que ya existía, para no arriesgar las credenciales de los
+      nodos con agente langchain:</p>
+    <div class="flow">
+      <div class="flow-row"><span class="flow-node">Webhook_Upsert_Expediente</span><span class="flow-arrow">→</span><span class="flow-node">Validar y Normalizar (Code)</span></div>
+      <div class="flow-row" style="margin-left:22px"><span class="flow-arrow">→</span><span class="flow-node branch">¿Datos Válidos?</span></div>
+      <div class="flow-row indent2"><span class="flow-label">true</span><span class="flow-arrow">→</span><span class="flow-node ok">Airtable Upsert Expediente</span><span class="flow-arrow">→</span><span class="flow-node ok">Respond OK</span></div>
+      <div class="flow-row indent2"><span class="flow-label">false</span><span class="flow-arrow">→</span><span class="flow-node bad">Respond Error (400)</span></div>
+    </div>
+    <p class="tight">Se conectó una credencial de Airtable nueva (Personal Access Token — la
+      credencial OAuth2 que ya tenía <code>beckham_bot</code> no daba acceso a la base
+      <code>Empleados</code>) y se mapeó el upsert por <code>UserId</code> con <code>typecast</code>.</p>
+    <p class="tight">Se probó contra el webhook de producción a base de <b>peticiones curl reales</b>,
+      no solo con el Test del editor. Se encontraron y arreglaron dos bugs en el proceso:</p>
+    <ul class="checklist">
+      <li><span class="tick done">✓</span> Fechas se guardaban un día antes (medianoche local → UTC) — arreglado emitiendo <code>T12:00:00.000Z</code>.</li>
+      <li><span class="tick done">✓</span> Los booleanos llegaban como texto (<code>"true"</code>) desde el Data Connector y se descartaban en silencio — arreglado con una función <code>toBool</code>.</li>
+      <li><span class="tick done">✓</span> Cambio de clave de negocio de <code>email</code> a <code>UserId</code> (estable, no cambia) — verificado antes de cambiar que no había filas heredadas en riesgo.</li>
+    </ul>
+    <p class="tight">Resultado verificado por curl: crea expediente nuevo, actualiza sin duplicar,
+      devuelve 400 sin <code>user_id</code>, no pisa campos ausentes, funciona sin email.
+      <b>WP-05 queda cerrado</b> — es la base sobre la que se apoyará el Data Connector nuevo de Intercom (WP-06).</p>
+  </section>
+
+  <section>
+    <div class="s-head"><span class="s-num">03</span><h2>Estructura real de OnClick Mobility</h2></div>
+    <p class="s-sub">Verificada navegando el editor — corrige los nombres de path de toda la memoria anterior.</p>
+    <div class="flow">
+      <div class="flow-row"><span class="flow-node">A. Bienvenida</span><span class="flow-arrow">→</span><span class="flow-node">B. Residencia F1</span></div>
+      <div class="flow-row indent1"><span class="flow-label">Sí (residente)</span><span class="flow-arrow">→</span><span class="flow-node bad">D. Fue residente</span><span class="flow-label">descarte duro</span></div>
+      <div class="flow-row indent1"><span class="flow-label">No</span><span class="flow-arrow">→</span><span class="flow-node">E. Alta SS</span></div>
+      <div class="flow-row indent2"><span class="flow-label">No</span><span class="flow-arrow">→</span><span class="flow-node ok">H. Lead potencial</span></div>
+      <div class="flow-row indent2"><span class="flow-label">Sí</span><span class="flow-arrow">→</span><span class="flow-node">F. Fecha Alta SS + DC beckham_plazo_f2</span></div>
+      <div class="flow-row indent2" style="margin-left:66px"><span class="flow-arrow">→</span><span class="flow-node branch">I. Path (branch veredicto)</span></div>
+      <div class="flow-row" style="margin-left:88px"><span class="flow-label">en_plazo</span><span class="flow-arrow">→</span><span class="flow-node ok">G. Enviar a n8n</span><span class="flow-label">cualifica</span></div>
+      <div class="flow-row" style="margin-left:88px"><span class="flow-label">fuera_plazo</span><span class="flow-arrow">→</span><span class="flow-node">M. Path</span><span class="flow-arrow">→</span><span class="flow-node bad">N. Path</span><span class="flow-label">descarte plazo</span></div>
+      <div class="flow-row" style="margin-left:88px"><span class="flow-label">else</span><span class="flow-arrow">→</span><span class="flow-node">K. Path</span><span class="flow-arrow">→</span><span class="flow-label">vuelve a F (reintento)</span></div>
+    </div>
+    <p class="tight">El branch se llama <b>I. Path</b>, no "J. Path" como decía la memoria. Y hay
+      <b>4 puntos reales</b> donde debe conectarse el futuro Data Connector de persistencia —
+      <code>D</code>, <code>H</code>, <code>G</code> y <code>N</code>— no 3 como se había planificado.</p>
+  </section>
+
+  <section>
+    <div class="s-head"><span class="s-num">04</span><h2>El bug de F3: causa raíz confirmada (el bug sigue activo)</h2></div>
+    <p class="s-sub">Diagnóstico cerrado con evidencia directa — el fix todavía no se ha aplicado ni publicado.</p>
+    <p class="tight">El síntoma llevaba semanas igual: el branch que debía leer el resultado del cálculo
+      de plazo (en plazo / fuera de plazo) caía siempre al mensaje de reintento. La hipótesis principal
+      —atributos duplicados a nivel de app— nunca se había podido confirmar ni descartar. Hoy sí:
+      revisando el selector de atributos de la propia condición, se buscó "veredicto" y solo apareció
+      <b>un</b> resultado, agrupado bajo el conector <code>beckham_plazo_f2</code>. No hay duplicado.</p>
+    <p class="tight">La prueba definitiva llegó cruzando los <b>Logs del Data Connector</b> con la
+      <b>conversación real</b> en el Inbox — la misma conversación, con dos segundos de diferencia:</p>
+
+    <div class="evidence">
+      <div class="ev-card">
+        <div class="ev-head log"><span>📋 Log del Data Connector</span><span class="ev-time">18:42:24</span></div>
+        <div class="ev-body">
+          <pre class="json"><span class="p">{</span>
+  <span class="k">"veredicto"</span>: <span class="v">"en_plazo"</span>,
+  <span class="k">"fecha_alta_norm"</span>: <span class="p">"2026-03-03"</span>,
+  <span class="k">"fecha_limite"</span>: <span class="p">"03/09/2026"</span>,
+  <span class="k">"dias_pasados"</span>: <span class="p">0</span>
+<span class="p">}</span></pre>
+          <div class="ev-note">Respuesta 200 · "API attributes mapped successfully" — Intercom confirma que el valor se mapeó bien.</div>
+        </div>
+      </div>
+      <div class="ev-card">
+        <div class="ev-head chat"><span>💬 Conversación real (Inbox)</span><span class="ev-time">18:42:26</span></div>
+        <div class="ev-body">
+          <div class="bubble">¿Qué día te diste de alta en la Seguridad Social?</div>
+          <div class="bubble user">03/03/2026<div class="ts">enviado por el usuario</div></div>
+          <div class="bubble" style="background:var(--coral-bg)">No he entendido bien la fecha, ¿me la escribes así: DD/MM/AAAA?</div>
+          <div class="ts">↳ mensaje de la rama de reintento (K), no el de cualificación (G)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="verdict">
+      Con un <b>veredicto correcto y ya mapeado</b> ("en_plazo"), el branch igual cayó al reintento
+      dos segundos después. Esto descarta n8n, el mapeo del conector y los atributos duplicados —
+      la causa está en el propio chip <code style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3)">veredicto</code>
+      de la condición en <b>I. Path</b>, que se ve bien en el editor pero no resuelve igual en tiempo
+      real (patrón conocido como <i>Pill Conversion Error</i>). <b>El bug sigue en producción</b> —
+      hoy solo se diagnosticó. El fix (borrar y reinsertar el chip con el selector de atributos, un
+      solo cambio reversible) queda pendiente de aplicar y publicar en la próxima sesión.
+    </div>
+  </section>
+
+  <section>
+    <div class="s-head"><span class="s-num">05</span><h2>PRDs y roadmap actualizados</h2></div>
+    <p class="s-sub">Regenerado con el plugin PRD Kit (<code>/prd:map</code>).</p>
+    <div class="table-wrap">
+    <table>
+      <tr><th>WP</th><th>Antes</th><th>Ahora</th><th>Motivo</th></tr>
+      <tr>
+        <td><b>WP-04</b><br>Fix del bug de F3</td>
+        <td><span class="status-chip skel">esqueleto</span></td>
+        <td><span class="status-chip spec">especificado</span></td>
+        <td>Causa raíz confirmada con evidencia; ya no depende de IT, fix acotado a un solo chip.</td>
+      </tr>
+      <tr>
+        <td><b>WP-06</b><br>Data Connector principal</td>
+        <td><span class="status-chip skel">esqueleto</span></td>
+        <td><span class="status-chip spec">especificado</span></td>
+        <td>Replanteado desde cero sobre la estructura real; pasa de 3 a 4 puntos de conexión.</td>
+      </tr>
+    </table>
+    </div>
+    <p class="tight">Artefactos regenerados: <code>docs/prds/ROADMAP.md</code> y
+      <code>docs/prds/map.html</code> (mapa interactivo, con los colores de marca de TaxDown).</p>
+  </section>
+
+  <section>
+    <div class="s-head"><span class="s-num">06</span><h2>Pendiente para retomar</h2></div>
+    <p class="s-sub">Orden recomendado para la próxima sesión.</p>
+    <ul class="checklist">
+      <li><span class="tick pending">1</span> Aplicar el fix de WP-04: reinsertar el chip <code>veredicto</code> en <b>I. Path</b> y validar con una Simulation (no Preview, que usa una respuesta simulada).</li>
+      <li><span class="tick pending">2</span> Confirmar que <code>{{user_id}}</code> resuelve con valor real en el contexto de <code>OnClick Mobility</code> — riesgo abierto más importante de WP-06.</li>
+      <li><span class="tick pending">3</span> Confirmar si "Map action inputs" admite valores literales (<code>true</code>, un motivo de descarte) o solo chips de atributo.</li>
+      <li><span class="tick pending">4</span> Construir desde cero el Data Connector <code>beckham_upsert_expediente</code> según el PRD de WP-06 y conectarlo en los 4 puntos.</li>
+    </ul>
+  </section>
+
+  <div class="not-touched">
+    <b>Nada modificado en sistemas productivos.</b> Toda la sesión de Chrome fue de solo lectura sobre
+    el editor de Intercom (necesario entrar en modo edición para abrir condiciones, pero "Set changes
+    live" quedó siempre desactivado). No se tocó n8n ni Airtable.
+  </div>
+
+  <footer>
+    <span>bot Beckham · Intercom + n8n + Airtable</span>
+    <span>sesión 2026-07-27 · TaxDown [TEST]</span>
+  </footer>
+
+</div>
+</body>
+</html>

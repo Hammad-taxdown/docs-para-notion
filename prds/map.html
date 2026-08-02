@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bot Beckham — Mapa de dependencias PRD</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #F7F7F7;
+    --ink: #3D3A62;
+    --ink-soft: #5A5780;
+    --muted: #888888;
+    --border: #E6E6E6;
+    --border-strong: #D9D9D9;
+    --accent: #5A74D0;
+    --crit: #B76A2F;
+    --warn: #B76A2F;
+    --done: #0C7A60;
+    --edge: #D9D9D9;
+    --edge-crit: #FF7F63;
+    --shadow: 0 1px 2px rgba(61,58,98,.06), 0 4px 14px rgba(61,58,98,.05);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace; }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 44px 28px 72px; }
+
+  /* ── Cabecera ── */
+  header {
+    border-bottom: 1px solid var(--border); padding: 30px 32px 28px; margin: -44px -28px 30px;
+    background: linear-gradient(135deg, #EEF7FD 0%, #DFF8E9 100%);
+    border-radius: 0 0 16px 16px;
+  }
+  .brandmark { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .brandmark .diamond { width: 10px; height: 10px; background: #5A74D0; transform: rotate(45deg); border-radius: 2px; }
+  .brandmark .diamond.b { background: #0FD48E; }
+  .brandmark .diamond.c { background: #FF7F63; }
+  .brandmark span { font-family: ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
+  .eyebrow {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin: 0 0 12px;
+  }
+  h1 {
+    font-size: clamp(26px, 4vw, 40px);
+    line-height: 1.08; letter-spacing: -.02em; font-weight: 700;
+    margin: 0 0 12px; text-wrap: balance; max-width: 24ch;
+  }
+  .deck { color: var(--ink-soft); font-size: 15.5px; max-width: 74ch; margin: 0; }
+
+  /* ── Franja de estadísticas ── */
+  .stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .stat {
+    display: flex; align-items: baseline; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 13px; box-shadow: var(--shadow);
+  }
+  .stat b { font-size: 18px; letter-spacing: -.01em; }
+  .stat span { color: var(--muted); font-size: 12.5px; }
+  .stat .dot { width: 9px; height: 9px; border-radius: 3px; align-self: center; }
+
+  /* ── Leyenda ── */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 14px 26px;
+    margin: 26px 0 8px; padding: 14px 18px;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+    font-size: 13px;
+  }
+  .legend-group { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .legend-label {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+  }
+  .lg { display: inline-flex; align-items: center; gap: 7px; color: var(--ink-soft); }
+  .lg .swatch { width: 13px; height: 13px; border-radius: 4px; flex: none; }
+  .lg .line { width: 26px; height: 0; border-top: 3px solid var(--edge-crit); border-radius: 3px; }
+  .lg .ring { width: 13px; height: 13px; border-radius: 4px; box-shadow: 0 0 0 2px var(--crit); background: var(--surface); }
+  .lg .dash { width: 20px; height: 13px; border: 1.5px dashed var(--warn); border-radius: 4px; }
+  .lg .today { width: 13px; height: 13px; border-radius: 4px; background: #FF7F63; }
+
+  /* ── Chips de estado ── */
+  .st {
+    font-family: ui-monospace, Menlo, monospace; font-size: 9.5px; font-weight: 600;
+    letter-spacing: .06em; text-transform: uppercase;
+    border-radius: 5px; padding: 1.5px 6px; border: 1px solid transparent;
+  }
+  .st-skeleton  { color: var(--muted); background: var(--surface-2); border-color: var(--border); }
+  .st-specified { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
+  .st-building  { color: var(--crit); background: color-mix(in srgb, var(--crit) 14%, transparent); border-color: color-mix(in srgb, var(--crit) 40%, transparent); }
+  .st-done      { color: var(--done); background: color-mix(in srgb, var(--done) 13%, transparent); border-color: color-mix(in srgb, var(--done) 40%, transparent); }
+
+  /* ── Grafo ── */
+  .graph-scroll { overflow-x: auto; margin: 8px -28px 0; padding: 8px 28px 4px; }
+  .graph { position: relative; min-width: 900px; }
+  .edges { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: visible; }
+  .edge { fill: none; stroke: var(--edge); stroke-width: 1.6; }
+  .edge.crit { stroke: var(--edge-crit); stroke-width: 2.6; }
+  #ah path { fill: var(--edge); }
+  #ah-crit path { fill: var(--edge-crit); }
+
+  .layers { position: relative; display: flex; flex-direction: column; gap: 58px; }
+  .layer { display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 8px; }
+  .layer-head { border-left: 2px solid var(--border-strong); padding-left: 14px; }
+  .layer-n {
+    font-family: ui-monospace, Menlo, monospace; font-size: 12px;
+    color: var(--accent); font-weight: 600; letter-spacing: .08em;
+  }
+  .layer-name { font-size: 15px; font-weight: 650; letter-spacing: -.01em; margin-top: 2px; }
+  .layer-hint { font-size: 12px; color: var(--muted); margin-top: 1px; }
+
+  .layer-nodes { display: flex; justify-content: center; align-items: stretch; gap: 18px; flex-wrap: wrap; }
+
+  .node {
+    position: relative; z-index: 1;
+    flex: 0 0 172px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 11px;
+    padding: 12px 13px 11px 16px; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; gap: 3px;
+    transition: opacity .16s ease, transform .16s ease, box-shadow .16s ease;
+    cursor: default; outline: none;
+  }
+  .node:focus-visible { box-shadow: var(--shadow), 0 0 0 3px color-mix(in srgb, var(--accent) 55%, transparent); }
+  .node-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; border-radius: 11px 0 0 11px; }
+  .node.crit { box-shadow: var(--shadow), 0 0 0 2px var(--crit); }
+  .node.today { box-shadow: var(--shadow), 0 0 0 2px #FF7F63; }
+
+  .node-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+  .node .wp { font-family: ui-monospace, Menlo, monospace; font-size: 14px; font-weight: 700; letter-spacing: -.01em; }
+  .node .ttl { font-size: 13.5px; font-weight: 620; letter-spacing: -.01em; }
+  .node .desc { font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+  .node .foot { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 3px; }
+  .node .owner { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--ink-soft); min-width: 0; }
+  .node .owner .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .node .issue {
+    font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; color: var(--muted);
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px;
+    flex: none;
+  }
+  .node .today-chip {
+    margin-top: 4px; font-size: 10px; font-weight: 700; color: #B76A2F;
+    display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;
+    background: #FFEDE9; border-radius: 5px; padding: 2px 6px;
+    font-family: ui-monospace, Menlo, monospace; letter-spacing: .04em; text-transform: uppercase;
+  }
+
+  .node.external { border-style: dashed; border-color: color-mix(in srgb, var(--warn) 55%, var(--border)); }
+  .chip-ext {
+    margin-top: 6px; font-size: 10.5px; color: var(--warn);
+    display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;
+    border: 1px dashed color-mix(in srgb, var(--warn) 60%, transparent);
+    border-radius: 6px; padding: 2px 6px;
+  }
+
+  /* ── Resaltado al pasar el ratón / foco ── */
+  .graph.tracing .node { opacity: .32; }
+  .graph.tracing .node.hl { opacity: 1; transform: translateY(-1px); }
+  .graph.tracing .edge { opacity: .08; }
+  .graph.tracing .edge.hl { opacity: 1; stroke: var(--accent); stroke-width: 2.4; }
+
+  /* ── Novedades de hoy ── */
+  .today-panel {
+    margin-top: 34px; padding: 20px 22px; border-radius: 12px;
+    background: #FFF7F4; border: 1px solid #FFE1D8;
+  }
+  .today-panel h3 {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: .1em;
+    text-transform: uppercase; color: #B76A2F; margin: 0 0 10px; font-weight: 700;
+  }
+  .today-panel ul { margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--ink-soft); }
+  .today-panel li { margin-bottom: 6px; }
+  .today-panel b { color: var(--ink); }
+
+  /* ── Notas al pie ── */
+  .footnote {
+    margin-top: 34px; padding-top: 22px; border-top: 1px solid var(--border);
+    display: flex; flex-wrap: wrap; gap: 18px 40px; align-items: flex-start;
+    font-size: 13px; color: var(--ink-soft);
+  }
+  .footnote h3 {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 8px; font-weight: 600;
+  }
+  .cpath { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .cpath .step {
+    font-family: ui-monospace, Menlo, monospace; font-weight: 700; font-size: 13px;
+    background: color-mix(in srgb, var(--crit) 14%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--crit) 45%, var(--border));
+    color: color-mix(in srgb, var(--crit) 72%, var(--ink));
+    border-radius: 7px; padding: 4px 9px;
+  }
+  .cpath .arrow { color: var(--crit); font-weight: 700; }
+  .fn-block { max-width: 46ch; }
+  .fn-block p { margin: 0; }
+  .fn-block b.wpb { font-family: ui-monospace, Menlo, monospace; }
+
+  footer.meta {
+    margin-top: 28px; font-size: 12px; color: var(--muted);
+    font-family: ui-monospace, Menlo, monospace; letter-spacing: .02em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .node, .graph.tracing .node.hl { transition: none; transform: none; }
+  }
+  @media (max-width: 620px) {
+    .wrap { padding: 32px 16px 56px; }
+    .graph-scroll { margin: 8px -16px 0; padding: 8px 16px 4px; }
+    .layer { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="brandmark"><span class="diamond"></span><span class="diamond b"></span><span class="diamond c"></span><span>TaxDown · Mobility Beckham</span></div>
+    <p class="eyebrow" id="eyebrow"></p>
+    <h1>Mapa de dependencias · Paquetes de trabajo (PRD)</h1>
+    <p class="deck">Se lee de arriba abajo: cada capa solo depende de las capas anteriores.
+      El <b>color de la barra</b> marca el responsable, el chip marca el <b>estado</b> del PRD, y el
+      trazo <b style="color:var(--edge-crit)">salmón</b> marca el camino crítico. Pasa el ratón (o usa
+      tabulador) sobre un WP para trazar de qué depende y a qué bloquea. Los WP con borde
+      <b style="color:#FF7F63">naranja</b> se actualizaron en la sesión de hoy.</p>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <div class="legend" id="legend"></div>
+
+  <div class="graph-scroll">
+    <div class="graph" id="graph">
+      <svg class="edges" id="edges" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="layers" id="layers"></div>
+    </div>
+  </div>
+
+  <div class="today-panel">
+    <h3>Qué se hizo hoy (28/07) — sesión de ~10 h</h3>
+    <ul>
+      <li><b>WP-04 ARREGLADO y verificado en conversación real.</b> El bug que llevaba desde el 23/07
+        haciendo que todo cayera en el mensaje de reintento. La causa no era ninguna de las cinco
+        hipótesis anteriores: <b>los outputs de un Data Connector solo son legibles dentro del path
+        del propio connector</b>, y el branch vivía en otro path, así que leía vacío. Se resolvió con
+        <code>Object mapping</code> (pestaña <i>2 Data</i> del DC) hacia <b>atributos de conversación
+        reales</b>. Las dos ramas comprobadas: fuera de plazo muestra la fecha límite y los días, y
+        en plazo cualifica y asigna al equipo.</li>
+      <li><b>El circuito conversacional funciona por primera vez.</b> Nunca había llegado un mensaje
+        de n8n a Intercom: el callback mandaba <code>{"data":{}}</code> y se comía un 400, dejando la
+        conversación colgada. Tres arreglos lo desbloquearon (campo del callback, tres inputs
+        <code>Required</code> del DC, y dos conexiones que faltaban en el canvas).</li>
+      <li><b>WP-09 pasa de esqueleto a construido.</b> Se descubrió que el "bloque 2" <u>no existía
+        en runtime</u>: el agente estaba desactivado y sin conexión de entrada. Se montó uno nuevo
+        (<code>Preparar_Prompt → AI Agent → Callback_Intercom</code>, con red de seguridad en la
+        salida de error). <b>Responde, y al cualificar se presenta solo</b> sin que el usuario escriba.</li>
+      <li><b>WP-10 nuevo y crítico:</b> el <i>turno 2</i> no funciona porque la conversación nace
+        como <code>Customer ticket</code> y sobre un ticket no se disparan los triggers de mensaje.
+        No es nuestro código, es configuración del workspace — y encima manda un correo de soporte
+        al cliente.</li>
+      <li><b>Council de 5 agentes</b> sobre la arquitectura de persistencia: decisión = 4 Data
+        Connectors finos con discriminador <code>punto</code>, cero constantes de negocio en Intercom,
+        un solo escritor a Airtable. Descartada la propuesta de un workflow separado para leads.</li>
+      <li>Corregidas <b>dos conclusiones falsas propias</b>: una prueba dada por buena que en
+        realidad se hizo en <i>Preview</i> (mocks), y la creencia de que el <code>else</code>
+        reintentaba cuando en realidad <b>cierra la conversación</b>.</li>
+    </ul>
+  </div>
+
+  <div class="footnote" id="footnote"></div>
+
+  <footer class="meta" id="meta"></footer>
+</div>
+
+<script>
+  /* ────────────────────────────────────────────────────────────────────────
+     DATOS — regenerados por /prd:map a partir del frontmatter de cada PRD.
+     Cada wp: { id, title, desc, owner, status, size, deps, external, issue, critical, today }
+       status: "skeleton" | "specified" | "building" | "done"
+       size:   "S" | "M" | "L"
+     ──────────────────────────────────────────────────────────────────────── */
+  const DATA = /*PRD-KIT:DATA*/{
+    project: "Bot Beckham — Intercom + n8n + Airtable",
+    updated: "2026-07-28",
+    source: "docs/prds",
+    wps: [
+      { id:"WP-01", title:"Filtro F1–F3 en Intercom",    desc:"residencia · alta SS · fecha, en OnClick Mobility",   owner:"Hammad", status:"done",      size:"M", deps:[],                 external:"", issue:"", critical:false, today:false },
+      { id:"WP-02", title:"Esquema Airtable del bot",     desc:"campos escribibles en la tabla Empleados",            owner:"Hammad", status:"done",      size:"S", deps:[],                 external:"", issue:"", critical:false, today:false },
+      { id:"WP-03", title:"F4: fecha prevista de alta",   desc:"recogida para leads potenciales",                     owner:"Hammad", status:"done",      size:"S", deps:["WP-02"],          external:"", issue:"", critical:false, today:false },
+      { id:"WP-04", title:"Fix branch fecha límite F3",   desc:"ARREGLADO hoy · Object mapping a atributos de conv.", owner:"Hammad", status:"done",      size:"S", deps:[],                 external:"", issue:"", critical:false, today:true  },
+      { id:"WP-05", title:"upsert_expediente en n8n",     desc:"cerrado 27/07 · verificado por curl",                 owner:"Hammad", status:"done",      size:"M", deps:["WP-02"],          external:"", issue:"", critical:true,  today:false },
+      { id:"WP-06", title:"DC principal en Intercom",     desc:"4 puntos de conexión · pendiente de construir",       owner:"Hammad", status:"specified", size:"M", deps:["WP-05"],          external:"", issue:"", critical:true,  today:false },
+      { id:"WP-07", title:"get_expediente (reentrada)",   desc:"borrador en n8n sin verificar · busca por UserId",    owner:"Hammad", status:"building",  size:"S", deps:["WP-02"],          external:"", issue:"", critical:false, today:true  },
+      { id:"WP-08", title:"Prueba e2e + publicación F5",  desc:"Messenger real, 4 escenarios",                        owner:"Hammad", status:"skeleton",  size:"S", deps:["WP-06"],          external:"", issue:"", critical:true,  today:false },
+      { id:"WP-09", title:"Agente IA conversacional",     desc:"CONSTRUIDO hoy · turno 1 OK, turno 2 bloqueado",      owner:"Paula, Hammad", status:"building",  size:"L", deps:["WP-05","WP-10"], external:"", issue:"", critical:false, today:true  },
+      { id:"WP-10", title:"Enrutado de mensajes Intercom",desc:"tickets + distribuidor · bloquea el turno 2",         owner:"Hammad", status:"specified", size:"M", deps:[],                 external:"Adri / Fer", issue:"", critical:true,  today:true  },
+      { id:"WP-11", title:"Método de triaje",             desc:"a definir con Alina",                                 owner:"Hammad, Alina", status:"skeleton",  size:"M", deps:["WP-09"],          external:"Alina", issue:"", critical:false, today:true  }
+    ]
+  }/*END PRD-KIT:DATA*/;
+
+  const STATUS = {
+    skeleton:  { label: "esqueleto"     },
+    specified: { label: "especificado"  },
+    building:  { label: "en curso"      },
+    done:      { label: "hecho"         }
+  };
+  const SIZE_W = { S: 1, M: 2, L: 3 };
+  const PALETTE = [
+    "#2f6fd0", "#0f9d8f", "#6d5bd0", "#b0509d", "#c0562f", "#5f8f2e", "#b98a00", "#3a7ca5"
+  ];
+  const NEUTRAL = "#9aa2b1";
+
+  const WPS = DATA.wps.map(w => ({ deps: [], desc: "", owner: "", external: "", issue: "", today: false, ...w }));
+  const byId = Object.fromEntries(WPS.map(w => [w.id, w]));
+  WPS.forEach(w => { w.deps = w.deps.filter(d => byId[d]); });
+
+  /* ── Capas: profundidad topológica (a prueba de ciclos) ── */
+  const layerOf = {};
+  function depth(id, seen) {
+    if (id in layerOf) return layerOf[id];
+    if (seen.has(id)) { console.warn("prd-kit: ciclo de dependencia en", id); return 0; }
+    seen.add(id);
+    const w = byId[id];
+    const d = w.deps.length ? 1 + Math.max(...w.deps.map(x => depth(x, seen))) : 0;
+    layerOf[id] = d;
+    return d;
+  }
+  WPS.forEach(w => depth(w.id, new Set()));
+  const nLayers = Math.max(...Object.values(layerOf)) + 1;
+
+  /* ── Camino crítico: cadena de dependencias más pesada (ponderada por tamaño) ── */
+  const memo = {};
+  function heaviest(id) {
+    if (memo[id]) return memo[id];
+    const w = byId[id];
+    let best = { weight: 0, chain: [] };
+    w.deps.forEach(d => { const h = heaviest(d); if (h.weight > best.weight) best = h; });
+    return memo[id] = { weight: best.weight + (SIZE_W[w.size] || 2), chain: [...best.chain, id] };
+  }
+  let critChain = { weight: 0, chain: [] };
+  WPS.forEach(w => { const h = heaviest(w.id); if (h.weight > critChain.weight) critChain = h; });
+  const critNodes = new Set([...critChain.chain, ...WPS.filter(w => w.critical).map(w => w.id)]);
+  const critEdges = new Set(critChain.chain.slice(1).map((id, i) => critChain.chain[i] + ">" + id));
+
+  /* ── Colores por responsable ── */
+  const owners = [...new Set(WPS.map(w => w.owner).filter(Boolean))];
+  const ownerColor = o => o ? PALETTE[owners.indexOf(o) % PALETTE.length] : NEUTRAL;
+
+  /* ── Cabecera + estadísticas ── */
+  document.getElementById("eyebrow").textContent = DATA.project;
+  const counts = { skeleton: 0, specified: 0, building: 0, done: 0 };
+  WPS.forEach(w => { if (w.status in counts) counts[w.status]++; });
+  const nExt = WPS.filter(w => w.external).length;
+  document.getElementById("stats").innerHTML =
+    `<div class="stat"><b>${WPS.length}</b><span>paquetes de trabajo</span></div>` +
+    `<div class="stat"><b>${nLayers}</b><span>capas de construcción</span></div>` +
+    `<div class="stat"><span class="dot" style="background:var(--done)"></span><b>${counts.done}</b><span>hechos</span></div>` +
+    `<div class="stat"><span class="dot" style="background:#FF7F63"></span><b>${WPS.filter(w=>w.today).length}</b><span>actualizados hoy</span></div>` +
+    (nExt ? `<div class="stat"><span class="dot" style="background:var(--warn)"></span><b>${nExt}</b><span>bloqueadores externos</span></div>` : "");
+
+  /* ── Leyenda ── */
+  const legendEl = document.getElementById("legend");
+  legendEl.innerHTML =
+    (owners.length ? `<div class="legend-group"><span class="legend-label">Responsable</span>` +
+      owners.map(o => `<span class="lg"><span class="swatch" style="background:${ownerColor(o)}"></span>${o} · ${WPS.filter(w => w.owner === o).length}</span>`).join("") +
+      `</div>` : "") +
+    `<div class="legend-group"><span class="legend-label">Estado</span>` +
+      Object.entries(STATUS).map(([k, s]) => `<span class="lg"><span class="st st-${k}">${s.label}</span> ${counts[k]}</span>`).join("") +
+    `</div>` +
+    `<div class="legend-group"><span class="legend-label">Marcas</span>` +
+      `<span class="lg"><span class="ring"></span>camino crítico</span>` +
+      `<span class="lg"><span class="line"></span>dependencia crítica</span>` +
+      `<span class="lg"><span class="dash"></span>bloqueador externo</span>` +
+      `<span class="lg"><span class="today"></span>actualizado hoy</span>` +
+    `</div>`;
+
+  /* ── Capas + nodos ── */
+  const layersEl = document.getElementById("layers");
+  const nodes = {};
+  for (let i = 0; i < nLayers; i++) {
+    const row = document.createElement("div");
+    row.className = "layer";
+    const head = document.createElement("div");
+    head.className = "layer-head";
+    head.innerHTML =
+      `<div class="layer-n mono">${String(i + 1).padStart(2, "0")}</div>` +
+      `<div class="layer-name">Capa ${i + 1}</div>` +
+      `<div class="layer-hint">${i === 0 ? "sin dependencias internas" : "se apoya en la capa " + i}</div>`;
+    const holder = document.createElement("div");
+    holder.className = "layer-nodes";
+    WPS.filter(w => layerOf[w.id] === i).forEach(w => {
+      const el = document.createElement("div");
+      el.className = `node${critNodes.has(w.id) ? " crit" : ""}${w.external ? " external" : ""}${w.today ? " today" : ""}`;
+      el.dataset.wp = w.id;
+      el.tabIndex = 0;
+      el.innerHTML =
+        `<span class="node-bar" style="background:${ownerColor(w.owner)}"></span>` +
+        `<div class="node-top"><span class="wp mono">${w.id}</span><span class="st st-${w.status in STATUS ? w.status : "skeleton"}">${(STATUS[w.status] || STATUS.skeleton).label}</span></div>` +
+        `<div class="ttl">${w.title || ""}</div>` +
+        (w.desc ? `<div class="desc">${w.desc}</div>` : "") +
+        ((w.owner || w.issue) ? `<div class="foot">` +
+          (w.owner ? `<span class="owner"><span class="dot" style="background:${ownerColor(w.owner)}"></span>${w.owner}</span>` : `<span></span>`) +
+          (w.issue ? `<span class="issue mono">${w.issue}</span>` : "") +
+        `</div>` : "") +
+        (w.today ? `<div class="today-chip">● actualizado hoy</div>` : "") +
+        (w.external ? `<div class="chip-ext">⚠ externo · ${w.external}</div>` : "");
+      holder.appendChild(el);
+      nodes[w.id] = el;
+    });
+    row.appendChild(head);
+    row.appendChild(holder);
+    layersEl.appendChild(row);
+  }
+
+  /* ── Aristas ── */
+  const graph = document.getElementById("graph");
+  const svg = document.getElementById("edges");
+  const DEFS =
+    `<defs>` +
+    `<marker id="ah" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L6,3 L0,6 Z"/></marker>` +
+    `<marker id="ah-crit" markerWidth="11" markerHeight="11" refX="6.5" refY="3.2" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L6.5,3.2 L0,6.4 Z"/></marker>` +
+    `</defs>`;
+
+  function draw() {
+    const gr = graph.getBoundingClientRect();
+    const W = graph.clientWidth, H = graph.clientHeight;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("width", W);
+    svg.setAttribute("height", H);
+    let normal = "", crit = "";
+    WPS.forEach(w => {
+      const tgt = nodes[w.id];
+      const tr = tgt.getBoundingClientRect();
+      const tx = tr.left + tr.width / 2 - gr.left;
+      const ty = tr.top - gr.top;
+      w.deps.forEach(d => {
+        const src = nodes[d];
+        if (!src) return;
+        const sr = src.getBoundingClientRect();
+        const sx = sr.left + sr.width / 2 - gr.left;
+        const sy = sr.bottom - gr.top;
+        const c = Math.max(30, (ty - sy) * 0.42);
+        const path = `M ${sx.toFixed(1)} ${sy.toFixed(1)} C ${sx.toFixed(1)} ${(sy + c).toFixed(1)}, ${tx.toFixed(1)} ${(ty - c).toFixed(1)}, ${tx.toFixed(1)} ${ty.toFixed(1)}`;
+        const isCrit = critEdges.has(d + ">" + w.id);
+        const seg = `<path class="edge${isCrit ? " crit" : ""}" data-a="${d}" data-b="${w.id}" d="${path}" marker-end="url(#${isCrit ? "ah-crit" : "ah"})"/>`;
+        if (isCrit) crit += seg; else normal += seg;
+      });
+    });
+    svg.innerHTML = DEFS + normal + crit;
+  }
+
+  /* ── Resaltado al pasar el ratón / foco ── */
+  function trace(wp, on) {
+    graph.classList.toggle("tracing", on);
+    if (!on) {
+      svg.querySelectorAll(".edge.hl").forEach(p => p.classList.remove("hl"));
+      Object.values(nodes).forEach(n => n.classList.remove("hl"));
+      return;
+    }
+    svg.querySelectorAll(".edge").forEach(p => {
+      p.classList.toggle("hl", p.dataset.a === wp || p.dataset.b === wp);
+    });
+    Object.entries(nodes).forEach(([id, el]) => {
+      let hit = id === wp;
+      if (!hit) {
+        hit = WPS.some(w =>
+          (w.id === wp && w.deps.includes(id)) ||
+          (w.id === id && w.deps.includes(wp))
+        );
+      }
+      el.classList.toggle("hl", hit);
+    });
+  }
+  Object.entries(nodes).forEach(([id, el]) => {
+    el.addEventListener("mouseenter", () => trace(id, true));
+    el.addEventListener("mouseleave", () => trace(id, false));
+    el.addEventListener("focus", () => trace(id, true));
+    el.addEventListener("blur", () => trace(id, false));
+  });
+
+  /* ── Notas al pie: camino crítico · bloqueadores externos · listo para empezar ── */
+  const ready = WPS.filter(w =>
+    w.status !== "done" && w.status !== "building" &&
+    w.deps.every(d => byId[d].status === "done")
+  );
+  const ext = WPS.filter(w => w.external);
+  document.getElementById("footnote").innerHTML =
+    `<div><h3>Camino crítico</h3><div class="cpath">` +
+      critChain.chain.map(id => `<span class="step">${id}</span>`).join(`<span class="arrow">→</span>`) +
+    `</div></div>` +
+    (ext.length ? `<div class="fn-block"><h3>Bloqueadores externos</h3><p>` +
+      ext.map(w => `<b class="wpb">${w.id}</b> ${w.external}`).join(" · ") +
+      `. Los PRD se pueden escribir ya; conviene desbloquear cuanto antes.</p></div>` : "") +
+    `<div class="fn-block"><h3>Listo para empezar</h3><p>` +
+      (ready.length
+        ? `Todas las dependencias hechas: ` + ready.map(w => `<b class="wpb">${w.id}</b>${w.status === "skeleton" ? " (especificar primero)" : ""}`).join(" · ") + `.`
+        : `Nada desbloqueado ahora mismo — termina lo que está <span class="st st-building">en curso</span>.`) +
+    `</p></div>`;
+
+  document.getElementById("meta").textContent =
+    `generado por prd-kit /prd:map · actualizado ${DATA.updated} · fuente de verdad: ${DATA.source}`;
+
+  draw();
+  if (window.ResizeObserver) new ResizeObserver(draw).observe(graph);
+  window.addEventListener("resize", draw);
+</script>
+</body>
+</html>

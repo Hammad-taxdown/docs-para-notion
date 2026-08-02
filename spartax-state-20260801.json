@@ -1,0 +1,112 @@
+{
+  "created_at": "2026-07-27T07:58:09Z",
+  "milestones": {
+    "F5": {
+      "created_at": "2026-07-27T07:59:35Z"
+    }
+  },
+  "tasks": {
+    "T001": {
+      "title": "Verificar credencial de Airtable en n8n",
+      "milestone": "F5",
+      "verify": "credencial Airtable visible/usable en n8n (por MCP o UI)",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "note": "Confirmado: credencial airtableOAuth2Api existe en n8n y funciona (usada en Sync status_renta - Beckham). beckham_bot tiene 2 nodos Airtable OFF de un intento previo abandonado (Search records2, Crear_Expediente1), sin base/tabla asignada, esquema distinto al nuestro - no se tocan.",
+      "created_at": "2026-07-27T07:59:35Z",
+      "in_progress_at": "2026-07-27T08:02:23Z",
+      "done_at": "2026-07-27T08:02:56Z"
+    },
+    "T002": {
+      "title": "Definir contrato de datos upsert_expediente",
+      "milestone": "F5",
+      "verify": "documento/JSON de contrato con campos, tipos y opcionalidad revisado por el usuario",
+      "depends": [],
+      "effort": 0.5,
+      "status": "in_progress",
+      "note": "",
+      "created_at": "2026-07-27T07:59:35Z",
+      "in_progress_at": "2026-07-27T08:02:56Z"
+    },
+    "T003": {
+      "title": "Construir workflow upsert_expediente (n8n)",
+      "milestone": "F5",
+      "verify": "validate_workflow OK + test por curl: crea registro nuevo y actualiza uno existente sin duplicar",
+      "depends": [
+        "T002",
+        "T001"
+      ],
+      "effort": 2.0,
+      "status": "done",
+      "note": "VERIFICADO por curl contra el webhook de produccion: crea, actualiza sin duplicar (3 llamadas mismo email = 1 fila), 400 sin email, fecha basura no rompe ni borra, Descarte casa por typecast, las 3 fechas correctas tras el fix de mediodia UTC. Filas de prueba: recKZg6HkEYxLocIz, recSop5rTn99Qft0o (pendiente borrar).",
+      "created_at": "2026-07-27T07:59:35Z",
+      "in_progress_at": "2026-07-27T10:36:18Z",
+      "failed_at": "2026-07-27T11:56:50Z",
+      "done_at": "2026-07-27T12:02:24Z"
+    },
+    "T004": {
+      "title": "Construir workflow get_expediente (n8n)",
+      "milestone": "F5",
+      "verify": "test por curl: devuelve expediente existente por email, y 'no existe' si no hay",
+      "depends": [
+        "T001"
+      ],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-07-27T07:59:35Z"
+    },
+    "T005": {
+      "title": "Diseñar y crear DC principal en Intercom (call upsert_expediente)",
+      "milestone": "F5",
+      "verify": "Test del DC en Intercom devuelve ok con payload de prueba",
+      "depends": [
+        "T003"
+      ],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-07-27T07:59:35Z"
+    },
+    "T006": {
+      "title": "Conectar DC principal en los 3 puntos de disparo (cualifica, descarta, lead potencial)",
+      "milestone": "F5",
+      "verify": "los 3 paths llaman al DC antes de Close, en borrador sin publicar",
+      "depends": [
+        "T005"
+      ],
+      "effort": 1.5,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-07-27T07:59:35Z"
+    },
+    "T007": {
+      "title": "Probar extremo a extremo en Messenger real (3 escenarios)",
+      "milestone": "F5",
+      "verify": "conversación real crea/actualiza fila correcta en Airtable para: cualifica, descarta, lead potencial",
+      "depends": [
+        "T006",
+        "T004"
+      ],
+      "effort": 1.5,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-07-27T07:59:35Z"
+    },
+    "T008": {
+      "title": "Publicar (Set changes live) tras OK del usuario",
+      "milestone": "F5",
+      "verify": "workflow OnClick Mobility publicado y Airtable recibiendo datos en producción",
+      "depends": [
+        "T007"
+      ],
+      "effort": 0.5,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-07-27T07:59:35Z"
+    }
+  },
+  "next_task": 9,
+  "updated_at": "2026-07-27T12:02:24Z"
+}
