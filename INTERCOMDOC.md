@@ -3,6 +3,16 @@
 > Fuente de verdad sobre cómo funciona Intercom en este proyecto. Aportada por el usuario.
 > Al retomar el trabajo: leer PRIMERO la Parte A (documentación) y solo después la Parte B
 > (preguntas que siguen abiertas y que esta documentación NO responde).
+>
+> **Revisión del 2026-08-02:** se ha purgado la información que la práctica demostró falsa.
+> Dos correcciones que mandan sobre cualquier otra cosa de este fichero:
+> 1. **El bug de F3 está ARREGLADO desde el 28/07** vía `Object mapping` (pestaña `2 Data` del DC)
+>    → el branch lee `veredicto_f2` bajo el encabezado `Conversation`. La causa raíz real era que
+>    **los outputs de un Data Connector son locales al path donde vive el connector**. La antigua
+>    Parte D (3 hipótesis) queda eliminada: todas murieron.
+> 2. **Las "Simulations" son de Fin, NO del editor de Custom Bots.** No existe ruta de UI para
+>    simular `OnClick Mobility`. Lo único que valida un Custom Bot es publicar y usar el
+>    **Messenger real** como cliente, con verificación cruzada por MCP.
 
 ---
 
@@ -130,6 +140,19 @@ Utilice "Fin's thoughts" en el debugger para trazar la interpretación de intenc
 
 A diferencia de "Preview" (que puede exponer mensajes a usuarios reales si el flujo está live), las **Simulations** ejecutan la lógica en el backend. Son la herramienta definitiva para probar ramas de fallo (inyectando JSON de error) sin afectar métricas de producción.
 
+> ⛔ **NO APLICA A ESTE PROYECTO (verificado el 28/07, corregido por el usuario).** Las Simulations
+> son una herramienta de **Fin**, no del editor de **Custom Bots**. No hay ruta de UI para simular
+> `OnClick Mobility` ni `reuse_mobility`. **No volver a recomendar "validar con Simulation" para
+> estos flujos.** El único método de validación válido para un Custom Bot es:
+> 1. Publicar (`Set changes live`).
+> 2. Escribir desde el **Messenger real como cliente** — nunca desde el Inbox, que es un mensaje de
+>    admin, no dispara "when customer sends any message" y además asigna la conversación.
+> 3. Verificar por MCP: conversación **no-Preview** (`custom_attributes["Workflow: Preview"] != true`)
+>    **+** ejecución correlativa en n8n. Ambas cosas, o la conclusión no vale.
+>
+> Preview sigue estando prohibido por otro motivo distinto: usa **respuestas mock** de los Data
+> Connectors y ya ha invalidado dos diagnósticos (23/07 y 28/07).
+
 ---
 
 # PARTE B — Qué resuelve esta documentación y qué sigue abierto
@@ -140,22 +163,22 @@ A diferencia de "Preview" (que puede exponer mensajes a usuarios reales si el fl
 
 ## Lo que esta documentación YA aclara (aplicable a nuestros problemas)
 
-1. **"Pill Conversion Error" — muy probablemente la causa raíz del bug de F3.** Si un token se
-   escribe a mano en lugar de insertarse desde el Attribute Inserter, el editor lo pinta como
-   pill pero el sistema lo trata como texto plano que resuelve a `null`. Eso explicaría
-   exactamente por qué el branch `J. Path` cae siempre al `else`: la condición estaría
-   comparando un `null` en vez del veredicto del connector. **Esta hipótesis es distinta y más
-   simple que la de "atributos duplicados a nivel de app", que sigue en disputa.** Verificar
-   primero: abrir la condición del branch y comprobar si el atributo se insertó con el
-   Attribute Inserter o se escribió a mano.
+1. **"Pill Conversion Error"** — si un token se escribe a mano en lugar de insertarse desde el
+   Attribute Inserter, el editor lo pinta como pill pero el sistema lo trata como texto plano que
+   resuelve a `null`. Sigue siendo cierto como mecanismo general de Intercom y por eso se conserva.
+   ⛔ **Pero NO era la causa del bug de F3, y esa hipótesis está MUERTA desde el 28/07.** Lo que
+   mató a todas las hipótesis a la vez fue cambiar la condición a `has any value` y ver que
+   **seguía fallando**: no había *nada* que leer, así que daba igual el chip, el valor, el tipo o
+   el operador. La causa real está en el punto 1 del encabezado de este fichero.
+   **Técnica a reutilizar: preguntar "¿hay algo?" antes de "¿es correcto?".**
 2. **`user.id` ≠ `user_id`** — `user.id` es el Contact ID interno de Intercom; `user_id` es el
    External ID de la empresa. Coincide con lo que confirmaron los ingenieros: nuestro `UserId`
    (clave de negocio del expediente en Airtable) es el External ID de TaxDown.
-3. **Simulations en lugar de Preview.** Existe una herramienta de backend ("Simulations") que
-   ejecuta la lógica de verdad y permite inyectar JSON de error, sin exponer mensajes a
-   usuarios reales ni contaminar métricas. Es la vía correcta para validar el flujo antes de
-   publicar — mejor que el Preview (que usa mocks de los Data Connectors) y menos invasiva que
-   una conversación real en Messenger.
+3. ~~**Simulations en lugar de Preview.**~~ ⛔ **FALSO PARA ESTE PROYECTO, no ejecutar.** Las
+   Simulations son de **Fin**, no del editor de Custom Bots: no hay ruta de UI para simular
+   `OnClick Mobility`. Ver el recuadro de la Parte A §5. Lo que sí queda en pie de este punto es
+   la mitad negativa: **Preview no vale**, porque usa mocks de los Data Connectors.
+   El método real de validación es Messenger real + verificación cruzada por MCP.
 4. **Logs del Data Connector** con retención de 7 días (14 en extended): sirve para ver qué se
    envió y qué se recibió realmente en cada llamada, sin depender de las ejecuciones de n8n.
 5. **`Content-Type: application/json` es obligatorio** en POST con cuerpo JSON. Confirmado que
@@ -176,18 +199,25 @@ A diferencia de "Preview" (que puede exponer mensajes a usuarios reales si el fl
    este comportamiento.
 2. **Si un input enlazado a atributo puede recibir un valor distinto desde "Map action inputs"**
    en un paso de workflow, o si el enlace al atributo manda siempre.
-3. **Si en "Map action inputs" se pueden escribir valores literales** (`true`, un nombre de
-   opción de single-select) o solo insertar chips de atributo. Bloqueante para el diseño del
-   DC: `alta_ss`, `lead_potencial` y `descarte` son constantes por rama.
+3. ~~**Si en "Map action inputs" se pueden escribir valores literales**~~ ✅ **RESUELTO (28/07).**
+   La caja de valor del paso **`Set <atributo>`** acepta **solo texto literal** y **no admite
+   chips**. ⇒ Las constantes por rama (`alta_ss`, `lead_potencial`, `descarte`) se pueden fijar con
+   pasos `Set …` sin depender de `Custom value`. Ojo: esto es lo contrario de lo que hacía falta
+   para el otro problema (el paso `Set` **no** servía para propagar el output del connector).
 4. **Qué significa `Required`** en un input usado desde un workflow (el label dice "Fin must
    collect this parameter", lo que sugiere que solo aplica a Fin).
 5. **Qué hace `Fallback value`** en ejecuciones de workflow (no solo con Fin). Importa porque
    un fallback podría sobrescribir datos existentes en Airtable en las ramas donde el campo
    no aplica.
-6. **Cómo se referencian los outputs de un Data Connector** en pasos posteriores y si son
-   visibles fuera del path donde vive el connector. Es la otra mitad del diagnóstico de F3.
-7. **Qué ocurre con dos atributos del mismo nombre** (uno de app, otro output de connector):
-   cuál gana y cómo se distinguen en el selector.
+6. ~~**Cómo se referencian los outputs de un Data Connector** fuera de su path~~ ✅ **RESUELTO
+   (28/07), y era la causa raíz de F3: NO son visibles fuera de su path.** Son atributos locales.
+   Para sacarlos hay que promocionarlos a **Conversation attributes** con `Object mapping`. Y una
+   vez son Conversation attributes, sí cruzan de path **y hasta fuera del canvas** (`Preparar_Prompt`
+   los lee de `custom_attributes` por la API en cada turno). Ver la Parte D.
+7. ~~**Qué ocurre con dos atributos del mismo nombre**~~ ✅ **Resuelto y además irrelevante.** El
+   selector distingue el origen por encabezados (`Conversation` / `People` / nombre del Data
+   Connector), y se verificó que **nunca hubo atributos duplicados**: al buscar `veredicto` salía un
+   único resultado agrupado bajo `beckham_plazo_f2`.
 8. **Cómo se comporta el Test de un Data Connector** con inputs enlazados a atributo.
    Observado: no son rellenables y llegan vacíos, por lo que el Test devuelve 400. Sin
    confirmar en la documentación.
@@ -294,54 +324,47 @@ texto** con formato `DD/MM/AAAA` y normalizar en n8n.
 
 ---
 
-# PARTE D — Plan de diagnóstico del bug de F3 (hipótesis ordenadas)
+# PARTE D — ELIMINADA (el bug de F3 está arreglado desde el 28/07)
 
-**El bug:** en `OnClick Mobility`, el branch `J. Path` con la condición
-`veredicto is en_plazo / fuera_plazo` cae **siempre** al `else` (path L, reintento
-"no he entendido la fecha"), aunque el cálculo en n8n es correcto y está verificado por curl.
+> Aquí vivía un plan de diagnóstico con 3 hipótesis ordenadas por probabilidad. **Se ha borrado el
+> 2/08 porque las tres eran falsas y seguirlas rompe el arreglo que hoy funciona en producción.**
+> Se deja esta lápida en lugar de quitar el apartado entero porque la memoria del proyecto y varios
+> PRDs remiten a "INTERCOMDOC Parte D".
 
-**Lo que ya está descartado:** no es n8n ni el webhook (curl OK, y el botón Test del DC
-`beckham_plazo_f2` manda bien el valor y responde OK). El fallo está en cómo el workflow de
-Intercom **lee** el resultado del connector.
+## La causa raíz real
 
-## Hipótesis en orden de probabilidad (comprobar en este orden)
+**Los outputs de un Data Connector son atributos LOCALES del path donde vive el connector y no son
+legibles desde otro path.** El connector estaba en `F` y el branch en `I. Path` → leía vacío.
+No era un bug: era una regla de Intercom que no conocíamos.
 
-### 1️⃣ Pill Conversion Error — token escrito a mano en vez de insertado
-**Por qué es la primera:** está documentado (Parte A §5) como causa habitual de valores que
-resuelven a `null`. Si el `veredicto` de la condición se escribió a mano, el editor lo pinta como
-pill pero el sistema lo trata como texto plano → resuelve a `null` → la comparación nunca
-coincide → `else`. Encaja al 100% con el síntoma.
-**Cómo comprobarlo:** abrir la condición del branch `J. Path` y volver a insertar el atributo
-**desde el Attribute Inserter** (`{..}`), borrando el que hay. No reescribirlo a mano.
+## La solución, que está viva en producción — no deshacerla
 
-### 2️⃣ El branch no está en el Success Path del connector
-**Por qué:** los outputs de un Data Connector son visibles "inmediatamente en el Success Path"
-(C.6). Si el branch `J. Path` vive en otra rama del flujo y no en el camino de éxito del
-connector, el `veredicto` simplemente no existe en ese contexto → vacío → `else`.
-**Cómo comprobarlo:** verificar dónde está el bloque del connector `beckham_plazo_f2` respecto
-al branch. Según la memoria del proyecto, el connector está en el path **F** y el mensaje de
-descarte en el path **G** — merece confirmar que el branch está realmente dentro del Success
-Path del connector.
+**`Object mapping`**, al final de la pestaña **`2 Data`** del Data Connector
+(`Intercom object = Conversation`, `API object = Root`, una fila por campo). Se crearon 3
+**Conversation attributes** de tipo **Text** — `veredicto_f2`, `fecha_limite_f2`, `dias_pasados_f2`
+(este último Text a propósito aunque sea un número, para no arriesgar desajuste de tipo) — y el
+branch pasó a leer **`veredicto_f2` bajo el encabezado `Conversation`**.
 
-### 3️⃣ Atributo de app homónimo en vez del output del connector
-**Por qué baja al tercer puesto:** era la hipótesis principal, pero (a) el usuario afirma que
-**no** llegó a crear el atributo `fecha_limite` a nivel de app (dato en disputa con la memoria,
-pendiente de verificar en Settings → Data → Attributes), y (b) ahora hay dos explicaciones más
-simples y documentadas por delante.
-**Cómo comprobarlo:** en el selector de atributos de la condición, mirar **bajo qué encabezado**
-aparece el `veredicto` que se está usando (C.7): debe estar bajo el encabezado con el **nombre
-del Data Connector**, no bajo `Conversation` ni `People`.
+⛔ **Trampa a evitar:** reinsertar el chip `veredicto` del connector con el selector `{..}` —que es
+justo lo que recomendaba la antigua Parte D— **rompe el arreglo**. El branch NO debe leer
+`veredicto` bajo el encabezado `beckham_plazo_f2`.
 
-## Herramienta de validación correcta
-Usar **Simulations** (Parte A §5), no Preview: ejecuta la lógica en backend de verdad, permite
-inyectar JSON de error para probar las ramas de fallo, y no expone mensajes a usuarios reales ni
-contamina métricas. El **Preview no sirve** para esto: usa la respuesta mock guardada del Data
-Connector (verificado el 23/07: en Preview siempre salía `fuera_plazo` con cualquier fecha).
+Verificado en conversaciones reales no-Preview, las dos ramas: `21/06/2025` → `fuera_plazo` /
+`21/12/2025` / 219 días; `01/04/2026` → `en_plazo` / `01/10/2026` / 0 días → cualifica y asigna al
+team `11098265`. Re-verificado el 1/08 en la conversación `215475300855984`.
 
-También se pueden consultar los **Logs del propio Data Connector** (7 días de retención, 14 con
-extended logs) para ver el payload real enviado y recibido en cada llamada.
+## Las cinco hipótesis muertas — NO resucitarlas
 
-## Estado
-Pendiente de comprobar. **Ninguna de las tres hipótesis está confirmada todavía** — las tres se
-verifican en minutos abriendo la condición del branch en el editor. La nº1 es la más probable y
-la más barata de descartar.
+1. Atributos duplicados a nivel de app.
+2. Pill Conversion Error.
+3. Desajuste de tipo.
+4. El operador `contains`.
+5. "Cosa del entorno TEST".
+
+**El experimento que las mató a todas de golpe:** cambiar la condición a **`has any value`**. Al
+seguir fallando quedó claro que no había *nada* que leer, así que daban igual el chip, el valor, el
+tipo y el operador. **Técnica a reutilizar: preguntar "¿hay algo?" antes de "¿es correcto?".**
+
+## Corolario que también quedó resuelto
+El bloqueo del 24/07 (`fecha_limite` y `dias_pasados` no aparecían en el selector del mensaje `G`)
+era el mismo problema y se resolvió con el mismo `Object mapping`.

@@ -1,0 +1,11 @@
+:wave: *Hola, soy el bot de Mobility.*
+
+En este canal escribo yo cuando algo del expediente Beckham necesita un ojo humano.
+
+Aviso de dos cosas:
+:large_orange_diamond: *AVISO* — un dato del cliente llegó mal y NO se ha guardado. Lleva el enlace a la conversación de Intercom para que podáis verla.
+:red_circle: *FALLO* — algo se ha roto por dentro. Lleva el enlace a la ejecución.
+
+Si veis un aviso con un NIF o un teléfono, significa que el cliente lo escribió mal y preferimos no guardar nada antes que guardar un dato falso: es información que va a Hacienda.
+
+_Porque hacienda somos todos._

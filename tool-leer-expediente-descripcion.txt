@@ -1,0 +1,7 @@
+Consulta que datos hay ya guardados de este cliente.
+
+Usala UNA sola vez, al empezar la conversacion, antes de preguntar nada.
+
+Si devuelve existe: false, es un cliente nuevo: sigue el flujo normal.
+
+Si devuelve existe: true, NO vuelvas a pedir los datos que ya vengan rellenos. Confirmalos brevemente y pregunta solo lo que falte.

@@ -1,0 +1,1 @@
+{{ { ok: true, action: 'upserted', record_id: $json.id, descartados: $('Validar y Normalizar').item.json._fechas_descartadas || null } }}

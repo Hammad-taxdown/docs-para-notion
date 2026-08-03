@@ -1,0 +1,9 @@
+{{ [
+  ':large_orange_diamond: *AVISO BOT MOBILITY*',
+  '*Tipo:* ' + $json.tipo_alerta,
+  '*Detalle:* ' + $json.detalle_alerta,
+  $json.conversation_id ? '*Conversación:* https://app.intercom.com/a/apps/q3bhdtoi/conversations/' + $json.conversation_id : null,
+  $json.user_id ? '*UserId:* ' + $json.user_id : null,
+  $json.ultimo_mensaje_usuario ? '*Último mensaje:* ' + $json.ultimo_mensaje_usuario : null,
+  $json.respuesta_bot ? '*Respuesta del bot:* ' + $json.respuesta_bot : null
+].filter(function(x){ return x; }).join('\n') }}

@@ -1,0 +1,9 @@
+Guarda en el expediente los datos personales que el cliente te ha dado en la conversacion.
+
+Llamala EN CUANTO tengas un dato nuevo confirmado por el cliente. NO esperes a tener todos los datos: una conversacion que se abandona a mitad se pierde entera.
+
+Manda solo los campos que el cliente te haya dicho. Deja vacios los que no sepas: un campo vacio NO borra lo que ya estuviera guardado.
+
+LEE SIEMPRE SU RESPUESTA. Si trae el campo descartados con algun valor, ese dato NO se ha guardado porque no tiene el formato correcto. En ese caso explicale al cliente el formato que esperamos y pideselo otra vez. Si el mismo dato viene mal dos veces, no insistas una tercera: dile que el equipo lo revisara y sigue con la siguiente pregunta.
+
+No inventes ningun valor. Si el cliente corrige un dato, vuelve a llamarla con el valor corregido.
