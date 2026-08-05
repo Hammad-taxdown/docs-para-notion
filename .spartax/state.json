@@ -129,10 +129,11 @@
       "verify": "Empleados=1 antes; conversacion no-Preview; expediente COMPLETO campo a campo, cero valores cruzados",
       "depends": [],
       "effort": 0.5,
-      "status": "in_progress",
-      "note": "",
+      "status": "done",
+      "note": "Cerrado 5/08: la fila de basura se borro, Empleados quedo en 1, y la conversacion limpia se hizo tres veces (15:53 con Ana, 16:24 con datos reales y NIE). Expediente completo y cero campos cruzados en las tres.",
       "created_at": "2026-08-05T09:01:04Z",
-      "in_progress_at": "2026-08-05T09:59:53Z"
+      "in_progress_at": "2026-08-05T09:59:53Z",
+      "done_at": "2026-08-05T14:35:18Z"
     },
     "T011": {
       "title": "Bloque 3 · Contrato del escritor +12 campos con whitelists y pasaporte",
@@ -140,9 +141,10 @@
       "verify": "12 campos escritos y verificados en Airtable; PaisNacimiento y UltimoPaisResidencia con whitelist exacta; pasaporte aceptado por nifValido en columna de texto nueva",
       "depends": [],
       "effort": 2.0,
-      "status": "planned",
+      "status": "in_progress",
       "note": "",
-      "created_at": "2026-08-05T09:01:04Z"
+      "created_at": "2026-08-05T09:01:04Z",
+      "in_progress_at": "2026-08-05T14:01:35Z"
     },
     "T012": {
       "title": "Bloque 6 · Los 2 mensajes que desbloquean el FAQ (aprobador WP-220/M4 y WP-10 a Adri y Fer)",
@@ -201,11 +203,35 @@
       "verify": "conversacion real en la que 12345678Z se acepta a la primera y llega tal cual a Airtable; el agente no emite ningun juicio de validez",
       "depends": [],
       "effort": 0.5,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-08-05T10:51:01Z"
+      "status": "done",
+      "note": "VERIFICADO EN CONVERSACION REAL 5/08 15:53 Madrid. Fila recuy01vuaAqKoBxI: NIF=12345678Z, el NIF VALIDO que ayer el agente rechazaba. Aceptado a la primera, sin ningun turno de rechazo, y guardado literal. Con gpt-5.6-terra + Responses API ON + maxIterations 6 + descripcion de nif sin mencion a validar + prompt sin la orden de validar.",
+      "created_at": "2026-08-05T10:51:01Z",
+      "done_at": "2026-08-05T14:01:35Z"
+    },
+    "T018": {
+      "title": "Prompt: orden, tools y D6 (regla 10, Bloque 0, fecha de nacimiento)",
+      "milestone": "D0508",
+      "verify": "conversacion real: pregunta llegada y nacimiento, guarda incremental, no menciona las tools, resumen una sola vez al final",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "note": "VERIFICADO 5/08 16:24-16:32 Madrid en la conversacion 215475366405729. Las 4 mediciones OK mas el orden del resumen arreglado de propina. FechaNacimiento rellenada por primera vez en el proyecto. Guardado incremental probado con las ejecuciones 8084773 (solo nombre+apellidos) y 8084804 (solo FechaNacimiento).",
+      "created_at": "2026-08-05T14:35:04Z",
+      "done_at": "2026-08-05T14:35:04Z"
+    },
+    "T019": {
+      "title": "fechaDesplazamiento: parametro en la tool, ponerFecha y columna en el nodo de Airtable",
+      "milestone": "D0508",
+      "verify": "conversacion real: la fecha de llegada llega a Airtable y la formula Situacion fiscal Anio Desplazamiento deja de estar vacia",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "note": "VERIFICADO en conversacion real 215475367102189, fila recSgXVAM9UQRTnSV (17:09 Madrid). fechaDesplazamiento=2026-04-14, fechaDesplazamientocorrecta='14 de abril de 2026' (adios al '8 de inventado de 1900') y la formula 'Situacion fiscal Anio Desplazamiento' resuelve a 'Residente Fiscal' donde antes daba cadena vacia.",
+      "created_at": "2026-08-05T14:58:48Z",
+      "in_progress_at": "2026-08-05T14:58:48Z",
+      "done_at": "2026-08-05T15:17:03Z"
     }
   },
-  "next_task": 18,
-  "updated_at": "2026-08-05T10:51:01Z"
+  "next_task": 20,
+  "updated_at": "2026-08-05T15:17:03Z"
 }
