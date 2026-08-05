@@ -1,0 +1,211 @@
+{
+  "created_at": "2026-07-27T07:58:09Z",
+  "milestones": {
+    "F5": {
+      "created_at": "2026-07-27T07:59:35Z"
+    },
+    "D0508": {
+      "created_at": "2026-08-05T09:01:04Z"
+    }
+  },
+  "tasks": {
+    "T001": {
+      "title": "Verificar credencial de Airtable en n8n",
+      "milestone": "F5",
+      "verify": "credencial Airtable visible/usable en n8n (por MCP o UI)",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "note": "Confirmado: credencial airtableOAuth2Api existe en n8n y funciona (usada en Sync status_renta - Beckham). beckham_bot tiene 2 nodos Airtable OFF de un intento previo abandonado (Search records2, Crear_Expediente1), sin base/tabla asignada, esquema distinto al nuestro - no se tocan.",
+      "created_at": "2026-07-27T07:59:35Z",
+      "in_progress_at": "2026-07-27T08:02:23Z",
+      "done_at": "2026-07-27T08:02:56Z"
+    },
+    "T002": {
+      "title": "Definir contrato de datos upsert_expediente",
+      "milestone": "F5",
+      "verify": "documento/JSON de contrato con campos, tipos y opcionalidad revisado por el usuario",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "note": "Contrato F5 acordado el 27/07 e implementado: email->UserId como clave (decision 27/07), 9 campos, upsert parcial. Vive en el nodo 'Validar y Normalizar' de beckham_bot, verificado 20/20 por curl.",
+      "created_at": "2026-07-27T07:59:35Z",
+      "in_progress_at": "2026-07-27T08:02:56Z",
+      "done_at": "2026-08-02T11:57:40Z"
+    },
+    "T003": {
+      "title": "Construir workflow upsert_expediente (n8n)",
+      "milestone": "F5",
+      "verify": "validate_workflow OK + test por curl: crea registro nuevo y actualiza uno existente sin duplicar",
+      "depends": [
+        "T002",
+        "T001"
+      ],
+      "effort": 2.0,
+      "status": "done",
+      "note": "VERIFICADO por curl contra el webhook de produccion: crea, actualiza sin duplicar (3 llamadas mismo email = 1 fila), 400 sin email, fecha basura no rompe ni borra, Descarte casa por typecast, las 3 fechas correctas tras el fix de mediodia UTC. Filas de prueba: recKZg6HkEYxLocIz, recSop5rTn99Qft0o (pendiente borrar).",
+      "created_at": "2026-07-27T07:59:35Z",
+      "in_progress_at": "2026-07-27T10:36:18Z",
+      "failed_at": "2026-07-27T11:56:50Z",
+      "done_at": "2026-07-27T12:02:24Z"
+    },
+    "T004": {
+      "title": "Construir workflow get_expediente (n8n)",
+      "milestone": "F5",
+      "verify": "test por curl: devuelve expediente existente por email, y 'no existe' si no hay",
+      "depends": [
+        "T001"
+      ],
+      "effort": 1.0,
+      "status": "done",
+      "note": "CERRADO el 1/08 como WP-07. get_expediente consolidado DENTRO de beckham_bot (7 nodos copiados del suelto PAGK9sof3bfTdbRB, que quedo ARCHIVADO). URL /webhook/beckham-get-expediente conservada. 3/3 por curl.",
+      "created_at": "2026-07-27T07:59:35Z",
+      "done_at": "2026-08-02T11:57:40Z"
+    },
+    "T005": {
+      "title": "Diseñar y crear DC principal en Intercom (call upsert_expediente)",
+      "milestone": "F5",
+      "verify": "Test del DC en Intercom devuelve ok con payload de prueba",
+      "depends": [
+        "T003"
+      ],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-07-27T07:59:35Z"
+    },
+    "T006": {
+      "title": "Conectar DC principal en los 3 puntos de disparo (cualifica, descarta, lead potencial)",
+      "milestone": "F5",
+      "verify": "los 3 paths llaman al DC antes de Close, en borrador sin publicar",
+      "depends": [
+        "T005"
+      ],
+      "effort": 1.5,
+      "status": "planned",
+      "note": "OJO: son 4 puntos (D/H/G/N), no 3 - la estructura real de OnClick Mobility se verifico el 27/07 por navegador. Y ADEMAS quedan pendientes de RECOLOCAR por la reestructura A/B (mar 4/08).",
+      "created_at": "2026-07-27T07:59:35Z"
+    },
+    "T007": {
+      "title": "Probar extremo a extremo en Messenger real (3 escenarios)",
+      "milestone": "F5",
+      "verify": "conversación real crea/actualiza fila correcta en Airtable para: cualifica, descarta, lead potencial",
+      "depends": [
+        "T006",
+        "T004"
+      ],
+      "effort": 1.5,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-07-27T07:59:35Z"
+    },
+    "T008": {
+      "title": "Publicar (Set changes live) tras OK del usuario",
+      "milestone": "F5",
+      "verify": "workflow OnClick Mobility publicado y Airtable recibiendo datos en producción",
+      "depends": [
+        "T007"
+      ],
+      "effort": 0.5,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-07-27T07:59:35Z"
+    },
+    "T009": {
+      "title": "Bloque 1 · Los 11 valores del modelo en guardar_datos_cliente",
+      "milestone": "D0508",
+      "verify": "los 11 bodyParameters con nombre semantico y descripcion en el VALUE, sin el marcador fromAI-override; ai_tool sigue en 2 tras publicar; auditoria por MCP",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "note": "Publicado 5/08 11:55 Madrid, versionId==activeVersionId==e1ad6254-a3c2-4a6c-9263-48b250b2c2cc, updatedAt 2026-08-05T09:55:40Z. Los 11 valores IDENTICOS BYTE A BYTE a lo entregado (diff sin diferencias). Cero parametersN_Value, cero marcador fromAI-override, cero descripciones vacias, cero fromAI en NAME, cero saltos de linea finales. UNICO nodo cambiado: guardar_datos_cliente. Conexiones identicas byte a byte, ai_tool=2, 34 nodos, los 4 inyectados intactos. Pendiente: la prueba de comportamiento es el bloque 2.",
+      "created_at": "2026-08-05T09:01:04Z",
+      "in_progress_at": "2026-08-05T09:01:04Z",
+      "done_at": "2026-08-05T09:59:53Z"
+    },
+    "T010": {
+      "title": "Bloque 2 · Borrar recmN0nVPIVoUch2o, Empleados a 1 y conversacion limpia en Messenger",
+      "milestone": "D0508",
+      "verify": "Empleados=1 antes; conversacion no-Preview; expediente COMPLETO campo a campo, cero valores cruzados",
+      "depends": [],
+      "effort": 0.5,
+      "status": "in_progress",
+      "note": "",
+      "created_at": "2026-08-05T09:01:04Z",
+      "in_progress_at": "2026-08-05T09:59:53Z"
+    },
+    "T011": {
+      "title": "Bloque 3 · Contrato del escritor +12 campos con whitelists y pasaporte",
+      "milestone": "D0508",
+      "verify": "12 campos escritos y verificados en Airtable; PaisNacimiento y UltimoPaisResidencia con whitelist exacta; pasaporte aceptado por nifValido en columna de texto nueva",
+      "depends": [],
+      "effort": 2.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-05T09:01:04Z"
+    },
+    "T012": {
+      "title": "Bloque 6 · Los 2 mensajes que desbloquean el FAQ (aprobador WP-220/M4 y WP-10 a Adri y Fer)",
+      "milestone": "D0508",
+      "verify": "dos mensajes enviados y vistos en pantalla; un NOMBRE concreto para el aprobador del corpus",
+      "depends": [],
+      "effort": 0.25,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-05T09:01:04Z"
+    },
+    "T013": {
+      "title": "Bloque 4 · Documentos: que el agente vea files_analysis_blocks y que los adjuntos se guarden",
+      "milestone": "D0508",
+      "verify": "files_analysis_blocks consumido por el agente en una ejecucion real; al menos un adjunto escrito en una columna de Airtable",
+      "depends": [],
+      "effort": 2.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-05T09:01:04Z"
+    },
+    "T014": {
+      "title": "Bloque 5 · Red de seguridad de Langsmith (beckham_prompt_sync + Data Table)",
+      "milestone": "D0508",
+      "verify": "Data Table con el texto del prompt; beckham_bot lee de ahi; con Langsmith caido el bot sigue contestando",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-05T09:01:04Z"
+    },
+    "T015": {
+      "title": "Bloque 7 · DC de persistencia en D/G/N para los descartes que mueren en los filtros",
+      "milestone": "D0508",
+      "verify": "Close solo en D y N; ninguna rama toca ticket.state; lead persistido en H; conexiones auditadas por MCP",
+      "depends": [],
+      "effort": 2.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-05T09:01:04Z"
+    },
+    "T016": {
+      "title": "Actualizar documentacion: PRDs, roadmap Fase 2, plan maestro y contexto",
+      "milestone": "D0508",
+      "verify": "frontmatter real en los 5 WPs auditados, ROADMAP-FASE2 sin la frase 'no se ha implementado nada', PLAN-31-08-2026.md creado, context.md relleno",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "note": "Hecho 5/08 10:55-11:20 Madrid: frontmatter real en WP-201 (done), WP-202/204/216/231 (building) con seccion 8 'Estado real auditado el 2026-08-05' en 201/202/204; ROADMAP-FASE2.md con mermaid, tabla, leyenda y camino critico corregidos; PLAN-31-08-2026.md creado; PLAN-RESTO-SEMANA marcado como sustituido; .spartax/context.md relleno.",
+      "created_at": "2026-08-05T09:01:04Z",
+      "done_at": "2026-08-05T09:01:35Z"
+    },
+    "T017": {
+      "title": "Bloque 1b URGENTE · El agente rechaza NIFs validos: quitar la validacion de la descripcion de nif y prohibirla en el prompt",
+      "milestone": "D0508",
+      "verify": "conversacion real en la que 12345678Z se acepta a la primera y llega tal cual a Airtable; el agente no emite ningun juicio de validez",
+      "depends": [],
+      "effort": 0.5,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-05T10:51:01Z"
+    }
+  },
+  "next_task": 18,
+  "updated_at": "2026-08-05T10:51:01Z"
+}

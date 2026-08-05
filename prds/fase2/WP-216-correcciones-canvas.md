@@ -1,7 +1,7 @@
 ---
 id: WP-216
 title: "Correcciones del canvas: borrar M. Path y SAVE, Close solo en D y N, typo veredicto_f2"
-status: specified
+status: building
 size: M
 depends_on: []
 milestone: "Fase 2 conversacional — Modo y menú"

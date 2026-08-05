@@ -1,1 +1,9 @@
 .DS_Store
+
+# PII real de empleados: NUNCA al repo (retirado el 5/08, el repo fue publico del 3 al 5/08)
+Empleados-Grid view*.csv
+
+# Ruido local
+.orchestron/
+node_modules/
+*.log

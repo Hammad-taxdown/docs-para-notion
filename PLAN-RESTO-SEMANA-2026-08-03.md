@@ -1,5 +1,9 @@
 # Plan del resto de la semana · reescrito el 3/08 al cierre
 
+> ⛔ **SUSTITUIDO el 2026-08-05 por [`PLAN-31-08-2026.md`](./PLAN-31-08-2026.md).** Este fichero
+> queda como registro histórico de lo planificado el 3/08. Los días 5, 6 y 7 se replanificaron por
+> decisión del usuario: **alcance completo hasta el 31/08, sin recortes.** No ejecutar desde aquí.
+
 > Sustituye al plan de días 4-7 de `PLAN-SEMANA-2026-08-03.md`. Cambia porque el lunes no salió
 > como estaba escrito: **el A/B se aplaza al paso a producción** (decisión del usuario) y
 > **Langsmith se cerró un día antes de lo previsto**, con lo que el martes queda libre para las tools.

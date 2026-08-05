@@ -1,7 +1,7 @@
 ---
 id: WP-231
 title: "Observabilidad: alertas accionables, métricas etiquetadas con corr_id y PII fuera de los logs"
-status: specified
+status: building
 size: M
 depends_on: [WP-208]
 milestone: "Fase 2 conversacional — Prerrequisitos"

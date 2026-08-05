@@ -1,7 +1,7 @@
 ---
 id: WP-202
 title: "Prerrequisito P1: enchufar la red de errores (errorWorkflow, retryOnFail, onError)"
-status: specified
+status: building
 size: S
 depends_on: []
 milestone: "Fase 2 conversacional — Prerrequisitos"
@@ -63,3 +63,21 @@ duplicados → por eso los reintentos de escritura no se habilitan hasta WP-205.
 ## 7. Rollback
 
 Quitar los tres campos (`errorWorkflow`, `retryOnFail`, `onError`) y restaurar `versionId`.
+
+
+---
+
+## 8. Estado real · auditado el 2026-08-05 por MCP
+
+**status: building — 1 de 4 entregables.** Lo auditado en `nhOwpiGxikeU5DLR`:
+
+| Entregable | Estado real |
+|---|---|
+| `settings.errorWorkflow` | ✅ **enchufado, pero a otro destino**: `BJfExmwu1fI1aPpY` (`beckham_alertas`, construido el 1/08), no `TXVWRUzc1G5HXHjZ`. El PRD queda corregido: el destino válido es `beckham_alertas`, que tiene Error Trigger + Execute Workflow Trigger |
+| `retryOnFail` + `maxTries: 3` | ⚠️ **a medias**: `Traer_Conversacion_intercom1` tiene `retryOnFail: true` **sin `maxTries`**. `Airtable Upser Expediente` y `Buscar Expediente en Airtable` **no tienen ninguno de los dos** |
+| `onError: continueErrorOutput` + rama con tag `beckham_persistencia_fallida` | ❌ **no existe**. El nodo de Airtable no tiene `onError`. Un fallo de Airtable hoy tumba la ejecución y **no hay rama que avise al usuario sin mentirle** |
+| Enum cerrado `resultado` | ❌ **no existe**. `Respond OK` devuelve `{ok:true, action:'upserted', record_id, descartados}` y `Respond Error` devuelve `{ok:false, error}`. No hay campo `resultado` en ninguna respuesta |
+
+**Precondición que sigue vigente:** los reintentos de **escritura** no se habilitan hasta WP-205
+(guarda de unicidad de `UserId`), porque `retryOnFail` sobre un upsert con `UserId` no único
+duplicaría filas.

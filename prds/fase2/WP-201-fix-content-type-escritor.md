@@ -1,7 +1,7 @@
 ---
 id: WP-201
 title: "Prerrequisito P0: parsear el body urlencoded del Data Connector en el escritor único"
-status: specified
+status: done
 size: S
 depends_on: []
 milestone: "Fase 2 conversacional — Prerrequisitos"
@@ -66,3 +66,17 @@ Bajo y acotado a n8n. Riesgo real: aplicar este cambio junto con otro y no saber
 
 Anotar el `versionId` de `nhOwpiGxikeU5DLR` antes de tocar y restaurarlo. El nodo original no se
 borra: se conserva su código en la entrada de bitácora.
+
+
+---
+
+## 8. Cierre · auditado el 2026-08-05 por MCP
+
+**status: done.** El parseo defensivo vive en `beckham_bot` → `Validar y Normalizar`, primeras 22
+líneas, con el comentario `// ── WP-201 · parseo defensivo del body ──` y cita de las ejecuciones
+8052012 y 8052018 (27/07). Prueba superada por `curl` 20/20 el 2/08 y de nuevo el 4/08 en el
+contrato de 20 campos. `versionId` vigente al auditar: `37ae70a2-6e6f-46dd-a8d3-2b2b55ab8abd`.
+
+**Consecuencia para el roadmap:** era el primer WP no terminado del camino crítico de peso 16
+(`WP-201 → WP-205 → WP-207 → WP-208 → WP-211 → WP-219 → WP-221 → WP-233`). La cabeza de ese
+camino queda liberada.

@@ -18,10 +18,10 @@ flowchart TD
 
   WP10["WP-10 · Enrutado de mensajes Intercom<br/>EXTERNO · bloqueante"]:::externo
 
-  WP201["WP-201 · P0 parseo del body urlencoded"]:::specified
-  WP202["WP-202 · P1 red de errores"]:::specified
+  WP201["WP-201 · P0 parseo del body urlencoded"]:::done
+  WP202["WP-202 · P1 red de errores"]:::building
   WP203["WP-203 · P2 auth en webhooks"]:::specified
-  WP204["WP-204 · P3 systemMessage a expresion"]:::specified
+  WP204["WP-204 · P3 systemMessage a expresion"]:::building
   WP205["WP-205 · P4 guarda de unicidad UserId"]:::specified
   WP206["WP-206 · P5 whitelist punto y Descarte"]:::specified
   WP207["WP-207 · P6 extraer upsert a subworkflow"]:::specified
@@ -33,7 +33,7 @@ flowchart TD
   WP213["WP-213 · Menu AOPT"]:::specified
   WP214["WP-214 · Rama calculadora"]:::specified
   WP215["WP-215 · Autodescarte declarado"]:::specified
-  WP216["WP-216 · Correcciones del canvas"]:::specified
+  WP216["WP-216 · Correcciones del canvas"]:::building
   WP217["WP-217 · Handoff en frio de G"]:::specified
   WP218["WP-218 · Dos nodos de agente"]:::specified
   WP219["WP-219 · Guarda de modo en las tools"]:::specified
@@ -48,7 +48,7 @@ flowchart TD
   WP228["WP-228 · FAQ multi-turno · BLOQ WP-10"]:::skeleton
   WP229["WP-229 · FAQ a solicitud V1/V2"]:::skeleton
   WP230["WP-230 · Scheduler recordatorios · BLOQ M1"]:::skeleton
-  WP231["WP-231 · Observabilidad y alertas"]:::specified
+  WP231["WP-231 · Observabilidad y alertas"]:::building
   WP232["WP-232 · Runbook, inventario y gates"]:::specified
   WP233["WP-233 · E2E y publicacion"]:::specified
 
@@ -112,10 +112,10 @@ flowchart TD
 
 | WP | Título | Tam. | Estado | Depende de | Owner | Externo |
 |---|---|---|---|---|---|---|
-| [WP-201](WP-201-fix-content-type-escritor.md) | P0: parseo del body urlencoded en el escritor único | S | 📘 specified | — | Hammad | — |
-| [WP-202](WP-202-red-de-errores.md) | P1: red de errores (errorWorkflow, retryOnFail, onError) | S | 📘 specified | — | Hammad | — |
+| [WP-201](WP-201-fix-content-type-escritor.md) | P0: parseo del body urlencoded en el escritor único | S | ✅ **done** (5/08) | — | Hammad | Vive en `Validar y Normalizar`; curl 20/20 |
+| [WP-202](WP-202-red-de-errores.md) | P1: red de errores (errorWorkflow, retryOnFail, onError) | S | 🔨 **building** 1/4 | — | Hammad | `errorWorkflow` ✅ (a `beckham_alertas`); falta `onError`, `maxTries` y el enum `resultado` |
 | [WP-203](WP-203-auth-webhooks.md) | P2: auth en los dos webhooks y path a UUID | S | 📘 specified | — | Hammad | — |
-| [WP-204](WP-204-systemmessage-expresion.md) | P3: `systemMessage` a expresión y purga de tools fantasma | S | 📘 specified | — | Hammad | — |
+| [WP-204](WP-204-systemmessage-expresion.md) | P3: `systemMessage` a expresión y purga de tools fantasma | S | 🔨 **building** 2/4 | — | Hammad | expresión ✅ y tools fantasma ✅; falta `maxIterations` y nombrar las tools reales |
 | [WP-205](WP-205-guarda-unicidad-userid.md) | P4: guarda de unicidad de `UserId` | M | 📘 specified | WP-201 | Hammad | — |
 | [WP-206](WP-206-whitelist-punto-descarte.md) | P5: whitelist de `punto` y `Descarte`, `typecast:false` | S | 📘 specified | WP-201 | Hammad | — |
 | [WP-207](WP-207-extraer-subworkflow-upsert.md) | P6: extraer `BECKHAM_upsert_expediente` | M | 📘 specified | WP-201, WP-205, WP-206 | Hammad | — |
@@ -127,7 +127,7 @@ flowchart TD
 | [WP-213](WP-213-menu-aopt.md) | Menú `AOPT` (3 botones + humano) | S | 📘 specified | WP-212 | Hammad | — |
 | [WP-214](WP-214-rama-calculadora.md) | Rama calculadora (enlace, sin cerrar) | S | 📘 specified | WP-213 | Hammad | — |
 | [WP-215](WP-215-autodescarte-declarado.md) | Autodescarte declarado con traza | S | 📘 specified | WP-207, WP-213 | Hammad | — |
-| [WP-216](WP-216-correcciones-canvas.md) | Correcciones del canvas heredado | M | 📘 specified | — | Hammad | — |
+| [WP-216](WP-216-correcciones-canvas.md) | Correcciones del canvas heredado | M | 🔨 **building** | — | Hammad | 21 nodos muertos ya borrados (52→31, lunes 3/08) |
 | [WP-217](WP-217-handoff-frio-g.md) | Handoff en frío de `G` | M | 📘 specified | WP-216 | Hammad | — |
 | [WP-218](WP-218-dos-nodos-agente-prompt-base.md) | Dos nodos de agente con `prompt_base` compartido | M | 📘 specified | WP-204, WP-211 | Hammad | — |
 | [WP-219](WP-219-guarda-modo-borde-tools.md) | Guarda de modo en el borde de las tools de escritura | M | 📘 specified | WP-207, WP-211, WP-218 | Hammad | — |
@@ -142,12 +142,18 @@ flowchart TD
 | [WP-228](WP-228-faq-multiturno-n8n.md) | FAQ multi-turno en n8n | L | ⬜ skeleton | **WP-10**, WP-221, WP-222, WP-227 | Hammad | **Adri / Fer** |
 | [WP-229](WP-229-faq-a-solicitud.md) | FAQ → solicitud (V1/V2) | M | ⬜ skeleton | WP-209, WP-221, WP-222 | Hammad | — |
 | [WP-230](WP-230-scheduler-recordatorios.md) | Scheduler de recordatorios (Variante A) | L | ⬜ skeleton | **WP-10**, WP-225 | **Sin asignar (M2)** | **Manager, Adri / Fer** |
-| [WP-231](WP-231-observabilidad-alertas.md) | Observabilidad, alertas y métricas [PROPUESTA] | M | 📘 specified | WP-208 | Hammad | — |
+| [WP-231](WP-231-observabilidad-alertas.md) | Observabilidad, alertas y métricas [PROPUESTA] | M | 🔨 **building** | WP-208 | Hammad | `beckham_alertas` vivo y avisos vistos en pantalla; faltan métricas |
 | [WP-232](WP-232-runbook-inventario-gates.md) | Runbook, inventario y gates anti-reincidencia | S | 📘 specified | — | Hammad | — |
 | [WP-233](WP-233-e2e-publicacion-fase2.md) | E2E de la Fase 2 y publicación | M | 📘 specified | WP-213…WP-217, WP-221, WP-224, WP-227, WP-231, WP-232 | Hammad | — |
 
 **Leyenda:** ⬜ skeleton (sin especificar — **no se implementa**) · 📘 specified (listo para construir) ·
-🔨 building · ✅ done. Ningún WP de este paquete está `building` ni `done`: **no se ha implementado nada.**
+🔨 building · ✅ done.
+
+> **Actualizado el 2026-08-05 tras auditoría por MCP.** La frase original de este fichero
+> ("no se ha implementado nada") era cierta el 29/07 y **ya no lo es**: entre el 30/07 y el 4/08 se
+> trabajó fuera del tracker. Estado real: **1 done** (WP-201) y **4 building** (WP-202, WP-204,
+> WP-216, WP-231). Cada uno lleva una sección "Estado real · auditado el 2026-08-05" al final de su
+> PRD con el detalle entregable a entregable. Los 28 restantes siguen intactos.
 
 ## Camino crítico
 
@@ -159,7 +165,11 @@ Pesos S=1 · M=2 · L=3.
 WP-201 (1) → WP-205 (2) → WP-207 (2) → WP-208 (2) → WP-211 (2) → WP-219 (2) → WP-221 (3) → WP-233 (2)
 ```
 
-**Primer WP no terminado de esa cadena: WP-201.** Lo que hoy retrasa toda la Fase 2 es el **parseo del
+**Primer WP no terminado de esa cadena: WP-205** (actualizado el 5/08; **WP-201 está done**, ver su
+sección 8). El cuello de botella ya no es el parseo del body sino la **guarda de unicidad de
+`UserId`**, que además es precondición para habilitar reintentos de escritura en WP-202.
+
+Texto original del 29/07, conservado: Lo que hoy retrasa toda la Fase 2 es el **parseo del
 body urlencoded** en un solo nodo Code — no el agente, no el menú, no Intercom.
 
 **Cadena del modo — peso 12**, converge en la misma `WP-221`:
@@ -191,12 +201,12 @@ Sin dependencias abiertas, se pueden arrancar hoy:
 
 | WP | Estado | Nota |
 |---|---|---|
-| **WP-201** | 📘 specified | **El desbloqueo real.** Hoy toda la persistencia devuelve 400 (HECHO VERIFICADO) |
-| **WP-202** | 📘 specified | La red de errores **existe y está activa**: solo hay que enchufarla |
+| ~~**WP-201**~~ | ✅ done | Cerrado. La persistencia ya no devuelve 400 |
+| **WP-202** | 🔨 building | Enchufada a `beckham_alertas`; quedan `onError` en Airtable, `maxTries` y el enum `resultado` |
 | **WP-203** | 📘 specified | Dos webhooks públicos sin auth sobre datos reales de empleados |
-| **WP-204** | 📘 specified | Sin esto un fallo de allowlist es indistinguible de una alucinación |
+| **WP-204** | 🔨 building | Quedan `maxIterations` y cuadrar aristas `ai_tool` con tools nombradas en el prompt |
 | **WP-209** | 📘 specified | Cierra **nueve** incógnitas con una conversación. Requiere autorización **U2** |
-| **WP-216** | 📘 specified | Correcciones y borrados del canvas; no depende de la sonda |
+| **WP-216** | 🔨 building | Los borrados hechos; quedan las correcciones y la reestructura A/B del 10/08 |
 | **WP-232** | 📘 specified | Solo ficheros y un script; no toca ningún sistema |
 
 **Regla de secuencia:** aunque estos siete estén listos, van **uno a uno con su prueba**. Dos cambios sin

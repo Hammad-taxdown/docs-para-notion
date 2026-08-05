@@ -1,7 +1,7 @@
 ---
 id: WP-204
 title: "Prerrequisito P3: systemMessage como expresión y purga de las tools fantasma del prompt"
-status: specified
+status: building
 size: S
 depends_on: []
 milestone: "Fase 2 conversacional — Prerrequisitos"
@@ -69,3 +69,23 @@ respuesta al usuario.
 ## 7. Rollback
 
 `versionId` anotado antes del cambio; el `systemMessage` anterior se pega íntegro en la bitácora.
+
+
+---
+
+## 8. Estado real · auditado el 2026-08-05 por MCP
+
+**status: building — 2 de 4 entregables.**
+
+| Entregable | Estado real |
+|---|---|
+| `systemMessage` como expresión | ✅ `={{ $json.bot_mobility_prompt }}` en el nodo `AI Agent`. Empieza por `=`. El texto llega resuelto desde el nodo `LangSmith Prompt` (`promptName: bot_mobility_prompt`, `promptTag: prod`) |
+| Purga de las tres tools fantasma | ✅ cero apariciones de `guardar_datos_airtable`, `agendar_llamada` y `transferir_humano` en los parámetros del workflow y en los dos snapshots de prompt de `docs/` |
+| `maxIterations` explícito | ❌ **AUSENTE** en las `options` del `AI Agent`. Sigue en el valor por defecto sin anotar |
+| Verificación "aristas `ai_tool` == tools nombradas en el prompt" | ❌ **NO CUADRA**: hay **2** aristas `ai_tool` y **0** menciones de `guardar_datos_cliente` o `leer_expediente` en los snapshots de prompt de `docs/` (3/08). El agente descubre las tools solo por su `description`, el prompt no las nombra. **Pendiente de comprobar contra el prompt vivo de LangSmith con tag `prod`**, que es la fuente de verdad y puede haber cambiado |
+
+**Hallazgo lateral, anotado el 5/08:** `AI Agent.text` es
+`={{ $('Preparar_Prompt').item.json.prompt }}` — usa `.item`. No cae bajo la regla del proyecto
+(esa prohíbe `.item` en **nodos de código**, donde cuelga el task runner) y funciona en producción,
+pero es la segunda de las dos únicas apariciones de `.item` en todo el workflow, junto con
+`Callback_Intercom`.
