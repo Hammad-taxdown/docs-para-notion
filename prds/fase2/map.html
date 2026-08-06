@@ -123,7 +123,28 @@
 
   footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--moon-200);
     font-size:12.5px;color:var(--moon-500)}
-  @media(max-width:860px){.arch{grid-template-columns:1fr}.wp .detail{padding-left:15px}h1{font-size:26px}}
+  /* ---------- overview (00) ---------- */
+  .ov{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0 6px}
+  .ovcard{border:1px solid var(--moon-200);border-radius:10px;padding:15px 17px;background:#fff}
+  .ovcard h3{margin:0 0 8px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--moon-500)}
+  .ovcard p{margin:0 0 8px;font-size:13.6px;color:#44425C}
+  .ovcard p:last-child{margin:0}
+  .ovcard ul{margin:0;padding-left:19px;font-size:13.6px;color:#44425C}
+  .ovcard li{margin-bottom:5px}
+  .ovcard.good{border-left:3px solid var(--tax)}
+  .ovcard.risk{border-left:3px solid var(--sand)}
+  .ovcard.now{border-left:3px solid var(--sky)}
+  .today{counter-reset:blk;margin:18px 0 0;padding:0;list-style:none}
+  .today li{border:1px solid var(--moon-200);border-radius:10px;padding:11px 15px 11px 46px;
+    margin-bottom:8px;position:relative;font-size:13.8px;background:var(--moon-50)}
+  .today li:before{counter-increment:blk;content:counter(blk);position:absolute;left:14px;top:10px;
+    width:22px;height:22px;border-radius:50%;background:var(--dark);color:#fff;font-size:11.5px;
+    font-weight:700;display:grid;place-items:center}
+  .today li b{color:var(--dark)}
+  .today li.hot{background:var(--sand-100);border-color:#F6C6B9}
+  .today li.hot:before{background:var(--sand-700)}
+  @media(max-width:860px){.arch{grid-template-columns:1fr}.ov{grid-template-columns:1fr}
+    .wp .detail{padding-left:15px}h1{font-size:26px}}
 </style>
 
 <header>
@@ -132,13 +153,15 @@
     <h1>Mapa completo de Work Packages</h1>
     <p class="sub">Todo el proyecto en un solo mapa: los 11 WP del roadmap vigente (sesiones del 27 al 29
       de julio) y los 33 de la Fase 2 conversacional, reordenados en 8 olas de lo más rápido de quitar a
-      lo más complejo. Actualizado el <b>1 de agosto</b>: el bot <b>mantiene una conversación real de principio a fin</b> — dos
-    conversaciones no-Preview y 43 turnos seguidos sin un fallo. Se cerraron WP-10b, WP-202 y WP-07, se descartó
-    WP-206b con las cuatro combinaciones agotadas, y se arreglaron tres bugs vivos en producción.</p>
+      lo más complejo. Actualizado el <b>6 de agosto a las 10:30</b>: el bot conversa de principio a fin y
+      el expediente <b>ya no se corrompe</b> — cuatro conversaciones reales seguidas con cero campos
+      cruzados. Empieza por el <b>overview</b>: dónde estamos, qué toca hoy y qué está esperando a otra
+      persona. Todo lo demás es detalle.</p>
     <div class="stamp">
-      <span>Actualizado 2026-08-01 · el bot ya conversa</span>
-      <span>4 WP cerrados el 01/08 · 43 turnos reales sin un fallo</span>
-      <span>3 bugs de producción encontrados y arreglados</span>
+      <span>Actualizado 2026-08-06 19:30 · alcance completo al 31/08</span>
+      <span>versionId 4029396e · 40 nodos · ai_tool = 3</span>
+      <span>Bloques 3, 4 y 5 cerrados · WP-202 y WP-206 probados</span>
+      <span>25 días naturales para la entrega</span>
     </div>
   </div>
 </header>
@@ -147,12 +170,151 @@
 
 <div class="kpis">
   <div class="kpi"><b>51</b><span>WP totales</span></div>
-  <div class="kpi"><b>14</b><span>Terminados</span></div>
-  <div class="kpi"><b>23</b><span>Pruebas por curl en verde</span></div>
-  <div class="kpi"><b>1</b><span>Bloqueos vivos</span></div>
-  <div class="kpi"><b>3</b><span>Pendiente de tercero</span></div>
+  <div class="kpi"><b>12</b><span>Terminados</span></div>
+  <div class="kpi"><b>5</b><span>En curso</span></div>
+  <div class="kpi"><b>~57</b><span>Puntos restantes</span></div>
+  <div class="kpi"><b>17</b><span>Días laborables</span></div>
+  <div class="kpi"><b>5</b><span>Esperando a otra persona</span></div>
 </div>
 
+<h2><span class="n">00</span>Overview · dónde estamos el 6/08 a las 10:30</h2>
+<p class="lede">Lee estas cuatro tarjetas y la lista de hoy. Con eso ya sabes el estado del proyecto sin
+  abrir una sola ola.</p>
+
+<div class="ov">
+  <div class="ovcard good">
+    <h3>Lo que ya funciona y está verificado</h3>
+    <ul>
+      <li>El bot <b>conversa de principio a fin</b> y guarda incremental: llama a
+        <code>guardar_datos_cliente</code> en cuanto tiene un dato nuevo, y manda solo ese.</li>
+      <li><b>Cuatro conversaciones reales seguidas con cero campos cruzados.</b> Los tres bugs de
+        corrupción silenciosa están muertos: las ranuras de los 11 valores, el agente rechazando NIFs
+        válidos y el prompt negándole sus dos tools.</li>
+      <li><code>FechaNacimiento</code> se rellena <b>por primera vez en el proyecto</b>, y
+        <code>fechaDesplazamiento</code> está cableada en los tres sitios → la fórmula
+        <i>Situación fiscal Año Desplazamiento</i> <b>ya calcula sola</b> el corte del 1 de julio.</li>
+      <li>Producción: <code>versionId f039da80</code>, 34 nodos, <code>ai_tool</code>=2,
+        <code>maxIterations</code> 6, <code>gpt-5.6-terra</code> con <b>Responses API ON</b>.</li>
+    </ul>
+  </div>
+
+  <div class="ovcard risk">
+    <h3>Lo que duele y por qué</h3>
+    <ul>
+      <li><b>Los dos mensajes ya no existen como tarea.</b> <code>M4</code> lo cerró <b>Iciar</b>, que
+        aprobó el corpus fiscal el 6/08 → el tramo del 17 al 21 queda desbloqueado. Y <code>WP-10</code>
+        se desinfló: el correo de <code>Submitted</code> <b>hace mucho que no se manda</b> y el turno 2
+        funciona. Queda solo como riesgo de regresión con fecha 21/08.</li>
+      <li><b>Ahora se puede probar por curl desde el entorno de trabajo.</b>
+        <code>BASE=es.synapse.rentax.es</code> · Eso cambia el ciclo: cada tanda se verifica en minutos
+        con filas reales creadas y borradas, sin conversación y sin esperarte.</li>
+      <li>Ayer se cerraron 6 tareas de 11 → los bloques 3, 4, 5, 6 y 7 <b>caen enteros en hoy</b>. El
+        viernes es congelación, así que el colchón de la semana está gastado.</li>
+      <li>Aritmética honesta: ~66 puntos en 18 días laborables ≈ <b>3,7 puntos/día</b>. A la velocidad
+        medida (1,9 h/punto) son 7 h/día; a la estimada (3 h/punto), 11 h/día. <b>Alcance completo,
+        decisión cerrada.</b></li>
+      <li>Deuda que no es un WP: <code>hijos</code> no se pregunta, y los 4 campos <code>aiText</code>
+        siguen en <code>emptyDependency</code> (documentos, bloque 4).</li>
+    </ul>
+  </div>
+
+  <div class="ovcard now">
+    <h3>Reglas con prueba · no negociables</h3>
+    <ul>
+      <li>En nodos de código <b>nunca <code>$('X').item</code></b>, siempre <code>.first()</code>: el
+        <code>.item</code> cuelga el task runner hasta el timeout.</li>
+      <li>Un campo nuevo son <b>tres sitios</b>: la tool, <code>Validar y Normalizar</code> y el mapeo de
+        <code>Airtable Upser Expediente</code>. Olvidar el tercero devuelve <code>ok:true</code> y
+        <b>no guarda nada</b>.</li>
+      <li><code>typecast:true</code> en Airtable: un valor fuera de whitelist <b>crea una opción nueva</b>
+        en la columna en vez de fallar. La whitelist es lo único que protege la base.</li>
+      <li>Workspace TEST · <b>Preview nunca y Simulation tampoco</b> · nunca escribir desde el Inbox ·
+        tras cualquier sesión de canvas, <b>auditar conexiones por MCP</b>.</li>
+    </ul>
+  </div>
+
+  <div class="ovcard">
+    <h3>Decisiones cerradas · no se reabren</h3>
+    <ul>
+      <li><b>Alcance completo el 31/08, sin recortes.</b> Por eso <code>WP-230</code> vuelve al plan
+        (estaba marcado como cancelado en este mapa el 30/07).</li>
+      <li><b>El FAQ usa EL MISMO prompt que el agente.</b> Eso cierra <code>M5</code> como lectura
+        literal, vacía <code>WP-218</code> y encoge <code>WP-220</code>: el corpus fiscal <b>ya está en
+        el prompt y ya está en producción</b>.</li>
+      <li>Consecuencia que cambia el mensaje de <code>M4</code>: no es «que alguien escriba un corpus»,
+        es <b>«que alguien con criterio fiscal valide el texto que el bot ya dice»</b>. Más pequeño, más
+        rápido y más urgente.</li>
+      <li>Los bloques 4 y 5 se hacen <b>dentro de <code>beckham_bot</code></b>, no como workflows aparte:
+        el nodo de LangSmith es <code>CUSTOM.langSmithPrompt</code> y no se puede recrear por MCP.</li>
+    </ul>
+  </div>
+</div>
+
+<h2><span class="n">00b</span>El orden de hoy · 7 bloques</h2>
+<p class="lede">Una tarea a la vez. «Diagnosticado» no es «resuelto».</p>
+<ol class="today">
+  <li style="background:var(--tax-100);border-color:#A8ECD2"><b>✅ HECHO ·  Los 2 mensajes.</b> No salió
+    ninguno y aun así están cerrados: <code>M4</code> lo aprobó <b>Iciar</b>, y de <code>WP-10</code> no
+    quedaba nada urgente (el correo de <code>Submitted</code> ya no se manda; el turno 2 funciona).</li>
+  <li style="background:var(--tax-100);border-color:#A8ECD2"><b>✅ HECHO · Bloque 3 completo</b>, cinco
+    tandas: A (salario, municipio, provincia) · B (5 selects) · B2 (Propiedades e Inversiones) · C (los dos
+    países + <b>Nacionalidad</b>, 245 opciones y 228 gentilicios) · D (pasaporte). La tool pasó de
+    <b>16 a 32 parámetros</b> y Airtable de <b>21 a 45 columnas</b>, con <b>más de 60 casos probados por
+    curl</b> y todas las filas de prueba borradas.</li>
+  <li style="background:var(--tax-100);border-color:#A8ECD2"><b>✅ HECHO · El prompt, tres veces.</b> No
+    eran 4 preguntas: fueron <b>5 nuevas</b> (país de nacimiento, municipio y provincia, último país, sexo
+    e idioma) <b>más 3 reescrituras</b> (PF1 a cifra, PF5a estado civil, PF3 desplazado) y el resumen
+    ampliado. <b>Validado en conversación real</b> y ya en LangSmith como v3, con el Calendly dentro.</li>
+  <li style="background:var(--tax-100);border-color:#A8ECD2"><b>✅ HECHO · Documentos.</b>
+    <code>files_analysis_blocks</code> resultó ser trabajo que se tiraba en cada turno; la solución es un
+    <b>subworkflow como tool</b> (<code>beckham_analizar_documento</code>): PDF entero al modelo por la
+    Responses API, imágenes por visión, DOCX guardado sin intentar leerlo. <b><code>ai_tool</code> = 3</b>
+    por primera vez, y los adjuntos se guardan en sus 9 columnas por <code>tipo_documento</code>.</li>
+  <li style="background:var(--tax-100);border-color:#A8ECD2"><b>✅ HECHO · LangSmith, red de seguridad
+    PROBADA.</b> Se rompió LangSmith a propósito (404) y <b>el bot siguió contestando</b> con el prompt
+    completo desde la Data Table. <b>Y la prueba destapó un fallo silencioso en producción:</b>
+    <code>continueErrorOutput</code> <b>no funciona</b> en el nodo custom de LangSmith — deja pasar el
+    item por la salida buena, así que el agente arrancaba <b>sin instrucciones</b> y en
+    <code>success</code>. El guardián por tanto <b>comprueba el contenido</b>
+    (<code>length &lt; 500</code>), no el error. Deuda declarada: la copia <b>no se sincroniza sola</b>.</li>
+  <li><b>✅ <code>WP-202</code> y <code>WP-206</code> cerrados y probados.</b> El escritor ya reintenta
+    3 veces, avisa a Slack y <b>devuelve <code>ok:false</code></b> en vez de dejar al agente esperando
+    hasta el timeout — verificado rompiendo la tabla a propósito (<code>message_ts
+    1786029488.571029</code>). <code>typecast</code> a <code>false</code>. <b><code>WP-205</code></b>
+    (unicidad de <code>UserId</code>) <b>se aplaza al lunes 10</b>: son tres nodos nuevos en la rama que
+    escribe en producción y el viernes hay congelación.</li>
+  <li><b>DC de persistencia en D/G/N</b> + auditoría de conexiones por MCP.</li>
+</ol>
+<div class="callout">
+  <p><b>Añadido el 6/08 a las 11:00 · cuatro menores que salen de la ejecución de Iciar</b> (59 ejecuciones,
+  todas <code>success</code>, fila <code>recg91vyzbHMLPhhn</code>, <b>cero campos cruzados por quinta vez</b> y
+  esta vez sin que yo mirase). Se quitan hoy:</p>
+  <p><b>a ·</b> Aviso al principio: «te preguntaremos algunos datos personales». <b>Un solo sitio</b>, el prompt.</p>
+  <p><b>b ·</b> El <b>sexo</b>. La columna <code>Sexo</code> ya existe y solo admite <code>Hombre</code> o
+  <code>Mujer</code> → tres sitios + pregunta. <b>Mi recomendación: preguntarlo, no deducirlo del nombre</b> —
+  ese dato acaba en los modelos 030/149 y un nombre internacional no lo determina.</p>
+  <p><b>c ·</b> El <b>check de que quiere aplicar</b> al final, si el veredicto sale favorable.
+  <code>AplicaBeckham</code> ya existe como casilla, pero <b>hay que decidir qué significa</b>: «le aplica el
+  régimen» y «el cliente confirma que quiere aplicarlo» son dos cosas y hoy hay una sola casilla. Se solapa
+  con <code>WP-234</code>.</p>
+  <p><b>d ·</b> <b>Caso complejo o salario &lt; 55.000</b> → la respuesta final es <b>agendar llamada</b> con
+  link de Calendly (lo adjuntas tú). El salario entra por la tanda A del bloque 3.</p>
+  <p><b>Y un agujero que no habías pedido pero está en su fila:</b> <code>fechaDesplazamiento</code> =
+  <b>07/08/2026, mañana</b>. Una fecha de llegada <b>en el futuro</b> y el bot la aceptó sin objeción. El
+  calendario es válido, así que el validador no falla; lo que falta es la semántica — y al caer después del
+  1 de julio, la fórmula la clasifica como <b>«No residente»</b>.</p>
+</div>
+
+<div class="callout info">
+  <p><b>Pendiente tuyo antes del bloque 3:</b> limpiar en Airtable los dos espacios parásitos y la errata
+  de las opciones de <code>Propiedades</code> e <code>Inversiones</code> («ni el inversiones»), y
+  confirmar el nombre de la columna nueva del pasaporte — propuesta: <code>PasaporteNumero</code>. Si no
+  se limpian, esas erratas <b>quedan congeladas en las whitelists del código</b>.</p>
+</div>
+
+<hr class="rule">
+
+<h2><span class="n">00c</span>Histórico · lo que se cerró el 31/07 y el 01/08</h2>
 <div class="callout">
   <p><b>WP-201 está resuelto y verificado en producción.</b> El fix del <code>Content-Type</code> se publicó
   el 31/07 (<code>versionId d8ddbbcb</code>) y las <b>20 comprobaciones por curl</b> pasan: el body
@@ -232,8 +394,11 @@
 
 <hr class="rule">
 
-<h2><span class="n">02</span>Qué cambió hoy con tus 46 decisiones</h2>
-<p class="lede">Estas ocho respuestas son las que reescriben el plan. El resto confirma lo que ya había.</p>
+<h2><span class="n">02</span>Qué cambió con tus 46 decisiones <span style="color:var(--moon-500);font-weight:600">(sesión del 30/07)</span></h2>
+<p class="lede">Estas ocho respuestas reescribieron el plan el 30 de julio. <b>Dos de ellas ya no valen y
+  están corregidas abajo:</b> <code>WP-230</code> vuelve al alcance (decisión del 5/08: alcance completo,
+  sin recortes) y <code>M4</code> sigue abierto — el corpus existe, lo que falta es un <b>aprobador
+  nombrado</b>, con límite el 14/08.</p>
 
 <div class="tblwrap">
 <table>
@@ -242,7 +407,8 @@
     <tr><td><b>M1</b> · recordatorios</td>
       <td>Los construimos, <b>pero la automatización vive en Airtable</b> y la montan Alina e Iciar.
         Nuestro trabajo: que el dato llegue de Intercom a Airtable.</td>
-      <td><span class="pill p-no">WP-230 cancelado</span> Se cae un WP grande y su cadena.
+      <td><span class="pill p-no">REVERTIDO EL 5/08</span> <code>WP-230</code> <b>vuelve al alcance</b>
+        (alcance completo, sin recortes) y está en el plan del <b>martes 25/08</b>, aún sin dueño.
         <code>WP-225</code> se reduce a campos + vista + contrato escrito.</td></tr>
     <tr><td><b>M3</b> · base legal</td>
       <td>No es promocional: son clientes que pagan. Sin opt-in como puerta; el mensaje cierra con
@@ -252,8 +418,10 @@
         intentos: «cada 1-2 meses» sin fin no es publicable.</td></tr>
     <tr><td><b>M4</b> · corpus fiscal</td>
       <td>El corpus <b>es el System Prompt</b> que escriben Paula, Alina e Iciar. Ya hay una v1 en uso.</td>
-      <td><span class="pill p-yes">Camino crítico desbloqueado</span> <code>WP-220</code> pasa de L a S y
-        <b>desaparece la tool <code>buscar_contexto_fiscal</code></b>: sin RAG ni vector store.</td></tr>
+      <td><span class="pill p-open">sigue abierto</span> <code>WP-220</code> pasa de L a S y
+        <b>desaparece la tool <code>buscar_contexto_fiscal</code></b>: sin RAG ni vector store. <b>Pero el
+        bloqueo no ha caído:</b> ese texto fiscal <b>ya contesta a clientes reales</b> y nadie lo ha
+        validado. Falta un aprobador con nombre, límite 14/08.</td></tr>
     <tr><td><b>M5</b> · «el mismo agente»</td>
       <td>Lectura funcional: dos nodos, mismo modelo, mismo prompt base, distintas tools e instrucciones
         de respuesta.</td>
@@ -307,8 +475,9 @@
 <hr class="rule">
 
 <h2><span class="n">04</span>Camino crítico actualizado</h2>
-<p class="lede">Pesos S=1 · M=2 · L=3. Con <code>M4</code> resuelto y <code>WP-230</code> cancelado, el
-  camino crítico baja de peso 16 a <b>14</b> y deja de estar cortado por una decisión de contenido.</p>
+<p class="lede">Pesos S=1 · M=2 · L=3. La cadena de abajo tiene peso <b>14</b> y su primer eslabón,
+  <code>WP-201</code>, <b>ya está cerrado</b>. Aviso del 6/08: <code>M4</code> sigue abierto, así que el
+  tramo <code>WP-220 → 221 → 222 → 233</code> está cortado por una <b>firma</b>, no por código.</p>
 <div class="flowline">
   <code>WP-201 (1) → WP-205 (2) → WP-207 (2) → WP-208 (2) → WP-211 (2) → WP-219 (2) → WP-221 (3)
   → WP-233 (2)</code>
@@ -377,7 +546,7 @@ const OLAS = [
    "<b>Airtable ignora los <code>undefined</code></b> ⇒ la corrección prevista NO hace falta y el nodo se queda como está."],
    verify:"Diff campo a campo por MCP. Cubre texto, fecha y checkbox — el checkbox en <code>true</code> era el caso que más miedo daba.",
    note:"Hueco declarado: <code>Descarte</code> (single-select) no se probó con un valor real, porque el primer curl lo mandó vacío. Lo tapa WP-206."},
-  {id:"WP-204",t:"systemMessage a expresión, prompt v2 de Paula y purga de tools fantasma",st:"done",size:"M",crit:0,
+  {id:"WP-204",t:"systemMessage a expresión, prompt v2 de Paula y purga de tools fantasma",st:"build",size:"M",crit:0,
    dep:"—",
    goal:"El <code>systemMessage</code> no era expresión, así que <code>{{contexto}}</code>, <code>{{current_date}}</code> y <code>{{user_plan_tax_return}}</code> llegaban <b>literales</b> al modelo.",
    steps:["<b>Hallazgo que corrigió el propio runbook:</b> añadir solo el <code>=</code> habría <b>roto</b> el agente. <code>Preparar_Prompt</code> no produce ninguna de las tres variables, así que en modo expresión <code>{{contexto}}</code> daba <code>ReferenceError</code>. Hoy llegaban literales (malo); con solo el <code>=</code> el nodo habría dejado de responder (peor).",
@@ -420,10 +589,11 @@ const OLAS = [
    "<code>last_corr_id</code> y <code>last_idem_key</code> para trazabilidad e idempotencia."],
    verify:"Curl con un <code>UserId</code> duplicado → 400 <code>multi_match</code> sin escribir.",
    note:"Separado de WP-205a hoy: necesita un nodo <code>Airtable Search</code> + un <code>If</code> insertados en la cadena que ya funciona, y eso no se hace con una presentación encima. <b>Pista útil:</b> ya existe un nodo llamado <code>Search records</code> en el workflow — sin verificar a qué apunta ni si está conectado; si sirve, esto sale más barato."},
-  {id:"WP-202",t:"Red de errores — CERRADA Y PROBADA 01/08",st:"done",size:"S",crit:0,
+  {id:"WP-202",t:"Red de errores — EN CURSO, 1 de 4 partes (auditado el 5/08)",st:"build",size:"S",crit:0,
    dep:"—",
    goal:"<code>beckham_bot</code> no tiene <code>errorWorkflow</code> (verificado hoy: <code>settings.errorWorkflow: null</code>) y el nodo de Airtable no tiene <code>retryOnFail</code> ni <code>onError</code>: un 429 mata la ejecución sin responder al Data Connector y sin avisar a nadie.",
-   steps:["<b>CERRADO 01/08.</b> Workflow nuevo <code>beckham_alertas</code> (<code>BJfExmwu1fI1aPpY</code>) con dos entradas: <code>Error Trigger</code> para caídas y <code>Execute Workflow Trigger</code> para avisos de negocio. Credencial de Slack creada desde cero vía manifest. <code>settings.errorWorkflow</code> de <code>beckham_bot</code> ya no es <code>null</code>. <b>Probado con caídas reales</b>, no con mocks. Tres tipos de aviso vivos: caída, <code>upsert_rechazado_400</code> y <code>fecha_invalida_descartada</code>. Trampa encontrada: con <code>waitForSubWorkflow:false</code> n8n marca la subejecución como <code>success</code> y <b>el nodo de Slack no llega a ejecutarse</b>.",
+   steps:["<b>CORRECCIÓN DEL 5/08:</b> el 1/08 se dio por cerrado y <b>estaba a 1 de 4</b>. Hecho: el <code>errorWorkflow</code> con avisos a Slack (y funcionó de verdad — el 400 de <code>gpt-5.6-terra</code> llegó a Slack, el fallo no fue silencioso). <b>Falta:</b> <code>onError: continueErrorOutput</code> en el nodo de Airtable con su rama y el tag <code>beckham_persistencia_fallida</code>, <code>maxTries: 3</code> y el enum cerrado de <code>resultado</code>. Cierra <b>hoy 6/08</b>, y <code>WP-205</code> es precondición dura de habilitar los reintentos.",
+   "Workflow nuevo <code>beckham_alertas</code> (<code>BJfExmwu1fI1aPpY</code>) con dos entradas: <code>Error Trigger</code> para caídas y <code>Execute Workflow Trigger</code> para avisos de negocio. Credencial de Slack creada desde cero vía manifest. <code>settings.errorWorkflow</code> de <code>beckham_bot</code> ya no es <code>null</code>. <b>Probado con caídas reales</b>, no con mocks. Tres tipos de aviso vivos: caída, <code>upsert_rechazado_400</code> y <code>fecha_invalida_descartada</code>. Trampa encontrada: con <code>waitForSubWorkflow:false</code> n8n marca la subejecución como <code>success</code> y <b>el nodo de Slack no llega a ejecutarse</b>.",
    "Crear un workflow de errores nuevo (decisión N9: <b>no</b> reutilizar <code>Notificaciones_error</code>).",
    "Dos salidas: fallos de sistema → Slack; situaciones de negocio → email.",
    "Enchufarlo en <code>settings.errorWorkflow</code> y poner <code>retryOnFail</code> en el nodo de Airtable."],
@@ -497,7 +667,7 @@ const OLAS = [
    "JWT en el Messenger antes del salto a producción."],
    verify:"Curl sin la cabecera → 401 sin escribir. Curl con <code>modo</code> falsificado en el body → se ignora.",
    note:"Decisión N8: todo se monta en TEST y luego se pasa a producción. Esto es requisito de ese salto, no opcional."},
-  {id:"WP-231",t:"Observabilidad y alertas",st:"spec",size:"M",crit:0,
+  {id:"WP-231",t:"Observabilidad y alertas",st:"build",size:"M",crit:0,
    dep:"WP-208",
    goal:"Saber que algo se rompió antes de que lo cuente un usuario.",
    steps:["Alertas sobre las clases de error de <code>WP-202</code>, con <code>corr_id</code>.",
@@ -625,7 +795,7 @@ const OLAS = [
    "Métrica: cuánta gente se autodescarta sin motivo."],
    verify:"La opción deja traza y no cierra. Airtable no recibe ningún <code>Descarte</code>.",
    note:"Decisión U4=b de hoy."},
-  {id:"WP-216",t:"Correcciones del canvas heredado",st:"spec",size:"M",crit:0,
+  {id:"WP-216",t:"Correcciones del canvas heredado",st:"build",size:"M",crit:0,
    dep:"—",
    goal:"Limpiar los defectos conocidos del canvas antes de construir encima.",
    steps:["Borrar <code>M. Path</code>: es un segundo bloque de connector cuyos outputs son atributos locales distintos, y su <code>Object mapping</code> pisa el resultado del primero. <code>fuera_plazo</code> pasa directo a <code>N</code>.",
@@ -816,11 +986,12 @@ const OLAS = [
    goal:"Absorbido por <code>WP-223</code>.",
    steps:["Deja de ser un WP propio: el triaje es enrutar al agente FAQ y detectar el cambio de tono, y las dos cosas viven en WP-223."],
    verify:"—",note:"Fusionado hoy (N15)."},
-  {id:"WP-230",t:"Scheduler de recordatorios en n8n",st:"kill",size:"L",crit:0,dep:"—",
-   goal:"<b>Cancelado.</b> La automatización de follow-up vive en Airtable y la montan Alina e Iciar.",
-   steps:["Nuestro alcance acaba en que el dato llegue de Intercom a Airtable completo, con precisión y ventana.",
-   "Lo que sí seguimos debiendo es el contrato escrito de esos campos → <code>WP-225</code>."],
-   verify:"—",note:"Cancelado hoy por decisión M1. Se cae un WP de tamaño L y toda su cadena de bloqueos."}
+  {id:"WP-230",t:"Scheduler de recordatorios en n8n",st:"spec",size:"L",crit:0,dep:"WP-10, M1, M2",
+   goal:"<b>REACTIVADO EL 5/08.</b> Entra en el alcance completo del 31/08 y está planificado para el <b>martes 25/08</b>. El 30/07 se había cancelado por la decisión M1 (la automatización vivía en Airtable, la montaban Alina e Iciar); esa cancelación queda revertida por la decisión de <b>alcance completo, sin recortes</b>.",
+   steps:["Nuestro alcance mínimo sigue siendo que el dato llegue de Intercom a Airtable completo, con precisión y ventana.",
+   "El contrato escrito de esos campos sigue siendo deuda → <code>WP-225</code>.",
+   "<b>Tres bloqueos vivos antes de poder empezarlo:</b> <code>WP-10</code> (Adri/Fer, límite 21/08), <code>M1</code> (alcance de los recordatorios) y <code>M2</code> (dueño nombrado del seguimiento)."],
+   verify:"—",note:"<b>Sigue sin dueño nombrado.</b> Es el WP con más riesgo del tramo 4: tamaño L, tres dependencias externas y el penúltimo día útil antes del colchón."}
   ]
 }
 ];

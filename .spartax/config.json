@@ -1,0 +1,7 @@
+{
+  "n8n": {
+    "base_url": "",
+    "api_key_env": "N8N_API_KEY",
+    "_nota": "base_url ej: https://miinstancia.app.n8n.cloud — la key NUNCA va aquí, solo el nombre de su variable de entorno"
+  }
+}

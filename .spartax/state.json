@@ -6,6 +6,9 @@
     },
     "D0508": {
       "created_at": "2026-08-05T09:01:04Z"
+    },
+    "D0608": {
+      "created_at": "2026-08-06T08:30:00Z"
     }
   },
   "tasks": {
@@ -141,10 +144,11 @@
       "verify": "12 campos escritos y verificados en Airtable; PaisNacimiento y UltimoPaisResidencia con whitelist exacta; pasaporte aceptado por nifValido en columna de texto nueva",
       "depends": [],
       "effort": 2.0,
-      "status": "in_progress",
-      "note": "",
+      "status": "done",
+      "note": "CERRADO ENTERO el 6/08 en cinco tandas (A, B, B2, C, D) mas el checkbox. Tool de 16 a 29 parametros, Airtable de 21 a 35 columnas, 41 casos probados por curl con filas creadas y borradas. versionId final 6c8b5c0e-212c-4f30-a1f0-b2dc842b186f.",
       "created_at": "2026-08-05T09:01:04Z",
-      "in_progress_at": "2026-08-05T14:01:35Z"
+      "in_progress_at": "2026-08-05T14:01:35Z",
+      "done_at": "2026-08-06T12:10:00Z"
     },
     "T012": {
       "title": "Bloque 6 · Los 2 mensajes que desbloquean el FAQ (aprobador WP-220/M4 y WP-10 a Adri y Fer)",
@@ -152,9 +156,10 @@
       "verify": "dos mensajes enviados y vistos en pantalla; un NOMBRE concreto para el aprobador del corpus",
       "depends": [],
       "effort": 0.25,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-08-05T09:01:04Z"
+      "status": "done",
+      "note": "CERRADO SIN QUE SALGA NINGUN MENSAJE, por dos motivos distintos. MENSAJE A (M4): innecesario, Iciar ya confirmo al usuario que el corpus fiscal del prompt esta bien -> aprobadora = Iciar, 6/08, y el tramo 17-21 queda desbloqueado. MENSAJE B (WP-10): retirado. El correo de 'Submitted' que yo daba como bloqueador del viernes HACE MUCHO QUE NO SE MANDA (dato del usuario), y el turno 2 funciona (59 ejecuciones success de la conversacion de Iciar esta manana). Solo queda riesgo de regresion con fecha 21/08: Ticket Category='Customer' en 'Prueba Fer' (tres custom bots lo usan, no se toca a ciegas) y la condicion de reparto del distribuidor pausado.",
+      "created_at": "2026-08-05T09:01:04Z",
+      "done_at": "2026-08-06T09:55:00Z"
     },
     "T013": {
       "title": "Bloque 4 · Documentos: que el agente vea files_analysis_blocks y que los adjuntos se guarden",
@@ -162,9 +167,10 @@
       "verify": "files_analysis_blocks consumido por el agente en una ejecucion real; al menos un adjunto escrito en una columna de Airtable",
       "depends": [],
       "effort": 2.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-08-05T09:01:04Z"
+      "status": "done",
+      "note": "CERRADO el 6/08. files_analysis_blocks resulto ser trabajo que se tiraba a la basura en cada turno; la solucion final es la del usuario: un subworkflow como TOOL del agente (ONhveViBeiI6GXWd) que devuelve texto. Adjuntos guardados por tipo_documento en las 9 columnas de fichero, 5/5 por curl, y confirmado que Airtable descarga el fichero de verdad.",
+      "created_at": "2026-08-05T09:01:04Z",
+      "done_at": "2026-08-06T14:20:00Z"
     },
     "T014": {
       "title": "Bloque 5 · Red de seguridad de Langsmith (beckham_prompt_sync + Data Table)",
@@ -172,9 +178,11 @@
       "verify": "Data Table con el texto del prompt; beckham_bot lee de ahi; con Langsmith caido el bot sigue contestando",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-08-05T09:01:04Z"
+      "status": "done",
+      "note": "CERRADO Y PROBADO. Data Table beckham_prompt_respaldo (mTN65aN389Z3KMbe) con el prompt v3 completo (37.097 caracteres) y guardian If '¿Prompt vacio?' (length<500) entre LangSmith y el agente. Traza 8088313: rama true, respaldo leido, agente con prompt completo, bot contestando. HALLAZGO: continueErrorOutput NO funciona en CUSTOM.langSmithPrompt, por eso el guardian comprueba el CONTENIDO y no el error.",
+      "created_at": "2026-08-05T09:01:04Z",
+      "in_progress_at": "2026-08-06T14:20:00Z",
+      "done_at": "2026-08-06T15:20:00Z"
     },
     "T015": {
       "title": "Bloque 7 · DC de persistencia en D/G/N para los descartes que mueren en los filtros",
@@ -230,8 +238,248 @@
       "created_at": "2026-08-05T14:58:48Z",
       "in_progress_at": "2026-08-05T14:58:48Z",
       "done_at": "2026-08-05T15:17:03Z"
+    },
+    "T020": {
+      "title": "Menor 6/08 (a) Aviso inicial de datos personales en el prompt",
+      "verify": "conversacion real: el bot avisa 'te preguntaremos algunos datos personales' ANTES de la primera pregunta de D1",
+      "effort": 0.25,
+      "note": "Incluido en el prompt nuevo (parche P1).",
+      "milestone": "D0608",
+      "depends": [],
+      "status": "done",
+      "created_at": "2026-08-06T08:30:00Z",
+      "done_at": "2026-08-06T12:10:00Z"
+    },
+    "T021": {
+      "title": "Menor 6/08 (b) Sexo: preguntarlo y guardarlo",
+      "verify": "conversacion real: Sexo=Hombre o Mujer en Airtable, string exacto de la whitelist, sin crear opcion nueva por typecast",
+      "effort": 0.5,
+      "note": "Sexo cableado en la tanda B y probado (\"soy Mujer\"->Mujer). La pregunta se anade en el prompt como D10.",
+      "milestone": "D0608",
+      "depends": [],
+      "status": "done",
+      "created_at": "2026-08-06T08:30:00Z",
+      "done_at": "2026-08-06T12:10:00Z"
+    },
+    "T022": {
+      "title": "Menor 6/08 (c) Check de confirmacion: el cliente quiere aplicar",
+      "verify": "conversacion real: si el veredicto sale favorable y el cliente dice que si, el check queda marcado en Airtable",
+      "effort": 0.5,
+      "note": "Resuelto usando AplicaBeckham, que es la casilla que configura el formulario. Verificado que marcarla mueve la formula 'Situación fiscal AnioSiguiente' a 'Régimen Especial (Beckham)'. Si algun dia hace falta separar 'le aplica' de 'quiere aplicarlo', se anade una segunda casilla sin rehacer nada.",
+      "milestone": "D0608",
+      "depends": [],
+      "status": "done",
+      "created_at": "2026-08-06T08:30:00Z",
+      "done_at": "2026-08-06T12:10:00Z"
+    },
+    "T023": {
+      "title": "Menor 6/08 (d) Caso complejo o salario < 55.000 -> agendar llamada con Calendly",
+      "verify": "conversacion real: con caso complejo o salario por debajo del umbral, la respuesta final ofrece agendar llamada con el link",
+      "effort": 0.5,
+      "note": "Resuelto en el prompt nuevo: el link de Calendly va en el mensaje del caso complejo Y del salario por debajo de 55.000, y se elimino la regla que prohibia dar enlaces de calendario. Decidido tambien que menos de 55.000 NO es descarte.",
+      "milestone": "D0608",
+      "depends": [],
+      "status": "done",
+      "created_at": "2026-08-06T08:30:00Z",
+      "done_at": "2026-08-06T12:10:00Z"
+    },
+    "T024": {
+      "title": "Bloque 3 tanda A · salario, municipio y provincia de nacimiento (sin whitelist)",
+      "milestone": "D0608",
+      "verify": "tres sitios cableados y auditados por MCP; prueba en conversacion real al final del bloque 3",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "created_at": "2026-08-06T09:30:00Z",
+      "done_at": "2026-08-06T10:05:00Z",
+      "note": "versionId 1d622b25-0580-4c3f-80fd-d4e69a183299. Tool 19 params (16 viejos identicos byte a byte), validador +21 lineas insertadas sin tocar nada, Airtable 24 columnas con las 21 previas intactas. Helper nuevo ponerNumero para Salario porque la columna es number precision 2."
+    },
+    "T025": {
+      "title": "Bloque 3 tanda B · 5 selects con whitelist (Sexo, Idioma, hijos, estadoCivil, TipoBeckham)",
+      "milestone": "D0608",
+      "verify": "curl: valores raros mapeados al string exacto, nada fuera de whitelist, cero opciones nuevas en Airtable",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "created_at": "2026-08-06T10:10:00Z",
+      "in_progress_at": "2026-08-06T10:10:00Z",
+      "note": "CERRADA 14 de 14 por curl con filas reales creadas y borradas. Los 5 selects mapean formas naturales ('estoy Soltera'->soltero, 'mi idioma es ingles'->Ingles, 'sí, dos'->Tiene hijos, 'tengo un hijo, no dos'->Tiene hijos) y nada sale de la whitelist pese al typecast:true. Confirmado tambien que solo las fechas disparan alerta a Slack. PENDIENTE APARTE, no de la tanda: el prompt no pregunta Sexo, hijos ni Idioma, y PF5a/PF1/PF3 estan mal formuladas para estadoCivil, Salario y TipoBeckham.",
+      "done_at": "2026-08-06T11:05:00Z"
+    },
+    "T026": {
+      "title": "Prompt: 4 preguntas nuevas + 3 reescrituras (PF1 cifra, PF5a estado civil, PF3 desplazado)",
+      "milestone": "D0608",
+      "verify": "conversacion real: Salario numerico en Airtable, estadoCivil de 4 opciones, TipoBeckham correcto para el desplazado, y sexo/hijos/pais-municipio-provincia preguntados",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "created_at": "2026-08-06T11:05:00Z",
+      "note": "v3 publicado en LangSmith por el usuario. Validado en conversacion real el v1; v2 y v3 son parches sobre ese.",
+      "in_progress_at": "2026-08-06T12:10:00Z",
+      "done_at": "2026-08-06T14:20:00Z"
+    },
+    "T027": {
+      "title": "Bloque 3 tanda C · PaisNacimiento y UltimoPaisResidencia con 245 opciones y gentilicios",
+      "milestone": "D0608",
+      "verify": "curl: gentilicios, formas invertidas y articulos mapeados al string exacto; cero opciones nuevas",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "created_at": "2026-08-06T11:10:00Z",
+      "done_at": "2026-08-06T11:35:00Z",
+      "note": "versionId 425874d7. 8 de 8 por curl. Incluye el arreglo del bug de TipoBeckham con el desplazado por empresa extranjera."
+    },
+    "T028": {
+      "title": "Corpus: la prestacion por paternidad de la SS SI tributa",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "created_at": "2026-08-06T11:35:00Z",
+      "note": "Incluido en el prompt nuevo (parche P10).",
+      "done_at": "2026-08-06T12:10:00Z"
+    },
+    "T029": {
+      "title": "Pregunta final \"¿quieres acogerte?\" que marca el checkbox de Airtable",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "created_at": "2026-08-06T11:35:00Z",
+      "note": "Cableado en los tres sitios y ademas escrito en el prompt (parche P8a del bloque 6).",
+      "done_at": "2026-08-06T12:10:00Z"
+    },
+    "T030": {
+      "title": "Cerrar la conversacion de Intercom al terminar el flujo",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 0.5,
+      "status": "planned",
+      "created_at": "2026-08-06T11:35:00Z",
+      "note": "Pedido 6/08. Hay que investigar si se puede desde el bot. El canvas ya hace Close en D y N. Nunca escribir desde el Inbox."
+    },
+    "T031": {
+      "title": "El bot actualiza el estado del registro y el de los modelos 030 y 149",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 0.5,
+      "status": "planned",
+      "created_at": "2026-08-06T11:35:00Z",
+      "note": "Pedido 6/08, para cuando existan las tools de rellenar. RIESGO: Estado030149 y los Borrador030/149 los gobierna otro proceso -> segundo escritor."
+    },
+    "T032": {
+      "title": "Conectar beckham_analizar_documento como tool de beckham_bot",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "created_at": "2026-08-06T12:30:00Z",
+      "note": "Hecho: toolWorkflow v2.2 conectado, ai_tool=3, conexiones main identicas.",
+      "done_at": "2026-08-06T14:20:00Z"
+    },
+    "T033": {
+      "title": "Enganchar la credencial de OpenAI y confirmar el modelo en el subwf de documentos",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "created_at": "2026-08-06T12:30:00Z",
+      "note": "Credencial y modelo puestos por el usuario. El modelo aparece como GPT-5.6-TERRA en el cachedResultName, o sea seleccionado del desplegable. La credencial no se puede verificar por MCP; se confirmara en la primera ejecucion real.",
+      "done_at": "2026-08-06T14:20:00Z"
+    },
+    "T034": {
+      "title": "Guardar los adjuntos en su columna de Airtable por tipo_documento (opcion B)",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "created_at": "2026-08-06T12:30:00Z",
+      "note": "Hecho y probado 5/5 por curl.",
+      "done_at": "2026-08-06T14:20:00Z"
+    },
+    "T035": {
+      "title": "Dos lineas en el prompt para que el agente use la tool de documentos",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "created_at": "2026-08-06T12:30:00Z",
+      "note": "Hecho en el prompt v3: regla 10 y nota final 7 a TRES herramientas, mas las tres reglas del bloque 8.",
+      "done_at": "2026-08-06T14:20:00Z"
+    },
+    "T036": {
+      "title": "Subwf/tool que rellena los modelos 030 y 149",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "created_at": "2026-08-06T12:30:00Z",
+      "note": "Tercera pieza del diseno de documentos. Depende de que leer y guardar esten hechos. Enlaza con WP-235 y con la actualizacion de Estado030149."
+    },
+    "T037": {
+      "title": "Decidir la nacionalidad: columna nueva o dejar de preguntarla",
+      "milestone": "D0608",
+      "verify": "o existe columna Nacionalidad y se escribe, o D4 desaparece del prompt",
+      "depends": [],
+      "effort": 0.25,
+      "status": "planned",
+      "created_at": "2026-08-06T13:20:00Z",
+      "note": "Hoy el bot pregunta la nacionalidad, la repite en el resumen y NO SE GUARDA EN NINGUN SITIO. PaisNacimiento no sirve: son datos distintos y este va a los modelos 030/149."
+    },
+    "T038": {
+      "title": "beckham_prompt_sync · que el respaldo se actualice solo",
+      "milestone": "D0608",
+      "verify": "cambiar el prompt en LangSmith y ver que la Data Table se actualiza sin intervencion",
+      "depends": [
+        "T014"
+      ],
+      "effort": 1.0,
+      "status": "planned",
+      "created_at": "2026-08-06T14:55:00Z",
+      "note": "Hoy la copia de respaldo se mantiene A MANO. Si el prompt cambia en LangSmith y nadie lo pega en la tabla, el respaldo sirve una version vieja. Era la parte del plan que se llamaba beckham_prompt_sync."
+    },
+    "T039": {
+      "title": "WP-202 · red de errores del escritor (cerrada y probada)",
+      "milestone": "D0608",
+      "verify": "rama de error, aviso en Slack y ok:false de vuelta, los tres con traza",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "created_at": "2026-08-06T15:20:00Z",
+      "done_at": "2026-08-06T15:20:00Z",
+      "note": "retryOnFail ON + onError continueErrorOutput + Avisar_Persistencia_Fallida + Respond Persistencia Fallida. Probado rompiendo la tabla: Slack message_ts 1786029488.571029 y {\"ok\":false,\"error\":\"persistencia_fallida\"}."
+    },
+    "T040": {
+      "title": "WP-206 · typecast a false",
+      "milestone": "D0608",
+      "verify": "options.typecast=false en el nodo de Airtable",
+      "depends": [],
+      "effort": 0.25,
+      "status": "done",
+      "created_at": "2026-08-06T15:20:00Z",
+      "done_at": "2026-08-06T15:20:00Z",
+      "note": "Hecho. Las whitelists ya impedian que llegara cualquier valor desconocido, asi que apagarlo no rompe nada y hace explicito el comportamiento."
+    },
+    "T041": {
+      "title": "Guardar adjunto: comprobar que Airtable lo descargo de verdad",
+      "milestone": "D0608",
+      "verify": "con una URL inaccesible, salta un aviso adjunto_no_descargado en vez de un ok:true silencioso",
+      "depends": [],
+      "effort": 0.5,
+      "status": "planned",
+      "created_at": "2026-08-06T15:20:00Z",
+      "note": "HALLAZGO 6/08: una URL inaccesible devuelve ok:true y deja la celda VACIA. Si las URLs de Intercom exigen auth, los documentos se perderian en silencio. Arreglo: releer la fila tras escribir el adjunto y avisar si la celda esta vacia."
     }
   },
-  "next_task": 20,
-  "updated_at": "2026-08-05T15:17:03Z"
+  "next_task": 42,
+  "updated_at": "2026-08-06T15:20:00Z"
 }
