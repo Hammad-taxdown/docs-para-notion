@@ -9,6 +9,9 @@
     },
     "D0608": {
       "created_at": "2026-08-06T08:30:00Z"
+    },
+    "D0708": {
+      "created_at": "2026-08-06T15:30:00Z"
     }
   },
   "tasks": {
@@ -478,8 +481,18 @@
       "status": "planned",
       "created_at": "2026-08-06T15:20:00Z",
       "note": "HALLAZGO 6/08: una URL inaccesible devuelve ok:true y deja la celda VACIA. Si las URLs de Intercom exigen auth, los documentos se perderian en silencio. Arreglo: releer la fila tras escribir el adjunto y avisar si la celda esta vacia."
+    },
+    "T042": {
+      "title": "Cambiar los 11 $(X).item que quedan a .first()",
+      "milestone": "D0708",
+      "verify": "cero coincidencias de \"\\.item\" en las expresiones del workflow, auditado por MCP",
+      "depends": [],
+      "effort": 0.5,
+      "status": "planned",
+      "created_at": "2026-08-06T15:30:00Z",
+      "note": "Callback_Intercom (1), Respond OK (1), Avisar_Upsert_Rechazado (2), Avisar_Fallback1 (3), ¿Fechas descartadas? (1), Avisar_Fecha_Invalida (3). El 6/08 un .item en el AI Agent tumbo el bot 20 minutos al meter un nodo If en medio de su cadena de paired item. PRIMERA TAREA DEL 7/08."
     }
   },
-  "next_task": 42,
-  "updated_at": "2026-08-06T15:20:00Z"
+  "next_task": 43,
+  "updated_at": "2026-08-06T15:30:00Z"
 }
