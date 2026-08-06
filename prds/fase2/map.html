@@ -158,8 +158,8 @@
       cruzados. Empieza por el <b>overview</b>: dónde estamos, qué toca hoy y qué está esperando a otra
       persona. Todo lo demás es detalle.</p>
     <div class="stamp">
-      <span>Actualizado 2026-08-06 19:30 · alcance completo al 31/08</span>
-      <span>versionId 4029396e · 40 nodos · ai_tool = 3</span>
+      <span>Actualizado 2026-08-06 20:10 · alcance completo al 31/08</span>
+      <span>versionId c0ea14c8 · 40 nodos · ai_tool = 3</span>
       <span>Bloques 3, 4 y 5 cerrados · WP-202 y WP-206 probados</span>
       <span>25 días naturales para la entrega</span>
     </div>
@@ -170,8 +170,8 @@
 
 <div class="kpis">
   <div class="kpi"><b>51</b><span>WP totales</span></div>
-  <div class="kpi"><b>12</b><span>Terminados</span></div>
-  <div class="kpi"><b>5</b><span>En curso</span></div>
+  <div class="kpi"><b>14</b><span>Terminados</span></div>
+  <div class="kpi"><b>3</b><span>En curso</span></div>
   <div class="kpi"><b>~57</b><span>Puntos restantes</span></div>
   <div class="kpi"><b>17</b><span>Días laborables</span></div>
   <div class="kpi"><b>5</b><span>Esperando a otra persona</span></div>
@@ -250,6 +250,22 @@
   </div>
 </div>
 
+<div class="callout">
+  <p><b>⚠️ Incidente del cierre, 17:20 · un <code>.item</code> tumbó el bot 20 minutos.</b> El nodo
+  <code>If</code> del guardián de LangSmith rompió la cadena de <i>paired item</i> de
+  <code>{{ $('Preparar_Prompt').item.json.prompt }}</code> en el <code>AI Agent</code>, y la
+  <b>rama normal</b> —la del día a día— murió con <code>No prompt specified</code>. Arreglado con
+  <code>.first()</code> (<code>versionId ec96bb4d</code>).</p>
+  <p><b>Dos cosas buenas:</b> lo cazó <b>la alerta de Slack</b>, o sea que <code>WP-202</code> hizo su
+  trabajo el mismo día que se terminó; y pasó en TEST con una conversación propia, no con un cliente.</p>
+  <p><b>Y un segundo incidente 20 minutos después, también mío:</b> apagué <code>typecast</code> en Airtable (WP-206b) <b>sin releer que ya se había intentado y revertido el 01/08</b>. La escritura volvió a romperse en cuanto llegó una fecha. Revertido y verificado. <b>La red de errores de <code>WP-202</code> cazó los dos.</b></p>
+  <p><b>Deuda cuantificada:</b> quedan <b>11 expresiones con <code>.item</code> en 6 nodos</b>
+  (<code>Callback_Intercom</code>, <code>Respond OK</code>, <code>Avisar_Upsert_Rechazado</code>,
+  <code>Avisar_Fallback1</code>, <code>¿Fechas descartadas?</code>, <code>Avisar_Fecha_Invalida</code>).
+  Funcionan hoy solo porque nadie ha metido un nodo en medio de <i>sus</i> cadenas. <b>Primera tarea del
+  viernes.</b></p>
+</div>
+
 <h2><span class="n">00b</span>El orden de hoy · 7 bloques</h2>
 <p class="lede">Una tarea a la vez. «Diagnosticado» no es «resuelto».</p>
 <ol class="today">
@@ -280,7 +296,7 @@
   <li><b>✅ <code>WP-202</code> y <code>WP-206</code> cerrados y probados.</b> El escritor ya reintenta
     3 veces, avisa a Slack y <b>devuelve <code>ok:false</code></b> en vez de dejar al agente esperando
     hasta el timeout — verificado rompiendo la tabla a propósito (<code>message_ts
-    1786029488.571029</code>). <code>typecast</code> a <code>false</code>. <b><code>WP-205</code></b>
+    1786029488.571029</code>). <code>typecast</code> <b>se quedó en <code>true</code></b>: apagarlo rompe las fechas, comprobado dos veces. <b><code>WP-205</code></b>
     (unicidad de <code>UserId</code>) <b>se aplaza al lunes 10</b>: son tres nodos nuevos en la rama que
     escribe en producción y el viernes hay congelación.</li>
   <li><b>DC de persistencia en D/G/N</b> + auditoría de conexiones por MCP.</li>
@@ -306,10 +322,17 @@
 </div>
 
 <div class="callout info">
-  <p><b>Pendiente tuyo antes del bloque 3:</b> limpiar en Airtable los dos espacios parásitos y la errata
-  de las opciones de <code>Propiedades</code> e <code>Inversiones</code> («ni el inversiones»), y
-  confirmar el nombre de la columna nueva del pasaporte — propuesta: <code>PasaporteNumero</code>. Si no
-  se limpian, esas erratas <b>quedan congeladas en las whitelists del código</b>.</p>
+  <p><b>Lo que queda para el viernes 7/08, por orden.</b> Es congelación y hay demo, así que las tres
+  primeras no se pueden posponer.</p>
+  <p><b>1 ·</b> Los <b>11 <code>.item</code> → <code>.first()</code></b> · <b>2 ·</b> Conversación
+  completa: contacto nuevo, <b>pasaporte</b> <code>XDA123456</code> en el D3, <b>un PDF real</b> y un
+  DOCX — es lo único que valida el bloque 4 en condiciones reales · <b>3 ·</b> Comprobar si
+  <b>Airtable descarga las URLs de adjuntos de Intercom</b>: si piden autenticación, el documento se
+  pierde <b>en silencio</b> (probado hoy con una URL falsa: devuelve <code>ok:true</code> y deja la celda
+  vacía).</p>
+  <p><b>4 ·</b> <code>beckham_prompt_sync</code>, que el respaldo del prompt no se quede viejo ·
+  <b>5 ·</b> <code>WP-205</code> unicidad de <code>UserId</code> · <b>6 ·</b> Bloque 7, el DC de
+  persistencia en D/G/N · <b>7 ·</b> aviso <code>adjunto_no_descargado</code>.</p>
 </div>
 
 <hr class="rule">
@@ -571,10 +594,11 @@ const OLAS = [
    "Línea duplicada de <code>Descarte</code> eliminada del final del nodo."],
    verify:"8/8 · los 6 <code>punto</code> válidos → <code>ok:true</code> · <code>punto:\"inventado\"</code> → 400 <code>punto_desconocido</code> · errata en <code>Descarte</code> → 400 <code>descarte_desconocido</code>. <b>Y el single-select sigue teniendo exactamente 4 opciones</b>, contadas por MCP contra el esquema en vivo: la whitelist cortó antes de que <code>typecast</code> creara una quinta.",
    note:"La tabla de derivación es una <b>propuesta</b>, no una decisión cerrada: verificados están los 4 nombres y los 6 <code>punto</code>; qué campo pone cada <code>punto</code> se infirió del flujo. En particular <code>lead</code> escribe <code>alta_ss=false</code>. No resuelve que ninguna rama limpie las marcas de otra — eso es WP-226."},
-  {id:"WP-206b",t:"typecast a false — DESCARTADO 01/08, no se reintenta",st:"kill",size:"S",crit:0,
+  {id:"WP-206b",t:"typecast a false — DESCARTADO DOS VECES (01/08 y 06/08). NO SE REINTENTA",st:"kill",size:"S",crit:0,
    dep:"WP-206a",
-   goal:"Cerrar la puerta del todo: sin <code>typecast</code>, Airtable no coerciona nada y una errata no puede pasar por ningún camino.",
-   steps:["<b>DESCARTADO 01/08 con las cuatro combinaciones agotadas:</b> fecha desnuda + typecast ON = día desplazado; desnuda + OFF = 422; <code>T12:00:00.000Z</code> + OFF = 422; <code>T12:00Z</code> + ON = funciona. <code>typecast</code> no era lo que desplazaba la fecha: <b>es lo que hace que Airtable la acepte</b>. Y el riesgo que venía a cubrir <b>ya está cubierto</b> por la whitelist de WP-206a, verificado por MCP: tras la prueba con errata, <code>Descarte</code> sigue con sus 4 opciones exactas.",
+   goal:"Cerrar la puerta del todo: sin <code>typecast</code>, Airtable no coerciona nada y una errata no puede pasar por ningún camino. <b>NO FUNCIONA, y ya se ha comprobado dos veces.</b>",
+   steps:["<b>REINTENTADO EL 6/08 Y VUELTO A ROMPER.</b> Se apagó <code>typecast</code> otra vez sin releer esta ficha, y la escritura volvió a fallar en cuanto llegó una fecha: <code>{ok:false, error:'persistencia_fallida'}</code>. Se revirtió a <code>true</code> y se verificó por curl que las tres fechas vuelven a escribirse al día correcto (20/05/2026, 25/04/2007, 14/04/2026) y que un valor fuera de whitelist sigue descartándose sin crear opciones. <b>Aviso para el futuro: no se vuelve a tocar. La whitelist es la que protege, no el typecast.</b>",
+   "<b>DESCARTADO 01/08 con las cuatro combinaciones agotadas:</b> fecha desnuda + typecast ON = día desplazado; desnuda + OFF = 422; <code>T12:00:00.000Z</code> + OFF = 422; <code>T12:00Z</code> + ON = funciona. <code>typecast</code> no era lo que desplazaba la fecha: <b>es lo que hace que Airtable la acepte</b>. Y el riesgo que venía a cubrir <b>ya está cubierto</b> por la whitelist de WP-206a, verificado por MCP: tras la prueba con errata, <code>Descarte</code> sigue con sus 4 opciones exactas.",
    "Se puso <code>typecast:false</code> con la whitelist ya verificada, que es el orden que pedía el PRD.",
    "<b>Rompió la escritura.</b> Airtable devolvió <code>422 · Field \"fecha_alta_ss\" cannot accept the provided value. Consider using \'Typecast\' option</code>. El valor era <code>2026-05-20T12:00:00.000Z</code>: un <b>datetime</b> en un campo de <b>solo fecha</b>.",
    "Revertido a <code>typecast:true</code> y reverificado: 20/20 otra vez en verde, incluido el caso que petaba.",
@@ -589,7 +613,7 @@ const OLAS = [
    "<code>last_corr_id</code> y <code>last_idem_key</code> para trazabilidad e idempotencia."],
    verify:"Curl con un <code>UserId</code> duplicado → 400 <code>multi_match</code> sin escribir.",
    note:"Separado de WP-205a hoy: necesita un nodo <code>Airtable Search</code> + un <code>If</code> insertados en la cadena que ya funciona, y eso no se hace con una presentación encima. <b>Pista útil:</b> ya existe un nodo llamado <code>Search records</code> en el workflow — sin verificar a qué apunta ni si está conectado; si sirve, esto sale más barato."},
-  {id:"WP-202",t:"Red de errores — EN CURSO, 1 de 4 partes (auditado el 5/08)",st:"build",size:"S",crit:0,
+  {id:"WP-202",t:"Red de errores — CERRADA Y PROBADA DE VERDAD el 6/08",st:"done",size:"S",crit:0,
    dep:"—",
    goal:"<code>beckham_bot</code> no tiene <code>errorWorkflow</code> (verificado hoy: <code>settings.errorWorkflow: null</code>) y el nodo de Airtable no tiene <code>retryOnFail</code> ni <code>onError</code>: un 429 mata la ejecución sin responder al Data Connector y sin avisar a nadie.",
    steps:["<b>CORRECCIÓN DEL 5/08:</b> el 1/08 se dio por cerrado y <b>estaba a 1 de 4</b>. Hecho: el <code>errorWorkflow</code> con avisos a Slack (y funcionó de verdad — el 400 de <code>gpt-5.6-terra</code> llegó a Slack, el fallo no fue silencioso). <b>Falta:</b> <code>onError: continueErrorOutput</code> en el nodo de Airtable con su rama y el tag <code>beckham_persistencia_fallida</code>, <code>maxTries: 3</code> y el enum cerrado de <code>resultado</code>. Cierra <b>hoy 6/08</b>, y <code>WP-205</code> es precondición dura de habilitar los reintentos.",

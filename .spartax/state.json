@@ -467,10 +467,10 @@
       "verify": "options.typecast=false en el nodo de Airtable",
       "depends": [],
       "effort": 0.25,
-      "status": "done",
+      "status": "failed",
       "created_at": "2026-08-06T15:20:00Z",
       "done_at": "2026-08-06T15:20:00Z",
-      "note": "Hecho. Las whitelists ya impedian que llegara cualquier valor desconocido, asi que apagarlo no rompe nada y hace explicito el comportamiento."
+      "note": "REVERTIDO. Apagar typecast rompe la escritura de fechas: ponerFecha produce un datetime (T12:00:00.000Z) y las columnas de Airtable son de SOLO FECHA; typecast es lo que hace que Airtable lo acepte. Ya se habia intentado y revertido el 01/08 (ficha WP-206b del mapa, cuatro combinaciones agotadas) y yo lo propuse sin releerlo. typecast se queda en TRUE. La proteccion real son las whitelists, verificado de nuevo hoy: 'Wakandiana' se descarta sin crear opcion."
     },
     "T041": {
       "title": "Guardar adjunto: comprobar que Airtable lo descargo de verdad",
@@ -494,5 +494,5 @@
     }
   },
   "next_task": 43,
-  "updated_at": "2026-08-06T15:30:00Z"
+  "updated_at": "2026-08-06T15:45:00Z"
 }
