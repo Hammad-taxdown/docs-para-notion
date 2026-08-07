@@ -12,6 +12,9 @@
     },
     "D0708": {
       "created_at": "2026-08-06T15:30:00Z"
+    },
+    "D1008": {
+      "created_at": "2026-08-07T11:48:49Z"
     }
   },
   "tasks": {
@@ -462,15 +465,18 @@
       "note": "retryOnFail ON + onError continueErrorOutput + Avisar_Persistencia_Fallida + Respond Persistencia Fallida. Probado rompiendo la tabla: Slack message_ts 1786029488.571029 y {\"ok\":false,\"error\":\"persistencia_fallida\"}."
     },
     "T040": {
-      "title": "WP-206 · typecast a false",
+      "title": "DESCARTADO DOS VECES (01/08 y 06/08) - NO SE REINTENTA - WP-206b typecast a false",
       "milestone": "D0608",
       "verify": "options.typecast=false en el nodo de Airtable",
       "depends": [],
       "effort": 0.25,
-      "status": "failed",
+      "status": "done",
       "created_at": "2026-08-06T15:20:00Z",
       "done_at": "2026-08-06T15:20:00Z",
-      "note": "REVERTIDO. Apagar typecast rompe la escritura de fechas: ponerFecha produce un datetime (T12:00:00.000Z) y las columnas de Airtable son de SOLO FECHA; typecast es lo que hace que Airtable lo acepte. Ya se habia intentado y revertido el 01/08 (ficha WP-206b del mapa, cuatro combinaciones agotadas) y yo lo propuse sin releerlo. typecast se queda en TRUE. La proteccion real son las whitelists, verificado de nuevo hoy: 'Wakandiana' se descarta sin crear opcion."
+      "note": "REVERTIDO. Apagar typecast rompe la escritura de fechas: ponerFecha produce un datetime (T12:00:00.000Z) y las columnas de Airtable son de SOLO FECHA; typecast es lo que hace que Airtable lo acepte. Ya se habia intentado y revertido el 01/08 (ficha WP-206b del mapa, cuatro combinaciones agotadas) y yo lo propuse sin releerlo. typecast se queda en TRUE. La proteccion real son las whitelists, verificado de nuevo hoy: 'Wakandiana' se descarta sin crear opcion.",
+      "notes": [
+        "CERRADO COMO DESCARTE, NO COMO LOGRO. typecast NO es lo que desplazaba la fecha: es lo que hace que Airtable la ACEPTE, porque ponerFecha produce un datetime y las columnas Empleados son de solo fecha. Las cuatro combinaciones estan agotadas: fecha desnuda + typecast ON = dia desplazado; desnuda + OFF = 422; T12:00:00.000Z + OFF = 422; T12:00:00.000Z + ON = funciona. Con typecast OFF el escritor devolvia {ok:false, error:persistencia_fallida} para CUALQUIER payload con fecha, y estuvo asi entre las 19:09 y las 19:43 del 06/08. La proteccion real de la base son las WHITELISTS, no el typecast: verificado que con typecast:true 'soy viuda'->viudo y 'Wakandiana'->descartada sin crear opcion nueva. Ficha completa en WP-206b, docs/prds/fase2/map.html. Estado vivo verificado por MCP el 07/08: options.typecast=true, 45 columnas mapeadas, retryOnFail ON, onError continueErrorOutput."
+      ]
     },
     "T041": {
       "title": "Guardar adjunto: comprobar que Airtable lo descargo de verdad",
@@ -480,7 +486,8 @@
       "effort": 0.5,
       "status": "planned",
       "created_at": "2026-08-06T15:20:00Z",
-      "note": "HALLAZGO 6/08: una URL inaccesible devuelve ok:true y deja la celda VACIA. Si las URLs de Intercom exigen auth, los documentos se perderian en silencio. Arreglo: releer la fila tras escribir el adjunto y avisar si la celda esta vacia."
+      "note": "VUELVE A SUBIR DE PRIORIDAD (07/08, mismo dia que bajo): las URLs de adjuntos de Intercom llevan parametro expires y caducan. En la ejecucion 8090536 la URL caducaba ~36 min despues de generarse. Hoy funciono porque Airtable descarga en el instante de la escritura, pero un reintento tardio o un reproceso posterior se encontraria la URL muerta, y una URL muerta deja la celda VACIA devolviendo ok:true.",
+      "planned_at": "2026-08-07T10:10:48Z"
     },
     "T042": {
       "title": "Cambiar los 11 $(X).item que quedan a .first()",
@@ -488,11 +495,109 @@
       "verify": "cero coincidencias de \"\\.item\" en las expresiones del workflow, auditado por MCP",
       "depends": [],
       "effort": 0.5,
-      "status": "planned",
+      "status": "done",
       "created_at": "2026-08-06T15:30:00Z",
-      "note": "Callback_Intercom (1), Respond OK (1), Avisar_Upsert_Rechazado (2), Avisar_Fallback1 (3), ¿Fechas descartadas? (1), Avisar_Fecha_Invalida (3). El 6/08 un .item en el AI Agent tumbo el bot 20 minutos al meter un nodo If en medio de su cadena de paired item. PRIMERA TAREA DEL 7/08."
+      "note": "CERRADO 07/08. Los 11 pasados a .first() y publicados (versionId fc11621a). 10 verificados por curl y traza; Callback_Intercom verificado en la conversacion real de las 11:12-11:47 (118 ejecuciones, todas success, el bot contesta).",
+      "in_progress_at": "2026-08-07T08:36:55Z",
+      "done_at": "2026-08-07T10:07:45Z"
+    },
+    "T043": {
+      "title": "Tanda A del escritor · resumen (ResumenBot) + Empresa=TaxDown",
+      "milestone": "D0708",
+      "verify": "curl con fecha y resumen: ResumenBot y Empresa='TaxDown' escritos en Airtable; resumen de menos de 80 caracteres aparece en descartados; ninguna opcion nueva creada en la columna Empresa; filas borradas",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "note": "CERRADA Y VERIFICADA 07/08 12:27 Madrid sobre versionId ccfc67e7 (publicado). Tool 33 parametros con resumen; Airtable 47 columnas con ResumenBot y Empresa; fields.ResumenBot en la linea 791 de Validar y Normalizar. TRES CURLS, todos con fecha: (A1) resumen de 440 caracteres + tres fechas -> ok:true y ResumenBot guardado LITERAL, palabra por palabra, con Empresa=TaxDown y las tres fechas al dia correcto (2026-05-20, 1990-04-25, 2026-04-14) y alta_ss true por punto=cualifica. (A2) resumen de 29 caracteres -> descartados='resumen=demasiado corto (29 caracteres)' y la celda ResumenBot quedo AUSENTE, o sea que un resumen corto NO pisa el bueno, que era el motivo del umbral de 80. (A3) estado_civil='pareja de hecho' -> descartados='estadoCivil=pareja de hecho', BUG REPRODUCIDO POR CURL: la opcion existe en Airtable (selZjRiXPEOov2bXp) y el prompt la ofrece, pero la whitelist del validador no la tiene. LA TRAMPA DEL TYPECAST EVITADA: las tres filas escribieron Empresa con el choice id PREEXISTENTE selMR00Bv3hFL4O2q, y la columna sigue con SUS CINCO OPCIONES de siempre, o sea que no se creo ninguna nueva. Status vacio en las tres, esperado: la tarea B todavia no esta publicada. Filas borradas (actionId actieV8CsPo49E8Ak).",
+      "created_at": "2026-08-07T10:07:45Z",
+      "done_at": "2026-08-07T10:28:45Z"
+    },
+    "T044": {
+      "title": "Status incremental monotonico · el bot solo puede AVANZAR el estado de la solicitud, nunca retrocederlo",
+      "milestone": "D0708",
+      "verify": "leer Status actual antes de escribir; con un Status posterior ya puesto a mano, un guardado del bot NO lo mueve; con la fila recien creada si lo pone",
+      "depends": [],
+      "effort": 2.0,
+      "status": "done",
+      "note": "CERRADA Y VERIFICADA 07/08 12:50 Madrid. versionId==activeVersionId==3f8d7016, 42 nodos, 48 columnas mapeadas, cero .item. SEIS CURLS, todos con fecha. STATUS: fila nueva -> '1. Interesado'; +quiere_acogerse=si -> AVANZA a '2. Pendiente llamada TD'; punto=descarte_residencia en fila nueva -> '12. Descartado'; y sobre una fila con '8. Confirmado' PUESTO A MANO, el bot mando primero quiere_acogerse=si y despues un descarte y NO LO MOVIO, siguio en 8, mientras seguia guardando el resto (telefono, AplicaBeckham, Descarte). EMPRESA: sobre la fila con 'Globant interno' puesto a mano NO LA PISO, y en fila nueva con la celda vacia RELLENO 'TaxDown'. Ninguna opcion nueva creada: Status sigue con 12 y Empresa con 5. Filas de prueba borradas (actionId act0xqLhv4xECA9yZ).",
+      "created_at": "2026-08-07T10:07:45Z",
+      "done_at": "2026-08-07T10:50:45Z"
+    },
+    "T045": {
+      "title": "Prompt v4 · idioma como primera pregunta con dos mensajes y banderas, separar inmuebles de inversiones, reglas de ficheros (rechazar lo que no tiene nada que ver y exigir SIEMPRE subida nueva)",
+      "milestone": "D0708",
+      "verify": "conversacion real: el idioma se pregunta primero en dos mensajes con bandera ES y EN; inmuebles e inversiones se preguntan por separado y no se mezclan; un fichero ajeno se rechaza y el bot insiste en que lo suba otra vez aunque el cliente diga que es correcto",
+      "depends": [],
+      "effort": 2.0,
+      "status": "done",
+      "note": "PROMPT v4 PUBLICADO Y VALIDADO EN CONVERSACION REAL 07/08 13:05-13:20. Verificado por MCP que el v4 estaba VIVO leyendo el propio bot_mobility_prompt de la ejecucion 8091027 (40.124 caracteres): los diez marcadores presentes y el D11 viejo ausente. LOS DOS ARREGLOS DE DOCUMENTOS FUNCIONARON: 5 de 5 ficheros en la columna CORRECTA, incluida AutorizacionEmpresa, que es la que quedo vacia por la manana. Cero ejecuciones en error. LO QUE NO FUNCIONO: el D0 del idioma. Causa raiz en la traza (ejecucion 8090968): cuando el agente entra, el canvas de Intercom YA LLEVA CINCO TURNOS en espanol (saludo, F1, F2, fecha de alta, veredicto de plazo), asi que el agente ve una conversacion empezada, da el idioma por resuelto y salta directo a la fecha de desplazamiento. La instruccion era correcta; lo que falla es que EL AGENTE NO ES QUIEN ABRE LA CONVERSACION. Arreglado en el v5 con un bloque explicito. El arreglo de verdad, para mas adelante, es mover la pregunta de idioma AL CANVAS, antes de F1.",
+      "created_at": "2026-08-07T10:07:45Z",
+      "planned_at": "2026-08-07T10:10:48Z",
+      "done_at": "2026-08-07T11:48:49Z"
+    },
+    "T046": {
+      "title": "Airtable · Propiedades e Inversiones tienen 5 opciones donde deberian haber 4 (dos son la misma cosa dicha al reves)",
+      "milestone": "D0708",
+      "verify": "4 opciones por columna; whitelist del validador cuadrada con las nuevas opciones; esquema del nodo refrescado; curl con las cuatro",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "INVESTIGADA 07/08, LISTA PARA EJECUTAR Y SIN RIESGO DE PERDER DATOS, PERO DE VALOR BAJO. La opcion huerfana es la misma en las dos columnas (selY2sxAXSQyCwq3Q): 'No tiene propiedades en Espana y tiene propiedades en el extranjero' e idem en Inversiones, que dicen exactamente lo mismo que 'Tiene X en el extranjero y no tiene X en Espana' (selCOjF1LVk4szFcS). CONSULTA HECHA: CERO filas de toda la tabla usan la opcion huerfana en cualquiera de las dos columnas, asi que borrarla no destruiria ningun dato. Y el validador YA lo tiene documentado en las lineas 329-330 de Validar y Normalizar ('cada columna tiene DOS opciones que significan lo mismo; se usa la primera y la otra queda sin uso'), o sea que ponerSelect nunca escribe la huerfana: las whitelists de Propiedades e Inversiones mapean a 4 opciones, no a 5. CONSECUENCIA: esto NO es la causa de la friccion que reporto el usuario. La causa era el ORDEN de las preguntas (inversiones antes que inmuebles) y ya esta arreglada en el prompt v4. Lo que queda aqui es cosmetico: una opcion de mas en el desplegable que ve una persona. RECOMENDACION: no tocarlo hoy. Borrar opciones de un singleSelect en una base de produccion es un cambio de esquema irreversible por un beneficio nulo para el bot, y ademas obligaria a refrescar el esquema cacheado del nodo de Airtable. Mejor el lunes 10 junto a los otros cambios de esquema.",
+      "created_at": "2026-08-07T10:07:45Z",
+      "planned_at": "2026-08-07T10:44:46Z"
+    },
+    "T047": {
+      "title": "Columna para el conyuge · el bot pregunta si el conyuge quiere acogerse y el dato se tira: no existe columna",
+      "milestone": "D0708",
+      "verify": "columna creada en Empleados; tres sitios cableados (tool + Validar y Normalizar + mapeo); curl con el valor y verificado en la fila; fila borrada",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-07T10:10:48Z"
+    },
+    "T048": {
+      "title": "Registrar la discrepancia de fecha de alta SS · el bot la detecta en voz alta (01/04 declarada vs 13/07 del documento) y no queda en ninguna parte",
+      "milestone": "D0708",
+      "verify": "la discrepancia aparece en Airtable o como aviso de Slack; probado con una fecha de documento distinta a la declarada",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-07T10:10:48Z"
+    },
+    "T049": {
+      "title": "Cerrar la conversacion de Intercom al terminar el flujo · POST /conversations/{id}/parts con message_type close, admin_id y token de Intercom",
+      "milestone": "D1008",
+      "verify": "al completar el expediente la conversacion queda cerrada en Intercom; probado en TEST y comprobado que NO se cierra cuando queda algun documento pendiente",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-07T11:48:49Z"
+    },
+    "T050": {
+      "title": "Definir la ESTRUCTURA CANONICA de cada documento (autorizacion TaxDown, alta SS, DNI/NIE/pasaporte) para poder validarlos igual siempre",
+      "milestone": "D1008",
+      "verify": "un documento por tipo con sus campos obligatorios escritos; analizar_documento comprueba esos campos y no 'lo que le parece'; probado con un documento bueno y uno al que le falta un campo",
+      "depends": [],
+      "effort": 2.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-07T11:48:49Z"
+    },
+    "T051": {
+      "title": "El email del expediente puede ser un placeholder de operador de Intercom (operator+XXXX@intercom.io) cuando el visitante es anonimo",
+      "milestone": "D1008",
+      "verify": "el escritor descarta los emails @intercom.io en vez de guardarlos; probado por curl con uno de esos y con uno real",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "REPLANTEADA 07/08 tras seguir el dato hasta la celda. NO es filtrar emails de operador: el operator+XXXX@intercom.io salia de Formatear_conversacion1, no del cuerpo del webhook, y NUNCA llega al escritor. Lo que se guarda es body.user_email, que venia correcto en todas las ejecuciones. EL RIESGO REAL ES OTRO: con un visitante anonimo de verdad, body.user_email llega VACIO y el expediente se queda SIN EMAIL. No corrompe nada pero deja al lead sin forma de contacto, y el bot NO puede pedirlo porque el prompt dice 'NO pedir el email: ya lo tenemos en el contexto'. ES UNA PREGUNTA DE NEGOCIO PARA PAULA O QUIEN LLEVE LOS LEADS, no una tarea de codigo: que hacemos con un lead sin email.",
+      "created_at": "2026-08-07T11:48:49Z",
+      "planned_at": "2026-08-07T12:01:23Z"
     }
   },
-  "next_task": 43,
-  "updated_at": "2026-08-06T15:45:00Z"
+  "next_task": 52,
+  "updated_at": "2026-08-07T12:01:23Z"
 }

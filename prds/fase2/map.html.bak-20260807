@@ -158,10 +158,10 @@
       cruzados. Empieza por el <b>overview</b>: dónde estamos, qué toca hoy y qué está esperando a otra
       persona. Todo lo demás es detalle.</p>
     <div class="stamp">
-      <span>Actualizado 2026-08-07 13:00 · alcance completo al 31/08</span>
-      <span>versionId 3f8d7016 · 42 nodos · ai_tool = 3 · 48 columnas</span>
-      <span>Cero <code>.item</code> · Status incremental · adjuntos de Intercom resueltos</span>
-      <span>24 días naturales para la entrega</span>
+      <span>Actualizado 2026-08-06 20:10 · alcance completo al 31/08</span>
+      <span>versionId c0ea14c8 · 40 nodos · ai_tool = 3</span>
+      <span>Bloques 3, 4 y 5 cerrados · WP-202 y WP-206 probados</span>
+      <span>25 días naturales para la entrega</span>
     </div>
   </div>
 </header>
@@ -173,52 +173,13 @@
   <div class="kpi"><b>14</b><span>Terminados</span></div>
   <div class="kpi"><b>3</b><span>En curso</span></div>
   <div class="kpi"><b>~57</b><span>Puntos restantes</span></div>
-  <div class="kpi"><b>16</b><span>Días laborables</span></div>
+  <div class="kpi"><b>17</b><span>Días laborables</span></div>
   <div class="kpi"><b>5</b><span>Esperando a otra persona</span></div>
 </div>
 
-<h2><span class="n">00</span>Overview · dónde estamos el 7/08 a las 13:00</h2>
+<h2><span class="n">00</span>Overview · dónde estamos el 6/08 a las 10:30</h2>
 <p class="lede">Lee estas cuatro tarjetas y la lista de hoy. Con eso ya sabes el estado del proyecto sin
   abrir una sola ola.</p>
-
-<div class="ovcard good" style="margin:16px 0">
-  <h3>Lo cerrado hoy, 7/08</h3>
-  <ul>
-    <li><b>Los 11 <code>.item</code> son ya <code>.first()</code>.</b> Queda <b>cero</b> en todo el
-      workflow. Diez verificados por curl y traza; el once, <code>Callback_Intercom</code>, en una
-      conversación real de 118 ejecuciones, todas <code>success</code>.</li>
-    <li><b>La incógnita del bloque 4, resuelta: Airtable SÍ descarga las URLs de adjuntos de
-      Intercom</b>, sin credenciales. Cuatro ficheros reales con sus bytes y sus miniaturas.
-      <b>Rehacer el guardado de adjuntos se cae del plan.</b> Pero las URLs llevan
-      <code>expires</code> y caducan a los ~36 min, así que el aviso
-      <code>adjunto_no_descargado</code> vuelve a tener sentido como red.</li>
-    <li><b>El resumen del bot ya se guarda</b> en <code>ResumenBot</code>: es la base del informe
-      fiscal que se enviará al cliente.</li>
-    <li><b><code>Status</code> incremental y <code>Empresa</code>.</b> El bot solo AVANZA el estado y
-      <code>Empresa</code> solo rellena el hueco: probado con una fila puesta a mano en
-      <code>8. Confirmado</code> y <code>Globant interno</code>, que <b>no movió</b> mientras seguía
-      guardando el resto.</li>
-  </ul>
-</div>
-
-<div class="ovcard bad" style="margin:16px 0">
-  <h3>Lo que salió mal hoy</h3>
-  <ul>
-    <li><b>Fallo silencioso nuevo: <code>AutorizacionEmpresa</code> quedó VACÍA.</b> El bot dijo
-      «lo tendremos como documento de la empresa» y llamó a la tool con
-      <code>tipo_documento=contrato</code>. El validador no puede cazarlo: el tipo es válido y el
-      fichero es bueno; lo que falla es la intención. <b>Arreglado en el prompt v4.</b></li>
-    <li><b>El repo <code>docs-para-notion</code> está PÚBLICO y el CSV con PII sigue en el
-      historial</b> (commits <code>b23c8cb</code> y <code>6fdb7c1</code>): NIF, email, teléfono,
-      fecha de nacimiento y domicilio de una persona real. Decisión del usuario: el repo se queda
-      público. <b>Purgar el historial sigue pendiente y sin fecha.</b></li>
-    <li><b>Datos que se preguntan y se tiran:</b> si el cónyuge quiere acogerse (no hay columna), y
-      la discrepancia entre la fecha de alta declarada y la del documento.</li>
-    <li><b><code>alta_ss</code> y <code>fecha_limite_plazo</code> siguen vacíos</b>: se derivan de
-      <code>punto</code>, que lo manda el Data Connector. Es el <b>bloque 7</b>, sin montar. El
-      hueco del checkbox y el bloque 7 son el mismo problema.</li>
-  </ul>
-</div>
 
 <div class="ov">
   <div class="ovcard good">

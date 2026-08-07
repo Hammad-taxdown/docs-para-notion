@@ -10,8 +10,13 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
   Satélites: `beckham_alertas` (`BJfExmwu1fI1aPpY`, errorWorkflow), `beckham_f2_plazo.`
   (`wdOOF0ecCkgFOUjt`), `beckham_hypatia`, `Sync status_renta - Beckham`.
 - **Airtable** (MCP). Tabla `Empleados` = el expediente del cliente. El escritor único acepta
-  **20 columnas** y ninguna más: lo que no está en el contrato no se pierde por un bug, NO EXISTE EL
-  CAMINO (el escritor ignora claves desconocidas y devuelve `ok:true`).
+  **45 columnas** y ninguna más (eran 20 hasta el 6/08; la tool `guardar_datos_cliente` pasó de 16 a
+  **32 parámetros** en las cinco tandas del bloque 3): lo que no está en el contrato no se pierde por
+  un bug, NO EXISTE EL CAMINO (el escritor ignora claves desconocidas y devuelve `ok:true`).
+  El nodo `Airtable Upser Expediente` va con **`typecast: true`, y eso NO se apaga**: `ponerFecha`
+  produce un datetime y las columnas son de solo fecha, así que typecast es lo que hace que Airtable
+  las acepte. Apagarlo se intentó y se revirtió **dos veces** (01/08 y 06/08). Lo que protege la base
+  son **las whitelists**, no el typecast.
 - **Intercom** (MCP). Custom Bot `OnClick Mobility` con 4 puntos de disparo **D/H/G/N**. Filtros F1–F3
   en el canvas, F2 (plazo de 6 meses) delegado a n8n.
 - **LangSmith**: fuente de verdad del prompt. `promptName: bot_mobility_prompt`, `promptTag: prod`.
