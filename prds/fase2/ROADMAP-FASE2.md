@@ -242,3 +242,42 @@ del bloqueo **M4**: hasta que exista el corpus, WP-221 no puede cerrarse aunque 
   ahí y se mantiene a mano — si algo no cuadra, se corrige el WP y luego este fichero.
 - **Este paquete no se ha integrado en `docs/prds/ROADMAP.md` ni en `map.html`**, y esa integración es una
   decisión pendiente del usuario, no un olvido.
+
+---
+
+## Actualización del lunes 10/08/2026
+
+**Estado de `beckham_bot` al cerrar:** `versionId == activeVersionId == 7e499c3b`, **51 nodos**,
+**52 columnas**, tool de **36 parámetros**, `typecast: true`, **cero `.item`**. Prompt **v7** con tag
+`prod`.
+
+### Cambios de estado
+
+| WP | Antes | Ahora | Motivo |
+|---|---|---|---|
+| **WP-205b** | `new` | **`done`** | Guarda de unicidad **e** idempotencia cerradas y probadas. `count>1` → `multi_match` sin escribir + aviso a Slack; `last_idem_key` deduplica el payload repetido sin ejecutar el nodo de Airtable. El lector pasó a `limit:2` para poder detectar el duplicado. |
+| **WP-203** | `spec` | **`building`** | El Header Auth **funciona** (403 sin cabecera, 200 con ella) pero está **desactivado a propósito**: con la credencial puesta, la identidad del servidor MCP de n8n no la ve y se pierde la lectura del workflow por API. Se reactiva al terminar de construir. Los paths **no** se pasan a UUID: decisión del usuario, riesgo de romper llamadas existentes. |
+
+### Precondición que estaba incumplida y ya no
+
+El PRD de WP-205 dice que la guarda es **precondición dura de habilitar cualquier reintento de
+escritura**. Los reintentos (`retryOnFail`) se encendieron el **7/08** y la guarda no estaba puesta.
+Se ha cerrado hoy, así que los reintentos ya son seguros. Lo destapó reconciliar `map.html` con
+`state.json` al empezar la semana: **el mapa tenía razón y mi lista de tareas no.**
+
+### Alcance nuevo fichado
+
+- **WP-236** (PDF-resguardo final) no estaba en la lista de trabajo diaria. Fichado.
+- **WP-235** (rellenar los modelos 030 y 149) se construirá **desde cero**, con columnas y
+  automatizaciones propias, por decisión del usuario. **No se reutiliza** el circuito existente
+  (`Borrador030`, `Borrador149`, `Estado030149`, los formularios de confirmación), que lo montó
+  Iciar. Eso elimina el riesgo del segundo escritor que arrastraba WP-231/T031.
+- **T050** deja escrita la estructura canónica de documentos en
+  `docs/estructura-canonica-documentos-2026-08-10.md`, precondición de WP-235. Al escribirla
+  aparecieron cuatro huecos, uno ya arreglado (el `nie`).
+
+### Secuencia confirmada
+
+Producción primero (**10–14/08**), FAQ después (**17–21/08**). El FAQ es una **rama hermana** de los
+filtros, no va dentro de F1–F3: `A. Bienvenida` → reset de `modo_bot` (WP-212) → menú `AOPT`
+(WP-213) con cuatro salidas, y solo *"Comprobar si cumplo"* entra en F1/F2/F3.

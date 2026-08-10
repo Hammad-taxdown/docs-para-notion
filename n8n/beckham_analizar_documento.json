@@ -1,0 +1,315 @@
+{
+  "name": "beckham_analizar_documento",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "adjuntos_json"
+            },
+            {
+              "name": "pregunta"
+            }
+          ]
+        }
+      },
+      "id": "1c300934-00a7-4222-8fe6-13970a844b44",
+      "name": "Llamada_desde_beckham_bot",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Recibe la lista de adjuntos que INYECTA beckham_bot (el agente no puede\n// inventarse una URL) y decide por que rama va: PDF, imagen o nada legible.\n// Se coge el ULTIMO adjunto, que es el que el cliente acaba de mandar.\n//\n// FORMATOS REALES (diseno del 6/08): la mayoria PDF (contratos y altas de la SS),\n// PNG o foto para DNI/NIE/pasaporte, y la AUTORIZACION DE TAXDOWN en DOCX o PDF\n// segun como la suba el cliente. El DOCX NO se puede leer con la Responses API y\n// NO se intenta: se declara no legible y se guarda igual, porque su contenido es\n// la plantilla propia de TaxDown y ya se conoce.\nconst j = $input.first().json;\nlet lista = [];\ntry {\n  const crudo = j.adjuntos_json;\n  lista = typeof crudo === 'string' ? JSON.parse(crudo || '[]') : (Array.isArray(crudo) ? crudo : []);\n} catch (e) {\n  lista = [];\n}\nif (!Array.isArray(lista)) lista = [];\n\nconst limpias = [];\nfor (const a of lista) {\n  const nombre = String((a && (a.name || a.nombre)) || '').trim();\n  const url = String((a && a.url) || '').trim();\n  if (url) limpias.push({ nombre, url });\n}\n\nconst casa = function (re) { return function (x) { return re.test(x.nombre) || re.test(x.url); }; };\nconst esPdf = casa(/\\.pdf(\\?|$)/i);\nconst esImg = casa(/\\.(png|jpe?g|gif|webp|bmp|heic)(\\?|$)/i);\nconst esDocx = casa(/\\.(docx?|odt|rtf)(\\?|$)/i);\n\nconst pdfs = limpias.filter(esPdf);\nconst imgs = limpias.filter(esImg);\nconst docs = limpias.filter(function (x) { return !esPdf(x) && !esImg(x) && esDocx(x); });\nconst otros = limpias.filter(function (x) { return !esPdf(x) && !esImg(x) && !esDocx(x); });\n\n// Prioridad: PDF primero, que es como llega la mayoria.\nconst elegido = pdfs.length ? pdfs[pdfs.length - 1] : (imgs.length ? imgs[imgs.length - 1] : null);\n\nreturn [{ json: {\n  es_pdf: pdfs.length > 0,\n  es_imagen: pdfs.length === 0 && imgs.length > 0,\n  hay_algo: elegido !== null,\n  url: elegido ? elegido.url : '',\n  nombre: elegido ? elegido.nombre : '',\n  cuantos_pdf: pdfs.length,\n  cuantas_imagenes: imgs.length,\n  docx: docs.map(function (x) { return x.nombre || x.url; }).join(', '),\n  no_soportados: otros.map(function (x) { return x.nombre || x.url; }).join(', '),\n  pregunta: String(j.pregunta || '').trim() || 'Identifica el documento y extrae solo lo que no tengamos.'\n} }];"
+      },
+      "id": "2d4609bd-f6d2-466a-a88c-4600198629b2",
+      "name": "Elegir_Documento",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cond-es-pdf",
+              "leftValue": "={{ $json.es_pdf }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f137c302-ddbd-4603-900d-916ba048aed7",
+      "name": "Es_PDF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5.6-terra",
+          "mode": "list",
+          "cachedResultName": "GPT-5.6-TERRA"
+        },
+        "responses": {
+          "values": [
+            {
+              "type": "file",
+              "fileUrl": "={{ $json.url }}"
+            },
+            {
+              "content": "=Eres el lector de documentos de un despacho fiscal espanol. IMPORTANTE: el expediente YA TIENE el numero de documento, el domicilio y el telefono, porque los ha dicho el propio cliente en la conversacion. NO los transcribas: volver a leerlos no aporta nada y solo puede introducir errores en datos que ya son correctos.\n\nTu trabajo es DOBLE:\n\n1) DECIR QUE DOCUMENTO ES, con una sola etiqueta: DNI, NIE, pasaporte, contrato de trabajo, alta en la Seguridad Social, autorizacion del empleado, autorizacion de la empresa, certificado ENISA, apostilla, visado, u otro. Si NO coincide con lo que se le habia pedido al cliente, DILO EN LA PRIMERA LINEA. Esto es lo mas importante que haces: es lo que evita que el fichero acabe guardado en la columna equivocada.\n\n2) EXTRAER SOLO LO QUE NO TENEMOS:\n   - Contrato de trabajo: nombre de la empresa, CIF, fecha de inicio y salario si consta.\n   - Alta en la Seguridad Social: LA FECHA DE ALTA (la fecha en que empieza a trabajar), que es el dato que decide el plazo de 6 meses.\n   - Autorizaciones: si esta FIRMADA o no.\n   - Documentos de identidad: SOLO el nombre y apellidos que aparecen, para comprobar que el documento es del cliente. El numero NO.\n\n3) Si un dato esta borroso, cortado o no aparece, escribe ILEGIBLE o NO CONSTA. Nunca lo adivines.\n\nSe breve: lineas cortas, sin parrafos. Si el fichero no es ninguno de esos documentos, dilo en una linea y para.\n\nQue documento se le habia pedido al cliente: {{ $json.pregunta }}\nNombre del fichero que ha subido: {{ $json.nombre }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 1200,
+          "truncation": true
+        }
+      },
+      "id": "5952a8f0-e7b5-468f-8c2d-db697e251194",
+      "name": "Leer_PDF",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        896,
+        0
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "scl80xhJ5DcwSTUM",
+          "name": "OpenAI TaxDown"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// El nodo Agent de beckham_bot solo entiende TEXTO: aqui se aplana la respuesta\n// del modelo a un unico campo `analisis`, y se le anade de que fichero se trata.\nconst j = $input.first().json;\nlet texto = '';\nif (typeof j.content === 'string') texto = j.content;\nelse if (typeof j.output_text === 'string') texto = j.output_text;\nelse if (typeof j.text === 'string') texto = j.text;\nelse if (j.message && typeof j.message.content === 'string') texto = j.message.content;\nelse if (typeof j.analisis === 'string') texto = j.analisis;\nelse texto = JSON.stringify(j);\n\nconst e = $('Elegir_Documento').first().json;\nlet cabecera = e.nombre ? ('Fichero leido: ' + e.nombre + '\\n\\n') : '';\nlet cola = '';\nif (e.docx) cola += '\\n\\nAdemas he recibido ' + e.docx + ' (documento de Word): no puedo leer su contenido, pero se guarda igual y no hay que pedirlo otra vez.';\nif (e.no_soportados) cola += '\\n\\nOtros ficheros recibidos que NO he podido leer: ' + e.no_soportados + '.';\nif (e.cuantos_pdf > 1 || e.cuantas_imagenes > 1) cola += '\\n\\nAVISO: habia mas de un fichero legible y solo he leido el ultimo.';\n\nreturn [{ json: { analisis: (cabecera + String(texto).trim() + cola).trim(), leido: true, fichero: e.nombre } }];"
+      },
+      "id": "9ab7af55-db6f-432e-8380-df897175a7b4",
+      "name": "Devolver_Texto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1232,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cond-es-imagen",
+              "leftValue": "={{ $json.es_imagen }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4f339018-6225-4019-9c35-0c34936d2b7c",
+      "name": "Es_Imagen",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5.6-terra",
+          "cachedResultName": "gpt-5.6-terra"
+        },
+        "responses": {
+          "values": [
+            {
+              "type": "image",
+              "imageUrl": "={{ $json.url }}",
+              "imageDetail": "high"
+            },
+            {
+              "content": "=Eres el lector de documentos de un despacho fiscal espanol. IMPORTANTE: el expediente YA TIENE el numero de documento, el domicilio y el telefono, porque los ha dicho el propio cliente en la conversacion. NO los transcribas: volver a leerlos no aporta nada y solo puede introducir errores en datos que ya son correctos.\n\nTu trabajo es DOBLE:\n\n1) DECIR QUE DOCUMENTO ES, con una sola etiqueta: DNI, NIE, pasaporte, contrato de trabajo, alta en la Seguridad Social, autorizacion del empleado, autorizacion de la empresa, certificado ENISA, apostilla, visado, u otro. Si NO coincide con lo que se le habia pedido al cliente, DILO EN LA PRIMERA LINEA. Esto es lo mas importante que haces: es lo que evita que el fichero acabe guardado en la columna equivocada.\n\n2) EXTRAER SOLO LO QUE NO TENEMOS:\n   - Contrato de trabajo: nombre de la empresa, CIF, fecha de inicio y salario si consta.\n   - Alta en la Seguridad Social: LA FECHA DE ALTA (la fecha en que empieza a trabajar), que es el dato que decide el plazo de 6 meses.\n   - Autorizaciones: si esta FIRMADA o no.\n   - Documentos de identidad: SOLO el nombre y apellidos que aparecen, para comprobar que el documento es del cliente. El numero NO.\n\n3) Si un dato esta borroso, cortado o no aparece, escribe ILEGIBLE o NO CONSTA. Nunca lo adivines.\n\nSe breve: lineas cortas, sin parrafos. Si el fichero no es ninguno de esos documentos, dilo en una linea y para.\n\nQue documento se le habia pedido al cliente: {{ $json.pregunta }}\nNombre del fichero que ha subido: {{ $json.nombre }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 1200,
+          "truncation": true
+        }
+      },
+      "id": "5aac2d63-61f7-4f79-8458-abf5a271dd24",
+      "name": "Leer_Imagen",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        896,
+        192
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "scl80xhJ5DcwSTUM",
+          "name": "OpenAI TaxDown"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ JSON.stringify({ analisis: ($json.docx ? \"He recibido \" + $json.docx + \", que es un documento de texto (Word). NO puedo leer su contenido, pero NO es un problema: se guarda igual, porque la autorizacion de TaxDown es nuestra propia plantilla y su contenido ya lo conocemos. Dale las gracias al cliente y sigue; NO le pidas que lo mande otra vez.\" : \"No hay ningun documento legible en esta conversacion.\" + ($json.no_soportados ? \" El cliente ha mandado esto, que no puedo leer: \" + $json.no_soportados + \". Pidele que lo envie en PDF o como foto.\" : \" Pidele al cliente que adjunte el documento en PDF o como foto.\")), leido: false, docx: $json.docx || \"\" }) }}",
+        "options": {}
+      },
+      "id": "8b977601-459b-429c-af8d-516121a270c1",
+      "name": "Sin_Documentos_Legibles",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        384
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Llamada_desde_beckham_bot": {
+      "main": [
+        [
+          {
+            "node": "Elegir_Documento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Elegir_Documento": {
+      "main": [
+        [
+          {
+            "node": "Es_PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es_PDF": {
+      "main": [
+        [
+          {
+            "node": "Leer_PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Es_Imagen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer_PDF": {
+      "main": [
+        [
+          {
+            "node": "Devolver_Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es_Imagen": {
+      "main": [
+        [
+          {
+            "node": "Leer_Imagen",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sin_Documentos_Legibles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer_Imagen": {
+      "main": [
+        [
+          {
+            "node": "Devolver_Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "9a36d191-6f2f-4752-816e-a5f849e0ec2d",
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ad8c47420b3f6b213e5e059cce9c792649b9caff6448f91d0804f0583605b6f4"
+  },
+  "id": "ONhveViBeiI6GXWd",
+  "tags": []
+}

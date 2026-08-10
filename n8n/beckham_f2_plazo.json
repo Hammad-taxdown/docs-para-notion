@@ -1,0 +1,89 @@
+{
+  "name": "beckham_f2_plazo.",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "b3c76655-b298-4f5e-9772-48d301f6d925",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "f64ec3a9-8033-4f01-a896-1c6e5c0ae8b6",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "4cc750a1-d8b4-4d0c-b0e1-1fcfd52686a0"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || $json;\nlet raw = body.fecha_alta_ss;\nraw = (raw === null || raw === undefined) ? '' : raw.toString().trim();\nlet d=null,m=null,y=null;\nif (/^\\d{9,13}$/.test(raw)) { let ts=+raw; if(raw.length<=10) ts*=1000; const f=new Date(ts); if(!isNaN(f)){ y=f.getUTCFullYear(); m=f.getUTCMonth()+1; d=f.getUTCDate(); } }\nif (d===null){ const iso=raw.match(/^(\\d{4})-(\\d{1,2})-(\\d{1,2})/); if(iso){ y=+iso[1]; m=+iso[2]; d=+iso[3]; } }\nif (d===null){ const mm=raw.match(/(\\d{1,2})[\\/.\\-](\\d{1,2})[\\/.\\-](\\d{2,4})/); if(mm){ d=+mm[1]; m=+mm[2]; y=+mm[3]; if(y<100) y+=2000; } }\nif (d===null){ const meses={enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,setiembre:9,octubre:10,noviembre:11,diciembre:12}; const t=raw.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); const dm=t.match(/(\\d{1,2})\\s*(?:de)?\\s*([a-z]+)\\s*(?:de)?\\s*(\\d{4})/); if(dm&&meses[dm[2]]){ d=+dm[1]; m=meses[dm[2]]; y=+dm[3]; } }\nlet veredicto='no_valida', fecha_alta_norm=null, fecha_alta_ddmmaaaa=null, fecha_limite=null, fecha_limite_iso=null, dias_pasados=null;\nif (d&&m&&y){\n  const fecha=new Date(Date.UTC(y,m-1,d));\n  if(!isNaN(fecha)&&fecha.getUTCDate()===d&&(fecha.getUTCMonth()+1)===m){\n    const p=function(n){return String(n).padStart(2,'0');};\n    fecha_alta_norm=fecha.toISOString().slice(0,10);\n    fecha_alta_ddmmaaaa=p(d)+'/'+p(m)+'/'+y;\n    const limite=new Date(fecha); limite.setUTCMonth(limite.getUTCMonth()+6);\n    fecha_limite_iso=limite.toISOString().slice(0,10);\n    fecha_limite=p(limite.getUTCDate())+'/'+p(limite.getUTCMonth()+1)+'/'+limite.getUTCFullYear();\n    const hoy=new Date(); hoy.setUTCHours(0,0,0,0);\n    if(limite>=hoy){ veredicto='en_plazo'; dias_pasados=0; }\n    else { veredicto='fuera_plazo'; dias_pasados=Math.floor((hoy-limite)/86400000); }\n  }\n}\nreturn [{ json:{ veredicto, fecha_alta_norm, fecha_alta_ddmmaaaa, fecha_limite, fecha_limite_iso, dias_pasados } }];"
+      },
+      "id": "93be1978-4a13-4e2e-be11-fce109ad16be",
+      "name": "Code in JavaScript",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "9cee1bc8-6a42-4b42-be77-03b1e7dc0c2b",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        448,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": true
+  },
+  "versionId": "09147598-714c-42b6-bc7e-17041bda7f45",
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
+    "instanceId": "ad8c47420b3f6b213e5e059cce9c792649b9caff6448f91d0804f0583605b6f4"
+  },
+  "id": "wdOOF0ecCkgFOUjt",
+  "tags": []
+}

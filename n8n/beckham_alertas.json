@@ -1,0 +1,171 @@
+{
+  "name": "beckham_alertas",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "21c980bf-dc00-4cc3-bc2c-2f0a6d8a9f9b",
+      "name": "Fallo_De_Workflow",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BMJ370HTQ",
+          "mode": "id"
+        },
+        "text": "=:red_circle: *FALLO — {{ $json.workflow.name }}*\n*Nodo:* {{ $json.execution.lastNodeExecuted || \"no informado\" }}\n*Mensaje:* {{ $json.execution.error.message }}\n*Modo:* {{ $json.execution.mode }}\n*Ejecución:* {{ $json.execution.url }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "mrkdwn": true
+        }
+      },
+      "id": "b7808f26-9873-4419-be59-4163940ff834",
+      "name": "Slack_Fallo",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        224,
+        0
+      ],
+      "webhookId": "84dfa8e4-d7e1-4333-a7ae-353ec4a07e09",
+      "credentials": {
+        "slackApi": {
+          "id": "SaVfU8Z3SZy0UPL6",
+          "name": "beckham_alertas_slack"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "tipo_alerta"
+            },
+            {
+              "name": "detalle_alerta"
+            },
+            {
+              "name": "conversation_id"
+            },
+            {
+              "name": "user_id"
+            },
+            {
+              "name": "ultimo_mensaje_usuario"
+            },
+            {
+              "name": "respuesta_bot"
+            }
+          ]
+        }
+      },
+      "id": "17735d64-a853-445e-a107-8ff8900f9a19",
+      "name": "Aviso_Desde_Beckham",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BMJ370HTQ",
+          "mode": "id"
+        },
+        "text": "={{ [  ':large_orange_diamond: *AVISO BOT MOBILITY*',  '*Tipo:* ' + $json.tipo_alerta,  '*Detalle:* ' + $json.detalle_alerta,  $json.conversation_id ? '*Conversación:* https://app.intercom.com/a/apps/q3bhdtoi/conversations/' + $json.conversation_id : null,  $json.user_id ? '*UserId:* ' + $json.user_id : null,  $json.ultimo_mensaje_usuario ? '*Último mensaje:* ' + $json.ultimo_mensaje_usuario : null,  $json.respuesta_bot ? '*Respuesta del bot:* ' + $json.respuesta_bot : null].filter(function(x){ return x; }).join('\\n') }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "mrkdwn": true
+        }
+      },
+      "id": "ff7a61bd-0caa-4d6d-b1ef-bdccdab0d8b1",
+      "name": "Slack_Aviso",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        224,
+        224
+      ],
+      "webhookId": "ed4582b0-4d86-4ad7-9646-3a7931f45b4b",
+      "credentials": {
+        "slackApi": {
+          "id": "SaVfU8Z3SZy0UPL6",
+          "name": "beckham_alertas_slack"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Fallo_De_Workflow": [
+      {
+        "json": {
+          "execution": {
+            "id": "8071265",
+            "url": "https://es.synapse.rentax.es/workflow/nhOwpiGxikeU5DLR/executions/8071265",
+            "error": {
+              "message": "PRUEBA — esto no es un fallo real"
+            },
+            "lastNodeExecuted": "Callback_Intercom",
+            "mode": "webhook"
+          },
+          "workflow": {
+            "id": "nhOwpiGxikeU5DLR",
+            "name": "beckham_bot"
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Fallo_De_Workflow": {
+      "main": [
+        [
+          {
+            "node": "Slack_Fallo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aviso_Desde_Beckham": {
+      "main": [
+        [
+          {
+            "node": "Slack_Aviso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "any"
+  },
+  "versionId": "c2abd67d-37b9-401e-9dff-89c79140fc15",
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
+    "instanceId": "ad8c47420b3f6b213e5e059cce9c792649b9caff6448f91d0804f0583605b6f4"
+  },
+  "id": "BJfExmwu1fI1aPpY",
+  "tags": []
+}

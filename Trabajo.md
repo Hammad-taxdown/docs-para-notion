@@ -798,3 +798,73 @@ En `n8n_BOT_mobility` Path A, tras "Wait for webhook" **falta un paso "Reply to 
 **No hecho (para mañana):** borrar los nodos de filtro obsoletos en `beckham_bot` (se dejó para mañana, se hará a mano; `beckham_bot` está PUBLISHED/producción). Ver lista y orden en "RETOMAR AQUÍ".
 
 **Aprendizaje de sesión:** el editor visual de Intercom (workflows) usa **"Reply buttons"** para ramas Sí/No, **"Collect data" + atributo Date** para fechas (muestra date-picker), y **"Branches"** para ramas automáticas. Es denso: construir por captura es frágil → mejor dictar y que el usuario ejecute.
+
+---
+
+## Cierre de sesión 2026-08-10 (lunes) — WP-205b, cierre de conversación y el respaldo del prompt
+
+**Estado del workflow al cerrar:** `beckham_bot` `versionId == activeVersionId == 7e499c3b`,
+**51 nodos**, **52 columnas** mapeadas, tool `guardar_datos_cliente` con **36 parámetros**,
+`Validar y Normalizar` de **869 líneas**, `typecast: true`, **cero `.item`**.
+Prompt en LangSmith: **v7**, tag `prod`.
+
+### Cerrado y verificado hoy
+
+| Ficha | Qué |
+|---|---|
+| T051 | **Email:** decisión del usuario, todos los users que entran tienen email. No hay lead sin email, así que el hueco del visitante anónimo no se da. |
+| T037 | **Era una ficha falsa mía.** La nacionalidad YA se guardaba: columna, parámetro 30 de la tool, línea 687 del validador y mapeo, todo existía. La cazó el usuario preguntando "¿ya existe eso?". Verificada con un curl: `marroquí` → `MARRUECOS`, y `PaisNacimiento` no se pisa. |
+| T047 | **Cónyuge:** `ConyugeQuiereAcogerse`. PF5b ya preguntaba y el dato se tiraba. Probado en sus dos sentidos; `AplicaBeckham` intacto en las cuatro llamadas. |
+| T048 | **Discrepancia de fecha de alta:** `DiscrepanciaFechaAlta`. Decisión de negocio: avisar en el chat, ofrecer la llamada aunque el caso sea claro, y **no bloquear ni descartar**. Con guarda de forma contra el bug del `[object Object]`. |
+| T046 | **Opción huérfana** de `Propiedades` e `Inversiones` borrada por el usuario en la UI (el MCP no toca `choices`). Curl de humo después, porque el nodo cachea el esquema. |
+| **T056** | **WP-205b ENTERA.** `count==0` crea · `count==1` actualiza · `count>1` → `multi_match`, avisa a Slack y **no escribe**. Más `last_idem_key`: repetir el payload byte a byte devuelve `dedup:true` **sin ejecutar el nodo de Airtable** (probado en el `runData`), y cambiar un solo carácter vuelve a escribir. El lector pasó de `limit:1` a `2` para poder **detectar** el duplicado. |
+| T058 | **El `nie` que perdía ficheros.** `tipo_documento=nie` se descartaba con `ok:true` y el fichero no se guardaba. Una línea. |
+| T055 | Regla de la discrepancia, dentro del prompt. |
+| T038 | **El respaldo del prompt se actualiza solo.** `Refrescar_Respaldo` escribe en la Data Table desde la rama **sana** del guardián, en paralelo al agente y terminal. Verificado en conversación real. |
+| T049 | **Cierre de la conversación de Intercom.** Mecanismo publicado y el prompt v7 con la sección `CIERRE DE LA CONVERSACIÓN`. |
+| T050 | Spec de estructura canónica de documentos escrita (`docs/estructura-canonica-documentos-2026-08-10.md`). |
+
+### Tres fallos silenciosos cazados por el diff estático
+
+Ninguno se veía por curl ni por la respuesta del webhook. Los tres justifican la auditoría por MCP:
+
+1. **`detalle_alerta` truncado** al pegarlo en la UI: quedó solo la expresión y `beckham_alertas`
+   declara sus entradas como `string` con `attemptToConvertTypes:false`, así que el número la
+   rechazaba. La guarda de datos **sí** funcionaba; lo que fallaba era el aviso.
+2. **`Refrescar_Respaldo` colgado de la rama del error.** Habría machacado el respaldo bueno con
+   basura en el primer 404 de LangSmith: la red de seguridad convertida en acelerador del fallo.
+   Además con `activo:false` y sin filtro de fila.
+3. **El mapeo de `Empresa`** (del viernes) sustituido en vez de añadido. Solo se ve diferenciando la
+   **lista** de nombres de columna, no el número.
+
+### Errores propios, escritos para no repetirlos
+
+- **Arrastré el parche v5 sin validar dentro del v6** y metió un **bucle infinito** en la pregunta
+  del idioma: el bloque decía "manda los dos mensajes SIEMPRE, PASE LO QUE PASE" y contradecía otra
+  línea del mismo bloque. Arreglado en v6.1 mirando el historial y guardando el idioma. **Regla: no
+  arrastrar a una publicación parches que el log marque como no verificados.**
+- **Ficha T037 creada sin seguir el dato hasta la celda**, el mismo error del email de operador del
+  viernes.
+- **Diseño del cierre mal planteado la primera vez:** puse un `If` tras `Callback_Intercom` leyendo
+  `$('Validar y Normalizar')`, y son **dos ejecuciones distintas** (conversación vs escritor).
+- **Propuse crear un API key de n8n** para arreglar la visibilidad de la credencial. No existe esa
+  opción: el MCP es el **servidor integrado** de n8n.
+
+### Lo que queda · 10 paquetes
+
+`T015` bloque 7 · `T005` DC principal · `T006` los 4 puntos D/H/G/N · `T007` e2e en Messenger ·
+`T008` publicar · `T041` la URL de adjuntos que caduca · `T036` modelos 030 y 149 ·
+`T057` PDF-resguardo · `T031` estados 030/149 · `T052` idioma al canvas (aplazada a producción).
+
+**Y tres que se cierran mañana:** conversación completa que pruebe el cierre real, las casillas de
+los 030/149 (las concreta el usuario) y **reactivar el auth de los webhooks**.
+
+### Deuda declarada
+
+- La credencial `beckham_webhook_auth` **no la ve la identidad del servidor MCP** de n8n, así que
+  con el auth puesto se pierde el diff estático. Pendiente de los devs.
+- El token de los webhooks ha pasado por la terminal y está en el log: **generar otro antes de
+  producción**.
+- Si el cliente nunca contesta a "¿alguna otra duda?", la conversación **se queda abierta**. Haría
+  falta un proceso por tiempo.
+- Comentario obsoleto en las líneas 338-339 del validador: ya no hay dos opciones duplicadas.
