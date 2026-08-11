@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bot Beckham · Las 38 tareas que quedan</title>
+<style>
+  :root{
+    --dark:#3D3A62; --dark-700:#2C2A49; --dark-300:#6E6B90;
+    --tax:#0FD48E; --tax-100:#E4FBF2; --tax-700:#0AA46E;
+    --sand:#FF7F63; --sand-100:#FFEDE8; --sand-700:#D95B3E;
+    --sky:#5A74D0; --sky-100:#EAEEFA; --sky-700:#3B54AA;
+    --gold:#E8A33D; --gold-100:#FDF2E0; --gold-700:#B8791F;
+    --moon-50:#FAFAFC; --moon-100:#F2F2F7; --moon-200:#E4E4EE;
+    --moon-300:#C9C9D8; --moon-500:#8A8AA3;
+    --ink:#1D1B33; --bg:#fff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--moon-50); color:var(--ink);
+    font:400 clamp(14px,0.55vw + 12px,16px)/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
+  header{background:var(--dark);color:#fff;padding:clamp(28px,5vw,52px) 0}
+  .eyebrow{margin:0 0 6px;font-size:clamp(11px,0.3vw+10px,12.5px);letter-spacing:.14em;text-transform:uppercase;color:var(--tax)}
+  h1{margin:0 0 12px;font-size:clamp(24px,2.4vw + 14px,40px);line-height:1.15;font-weight:700}
+  .sub{margin:0;max-width:70ch;color:#D7D6E6;font-size:clamp(14px,0.4vw+12px,16.5px)}
+  .stamp{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .stamp span{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.16);
+    border-radius:999px;padding:5px 12px;font-size:clamp(11px,0.25vw+10px,12.5px);color:#EDEDF6}
+  .stamp code{background:none;color:var(--tax);font-size:.95em}
+
+  section{margin:clamp(28px,4vw,48px) 0}
+  h2{font-size:clamp(17px,0.9vw+13px,23px);margin:0 0 6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  h2 .n{display:inline-grid;place-items:center;min-width:1.9em;height:1.9em;border-radius:8px;
+    background:var(--dark);color:#fff;font-size:.62em;font-weight:700}
+  .lead{margin:0 0 16px;color:var(--dark-300);max-width:78ch}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-bottom:22px}
+  .card{background:var(--bg);border:1px solid var(--moon-200);border-left-width:4px;border-radius:10px;padding:13px 15px}
+  .card b{display:block;font-size:clamp(20px,1.2vw+15px,28px);line-height:1.1}
+  .card small{color:var(--dark-300);font-size:clamp(11px,0.25vw+10px,12.5px)}
+  .c-one{border-left-color:var(--tax)} .c-fast{border-left-color:var(--gold)}
+  .c-must{border-left-color:var(--sky)} .c-prod{border-left-color:var(--sand)}
+  .c-park{border-left-color:var(--moon-300)}
+
+  .tw{overflow-x:auto;background:var(--bg);border:1px solid var(--moon-200);border-radius:12px}
+  table{border-collapse:collapse;width:100%;min-width:660px;font-size:clamp(12.5px,0.3vw+11.5px,14.5px)}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--moon-100);vertical-align:top}
+  thead th{background:var(--moon-100);color:var(--dark-700);font-weight:700;
+    font-size:clamp(11px,0.25vw+10px,12.5px);letter-spacing:.04em;text-transform:uppercase;
+    position:sticky;top:0;z-index:1}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:var(--moon-50)}
+  td.n{color:var(--moon-500);width:2.6em;font-variant-numeric:tabular-nums}
+  code{background:var(--moon-100);border-radius:5px;padding:1px 5px;font-size:.9em;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap}
+  .wp{font-weight:700;color:var(--dark-700);white-space:nowrap}
+  .t{color:var(--tax-700);font-weight:600;white-space:nowrap;font-size:.92em}
+
+  .tag{display:inline-block;border-radius:999px;padding:2px 9px;font-size:.8em;font-weight:600;white-space:nowrap}
+  .s-done{background:var(--tax-100);color:var(--tax-700)}
+  .s-build{background:var(--gold-100);color:var(--gold-700)}
+  .s-spec{background:var(--sky-100);color:var(--sky-700)}
+  .s-skel{background:var(--moon-100);color:var(--dark-300)}
+  .s-block{background:var(--sand-100);color:var(--sand-700)}
+  .g-one{background:var(--tax-100);color:var(--tax-700)}
+  .g-fast{background:var(--gold-100);color:var(--gold-700)}
+  .g-must{background:var(--sky-100);color:var(--sky-700)}
+  .g-prod{background:var(--sand-100);color:var(--sand-700)}
+  .g-park{background:var(--moon-100);color:var(--dark-300)}
+
+  .note{background:var(--bg);border:1px solid var(--moon-200);border-left:4px solid var(--sky);
+    border-radius:10px;padding:14px 18px;margin:16px 0}
+  .note.warn{border-left-color:var(--sand)}
+  .note.win{border-left-color:var(--tax)}
+  .note p{margin:0 0 8px} .note p:last-child{margin:0}
+  .note b{color:var(--dark-700)}
+
+  pre.chain{background:var(--dark-700);color:#E6E6F2;border-radius:12px;padding:18px 20px;
+    overflow-x:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:clamp(11.5px,0.28vw+10.5px,13.5px);line-height:1.55;margin:0}
+  pre.chain b{color:var(--tax)}
+
+  ol.dec{margin:0;padding-left:1.3em} ol.dec li{margin-bottom:9px}
+  footer{background:var(--dark);color:#B9B7CE;padding:26px 0;margin-top:clamp(32px,5vw,56px);
+    font-size:clamp(12px,0.28vw+11px,13.5px)}
+  footer code{background:rgba(255,255,255,.10);color:var(--tax)}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;
+      transition-duration:.01ms !important;scroll-behavior:auto !important}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="eyebrow">TaxDown · Mobility · Régimen Beckham</p>
+    <h1>Las 38 tareas que quedan</h1>
+    <p class="sub">Todo lo pendiente en una sola vista, agrupado por cómo se ataca y no por cuándo se
+      escribió: lo que sale en media hora, lo que hay que quitarse rápido, la cadena larga de las
+      tools del agente y el día de canvas. De 54 fichas, 14 están hechas y 2 descartadas.</p>
+    <div class="stamp">
+      <span>11 de agosto de 2026</span>
+      <span><code>d09044fe</code> · 51 nodos · 52 columnas · tool de 36</span>
+      <span>prompt v7 · tag <code>prod</code></span>
+      <span>39 PRD y 54 fichas sincronizados: cero desfases</span>
+      <span>20 días naturales para la entrega</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section>
+  <div class="cards">
+    <div class="card c-one"><b>6</b><small>One-shot · 30 min o menos</small></div>
+    <div class="card c-fast"><b>4</b><small>Rápidas · 30-60 min</small></div>
+    <div class="card c-must"><b>14</b><small>Must-do · tools → DC</small></div>
+    <div class="card c-prod"><b>9</b><small>Prod-day · canvas y auth</small></div>
+    <div class="card c-park"><b>6</b><small>Aparcadas o bloqueadas</small></div>
+  </div>
+
+  <div class="note warn">
+    <p><b>La única deuda de verificación viva:</b> <code>WP-238</code> y <code>WP-239</code> están
+    publicados y <b>sin probar en conversación</b>. El diff estático demuestra que el código es el que
+    quisimos, <b>no</b> que el agente se comporte como esperamos.</p>
+    <p>Se cierran los dos con <b>una sola conversación de quince minutos</b>. Es lo primero.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">01</span>One-shot · todo esto cabe en 30 minutos o menos</h2>
+  <p class="lead">Sin dependencias, sin canvas y sin esperar a nadie. Es por donde se empieza.</p>
+  <div class="tw"><table>
+    <thead><tr><th>#</th><th>WP</th><th>Qué</th><th>Tiempo</th><th>Bloqueo</th></tr></thead>
+    <tbody>
+      <tr><td class="n">1</td><td class="wp">WP-238 + WP-239</td><td><b>Una conversación</b> que cierre los dos parches de golpe</td><td>15 min</td><td>ninguno</td></tr>
+      <tr><td class="n">2</td><td class="wp">WP-237</td><td>Automatización del salto de <code>Status</code> 7 → 8</td><td>20 min</td><td><b>tu decisión sobre el 4.3</b></td></tr>
+      <tr><td class="n">3</td><td class="wp"><span class="t">T041</span></td><td>Comprobar que Airtable descarga el adjunto antes de que caduque la URL</td><td>20 min</td><td>ninguno</td></tr>
+      <tr><td class="n">4</td><td class="wp">WP-234</td><td>Señal de complejidad del caso · campo nuevo = tres sitios</td><td>30 min</td><td>ninguno</td></tr>
+      <tr><td class="n">5</td><td class="wp">WP-232</td><td>Runbook, inventario y quality gates</td><td>30 min</td><td>ninguno</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2><span class="n">02</span>Rápidas · justo después, de 30 a 60 minutos</h2>
+  <div class="tw"><table>
+    <thead><tr><th>WP</th><th>Qué</th><th>Tam</th><th>Por qué ahora</th></tr></thead>
+    <tbody>
+      <tr><td class="wp">WP-220</td><td>El corpus de Alina al prompt</td><td>S</td><td>Ya no lo bloquea nadie y <b>desbloquea el FAQ entero</b></td></tr>
+      <tr><td class="wp">WP-210</td><td>Contrato del modo <code>modo_bot</code></td><td>S</td><td>Sin dependencias reales y abre <code>WP-211</code></td></tr>
+      <tr><td class="wp">WP-215</td><td>Autodescarte declarado, no terminal</td><td>S</td><td>Aislada</td></tr>
+      <tr><td class="wp">WP-204</td><td>systemMessage a expresión, purga de tools fantasma</td><td>M</td><td>Ya está en curso, solo falta rematarla</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2><span class="n">03</span>Must-do · las tools del agente, y el DC al final</h2>
+  <p class="lead">La cadena larga. Termina en los Data Connectors, que es lo último que se cablea.</p>
+  <pre class="chain"><b>WP-207</b> ──► WP-208 ──► WP-211 ──► WP-218 ──► WP-219
+   │                                           │
+   └── WP-235 (.030) ──► WP-236 (informe)      │
+                                               ▼
+                        WP-221 ► WP-222 ► WP-223
+                        WP-224 ► WP-225 ► WP-226
+                                    │
+                                    ▼
+                         <b>★ WP-06 · LOS DC ★</b></pre>
+
+  <div class="note win">
+    <p><b><code>WP-207</code> es el cuello y de propina arregla el auth.</b> Cuelgan cinco paquetes de
+    él, y su motivo declarado es que «vuelve el upsert <b>editable por MCP</b>, hoy imposible por las
+    credenciales del workflow monolítico» — que es exactamente la enfermedad que obligó a apagar el
+    auth el 10/08. Sacarlo a subworkflow devuelve el diff estático <b>con la credencial puesta</b>.</p>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>#</th><th>WP</th><th>T</th><th>Qué</th><th>Tam</th><th>Estado</th></tr></thead>
+    <tbody>
+      <tr><td class="n">1</td><td class="wp">WP-207</td><td></td><td><b>Extraer el escritor a subworkflow</b></td><td>M</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">2</td><td class="wp">WP-208</td><td></td><td><code>corr_id</code> de extremo a extremo y <code>Log_Evento</code></td><td>M</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">3</td><td class="wp">WP-211</td><td></td><td><code>Resolver_Modo</code> fail-closed</td><td>M</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">4</td><td class="wp">WP-218</td><td></td><td>Dos nodos de agente con <code>prompt_base</code> compartido</td><td>M</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">5</td><td class="wp">WP-219</td><td></td><td>Guarda de modo en el borde de las tools de escritura</td><td>M</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">6</td><td class="wp">WP-235</td><td class="t">T036</td><td>Generador del fichero <code>.030</code></td><td>M</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">7</td><td class="wp">WP-236</td><td class="t">T057</td><td>Informe Mobility · memoria fiscal por bloques</td><td>L</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">8</td><td class="wp">WP-221</td><td></td><td>FAQ de un turno</td><td>L</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">9</td><td class="wp">WP-222</td><td></td><td>Corte de contexto, resumen y enmascarado de PII</td><td>M</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">10</td><td class="wp">WP-223</td><td></td><td>Escalado a humano, triaje de tono y opt-out</td><td>M</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">11</td><td class="wp">WP-224</td><td></td><td>Registro del lead en H, con precisión y ventana</td><td>M</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">12</td><td class="wp">WP-225</td><td></td><td>Vista de leads potenciales y contrato de datos</td><td>M</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">13</td><td class="wp">WP-226</td><td></td><td>Semántica de reset por punto</td><td>L</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">14</td><td class="wp">WP-06</td><td class="t">T005·T006·T015</td><td><b>Los Data Connectors en los 4 puntos D/H/G/N</b></td><td>M</td><td><span class="tag s-spec">especificado</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2><span class="n">04</span>Prod-day · canvas y auth, en un día y no a trozos</h2>
+  <p class="lead">Van juntos porque <b>todos tocan el mismo canvas</b>, y la regla del proyecto es
+    auditar conexiones por MCP tras cada sesión de canvas. Partirlo en días multiplica las auditorías.</p>
+  <div class="tw"><table>
+    <thead><tr><th>#</th><th>WP</th><th>T</th><th>Qué</th><th>Tam</th><th>Estado</th></tr></thead>
+    <tbody>
+      <tr><td class="n">1</td><td class="wp">WP-216</td><td></td><td>Correcciones del canvas heredado</td><td>M</td><td><span class="tag s-build">en curso</span></td></tr>
+      <tr><td class="n">2</td><td class="wp">WP-212</td><td class="t">T052</td><td>Reset de <code>modo_bot</code> <b>+ idioma al canvas</b></td><td>S</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">3</td><td class="wp">WP-213</td><td></td><td>Menú AOPT</td><td>S</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">4</td><td class="wp">WP-214</td><td></td><td>Rama calculadora</td><td>S</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">5</td><td class="wp">WP-217</td><td></td><td>Handoff en frío de G</td><td>M</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">6</td><td class="wp">WP-227</td><td></td><td>Trigger <i>Reopened</i> y matriz de reentrada</td><td>M</td><td><span class="tag s-spec">especificado</span></td></tr>
+      <tr><td class="n">7</td><td class="wp">WP-203</td><td class="t">T053</td><td><b>Auth de los webhooks · el último clic</b>, con token nuevo</td><td>S</td><td><span class="tag s-build">en curso</span></td></tr>
+      <tr><td class="n">8</td><td class="wp">WP-08</td><td class="t">T007·T008</td><td>e2e de persistencia y <b>publicar</b></td><td>S</td><td><span class="tag s-skel">esqueleto</span></td></tr>
+      <tr><td class="n">9</td><td class="wp">WP-233</td><td></td><td>e2e de Fase 2 y publicación</td><td>M</td><td><span class="tag s-spec">especificado</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2><span class="n">05</span>Aparcadas o bloqueadas</h2>
+  <div class="tw"><table>
+    <thead><tr><th>WP</th><th>Qué</th><th>Tam</th><th>Estado</th><th>Por qué está aquí</th></tr></thead>
+    <tbody>
+      <tr><td class="wp">WP-209</td><td>Conversación sonda</td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><b>¿Se mata?</b> Pierde sentido si el canvas ya es producción directa</td></tr>
+      <tr><td class="wp">WP-09</td><td>Agente conversacional</td><td>L</td><td><span class="tag s-build">en curso</span></td><td>Paraguas: se cierra solo al cerrarse los demás</td></tr>
+      <tr><td class="wp">WP-231</td><td>Observabilidad y alertas</td><td>M</td><td><span class="tag s-build">en curso</span></td><td>Depende de <code>WP-208</code></td></tr>
+      <tr><td class="wp">WP-229</td><td>FAQ → solicitud</td><td>M</td><td><span class="tag s-skel">esqueleto</span></td><td>No crítico, milestone «Pospuesto»</td></tr>
+      <tr><td class="wp">WP-230</td><td>Scheduler de recordatorios</td><td>L</td><td><span class="tag s-spec">especificado</span></td><td>Depende de <code>WP-10</code> y <code>WP-225</code></td></tr>
+      <tr><td class="wp">WP-228</td><td>FAQ multi-turno en n8n</td><td>L</td><td><span class="tag s-block">bloqueado</span></td><td>Depende de <code>WP-10</code>, 221, 222 y 227</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2><span class="n">06</span>La tabla completa · los 38</h2>
+  <div class="tw"><table>
+    <thead><tr><th>#</th><th>WP</th><th>T</th><th>Qué</th><th>Tam</th><th>Estado</th><th>Grupo</th></tr></thead>
+    <tbody>
+      <tr><td class="n">1</td><td class="wp">WP-238</td><td></td><td>Fix del <code>Status</code> · publicado, <b>sin probar</b></td><td>S</td><td><span class="tag s-build">en curso</span></td><td><span class="tag g-one">one-shot</span></td></tr>
+      <tr><td class="n">2</td><td class="wp">WP-239</td><td></td><td>ResumenBot · publicado, <b>sin probar</b></td><td>S</td><td><span class="tag s-build">en curso</span></td><td><span class="tag g-one">one-shot</span></td></tr>
+      <tr><td class="n">3</td><td class="wp">WP-237</td><td class="t">≈T031</td><td>Salto de <code>Status</code> 7 → 8</td><td>S</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-one">one-shot</span></td></tr>
+      <tr><td class="n">4</td><td class="wp">—</td><td class="t">T041</td><td>URL de adjuntos que caduca · <b>sin ficha en el mapa</b></td><td>S</td><td><span class="tag s-skel">sin ficha</span></td><td><span class="tag g-one">one-shot</span></td></tr>
+      <tr><td class="n">5</td><td class="wp">WP-234</td><td></td><td>AplicaBeckham y complejidad del caso</td><td>M</td><td><span class="tag s-build">en curso</span></td><td><span class="tag g-one">one-shot</span></td></tr>
+      <tr><td class="n">6</td><td class="wp">WP-232</td><td></td><td>Runbook, inventario y quality gates</td><td>S</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-one">one-shot</span></td></tr>
+      <tr><td class="n">7</td><td class="wp">WP-220</td><td></td><td>Conocimiento fiscal al prompt · corpus de Alina</td><td>S</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-fast">rápida</span></td></tr>
+      <tr><td class="n">8</td><td class="wp">WP-210</td><td></td><td>Contrato del modo <code>modo_bot</code></td><td>S</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-fast">rápida</span></td></tr>
+      <tr><td class="n">9</td><td class="wp">WP-215</td><td></td><td>Autodescarte declarado, no terminal</td><td>S</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-fast">rápida</span></td></tr>
+      <tr><td class="n">10</td><td class="wp">WP-204</td><td></td><td>systemMessage a expresión, purga de tools fantasma</td><td>M</td><td><span class="tag s-build">en curso</span></td><td><span class="tag g-fast">rápida</span></td></tr>
+      <tr><td class="n">11</td><td class="wp">WP-207</td><td></td><td><b>Extraer el escritor a subworkflow</b> · cuelgan 5</td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-must">must-do</span></td></tr>
+      <tr><td class="n">12</td><td class="wp">WP-208</td><td></td><td><code>corr_id</code> y <code>Log_Evento</code></td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-must">must-do</span></td></tr>
+      <tr><td class="n">13</td><td class="wp">WP-211</td><td></td><td><code>Resolver_Modo</code> fail-closed</td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-must">must-do</span></td></tr>
+      <tr><td class="n">14</td><td class="wp">WP-218</td><td></td><td>Dos nodos de agente con <code>prompt_base</code></td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-must">must-do</span></td></tr>
+      <tr><td class="n">15</td><td class="wp">WP-219</td><td></td><td>Guarda de modo en las tools de escritura</td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-must">must-do</span></td></tr>
+      <tr><td class="n">16</td><td class="wp">WP-235</td><td class="t">T036</td><td>Generador del fichero <code>.030</code></td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-must">must-do</span></td></tr>
+      <tr><td class="n">17</td><td class="wp">WP-236</td><td class="t">T057</td><td>Informe Mobility</td><td>L</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-must">must-do</span></td></tr>
+      <tr><td class="n">18</td><td class="wp">WP-221</td><td></td><td>FAQ de un turno</td><td>L</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-must">must-do</span></td></tr>
+      <tr><td class="n">19</td><td class="wp">WP-222</td><td></td><td>Corte de contexto, resumen y PII</td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-must">must-do</span></td></tr>
+      <tr><td class="n">20</td><td class="wp">WP-223</td><td></td><td>Escalado a humano y opt-out</td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-must">must-do</span></td></tr>
+      <tr><td class="n">21</td><td class="wp">WP-224</td><td></td><td>Registro del lead en H</td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-must">must-do</span></td></tr>
+      <tr><td class="n">22</td><td class="wp">WP-225</td><td></td><td>Vista de leads potenciales</td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-must">must-do</span></td></tr>
+      <tr><td class="n">23</td><td class="wp">WP-226</td><td></td><td>Semántica de reset por punto</td><td>L</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-must">must-do</span></td></tr>
+      <tr><td class="n">24</td><td class="wp">WP-06</td><td class="t">T005·T006·T015</td><td><b>Los DC en los 4 puntos</b> · el final de la cadena</td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-must">must-do</span></td></tr>
+      <tr><td class="n">25</td><td class="wp">WP-216</td><td></td><td>Correcciones del canvas heredado</td><td>M</td><td><span class="tag s-build">en curso</span></td><td><span class="tag g-prod">prod-day</span></td></tr>
+      <tr><td class="n">26</td><td class="wp">WP-212</td><td class="t">T052</td><td>Reset de <code>modo_bot</code> + idioma al canvas</td><td>S</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-prod">prod-day</span></td></tr>
+      <tr><td class="n">27</td><td class="wp">WP-213</td><td></td><td>Menú AOPT</td><td>S</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-prod">prod-day</span></td></tr>
+      <tr><td class="n">28</td><td class="wp">WP-214</td><td></td><td>Rama calculadora</td><td>S</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-prod">prod-day</span></td></tr>
+      <tr><td class="n">29</td><td class="wp">WP-217</td><td></td><td>Handoff en frío de G</td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-prod">prod-day</span></td></tr>
+      <tr><td class="n">30</td><td class="wp">WP-227</td><td></td><td>Trigger <i>Reopened</i> y reentrada</td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-prod">prod-day</span></td></tr>
+      <tr><td class="n">31</td><td class="wp">WP-203</td><td class="t">T053</td><td><b>Auth de los webhooks · lo último de todo</b></td><td>S</td><td><span class="tag s-build">en curso</span></td><td><span class="tag g-prod">prod-day</span></td></tr>
+      <tr><td class="n">32</td><td class="wp">WP-08</td><td class="t">T007·T008</td><td>e2e de persistencia y publicar</td><td>S</td><td><span class="tag s-skel">esqueleto</span></td><td><span class="tag g-prod">prod-day</span></td></tr>
+      <tr><td class="n">33</td><td class="wp">WP-233</td><td></td><td>e2e de Fase 2 y publicación</td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-prod">prod-day</span></td></tr>
+      <tr><td class="n">34</td><td class="wp">WP-209</td><td></td><td>Conversación sonda · <b>¿matar?</b></td><td>M</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-park">aparcada</span></td></tr>
+      <tr><td class="n">35</td><td class="wp">WP-09</td><td></td><td>Agente conversacional</td><td>L</td><td><span class="tag s-build">en curso</span></td><td><span class="tag g-park">aparcada</span></td></tr>
+      <tr><td class="n">36</td><td class="wp">WP-231</td><td></td><td>Observabilidad y alertas</td><td>M</td><td><span class="tag s-build">en curso</span></td><td><span class="tag g-park">aparcada</span></td></tr>
+      <tr><td class="n">37</td><td class="wp">WP-229</td><td></td><td>FAQ → solicitud</td><td>M</td><td><span class="tag s-skel">esqueleto</span></td><td><span class="tag g-park">aparcada</span></td></tr>
+      <tr><td class="n">38</td><td class="wp">WP-230</td><td></td><td>Scheduler de recordatorios</td><td>L</td><td><span class="tag s-spec">especificado</span></td><td><span class="tag g-park">aparcada</span></td></tr>
+      <tr><td class="n">39</td><td class="wp">WP-228</td><td></td><td>FAQ multi-turno en n8n</td><td>L</td><td><span class="tag s-block">bloqueado</span></td><td><span class="tag g-park">aparcada</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="note">
+    <p><b>Correspondencias, para no volver a duplicar fichas:</b> <code>WP-06</code> = T005 + T006 +
+    T015 · <code>WP-08</code> = T007 + T008 · <code>WP-203</code> = T053 · <code>WP-235</code> = T036 ·
+    <code>WP-236</code> = T057 · <code>WP-237</code> ≈ T031 · <code>WP-212</code> incluye T052.</p>
+    <p><b>Los once <code>T</code> están todos dentro</b>, salvo <code>T041</code>, que no tiene ficha
+    en el mapa.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">07</span>Lo que se desbloquea con una respuesta tuya</h2>
+  <ol class="dec">
+    <li><b>¿Matamos <code>WP-209</code>?</b> La sonda desechable pierde su razón de ser si el canvas ya
+      es implementación directa en producción. Sus tres incógnitas vivas se resolverían sobre el canvas real.</li>
+    <li><b>¿Un <code>4.3 Confirmo el 030 pero necesito modificar el 149</code> cuenta como confirmado?</b>
+      Bloquea <code>WP-237</code>. Con el 149 hecho a mano por los fiscales, un <code>4.3</code> significa
+      «lo del bot está bien, falta trabajo humano». <b>La fila de ICIAR está ahora mismo en ese caso.</b></li>
+    <li><b>Una segunda muestra <code>.030</code></b>, mejor de alguien con dos apellidos y de otra
+      provincia. Bloquea <code>WP-235</code>: con una sola muestra los anchos de apellidos y nombre son
+      inferencia.</li>
+  </ol>
+</section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    Bot Beckham · Mobility · TaxDown — 11 de agosto de 2026 · Generado desde
+    <code>docs/prds/fase2/map.html</code> y <code>.spartax/state.json</code>, ya sincronizados entre sí.
+    El detalle de cada ficha está en <code>docs/prds/fase2/</code>.
+  </div>
+</footer>
+
+</body>
+</html>
