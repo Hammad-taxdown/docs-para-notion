@@ -1,7 +1,7 @@
 ---
 id: WP-206
 title: "Prerrequisito P5: whitelist de punto y de Descarte en n8n, y typecast a false"
-status: specified
+status: done
 size: S
 depends_on: [WP-201]
 milestone: "Fase 2 conversacional — Prerrequisitos"
@@ -12,6 +12,8 @@ issue: ""
 ---
 
 # PRD · WP-206 — P5: whitelist de `punto` y de `Descarte`
+
+> **NOTA DEL 11/08/2026 · **CERRADO.** La parte viva era `WP-206a`, la whitelist de `punto` y de `Descarte`, y está hecha. `WP-206b` (poner `typecast` a `false`) está **DESCARTADO Y NO SE REINTENTA**: se intentó y se revirtió **dos veces**, el 01/08 y el 06/08. `ponerFecha` produce un datetime y las columnas son de solo fecha, así que **typecast es lo que hace que Airtable las acepte**. Lo que protege la base son **las whitelists**, no el typecast. Frontmatter sincronizado el 11/08.**
 
 > HECHO VERIFICADO: el nodo de Airtable usa `typecast:true` → una errata en un single-select **crea
 > una opción nueva** y Airtable no avisa. HECHO VERIFICADO: `Descarte` ya incluye `Otro/Incompleto`

@@ -1,7 +1,7 @@
 ---
 id: WP-228
 title: "FAQ multi-turno en n8n detrás del trigger de mensaje (pospuesto hasta que cierre WP-10)"
-status: skeleton
+status: blocked
 size: L
 depends_on: [WP-10, WP-221, WP-222, WP-227]
 milestone: "Fase 2 conversacional — Pospuesto"
@@ -12,6 +12,8 @@ issue: ""
 ---
 
 # PRD · WP-228 — FAQ multi-turno en n8n
+
+> **NOTA DEL 11/08/2026 · **BLOQUEADO**, no `skeleton`: depende de `WP-10`, `WP-221`, `WP-222` y `WP-227`. No es que falte escribirlo, es que no se puede empezar. Frontmatter sincronizado el 11/08.**
 
 > **BLOQUEADO por WP-10.** HECHO VERIFICADO: sobre un `Customer ticket` **no se disparan los triggers
 > "customer sends any message"** → el turno 2 nunca llega a n8n. HECHO VERIFICADO: pasar el ticket a

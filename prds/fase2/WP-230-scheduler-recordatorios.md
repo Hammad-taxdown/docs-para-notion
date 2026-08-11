@@ -1,7 +1,7 @@
 ---
 id: WP-230
 title: "BECKHAM_recordatorios_leads: scheduler con cola derivada (solo si el manager mete los recordatorios en alcance)"
-status: skeleton
+status: specified
 size: L
 depends_on: [WP-10, WP-225]
 milestone: "Fase 2 conversacional — Pospuesto"
@@ -12,6 +12,8 @@ issue: ""
 ---
 
 # PRD · WP-230 — Scheduler de recordatorios (Variante A)
+
+> **NOTA DEL 11/08/2026 · **ESPECIFICADO**, no `skeleton`: el mapa lo tiene detallado desde hace semanas y este fichero se quedó atrás. Frontmatter sincronizado el 11/08.**
 
 > **BLOQUEADO por tres decisiones del manager y por WP-10.**
 > Contradicción de alcance verificada: **WP-03 declara los recordatorios fuera de alcance de todo el

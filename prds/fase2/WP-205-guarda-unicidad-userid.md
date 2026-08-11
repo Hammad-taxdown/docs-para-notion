@@ -1,7 +1,7 @@
 ---
 id: WP-205
 title: "Prerrequisito P4: guarda de unicidad de UserId (count==0 crea · ==1 actualiza · >1 multi_match)"
-status: specified
+status: done
 size: M
 depends_on: [WP-201]
 milestone: "Fase 2 conversacional — Prerrequisitos"
@@ -12,6 +12,8 @@ issue: ""
 ---
 
 # PRD · WP-205 — P4: guarda de unicidad de `UserId`
+
+> **NOTA DEL 11/08/2026 · **CERRADO EL 10/08, las dos mitades.** `WP-205a` (validación de **forma** del `UserId`, la regex `eu-west-1:<uuid>`) y `WP-205b` (guarda de **unicidad** + idempotencia). `count>1` devuelve `multi_match`, **no escribe nada** y avisa a Slack; `last_idem_key` deduplica la escritura repetida. **La huella se calcula sobre el CONTENIDO del payload, no sobre `user_id|punto|conversation_id` como decía este PRD**: el bot guarda de forma incremental y esa huella habría descartado el segundo y el tercer guardado, perdiendo el NIF y el teléfono. Verificado además en conversación real el 10/08. Frontmatter sincronizado el 11/08.**
 
 > HECHOS VERIFICADOS: `UserId` **no es único** en `Empleados`; el nodo usa
 > `matchingColumns:["UserId"]` con `typecast:true`; hay **3 de 6 filas sin `UserId`**, y

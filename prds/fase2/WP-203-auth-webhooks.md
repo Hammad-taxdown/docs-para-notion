@@ -1,7 +1,7 @@
 ---
 id: WP-203
 title: "Prerrequisito P2: autenticación en los dos webhooks y rotación del path a UUID"
-status: specified
+status: building
 size: S
 depends_on: []
 milestone: "Fase 2 conversacional — Prerrequisitos"
@@ -12,6 +12,8 @@ issue: ""
 ---
 
 # PRD · WP-203 — P2: auth en `Webhook1` y en `beckham-upsert-expediente`
+
+> **NOTA DEL 11/08/2026 · **PROBADO Y DESACTIVADO A PROPÓSITO (10/08).** El auth funciona: 403 sin cabecera y 200 con `X-Beckham-Token`, en el escritor y en el lector. Se apagó por un conflicto de permisos: la credencial `beckham_webhook_auth` **no la ve la identidad del servidor MCP integrado de n8n**, así que con ella puesta la API no puede leer el workflow y **se pierde el diff estático** — que en dos días ha cazado tres fallos silenciosos que ningún curl detecta. La credencial NO se ha borrado: reactivar son cuatro clics. **Decisión del usuario del 11/08: es lo ÚLTIMO que se hace, justo antes de publicar.** Y entonces hay que **generar un token nuevo**, porque el actual ha pasado por la terminal. Frontmatter sincronizado el 11/08.**
 
 > HECHO VERIFICADO: ambos webhooks son públicos **sin autenticación** y escriben o leen datos reales
 > de empleados. `Webhook1` es POST sin auth → cualquier campo que llegue en el body es falsificable.

@@ -970,7 +970,7 @@ const OLAS = [
   n:"Ola 6", when:"Alcance nuevo · Fase 2", t:"Cualificación y documentos",
   why:"Alcance que apareció hoy y no existía en ningún PRD. Es la parte más compleja y la que más toca campos ajenos, así que va al final: cuando el resto ya sea estable y depurable.",
   wps:[
-  {id:"WP-234",t:"AplicaBeckham y complejidad del caso, escritos por el agente",st:"new",size:"M",crit:0,
+  {id:"WP-234",t:"AplicaBeckham y complejidad del caso, escritos por el agente",st:"build",size:"M",crit:0,
    dep:"WP-207, WP-218",
    goal:"El agente cualifica: si el caso vale la pena y si es fácil o complejo, evaluándolo desde los inputs que ha ido recogiendo.",
    steps:["Proponer el campo <code>complejidad_caso</code> (single-select: <code>facil</code> | <code>complejo</code> | <code>revisar</code>) — <b>decisión de esquema final de Alina e Iciar</b>.",
@@ -1007,7 +1007,7 @@ const OLAS = [
    verify:"Un recorrido completo genera el informe con el bloque correcto según las dos columnas de fórmula, los 17 marcadores resueltos y ningún <code>{{...}}</code> literal en el resultado.",
    note:"<b>Reescrito el 11/08.</b> Era <code>new</code>/<code>M</code>/no-crítico con la plantilla ausente; pasa a <code>spec</code>/<code>L</code>/crítico con la plantilla en la mano. Sube de tamaño porque los cuatro huecos son campo nuevo, no porque el montaje sea difícil."},
 
-  {id:"WP-237",t:"Enviar borradores y confirmación · YA ESTÁ CONSTRUIDO CASI ENTERO, falta UN salto de Status",st:"new",size:"S",crit:1,
+  {id:"WP-237",t:"Enviar borradores y confirmación · YA ESTÁ CONSTRUIDO CASI ENTERO, falta UN salto de Status",st:"spec",size:"S",crit:1,
    dep:"WP-235",
    goal:"Que desde Airtable se envíen los borradores al cliente, que el cliente los confirme, y que esa confirmación mueva el <code>Status</code> sola.",
    steps:["<b>AUDITADO POR MCP EL 11/08 ANTES DE ESCRIBIR NADA, Y CASI TODO ESTABA HECHO.</b> Nació como <code>M</code> y baja a <code>S</code>.",
@@ -1020,7 +1020,7 @@ const OLAS = [
    verify:"Un caso de prueba recorre marcar EnviarBorradores → correo con adjuntos → formulario confirmado → <code>Status = 8. Confirmado</code>, sin que el bot y la automatización se pisen.",
    note:"<b>Nuevo el 11/08 y reducido el mismo día.</b> Es la quinta vez que pasa lo mismo en este proyecto: <b>el camino existe y nadie lo usa</b>. Se escribió como WP de construcción y la auditoría lo dejó en un salto de Status."},
 
-  {id:"WP-238",t:"Fix de Decidir_Status: el Status final depende de motivo_cierre — BUG CONFIRMADO",st:"new",size:"S",crit:1,
+  {id:"WP-238",t:"Fix de Decidir_Status: el Status final depende de motivo_cierre — BUG CONFIRMADO",st:"build",size:"S",crit:1,
    dep:"—",
    goal:"Que un expediente completo NO se quede en «2. Pendiente llamada TD».",
    steps:["<b>BUG CONFIRMADO EL 11/08</b>, reportado por el usuario y localizado en el código: <code>Decidir_Status</code> hace <code>else if (fields.AplicaBeckham === true) propuesto = '2. Pendiente llamada TD'</code> y <b>no conoce <code>motivo_cierre</code></b>. Así que todo cliente que quiere acogerse acaba en «pendiente llamada», haya llamada o no.",
@@ -1031,7 +1031,7 @@ const OLAS = [
    verify:"Dos conversaciones: una que agenda llamada queda en 2, otra que completa expediente queda en 3. Comprobado en la celda, no en el <code>ok:true</code>.",
    note:"<b>Nuevo el 11/08.</b> Pequeño y crítico: es la bisagra entre el cierre de la conversación (ya verificado hoy) y todo el proceso de informe y borradores que viene detrás."},
 
-  {id:"WP-239",t:"ResumenBot = ficha + prosa · el formato YA existe, la tool pide lo contrario",st:"new",size:"S",crit:0,
+  {id:"WP-239",t:"ResumenBot = ficha + prosa · el formato YA existe, la tool pide lo contrario",st:"build",size:"S",crit:0,
    dep:"—",
    goal:"Que <code>ResumenBot</code> lleve primero la <b>ficha con etiquetas fijas</b> y después el resumen en prosa, en vez de solo la prosa.",
    steps:["<b>HALLAZGO DEL 11/08 QUE CAMBIA LA FICHA:</b> el formato pedido por el usuario <b>ya está escrito en el prompt vivo</b>, líneas 58-83, con sus 18 etiquetas exactas (y una más, <i>Idioma de atención</i>). No hay que inventarlo.",

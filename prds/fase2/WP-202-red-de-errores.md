@@ -1,7 +1,7 @@
 ---
 id: WP-202
 title: "Prerrequisito P1: enchufar la red de errores (errorWorkflow, retryOnFail, onError)"
-status: building
+status: done
 size: S
 depends_on: []
 milestone: "Fase 2 conversacional — Prerrequisitos"
@@ -12,6 +12,8 @@ issue: ""
 ---
 
 # PRD · WP-202 — P1: red de errores enchufada
+
+> **NOTA DEL 11/08/2026 · **CERRADO.** Se dio por hecho el 01/08 y **estaba a 1 de 4**; se completó y se probó de verdad el 06/08. El `errorWorkflow` con avisos a Slack funcionó en real (el 400 de `gpt-5.6-terra` llegó a Slack: el fallo no fue silencioso), y después entraron `onError: continueErrorOutput` en el nodo de Airtable con su rama, el tag `beckham_persistencia_fallida`, `maxTries: 3` y el enum cerrado de `resultado`. **`WP-205` era precondición dura de los reintentos y ya está cerrada.** Frontmatter sincronizado el 11/08.**
 
 > HECHO VERIFICADO: `beckham_bot` no tiene `settings.errorWorkflow`; el nodo de Airtable no tiene
 > `retryOnFail` ni `onError`; y `Notificaciones_error` (`TXVWRUzc1G5HXHjZ`) **existe y está activo**.
