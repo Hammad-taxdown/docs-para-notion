@@ -868,3 +868,64 @@ los 030/149 (las concreta el usuario) y **reactivar el auth de los webhooks**.
 - Si el cliente nunca contesta a "¿alguna otra duda?", la conversación **se queda abierta**. Haría
   falta un proceso por tiempo.
 - Comentario obsoleto en las líneas 338-339 del validador: ya no hay dos opciones duplicadas.
+
+---
+
+## Cierre de sesión · 2026-08-11
+
+### Lo que se cerró de verdad
+
+**El cierre de Intercom funciona.** Era la duda que quedaba del lunes: el mecanismo estaba publicado
+y probado por curl, pero eso solo demostraba que el dato se guardaba. Hoy, en la conversación
+`215475438827585`, Intercom devolvió `state: "closed"`, `open: false` y una última parte de tipo
+`close` a las 11:05:54. El bot manda el mensaje de despedida **y luego** cierra, en ese orden — un
+mensaje sobre una conversación cerrada la reabriría.
+
+**El prompt v7 está vivo.** Leído del campo `texto` que escribe `Refrescar_Respaldo` en la traza:
+46.319 caracteres contra los 44.053 del v6.1. Los 243 de diferencia con la copia local no son un
+parche colado: son las dos variables sustituidas, `{current_date}` y `{contexto}`. Once líneas de
+diff, todas de sustitución.
+
+**`conyuge_quiere_acogerse` probado en conversación real.** No se podía comprobar desde la fila
+porque es un checkbox y la respuesta fue "no", indistinguible de "no se preguntó". Estaba en la
+traza: `"conyuge_quiere_acogerse": "no"`, y el validador escribe `false` explícitamente.
+
+### Un bug que cazó el usuario
+
+`Decidir_Status` daba **siempre** `2. Pendiente llamada TD` a todo el que quisiera acogerse, hubiera
+llamada o no. Un expediente completo se quedaba clavado ahí. El nodo no sabía que existía
+`motivo_cierre`. Arreglado: `expediente completo` → `3. Pte hacer informe`, que es el peldaño que ya
+estaba en la escalera. **Publicado y sin probar**, por decisión del usuario.
+
+### Tres cosas que ya estaban construidas y no lo sabíamos
+
+1. **`WP-237` casi entero.** El botón `EnviarBorradores` existe, la automatización envía el correo en
+   dos idiomas con los adjuntos y el enlace de confirmación, y el formulario de vuelta fusiona la
+   fila y borra el duplicado. **Solo falta el salto de `Status` 7 → 8.**
+2. **`WP-236` tenía plantilla.** El informe Mobility que pasó el usuario es exactamente el documento
+   que la ficha daba por inexistente. Y sus tres bloques (A/B/C) encajan uno a uno con las dos
+   columnas de fórmula que ya existen.
+3. **El formato de resumen que pedía el usuario ya estaba en el prompt**, líneas 58-83. Lo que fallaba
+   era la descripción de la tool, que pedía explícitamente lo contrario.
+
+Van **cinco** veces en este proyecto: el camino existe y nadie lo usa.
+
+### El modelo 030 cambió de naturaleza dos veces en el mismo día
+
+Por la mañana se recortó a **solo el 030** (el 149 lo hacen los fiscales a mano). Por la tarde, al ver
+el fichero real, resultó que **el entregable nunca fue un PDF**: es un fichero `.030` de texto
+posicional de ancho fijo que el fiscal sube a la sede y **es Hacienda quien genera el PDF**. Los dos
+PDF que se analizaron eran renders planos, sin un solo campo rellenable.
+
+El coste real no son columnas nuevas: son **tablas de conversión**, porque el fichero quiere códigos
+(ISO-2, código INE de municipio) y Airtable guarda nombres.
+
+### Mis errores de hoy
+
+- Dije que `Decidir_Status` quedaría en **161 líneas** y quedó en 164. Conté el parche entero como
+  añadido sin descontar las seis líneas que ya eran idénticas.
+- Creé la ficha `WP-239` como "cambio de prompt" y **a los diez minutos** hubo que reescribirla: era
+  cambio de tool. No leí la tool antes de escribir la ficha.
+- Iba a crear `WP-237` como WP de construcción **antes de auditar lo que ya existía**. Lo audité justo
+  a tiempo y resultó estar hecho casi entero.
+- Validé el JS del mapa quitando los backticks, y el fallo que reporté era mío, no del fichero.

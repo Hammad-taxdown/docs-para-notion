@@ -6,12 +6,14 @@ Beckham. Trabaja directamente sobre n8n, Airtable e Intercom, sin equipo de desa
 Nivel alto: pide código entero y verificación real, no explicaciones de concepto.
 
 ## Stack y herramientas
-- **n8n** (cloud, acceso por MCP `n8n-mcp`). Workflow principal: **`beckham_bot`** = `nhOwpiGxikeU5DLR`.
+- **n8n** en **`https://es.synapse.rentax.es`** (acceso por MCP `n8n-mcp`, que es el **servidor MCP
+  integrado de n8n**, no un API key personal). Todo está en `.spartax/config.json`: URL, los cuatro
+  workflow ids y las dos URLs de webhook. Workflow principal: **`beckham_bot`** = `nhOwpiGxikeU5DLR`.
   Satélites: `beckham_alertas` (`BJfExmwu1fI1aPpY`, errorWorkflow), `beckham_f2_plazo.`
   (`wdOOF0ecCkgFOUjt`), `beckham_hypatia`, `Sync status_renta - Beckham`.
 - **Airtable** (MCP). Tabla `Empleados` = el expediente del cliente. El escritor único acepta
-  **45 columnas** y ninguna más (eran 20 hasta el 6/08; la tool `guardar_datos_cliente` pasó de 16 a
-  **32 parámetros** en las cinco tandas del bloque 3): lo que no está en el contrato no se pierde por
+  **52 columnas** y ninguna más (eran 20 hasta el 6/08 y 45 hasta el 7/08; la tool
+  `guardar_datos_cliente` va por **36 parámetros**): lo que no está en el contrato no se pierde por
   un bug, NO EXISTE EL CAMINO (el escritor ignora claves desconocidas y devuelve `ok:true`).
   El nodo `Airtable Upser Expediente` va con **`typecast: true`, y eso NO se apaga**: `ponerFecha`
   produce un datetime y las columnas son de solo fecha, así que typecast es lo que hace que Airtable
@@ -21,7 +23,26 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
   en el canvas, F2 (plazo de 6 meses) delegado a n8n.
 - **LangSmith**: fuente de verdad del prompt. `promptName: bot_mobility_prompt`, `promptTag: prod`.
   **Manda el tag `prod`, no el último commit.**
+  Versión vigente: **v7** (10/08). Copias en `docs/prompt-langsmith-prod-*.txt`. **Nunca arrastrar a
+  una publicación un parche que el log marque como no verificado**: el v5 iba sin validar, entró
+  dentro del v6 y metió un bucle infinito en la pregunta del idioma.
 - **Slack** (MCP) para los avisos de negocio y de error.
+
+## Columnas y guardas añadidas el 10/08/2026
+
+- `ConyugeQuiereAcogerse` (checkbox) · `DiscrepanciaFechaAlta` (texto) · `last_idem_key` (técnica) ·
+  `MotivoCierre` (singleSelect: *Llamada agendada* / *Expediente completo*).
+- `nie` añadido a `COLUMNA_POR_TIPO`, comparte columna con `dni`. Antes se perdía el fichero con
+  `ok:true`.
+- **WP-205b cerrada:** `count>1` en `UserId` devuelve `multi_match` y **no escribe**, avisa a Slack;
+  y `last_idem_key` deduplica la escritura repetida. La huella se calcula sobre el **contenido** del
+  payload, no sobre `user_id|punto|conversation_id` como decía el PRD: el bot guarda de forma
+  incremental y esa huella habría descartado el segundo y el tercer guardado.
+- **T053 auth de los webhooks: PROBADA Y DESACTIVADA.** Header Auth `beckham_webhook_auth`
+  (`chTgEmF0KkSvcivT`) da 403 sin cabecera y 200 con ella, pero mientras está puesta **la API de n8n
+  no puede leer el workflow** (`Credential ... could not be found`): la identidad del servidor MCP
+  integrado no ve esa credencial. Sin lectura no hay diff, y el diff es lo que caza los fallos
+  silenciosos. Se reactiva al terminar de construir. **Antes de producción, token nuevo.**
 
 ## Convenciones
 - Todo en **español**, incluidos comentarios de código.
