@@ -1007,7 +1007,7 @@ const OLAS = [
    verify:"Un recorrido completo genera el informe con el bloque correcto según las dos columnas de fórmula, los 17 marcadores resueltos y ningún <code>{{...}}</code> literal en el resultado.",
    note:"<b>Reescrito el 11/08.</b> Era <code>new</code>/<code>M</code>/no-crítico con la plantilla ausente; pasa a <code>spec</code>/<code>L</code>/crítico con la plantilla en la mano. Sube de tamaño porque los cuatro huecos son campo nuevo, no porque el montaje sea difícil."},
 
-  {id:"WP-237",t:"Enviar borradores y confirmación · MONTADA Y APAGADA (12/08), pendiente de encender y probar",st:"build",size:"S",crit:1,
+  {id:"WP-237",t:"Enviar borradores y confirmación · YA ESTÁ CONSTRUIDO CASI ENTERO, falta UN salto de Status",st:"spec",size:"S",crit:1,
    dep:"WP-235",
    goal:"Que desde Airtable se envíen los borradores al cliente, que el cliente los confirme, y que esa confirmación mueva el <code>Status</code> sola.",
    steps:["<b>AUDITADO POR MCP EL 11/08 ANTES DE ESCRIBIR NADA, Y CASI TODO ESTABA HECHO.</b> Nació como <code>M</code> y baja a <code>S</code>.",
@@ -1018,7 +1018,7 @@ const OLAS = [
    "<b>SIN COLISIÓN CON EL BOT, COMPROBADO:</b> <code>Decidir_Status</code> solo escribe si <code>nPropuesto &gt; nActual</code>, así que con la fila en 7 el bot nunca la baja a 3. Los dos escritores conviven porque la escalera solo sube.",
    "<b>El recorte del 149 no obliga a tocar nada:</b> la automatización adjunta <code>Borrador149</code> <i>si existe</i>. Con los fiscales rellenándolo a mano, el mismo correo sigue saliendo con los dos."],
    verify:"Un caso de prueba recorre marcar EnviarBorradores → correo con adjuntos → formulario confirmado → <code>Status = 8. Confirmado</code>, sin que el bot y la automatización se pisen.",
-   note:"<b>Nuevo el 11/08, reducido el mismo día y montado el 12/08.</b> Es la quinta vez que pasa lo mismo en este proyecto: <b>el camino existe y nadie lo usa</b>. <b>12/08:</b> automatización <code>wflYrTfhxYtRaLZkU</code> creada como <b>borrador, apagada</b> — trigger con <b>dos</b> condiciones (<code>Status=7</code> Y <code>Estado030149</code> en 4.1/4.3) y acción única <code>Status=8</code>. <b>OJO ANTES DE ENCENDER: la fila de ICIAR casa exactamente con el trigger</b> y se moverá sola. <b>Trampa aprendida:</b> el filtro NO admite un <code>or</code> anidado dentro del <code>and</code> — para varios valores de un select va <code>isAnyOf</code> con array."},
+   note:"<b>Nuevo el 11/08 y reducido el mismo día.</b> Es la quinta vez que pasa lo mismo en este proyecto: <b>el camino existe y nadie lo usa</b>. Se escribió como WP de construcción y la auditoría lo dejó en un salto de Status."},
 
   {id:"WP-238",t:"Fix de Decidir_Status: el Status final depende de motivo_cierre — BUG CONFIRMADO",st:"build",size:"S",crit:1,
    dep:"—",
@@ -1048,19 +1048,6 @@ const OLAS = [
   n:"Ola 7", when:"Cierre", t:"E2E y publicación",
   why:"Lo último. Un solo WP, pero es el que convierte «funciona en mi prueba» en «está publicado y verificado».",
   wps:[
-  {id:"WP-240",t:"T041 · Adjuntos que Airtable acepta pero nunca descarga — MONTADO Y APAGADO (12/08)",st:"build",size:"S",crit:1,
-   dep:"—",
-   goal:"Detectar el fallo silencioso de los adjuntos que se pierden porque la URL de Intercom caduca antes de que Airtable vaya a buscarlos.",
-   steps:["<b>EL HALLAZGO, 11/08:</b> Airtable <b>no se descarga el fichero al escribirlo</b>. Acepta la URL, responde al instante y lo baja <b>después, en segundo plano</b>. Probado siguiendo el MISMO id de adjunto (<code>attoEXu6MW5VZlZMg</code>) en dos momentos: al escribir traía la URL de Intercom y <b>ni <code>size</code>, ni <code>type</code>, ni <code>thumbnails</code></b>; horas después, <code>v5.airtableusercontent.com</code> y los tres campos.",
-   "<b>POR QUÉ IMPORTA:</b> el escritor devuelve <code>ok:true</code> <b>antes</b> de que Airtable tenga nada. Si la URL caduca antes de la descarga, el adjunto se queda vacío y <b>no se entera nadie</b>: la ejecución ya terminó en <code>success</code>, no hay error que capturar y <code>beckham_alertas</code> no dispara. <b>Margen real medido: 32 minutos y medio.</b>",
-   "<b>DETECTARLO ES BARATO:</b> la señal es la <b>ausencia de <code>size</code></b>, no su valor. No hay que descargar nada.",
-   "<b>NO SE PUEDE ARREGLAR EN EL ESCRITOR</b>, porque el escritor no puede saberlo. Hace falta un chequeo posterior.",
-   "<b>12/08 · MONTADO:</b> workflow <code>beckham_adjuntos_huerfanos</code> (<code>9Dh7U9DIxvXvzPxG</code>), 5 nodos, <b>inactivo</b>. Cada hora → leer <code>Empleados</code> → recorrer las <b>nueve columnas que escribe el bot</b> (los dos <code>Borrador*</code> quedan fuera: los sube un fiscal en bytes, no por URL) → avisar. <b>La hora del schedule es la tregua</b>: Airtable tarda segundos.",
-   "<b>PENDIENTE PARA ACTIVARLO: falta la credencial de Airtable.</b> <code>autoAssignedCredentials</code> volvió vacío — el problema de siempre, las credenciales son de Ops/Fiscal y la identidad del MCP no las ve. Hay que asignarla a mano.",
-   "<b>Solución definitiva descartada por ahora</b> (decisión del usuario, 12/08): bajar el fichero en n8n y subirlo en bytes eliminaría el problema de raíz. Se escala si durante las pruebas da guerra."],
-   verify:"Un adjunto forzado a fallar (URL caducada) genera aviso en Slack en la siguiente pasada, y uno normal no genera ninguno.",
-   note:"<b>Nuevo el 12/08.</b> <code>T041</code> era la única tarea sin ficha en el mapa. Deja de ser «comprobar si funciona» y pasa a «detectar cuando no»."},
-
   {id:"WP-233",t:"End-to-end de la Fase 2 y publicación",st:"spec",size:"M",crit:1,
    dep:"WP-213, WP-216, WP-217, WP-221, WP-224, WP-227, WP-231, WP-232",
    goal:"Recorrer todos los caminos del bot en conversaciones reales y publicar con evidencia.",
