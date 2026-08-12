@@ -166,10 +166,10 @@
       se recorta: el 149 lo hacen los fiscales a mano</b>. Empieza por el <b>overview</b>: dónde estamos,
       qué toca hoy y qué está esperando a otra persona. Todo lo demás es detalle.</p>
     <div class="stamp">
-      <span>Actualizado 2026-08-12 · alcance completo al 31/08</span>
-      <span>versionId 1da91ade · 51 nodos · tool de 37 parámetros · 53 columnas</span>
+      <span>Actualizado 2026-08-11 · alcance completo al 31/08</span>
+      <span>versionId 7e499c3b · 51 nodos · tool de 36 parámetros · 52 columnas</span>
       <span>Cero <code>.item</code> · <code>typecast</code> en true · prompt v7 con tag <code>prod</code> (46.319 car. leídos en traza)</span>
-      <span>56 fichas · 14 done · 19 días naturales para la entrega</span>
+      <span>54 fichas · 14 done · 20 días naturales para la entrega</span>
     </div>
   </div>
 </header>
@@ -1007,7 +1007,7 @@ const OLAS = [
    verify:"Un recorrido completo genera el informe con el bloque correcto según las dos columnas de fórmula, los 17 marcadores resueltos y ningún <code>{{...}}</code> literal en el resultado.",
    note:"<b>Reescrito el 11/08.</b> Era <code>new</code>/<code>M</code>/no-crítico con la plantilla ausente; pasa a <code>spec</code>/<code>L</code>/crítico con la plantilla en la mano. Sube de tamaño porque los cuatro huecos son campo nuevo, no porque el montaje sea difícil."},
 
-  {id:"WP-237",t:"Enviar borradores y confirmación · MONTADA Y ENCENDIDA (12/08), sin probar",st:"build",size:"S",crit:1,
+  {id:"WP-237",t:"Enviar borradores y confirmación · MONTADA Y APAGADA (12/08), pendiente de encender y probar",st:"build",size:"S",crit:1,
    dep:"WP-235",
    goal:"Que desde Airtable se envíen los borradores al cliente, que el cliente los confirme, y que esa confirmación mueva el <code>Status</code> sola.",
    steps:["<b>AUDITADO POR MCP EL 11/08 ANTES DE ESCRIBIR NADA, Y CASI TODO ESTABA HECHO.</b> Nació como <code>M</code> y baja a <code>S</code>.",
@@ -1048,7 +1048,7 @@ const OLAS = [
   n:"Ola 7", when:"Cierre", t:"E2E y publicación",
   why:"Lo último. Un solo WP, pero es el que convierte «funciona en mi prueba» en «está publicado y verificado».",
   wps:[
-  {id:"WP-240",t:"T041 · Adjuntos que Airtable acepta pero nunca descarga — ACTIVO y probado en vacío (12/08)",st:"build",size:"S",crit:1,
+  {id:"WP-240",t:"T041 · Adjuntos que Airtable acepta pero nunca descarga — MONTADO Y APAGADO (12/08)",st:"build",size:"S",crit:1,
    dep:"—",
    goal:"Detectar el fallo silencioso de los adjuntos que se pierden porque la URL de Intercom caduca antes de que Airtable vaya a buscarlos.",
    steps:["<b>EL HALLAZGO, 11/08:</b> Airtable <b>no se descarga el fichero al escribirlo</b>. Acepta la URL, responde al instante y lo baja <b>después, en segundo plano</b>. Probado siguiendo el MISMO id de adjunto (<code>attoEXu6MW5VZlZMg</code>) en dos momentos: al escribir traía la URL de Intercom y <b>ni <code>size</code>, ni <code>type</code>, ni <code>thumbnails</code></b>; horas después, <code>v5.airtableusercontent.com</code> y los tres campos.",
@@ -1060,21 +1060,6 @@ const OLAS = [
    "<b>Solución definitiva descartada por ahora</b> (decisión del usuario, 12/08): bajar el fichero en n8n y subirlo en bytes eliminaría el problema de raíz. Se escala si durante las pruebas da guerra."],
    verify:"Un adjunto forzado a fallar (URL caducada) genera aviso en Slack en la siguiente pasada, y uno normal no genera ninguno.",
    note:"<b>Nuevo el 12/08.</b> <code>T041</code> era la única tarea sin ficha en el mapa. Deja de ser «comprobar si funciona» y pasa a «detectar cuando no»."},
-
-  {id:"WP-241",t:"Automatizaciones de Airtable de Iciar · 6 fallos auditados, BLOQUEADO por acceso a la UI",st:"block",size:"M",crit:1,
-   dep:"—",
-   goal:"Arreglar los seis fallos encontrados el 12/08 en las automatizaciones que construyó Iciar sin contexto del proyecto.",
-   steps:["<b>🔴 1 · <code>3. Envio borradores</code> NO TIENE RAMA POR DEFECTO.</b> Solo Español e Inglés, ninguna <i>else</i>. Con <code>Idioma</code> vacío el fiscal marca <code>EnviarBorradores</code> y <b>no pasa nada</b>: ni correo, ni Status, ni error.",
-   "<b>🔴 2 · <code>3. Envio borradores</code> HACE RETROCEDER EL STATUS.</b> Escribe <code>7</code> sin condición, así que una fila en 8, 9 u 11 <b>baja a 7</b> al reenviar. Rompe la invariante que el bot respeta: <b>la escalera solo sube</b>.",
-   "<b>🔴 3 · <code>Crear Check out</code> tiene un BUSY-WAIT.</b> <code>while (Date.now()-start &lt; ms) {}</code> no duerme: gira bloqueando el hilo, hasta <b>125 segundos</b> contra un límite de ejecución de ~30 s. Y al lanzar el timeout el script peta, el <code>conditionalGroup</code> no corre y <b><code>Checkout Error</code> no se marca nunca</b>.",
-   "<b>🟠 4 ·</b> las dos ramas de la 3 leen el enlace de confirmación de sitios distintos; la inglesa puede estar mandándolo <b>vacío</b>.",
-   "<b>🟠 5 ·</b> <code>Modificacion M149</code> se recoge en los dos scripts y <b>no se usa en ninguno</b>: nunca llega al cliente.",
-   "<b>🟡 6 ·</b> <code>NO_COPIAR</code> de la 2 nombra dos campos <b>que no existen</b> y no protege <code>Status</code>, <code>last_idem_key</code>, <code>UserId</code> ni <code>AplicaBeckham</code>.",
-   "<b>POR QUÉ ESTÁ BLOQUEADO, y no es opinable:</b> Airtable devuelve <code>readOnlyNodeType: customScript</code> — <b>no se pueden crear ni editar acciones de script por API</b>. Solo desde la UI. Y el usuario <b>no puede editar scripts en la UI</b> pese a ser <b>Creator</b> de la base.",
-   "<b>EXPERIMENTO PENDIENTE, 30 segundos, discrimina las dos hipótesis:</b> automatización nueva → acción <i>Run script</i> → intentar escribir. Si escribe, el bloqueo son <b>los secretos ajenos</b> (<code>n8nApi</code>, <code>crear checkout BPM</code>); si no escribe, es una <b>restricción de la organización</b> y va a quien administre Airtable.",
-   "<b>ESTADO:</b> las tres viejas están <b>desactivadas</b>. Backup de los cinco scripts en <code>docs/backup-automatizaciones-20260812/</code>. Arreglos escritos en <code>docs/arreglos-automatizaciones-airtable-2026-08-12.md</code>. <b>Nada aplicado.</b>"],
-   verify:"Un caso con Idioma vacío recibe el correo en español; reenviar borradores a una fila en 8 no la baja a 7; Crear Check out marca Checkout Error cuando expira.",
-   note:"<b>Nuevo el 12/08.</b> Es el tercer sistema donde el proyecto se bloquea por <b>credenciales que no son del usuario</b> — antes fueron el auth de los webhooks y la credencial de Airtable en n8n. <b>Es conversación con Ops, no problema técnico.</b>"},
 
   {id:"WP-233",t:"End-to-end de la Fase 2 y publicación",st:"spec",size:"M",crit:1,
    dep:"WP-213, WP-216, WP-217, WP-221, WP-224, WP-227, WP-231, WP-232",

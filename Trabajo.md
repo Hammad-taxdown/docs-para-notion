@@ -929,3 +929,47 @@ El coste real no son columnas nuevas: son **tablas de conversión**, porque el f
 - Iba a crear `WP-237` como WP de construcción **antes de auditar lo que ya existía**. Lo audité justo
   a tiempo y resultó estar hecho casi entero.
 - Validé el JS del mapa quitando los backticks, y el fallo que reporté era mío, no del fichero.
+
+---
+
+## Cierre de sesión · 2026-08-12
+
+### Cerrado hoy
+
+**`T041`** dejó de ser «comprobar si funciona» y pasó a ser «detectar cuándo no». Airtable **no se
+descarga el adjunto al escribirlo**: acepta la URL, responde al instante y lo baja después en segundo
+plano. Probado siguiendo el mismo `id` de adjunto en dos momentos. Si la URL de Intercom caduca antes,
+el fichero se pierde y **nadie se entera**. Workflow `beckham_adjuntos_huerfanos` activo cada hora.
+
+**`WP-234`** publicada y auditada: columna `SenalesComplejidad` con las siete señales del Bloque 6, y
+los siete nombres comparados **carácter a carácter** contra Airtable — con `typecast: true` un nombre
+mal escrito no falla, crea una opción nueva.
+
+**`WP-237`** resultó ser un salto de `Status`, no un paquete de construcción. Encendida.
+
+**`WP-232`**: inventario de automatizaciones con las cuatro capas, y runbook del turno mudo.
+
+**El contrato del `.030` cerrado con cinco muestras.** Solo queda la zona del domicilio.
+
+### Dos correcciones a lo que yo mismo había dado por bueno
+
+Con tres muestras declaré que la cabecera `20250203` era una **constante**. Con cinco resultó ser la
+**versión del formato**: la quinta trae `20190101`. **Tres muestras iguales no hacen una constante.**
+
+Y la «incidencia técnica de la Agencia Tributaria» que el correo le cuenta al cliente **no es de la
+Agencia Tributaria**: solo pasa con la versión vieja, y es del generador.
+
+### El muro del día
+
+Las automatizaciones de Airtable que construyó Iciar tienen **seis fallos, dos rojos**. No se han
+podido arreglar: **Airtable no deja crear ni editar acciones de script por API** (`readOnlyNodeType`),
+y el usuario **no puede editarlas en la UI** aunque es Creator de la base.
+
+Es el **tercer sistema** donde el proyecto se bloquea por credenciales que no son suyas. Eso ya no es
+un problema técnico: es una conversación con Ops.
+
+### Mi error del día
+
+El usuario me dijo que no podía editar los scripts, y **seguí varios turnos dándole instrucciones para
+pegar código en esos mismos scripts**. Se lo había dicho claro. Cuando alguien declara un bloqueo, ese
+bloqueo entra en el plan inmediatamente; no se sigue produciendo entregables que lo ignoran.

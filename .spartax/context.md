@@ -28,6 +28,32 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
   dentro del v6 y metió un bucle infinito en la pregunta del idioma.
 - **Slack** (MCP) para los avisos de negocio y de error.
 
+## Estado al 12/08/2026
+
+- **`beckham_bot`**: versionId `1da91ade`, 51 nodos, **53 columnas**, tool de **37 parámetros**,
+  prompt v7 con tag `prod`. Cero `.item`, typecast en true.
+- **Columna nueva `SenalesComplejidad`** (`fldosgrMoor8q8PiK`, multipleSelects, 7 opciones = las siete
+  señales del Bloque 6 del prompt). Es WP-234.
+- **Workflow nuevo `beckham_adjuntos_huerfanos`** (`9Dh7U9DIxvXvzPxG`), **activo**, cada hora. Detecta
+  adjuntos que Airtable aceptó y nunca descargó. Es T041.
+- **Automatización nueva de Airtable** `wflYrTfhxYtRaLZkU` (Status 7→8 al confirmar), **encendida**.
+  Es WP-237.
+- **Tres publicaciones sin verificar en conversación**: WP-234, WP-238 y WP-239.
+
+## Dos límites duros descubiertos el 12/08 — no reintentarlos
+
+- **Airtable NO deja crear ni editar acciones de tipo `customScript` por API.** Devuelve
+  `readOnlyNodeType`. Solo desde la UI. Por eso `wflYrTfhxYtRaLZkU` sí se pudo crear: no lleva script.
+- **Airtable NO devuelve el valor de un secreto por API**, solo su referencia. Así que un backup por
+  API nunca incluye los tokens.
+
+## El patrón de las credenciales ajenas — ya van tres sistemas
+
+El auth de los webhooks en n8n, la credencial de Airtable en n8n, y ahora los secretos de las
+automatizaciones de Airtable (`n8nApi` = `eacbfZbyDYjL9UWCW`, `crear checkout BPM` =
+`eacfUyKjpY6C9pTqT`). **El proyecto está montado con credenciales que no son del usuario y eso le
+bloquea en tres sitios distintos.** Es conversación con Ops, no problema técnico.
+
 ## Columnas y guardas añadidas el 10/08/2026
 
 - `ConyugeQuiereAcogerse` (checkbox) · `DiscrepanciaFechaAlta` (texto) · `last_idem_key` (técnica) ·
