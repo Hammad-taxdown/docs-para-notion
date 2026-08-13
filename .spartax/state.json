@@ -376,7 +376,7 @@
       "effort": 0.5,
       "status": "planned",
       "created_at": "2026-08-06T11:35:00Z",
-      "note": "Pedido 6/08, para cuando existan las tools de rellenar. RIESGO: Estado030149 y los Borrador030/149 los gobierna otro proceso -> segundo escritor."
+      "note": "13/08: WP-238 verificada. Nota para T031: un caso complejo NUNCA marca AplicaBeckham, la confirmacion solo se pide en la rama de caso claro."
     },
     "T032": {
       "title": "Conectar beckham_analizar_documento como tool de beckham_bot",
@@ -489,10 +489,11 @@
       "verify": "con una URL inaccesible, salta un aviso adjunto_no_descargado en vez de un ok:true silencioso",
       "depends": [],
       "effort": 0.5,
-      "status": "planned",
+      "status": "done",
       "created_at": "2026-08-06T15:20:00Z",
-      "note": "VUELVE A SUBIR DE PRIORIDAD (07/08, mismo dia que bajo): las URLs de adjuntos de Intercom llevan parametro expires y caducan. En la ejecucion 8090536 la URL caducaba ~36 min despues de generarse. Hoy funciono porque Airtable descarga en el instante de la escritura, pero un reintento tardio o un reproceso posterior se encontraria la URL muerta, y una URL muerta deja la celda VACIA devolviendo ok:true.",
-      "planned_at": "2026-08-07T10:10:48Z"
+      "note": "Cerrada 12/08: beckham_adjuntos_huerfanos activo cada hora. Probado en vacio (cero falsos positivos); el camino positivo se vera cuando salte el primero.",
+      "planned_at": "2026-08-07T10:10:48Z",
+      "done_at": "2026-08-13T08:29:16Z"
     },
     "T042": {
       "title": "Cambiar los 11 $(X).item que quedan a .first()",
@@ -690,5 +691,5 @@
     }
   },
   "next_task": 59,
-  "updated_at": "2026-08-11T12:51:16Z"
+  "updated_at": "2026-08-13T10:06:50Z"
 }
