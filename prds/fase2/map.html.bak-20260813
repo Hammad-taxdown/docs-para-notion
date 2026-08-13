@@ -166,10 +166,10 @@
       se recorta: el 149 lo hacen los fiscales a mano</b>. Empieza por el <b>overview</b>: dónde estamos,
       qué toca hoy y qué está esperando a otra persona. Todo lo demás es detalle.</p>
     <div class="stamp">
-      <span>Actualizado 2026-08-13 · alcance completo al 31/08</span>
-      <span>versionId 2787e0c7 · 52 nodos · tool de 40 parámetros · 56 columnas</span>
+      <span>Actualizado 2026-08-12 · alcance completo al 31/08</span>
+      <span>versionId 1da91ade · 51 nodos · tool de 37 parámetros · 53 columnas</span>
       <span>Cero <code>.item</code> · <code>typecast</code> en true · prompt v7 con tag <code>prod</code> (46.319 car. leídos en traza)</span>
-      <span>56 fichas · 15 done · 18 días naturales para la entrega</span>
+      <span>56 fichas · 14 done · 19 días naturales para la entrega</span>
     </div>
   </div>
 </header>
@@ -912,7 +912,7 @@ const OLAS = [
    "Whitelist de <code>punto</code> + <code>modo</code> en el escritor único; 400 ante desconocido.",
    "Declaración honesta en la documentación: las capas 2 y 3 comparten origen con la 1 (la salida del resolver), así que protegen contra errores de cableado, no contra un resolver equivocado. La defensa independiente es la topológica."],
    verify:"10 prompts adversarios en modo FAQ → <b>cero</b> peticiones al webhook de upsert."},
-  {id:"WP-220",t:"System Prompt como fuente única de conocimiento fiscal · CORPUS YA EXTRAÍDO (13/08)",st:"build",size:"S",crit:1,
+  {id:"WP-220",t:"System Prompt como fuente única de conocimiento fiscal",st:"spec",size:"S",crit:1,
    dep:"—",
    goal:"El conocimiento fiscal va <b>inline en el prompt</b>, escrito y aprobado por Paula, Alina e Iciar. No hay corpus externo, ni vector store, ni tool de búsqueda.",
    steps:["Pedir la versión actual del prompt y pegarla en el <code>systemMessage</code> del <code>prompt_base</code>.",
@@ -980,7 +980,7 @@ const OLAS = [
    "Un caso marcado <code>complejo</code> dispara el aviso de negocio por email (WP-202)."],
    verify:"Dos recorridos, uno simple y uno complejo, dejan el campo correcto y ninguno modifica <code>Status</code> ni <code>Estado030149</code>.",
    note:"Nuevo hoy. Decisión P2 = (a)+(c): se propone el campo, lo evalúa el prompt, y el esquema lo aprueban las dueñas."},
-  {id:"WP-235",t:"Generar el fichero .030 · tablas de conversión HECHAS y columnas creadas (13/08)",st:"build",size:"M",crit:1,
+  {id:"WP-235",t:"Generar el fichero .030 desde plantilla · NO es un PDF, es texto posicional",st:"spec",size:"M",crit:1,
    dep:"WP-234",
    goal:"Que el agente lea el expediente de Airtable, monte el fichero <code>&lt;NIF&gt;.030</code> a partir de una plantilla y lo deje <b>adjunto en la propia fila</b>. A partir de ahí el circuito es humano.",
    steps:["<b>EL CIRCUITO COMPLETO, DICHO POR EL USUARIO EL 11/08:</b> (1) el agente lee los datos de Airtable · (2) monta el <code>.030</code> sobre una plantilla · (3) lo devuelve <b>dentro de Airtable</b> · (4) el fiscal lo sube a la sede de la AEAT · (5) <b>la AEAT genera el PDF</b> · (6) el fiscal completa el PDF y lo mete a mano en <code>Borrador030</code> y <code>Borrador149</code> · (7) marca <code>EnviarBorradores</code> y sale el correo (WP-237, ya existe) · (8) el cliente confirma · (9) <b>el fiscal presenta a mano</b>. El bot no presenta nada ante Hacienda.",
@@ -993,8 +993,8 @@ const OLAS = [
    "<b>CASILLA 217</b>, explicada por el usuario: residente fiscal si se desplaza antes del 1 de julio; si se desplaza después, entra en el ejercicio siguiente y la casilla vale <code>0101</code>+(año+1). <b>Esa lógica YA está escrita</b> en la fórmula <code>Situación fiscal Anio Desplazamiento</code> («183 días / 1 de julio»): hay que reutilizarla, no escribir una segunda que la contradiga.",
    "<b>FALTA UNA SEGUNDA MUESTRA</b> de <code>.030</code> con datos distintos, mejor de alguien con dos apellidos y de otra provincia. Con una sola no se distingue el borde de un campo del relleno de espacios."],
    verify:"Un caso de prueba genera el <code>.030</code> adjunto en su fila, y la sede de la AEAT lo acepta y devuelve el PDF. La aceptación de la AEAT es la única prueba que vale.",
-   note:"<b>Reescrito el 11/08 y avanzado el 13/08.</b> Nació como «rellenar los modelos 030 y 149», se recortó al 030 y luego cambió de naturaleza: no era un PDF, era texto posicional. <b>13/08 · HECHO:</b> tabla país→ISO-2 (<code>docs/tabla-paises-iso2-2026-08-13.js</code>, 245 de 245 comprobadas por script), tabla de provincias (<code>docs/tabla-provincias-030-2026-08-13.js</code>, 52 provincias y 97 alias), y las tres columnas <code>ApellidoPrimero</code>, <code>ApellidoSegundo</code> y <code>MunicipioResidencia</code> creadas y <b>publicadas con sus tres sitios</b> (versionId <code>2787e0c7</code>, 56 columnas, 40 parámetros, auditado). <b>El código de tipo de vía NO hacía falta:</b> va siempre a <code>00000</code>. <b>QUEDA:</b> el código INE de municipio (más de 8.000, se bajan del INE) y una muestra <code>.030</code> con dirección completa para cerrar las posiciones 772-790."},
-  {id:"WP-236",t:"Informe Mobility · SPEC DE MONTAJE ESCRITA (13/08), y se envía ANTES de cerrar el chat",st:"build",size:"L",crit:1,
+   note:"<b>Reescrito entero el 11/08, dos veces.</b> Nació como «rellenar los modelos 030 y 149», se recortó al 030 por la mañana y por la tarde cambió de naturaleza al ver el fichero real: no era un PDF, era texto posicional. <b>El bot no toca la AEAT y no presenta nada.</b>"},
+  {id:"WP-236",t:"Informe Mobility · memoria fiscal montada por bloques — LA PLANTILLA YA EXISTE (11/08)",st:"spec",size:"L",crit:1,
    dep:"WP-235",
    goal:"Al terminar el procedimiento, generar el <b>informe de memoria fiscal</b> del cliente y enviárselo. Se monta con <b>cabecera + bloque del año de desplazamiento + bloque del año siguiente</b>.",
    steps:["<b>11/08 · LA PLANTILLA YA NO FALTA:</b> <code>[MOB] Bloques informe Mobility.docx</code>, 10.871 caracteres de texto. Esto deja de ser un WP sin contrato y <b>resucita la tool <code>generar_informe</code></b>, que se había descartado precisamente por no tenerlo.",
@@ -1061,7 +1061,7 @@ const OLAS = [
    verify:"Un adjunto forzado a fallar (URL caducada) genera aviso en Slack en la siguiente pasada, y uno normal no genera ninguno.",
    note:"<b>Nuevo el 12/08.</b> <code>T041</code> era la única tarea sin ficha en el mapa. Deja de ser «comprobar si funciona» y pasa a «detectar cuando no»."},
 
-  {id:"WP-241",t:"Automatizaciones de Airtable · REHECHAS SIN SCRIPT y encendidas (13/08)",st:"done",size:"M",crit:1,
+  {id:"WP-241",t:"Automatizaciones de Airtable de Iciar · 6 fallos auditados, BLOQUEADO por acceso a la UI",st:"block",size:"M",crit:1,
    dep:"—",
    goal:"Arreglar los seis fallos encontrados el 12/08 en las automatizaciones que construyó Iciar sin contexto del proyecto.",
    steps:["<b>🔴 1 · <code>3. Envio borradores</code> NO TIENE RAMA POR DEFECTO.</b> Solo Español e Inglés, ninguna <i>else</i>. Con <code>Idioma</code> vacío el fiscal marca <code>EnviarBorradores</code> y <b>no pasa nada</b>: ni correo, ni Status, ni error.",
