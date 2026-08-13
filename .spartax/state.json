@@ -430,7 +430,7 @@
       "effort": 1.0,
       "status": "planned",
       "created_at": "2026-08-06T12:30:00Z",
-      "note": "Desbloqueada por T050b. PERO cambia de forma: el PDF del 030 NO es rellenable, hay que elegir via (a/b/c)."
+      "note": "13/08: tres bloqueos de conversion resueltos (paises ISO-2 245/245, provincias 52/97 alias, tipo de via no hacia falta). Tres columnas creadas: ApellidoPrimero, ApellidoSegundo, MunicipioResidencia. Pendiente: publicar los tres sitios, el codigo INE de municipio, y una muestra .030 con direccion completa."
     },
     "T037": {
       "title": "Decidir la nacionalidad: columna nueva o dejar de preguntarla",
@@ -675,7 +675,7 @@
       "depends": [],
       "effort": 2.0,
       "status": "planned",
-      "note": "",
+      "note": "13/08: decidido que el informe se genera y se ENVIA ANTES de cerrar el chat, no como tool del agente sino en la cadena del cierre, antes de Cerrar_Conversacion. Consecuencia: el Status pasa directo a '4. Informe enviado' y el peldano 3 deja de aplicar.",
       "created_at": "2026-08-10T08:59:05Z"
     },
     "T058": {
@@ -691,5 +691,5 @@
     }
   },
   "next_task": 59,
-  "updated_at": "2026-08-13T10:06:50Z"
+  "updated_at": "2026-08-13T16:14:27Z"
 }
