@@ -1,0 +1,695 @@
+{
+  "created_at": "2026-07-27T07:58:09Z",
+  "milestones": {
+    "F5": {
+      "created_at": "2026-07-27T07:59:35Z"
+    },
+    "D0508": {
+      "created_at": "2026-08-05T09:01:04Z"
+    },
+    "D0608": {
+      "created_at": "2026-08-06T08:30:00Z"
+    },
+    "D0708": {
+      "created_at": "2026-08-06T15:30:00Z"
+    },
+    "D1008": {
+      "created_at": "2026-08-07T11:48:49Z"
+    }
+  },
+  "tasks": {
+    "T001": {
+      "title": "Verificar credencial de Airtable en n8n",
+      "milestone": "F5",
+      "verify": "credencial Airtable visible/usable en n8n (por MCP o UI)",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "note": "Confirmado: credencial airtableOAuth2Api existe en n8n y funciona (usada en Sync status_renta - Beckham). beckham_bot tiene 2 nodos Airtable OFF de un intento previo abandonado (Search records2, Crear_Expediente1), sin base/tabla asignada, esquema distinto al nuestro - no se tocan.",
+      "created_at": "2026-07-27T07:59:35Z",
+      "in_progress_at": "2026-07-27T08:02:23Z",
+      "done_at": "2026-07-27T08:02:56Z"
+    },
+    "T002": {
+      "title": "Definir contrato de datos upsert_expediente",
+      "milestone": "F5",
+      "verify": "documento/JSON de contrato con campos, tipos y opcionalidad revisado por el usuario",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "note": "Contrato F5 acordado el 27/07 e implementado: email->UserId como clave (decision 27/07), 9 campos, upsert parcial. Vive en el nodo 'Validar y Normalizar' de beckham_bot, verificado 20/20 por curl.",
+      "created_at": "2026-07-27T07:59:35Z",
+      "in_progress_at": "2026-07-27T08:02:56Z",
+      "done_at": "2026-08-02T11:57:40Z"
+    },
+    "T003": {
+      "title": "Construir workflow upsert_expediente (n8n)",
+      "milestone": "F5",
+      "verify": "validate_workflow OK + test por curl: crea registro nuevo y actualiza uno existente sin duplicar",
+      "depends": [
+        "T002",
+        "T001"
+      ],
+      "effort": 2.0,
+      "status": "done",
+      "note": "VERIFICADO por curl contra el webhook de produccion: crea, actualiza sin duplicar (3 llamadas mismo email = 1 fila), 400 sin email, fecha basura no rompe ni borra, Descarte casa por typecast, las 3 fechas correctas tras el fix de mediodia UTC. Filas de prueba: recKZg6HkEYxLocIz, recSop5rTn99Qft0o (pendiente borrar).",
+      "created_at": "2026-07-27T07:59:35Z",
+      "in_progress_at": "2026-07-27T10:36:18Z",
+      "failed_at": "2026-07-27T11:56:50Z",
+      "done_at": "2026-07-27T12:02:24Z"
+    },
+    "T004": {
+      "title": "Construir workflow get_expediente (n8n)",
+      "milestone": "F5",
+      "verify": "test por curl: devuelve expediente existente por email, y 'no existe' si no hay",
+      "depends": [
+        "T001"
+      ],
+      "effort": 1.0,
+      "status": "done",
+      "note": "CERRADO el 1/08 como WP-07. get_expediente consolidado DENTRO de beckham_bot (7 nodos copiados del suelto PAGK9sof3bfTdbRB, que quedo ARCHIVADO). URL /webhook/beckham-get-expediente conservada. 3/3 por curl.",
+      "created_at": "2026-07-27T07:59:35Z",
+      "done_at": "2026-08-02T11:57:40Z"
+    },
+    "T005": {
+      "title": "Diseñar y crear DC principal en Intercom (call upsert_expediente)",
+      "milestone": "F5",
+      "verify": "Test del DC en Intercom devuelve ok con payload de prueba",
+      "depends": [
+        "T003"
+      ],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-07-27T07:59:35Z"
+    },
+    "T006": {
+      "title": "Conectar DC principal en los 3 puntos de disparo (cualifica, descarta, lead potencial)",
+      "milestone": "F5",
+      "verify": "los 3 paths llaman al DC antes de Close, en borrador sin publicar",
+      "depends": [
+        "T005"
+      ],
+      "effort": 1.5,
+      "status": "planned",
+      "note": "OJO: son 4 puntos (D/H/G/N), no 3 - la estructura real de OnClick Mobility se verifico el 27/07 por navegador. Y ADEMAS quedan pendientes de RECOLOCAR por la reestructura A/B (mar 4/08).",
+      "created_at": "2026-07-27T07:59:35Z"
+    },
+    "T007": {
+      "title": "Probar extremo a extremo en Messenger real (3 escenarios)",
+      "milestone": "F5",
+      "verify": "conversación real crea/actualiza fila correcta en Airtable para: cualifica, descarta, lead potencial",
+      "depends": [
+        "T006",
+        "T004"
+      ],
+      "effort": 1.5,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-07-27T07:59:35Z"
+    },
+    "T008": {
+      "title": "Publicar (Set changes live) tras OK del usuario",
+      "milestone": "F5",
+      "verify": "workflow OnClick Mobility publicado y Airtable recibiendo datos en producción",
+      "depends": [
+        "T007"
+      ],
+      "effort": 0.5,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-07-27T07:59:35Z"
+    },
+    "T009": {
+      "title": "Bloque 1 · Los 11 valores del modelo en guardar_datos_cliente",
+      "milestone": "D0508",
+      "verify": "los 11 bodyParameters con nombre semantico y descripcion en el VALUE, sin el marcador fromAI-override; ai_tool sigue en 2 tras publicar; auditoria por MCP",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "note": "Publicado 5/08 11:55 Madrid, versionId==activeVersionId==e1ad6254-a3c2-4a6c-9263-48b250b2c2cc, updatedAt 2026-08-05T09:55:40Z. Los 11 valores IDENTICOS BYTE A BYTE a lo entregado (diff sin diferencias). Cero parametersN_Value, cero marcador fromAI-override, cero descripciones vacias, cero fromAI en NAME, cero saltos de linea finales. UNICO nodo cambiado: guardar_datos_cliente. Conexiones identicas byte a byte, ai_tool=2, 34 nodos, los 4 inyectados intactos. Pendiente: la prueba de comportamiento es el bloque 2.",
+      "created_at": "2026-08-05T09:01:04Z",
+      "in_progress_at": "2026-08-05T09:01:04Z",
+      "done_at": "2026-08-05T09:59:53Z"
+    },
+    "T010": {
+      "title": "Bloque 2 · Borrar recmN0nVPIVoUch2o, Empleados a 1 y conversacion limpia en Messenger",
+      "milestone": "D0508",
+      "verify": "Empleados=1 antes; conversacion no-Preview; expediente COMPLETO campo a campo, cero valores cruzados",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "note": "Cerrado 5/08: la fila de basura se borro, Empleados quedo en 1, y la conversacion limpia se hizo tres veces (15:53 con Ana, 16:24 con datos reales y NIE). Expediente completo y cero campos cruzados en las tres.",
+      "created_at": "2026-08-05T09:01:04Z",
+      "in_progress_at": "2026-08-05T09:59:53Z",
+      "done_at": "2026-08-05T14:35:18Z"
+    },
+    "T011": {
+      "title": "Bloque 3 · Contrato del escritor +12 campos con whitelists y pasaporte",
+      "milestone": "D0508",
+      "verify": "12 campos escritos y verificados en Airtable; PaisNacimiento y UltimoPaisResidencia con whitelist exacta; pasaporte aceptado por nifValido en columna de texto nueva",
+      "depends": [],
+      "effort": 2.0,
+      "status": "done",
+      "note": "CERRADO ENTERO el 6/08 en cinco tandas (A, B, B2, C, D) mas el checkbox. Tool de 16 a 29 parametros, Airtable de 21 a 35 columnas, 41 casos probados por curl con filas creadas y borradas. versionId final 6c8b5c0e-212c-4f30-a1f0-b2dc842b186f.",
+      "created_at": "2026-08-05T09:01:04Z",
+      "in_progress_at": "2026-08-05T14:01:35Z",
+      "done_at": "2026-08-06T12:10:00Z"
+    },
+    "T012": {
+      "title": "Bloque 6 · Los 2 mensajes que desbloquean el FAQ (aprobador WP-220/M4 y WP-10 a Adri y Fer)",
+      "milestone": "D0508",
+      "verify": "dos mensajes enviados y vistos en pantalla; un NOMBRE concreto para el aprobador del corpus",
+      "depends": [],
+      "effort": 0.25,
+      "status": "done",
+      "note": "CERRADO SIN QUE SALGA NINGUN MENSAJE, por dos motivos distintos. MENSAJE A (M4): innecesario, Iciar ya confirmo al usuario que el corpus fiscal del prompt esta bien -> aprobadora = Iciar, 6/08, y el tramo 17-21 queda desbloqueado. MENSAJE B (WP-10): retirado. El correo de 'Submitted' que yo daba como bloqueador del viernes HACE MUCHO QUE NO SE MANDA (dato del usuario), y el turno 2 funciona (59 ejecuciones success de la conversacion de Iciar esta manana). Solo queda riesgo de regresion con fecha 21/08: Ticket Category='Customer' en 'Prueba Fer' (tres custom bots lo usan, no se toca a ciegas) y la condicion de reparto del distribuidor pausado.",
+      "created_at": "2026-08-05T09:01:04Z",
+      "done_at": "2026-08-06T09:55:00Z"
+    },
+    "T013": {
+      "title": "Bloque 4 · Documentos: que el agente vea files_analysis_blocks y que los adjuntos se guarden",
+      "milestone": "D0508",
+      "verify": "files_analysis_blocks consumido por el agente en una ejecucion real; al menos un adjunto escrito en una columna de Airtable",
+      "depends": [],
+      "effort": 2.0,
+      "status": "done",
+      "note": "CERRADO el 6/08. files_analysis_blocks resulto ser trabajo que se tiraba a la basura en cada turno; la solucion final es la del usuario: un subworkflow como TOOL del agente (ONhveViBeiI6GXWd) que devuelve texto. Adjuntos guardados por tipo_documento en las 9 columnas de fichero, 5/5 por curl, y confirmado que Airtable descarga el fichero de verdad.",
+      "created_at": "2026-08-05T09:01:04Z",
+      "done_at": "2026-08-06T14:20:00Z"
+    },
+    "T014": {
+      "title": "Bloque 5 · Red de seguridad de Langsmith (beckham_prompt_sync + Data Table)",
+      "milestone": "D0508",
+      "verify": "Data Table con el texto del prompt; beckham_bot lee de ahi; con Langsmith caido el bot sigue contestando",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "note": "CERRADO Y PROBADO. Data Table beckham_prompt_respaldo (mTN65aN389Z3KMbe) con el prompt v3 completo (37.097 caracteres) y guardian If '¿Prompt vacio?' (length<500) entre LangSmith y el agente. Traza 8088313: rama true, respaldo leido, agente con prompt completo, bot contestando. HALLAZGO: continueErrorOutput NO funciona en CUSTOM.langSmithPrompt, por eso el guardian comprueba el CONTENIDO y no el error.",
+      "created_at": "2026-08-05T09:01:04Z",
+      "in_progress_at": "2026-08-06T14:20:00Z",
+      "done_at": "2026-08-06T15:20:00Z"
+    },
+    "T015": {
+      "title": "Bloque 7 · DC de persistencia en D/G/N para los descartes que mueren en los filtros",
+      "milestone": "D0508",
+      "verify": "Close solo en D y N; ninguna rama toca ticket.state; lead persistido en H; conexiones auditadas por MCP",
+      "depends": [],
+      "effort": 2.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-05T09:01:04Z"
+    },
+    "T016": {
+      "title": "Actualizar documentacion: PRDs, roadmap Fase 2, plan maestro y contexto",
+      "milestone": "D0508",
+      "verify": "frontmatter real en los 5 WPs auditados, ROADMAP-FASE2 sin la frase 'no se ha implementado nada', PLAN-31-08-2026.md creado, context.md relleno",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "note": "Hecho 5/08 10:55-11:20 Madrid: frontmatter real en WP-201 (done), WP-202/204/216/231 (building) con seccion 8 'Estado real auditado el 2026-08-05' en 201/202/204; ROADMAP-FASE2.md con mermaid, tabla, leyenda y camino critico corregidos; PLAN-31-08-2026.md creado; PLAN-RESTO-SEMANA marcado como sustituido; .spartax/context.md relleno.",
+      "created_at": "2026-08-05T09:01:04Z",
+      "done_at": "2026-08-05T09:01:35Z"
+    },
+    "T017": {
+      "title": "Bloque 1b URGENTE · El agente rechaza NIFs validos: quitar la validacion de la descripcion de nif y prohibirla en el prompt",
+      "milestone": "D0508",
+      "verify": "conversacion real en la que 12345678Z se acepta a la primera y llega tal cual a Airtable; el agente no emite ningun juicio de validez",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "note": "VERIFICADO EN CONVERSACION REAL 5/08 15:53 Madrid. Fila recuy01vuaAqKoBxI: NIF=12345678Z, el NIF VALIDO que ayer el agente rechazaba. Aceptado a la primera, sin ningun turno de rechazo, y guardado literal. Con gpt-5.6-terra + Responses API ON + maxIterations 6 + descripcion de nif sin mencion a validar + prompt sin la orden de validar.",
+      "created_at": "2026-08-05T10:51:01Z",
+      "done_at": "2026-08-05T14:01:35Z"
+    },
+    "T018": {
+      "title": "Prompt: orden, tools y D6 (regla 10, Bloque 0, fecha de nacimiento)",
+      "milestone": "D0508",
+      "verify": "conversacion real: pregunta llegada y nacimiento, guarda incremental, no menciona las tools, resumen una sola vez al final",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "note": "VERIFICADO 5/08 16:24-16:32 Madrid en la conversacion 215475366405729. Las 4 mediciones OK mas el orden del resumen arreglado de propina. FechaNacimiento rellenada por primera vez en el proyecto. Guardado incremental probado con las ejecuciones 8084773 (solo nombre+apellidos) y 8084804 (solo FechaNacimiento).",
+      "created_at": "2026-08-05T14:35:04Z",
+      "done_at": "2026-08-05T14:35:04Z"
+    },
+    "T019": {
+      "title": "fechaDesplazamiento: parametro en la tool, ponerFecha y columna en el nodo de Airtable",
+      "milestone": "D0508",
+      "verify": "conversacion real: la fecha de llegada llega a Airtable y la formula Situacion fiscal Anio Desplazamiento deja de estar vacia",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "note": "VERIFICADO en conversacion real 215475367102189, fila recSgXVAM9UQRTnSV (17:09 Madrid). fechaDesplazamiento=2026-04-14, fechaDesplazamientocorrecta='14 de abril de 2026' (adios al '8 de inventado de 1900') y la formula 'Situacion fiscal Anio Desplazamiento' resuelve a 'Residente Fiscal' donde antes daba cadena vacia.",
+      "created_at": "2026-08-05T14:58:48Z",
+      "in_progress_at": "2026-08-05T14:58:48Z",
+      "done_at": "2026-08-05T15:17:03Z"
+    },
+    "T020": {
+      "title": "Menor 6/08 (a) Aviso inicial de datos personales en el prompt",
+      "verify": "conversacion real: el bot avisa 'te preguntaremos algunos datos personales' ANTES de la primera pregunta de D1",
+      "effort": 0.25,
+      "note": "Incluido en el prompt nuevo (parche P1).",
+      "milestone": "D0608",
+      "depends": [],
+      "status": "done",
+      "created_at": "2026-08-06T08:30:00Z",
+      "done_at": "2026-08-06T12:10:00Z"
+    },
+    "T021": {
+      "title": "Menor 6/08 (b) Sexo: preguntarlo y guardarlo",
+      "verify": "conversacion real: Sexo=Hombre o Mujer en Airtable, string exacto de la whitelist, sin crear opcion nueva por typecast",
+      "effort": 0.5,
+      "note": "Sexo cableado en la tanda B y probado (\"soy Mujer\"->Mujer). La pregunta se anade en el prompt como D10.",
+      "milestone": "D0608",
+      "depends": [],
+      "status": "done",
+      "created_at": "2026-08-06T08:30:00Z",
+      "done_at": "2026-08-06T12:10:00Z"
+    },
+    "T022": {
+      "title": "Menor 6/08 (c) Check de confirmacion: el cliente quiere aplicar",
+      "verify": "conversacion real: si el veredicto sale favorable y el cliente dice que si, el check queda marcado en Airtable",
+      "effort": 0.5,
+      "note": "Resuelto usando AplicaBeckham, que es la casilla que configura el formulario. Verificado que marcarla mueve la formula 'Situación fiscal AnioSiguiente' a 'Régimen Especial (Beckham)'. Si algun dia hace falta separar 'le aplica' de 'quiere aplicarlo', se anade una segunda casilla sin rehacer nada.",
+      "milestone": "D0608",
+      "depends": [],
+      "status": "done",
+      "created_at": "2026-08-06T08:30:00Z",
+      "done_at": "2026-08-06T12:10:00Z"
+    },
+    "T023": {
+      "title": "Menor 6/08 (d) Caso complejo o salario < 55.000 -> agendar llamada con Calendly",
+      "verify": "conversacion real: con caso complejo o salario por debajo del umbral, la respuesta final ofrece agendar llamada con el link",
+      "effort": 0.5,
+      "note": "Resuelto en el prompt nuevo: el link de Calendly va en el mensaje del caso complejo Y del salario por debajo de 55.000, y se elimino la regla que prohibia dar enlaces de calendario. Decidido tambien que menos de 55.000 NO es descarte.",
+      "milestone": "D0608",
+      "depends": [],
+      "status": "done",
+      "created_at": "2026-08-06T08:30:00Z",
+      "done_at": "2026-08-06T12:10:00Z"
+    },
+    "T024": {
+      "title": "Bloque 3 tanda A · salario, municipio y provincia de nacimiento (sin whitelist)",
+      "milestone": "D0608",
+      "verify": "tres sitios cableados y auditados por MCP; prueba en conversacion real al final del bloque 3",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "created_at": "2026-08-06T09:30:00Z",
+      "done_at": "2026-08-06T10:05:00Z",
+      "note": "versionId 1d622b25-0580-4c3f-80fd-d4e69a183299. Tool 19 params (16 viejos identicos byte a byte), validador +21 lineas insertadas sin tocar nada, Airtable 24 columnas con las 21 previas intactas. Helper nuevo ponerNumero para Salario porque la columna es number precision 2."
+    },
+    "T025": {
+      "title": "Bloque 3 tanda B · 5 selects con whitelist (Sexo, Idioma, hijos, estadoCivil, TipoBeckham)",
+      "milestone": "D0608",
+      "verify": "curl: valores raros mapeados al string exacto, nada fuera de whitelist, cero opciones nuevas en Airtable",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "created_at": "2026-08-06T10:10:00Z",
+      "in_progress_at": "2026-08-06T10:10:00Z",
+      "note": "CERRADA 14 de 14 por curl con filas reales creadas y borradas. Los 5 selects mapean formas naturales ('estoy Soltera'->soltero, 'mi idioma es ingles'->Ingles, 'sí, dos'->Tiene hijos, 'tengo un hijo, no dos'->Tiene hijos) y nada sale de la whitelist pese al typecast:true. Confirmado tambien que solo las fechas disparan alerta a Slack. PENDIENTE APARTE, no de la tanda: el prompt no pregunta Sexo, hijos ni Idioma, y PF5a/PF1/PF3 estan mal formuladas para estadoCivil, Salario y TipoBeckham.",
+      "done_at": "2026-08-06T11:05:00Z"
+    },
+    "T026": {
+      "title": "Prompt: 4 preguntas nuevas + 3 reescrituras (PF1 cifra, PF5a estado civil, PF3 desplazado)",
+      "milestone": "D0608",
+      "verify": "conversacion real: Salario numerico en Airtable, estadoCivil de 4 opciones, TipoBeckham correcto para el desplazado, y sexo/hijos/pais-municipio-provincia preguntados",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "created_at": "2026-08-06T11:05:00Z",
+      "note": "v3 publicado en LangSmith por el usuario. Validado en conversacion real el v1; v2 y v3 son parches sobre ese.",
+      "in_progress_at": "2026-08-06T12:10:00Z",
+      "done_at": "2026-08-06T14:20:00Z"
+    },
+    "T027": {
+      "title": "Bloque 3 tanda C · PaisNacimiento y UltimoPaisResidencia con 245 opciones y gentilicios",
+      "milestone": "D0608",
+      "verify": "curl: gentilicios, formas invertidas y articulos mapeados al string exacto; cero opciones nuevas",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "created_at": "2026-08-06T11:10:00Z",
+      "done_at": "2026-08-06T11:35:00Z",
+      "note": "versionId 425874d7. 8 de 8 por curl. Incluye el arreglo del bug de TipoBeckham con el desplazado por empresa extranjera."
+    },
+    "T028": {
+      "title": "Corpus: la prestacion por paternidad de la SS SI tributa",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "created_at": "2026-08-06T11:35:00Z",
+      "note": "Incluido en el prompt nuevo (parche P10).",
+      "done_at": "2026-08-06T12:10:00Z"
+    },
+    "T029": {
+      "title": "Pregunta final \"¿quieres acogerte?\" que marca el checkbox de Airtable",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "created_at": "2026-08-06T11:35:00Z",
+      "note": "Cableado en los tres sitios y ademas escrito en el prompt (parche P8a del bloque 6).",
+      "done_at": "2026-08-06T12:10:00Z"
+    },
+    "T030": {
+      "title": "Cerrar la conversacion de Intercom al terminar el flujo",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "created_at": "2026-08-06T11:35:00Z",
+      "note": "FUSIONADA EN T049 el 10/08 para no tener dos fichas del mismo trabajo. T049 es la version concreta y con via tecnica: POST /conversations/{id}/parts con message_type=close, admin_id y token de Intercom. Regla vigente que sigue aplicando: nunca escribir desde el Inbox, y cuidado con tocar ticket.state (historico de WP-10 y el correo de Submitted).",
+      "done_at": "2026-08-10T07:50:04Z"
+    },
+    "T031": {
+      "title": "El bot actualiza el estado del registro y el de los modelos 030 y 149",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 0.5,
+      "status": "planned",
+      "created_at": "2026-08-06T11:35:00Z",
+      "note": "13/08: WP-238 verificada. Nota para T031: un caso complejo NUNCA marca AplicaBeckham, la confirmacion solo se pide en la rama de caso claro."
+    },
+    "T032": {
+      "title": "Conectar beckham_analizar_documento como tool de beckham_bot",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "created_at": "2026-08-06T12:30:00Z",
+      "note": "Hecho: toolWorkflow v2.2 conectado, ai_tool=3, conexiones main identicas.",
+      "done_at": "2026-08-06T14:20:00Z"
+    },
+    "T033": {
+      "title": "Enganchar la credencial de OpenAI y confirmar el modelo en el subwf de documentos",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "created_at": "2026-08-06T12:30:00Z",
+      "note": "Credencial y modelo puestos por el usuario. El modelo aparece como GPT-5.6-TERRA en el cachedResultName, o sea seleccionado del desplegable. La credencial no se puede verificar por MCP; se confirmara en la primera ejecucion real.",
+      "done_at": "2026-08-06T14:20:00Z"
+    },
+    "T034": {
+      "title": "Guardar los adjuntos en su columna de Airtable por tipo_documento (opcion B)",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "created_at": "2026-08-06T12:30:00Z",
+      "note": "Hecho y probado 5/5 por curl.",
+      "done_at": "2026-08-06T14:20:00Z"
+    },
+    "T035": {
+      "title": "Dos lineas en el prompt para que el agente use la tool de documentos",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "created_at": "2026-08-06T12:30:00Z",
+      "note": "Hecho en el prompt v3: regla 10 y nota final 7 a TRES herramientas, mas las tres reglas del bloque 8.",
+      "done_at": "2026-08-06T14:20:00Z"
+    },
+    "T036": {
+      "title": "Subwf/tool que rellena los modelos 030 y 149",
+      "milestone": "D0608",
+      "verify": "pendiente de definir",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "created_at": "2026-08-06T12:30:00Z",
+      "note": "13/08: tres bloqueos de conversion resueltos (paises ISO-2 245/245, provincias 52/97 alias, tipo de via no hacia falta). Tres columnas creadas: ApellidoPrimero, ApellidoSegundo, MunicipioResidencia. Pendiente: publicar los tres sitios, el codigo INE de municipio, y una muestra .030 con direccion completa."
+    },
+    "T037": {
+      "title": "Decidir la nacionalidad: columna nueva o dejar de preguntarla",
+      "milestone": "D0608",
+      "verify": "o existe columna Nacionalidad y se escribe, o D4 desaparece del prompt",
+      "depends": [],
+      "effort": 0.25,
+      "status": "done",
+      "created_at": "2026-08-06T13:20:00Z",
+      "note": "CERRADA Y VERIFICADA POR CURL REAL 10/08 10:42 Madrid contra el escritor publicado. Fila recX3CAvYSaPkfRHi: mande nacionalidad='marroqui' (GENTILICIO) y pais_nacimiento='Francia' en la MISMA llamada, y se guardaron Nacionalidad=MARRUECOS (selRqCBEedVKEgPed, opcion PREEXISTENTE) y PaisNacimiento=FRANCIA. O sea que (a) el gentilicio resuelve, (b) LAS DOS COLUMNAS NO SE PISAN -- que era el argumento de por que PaisNacimiento no sustituye a Nacionalidad -- y (c) no se creo ninguna opcion nueva pese al typecast:true. De propina quedaron probadas las tres cosas del viernes en la misma fila: Status='1. Interesado', Empresa='TaxDown' y alta_ss=true por punto=cualifica, con fecha_alta_ss al dia correcto (2026-05-20). Fila borrada (actionId actcaiX8hyoTctjM8). NO HABIA NADA QUE CONSTRUIR: la ficha era falsa.",
+      "in_progress_at": "2026-08-10T08:37:06Z",
+      "done_at": "2026-08-10T08:42:46Z"
+    },
+    "T038": {
+      "title": "beckham_prompt_sync · que el respaldo se actualice solo",
+      "milestone": "D0608",
+      "verify": "cambiar el prompt en LangSmith y ver que la Data Table se actualiza sin intervencion",
+      "depends": [
+        "T014"
+      ],
+      "effort": 1.0,
+      "status": "done",
+      "created_at": "2026-08-06T14:55:00Z",
+      "note": "PARTE A CERRADA Y VERIFICADA EN CONVERSACION REAL 10/08 16:15 Madrid. En la traza de la ejecucion 8097481, Refrescar_Respaldo corrio en SUCCESS y escribio la fila del respaldo: texto con el prompt entero (43.892 caracteres, que es el v6 vivo mas los 242 del contexto y la fecha que LangSmith inyecta en la plantilla), actualizado=2026-08-10T16:15:08.054+02:00, activo=true, fila id 1. Y el AI Agent siguio recibiendo el prompt completo, que era EL RIESGO del diseno: la rama nueva podia robarle el item. No lo hizo, porque va en paralelo desde out1 y es terminal. --- PARTE B (workflow suelto con Schedule Trigger) NO SE HACE POR AHORA: con A el respaldo se refresca en CADA turno sano, asi que solo cubriria el hueco de 'no ha entrado nadie en muchas horas'. Queda como mejora opcional, no como pendiente.",
+      "in_progress_at": "2026-08-10T14:09:17Z",
+      "done_at": "2026-08-10T14:25:51Z"
+    },
+    "T039": {
+      "title": "WP-202 · red de errores del escritor (cerrada y probada)",
+      "milestone": "D0608",
+      "verify": "rama de error, aviso en Slack y ok:false de vuelta, los tres con traza",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "created_at": "2026-08-06T15:20:00Z",
+      "done_at": "2026-08-06T15:20:00Z",
+      "note": "retryOnFail ON + onError continueErrorOutput + Avisar_Persistencia_Fallida + Respond Persistencia Fallida. Probado rompiendo la tabla: Slack message_ts 1786029488.571029 y {\"ok\":false,\"error\":\"persistencia_fallida\"}."
+    },
+    "T040": {
+      "title": "DESCARTADO DOS VECES (01/08 y 06/08) - NO SE REINTENTA - WP-206b typecast a false",
+      "milestone": "D0608",
+      "verify": "options.typecast=false en el nodo de Airtable",
+      "depends": [],
+      "effort": 0.25,
+      "status": "done",
+      "created_at": "2026-08-06T15:20:00Z",
+      "done_at": "2026-08-06T15:20:00Z",
+      "note": "REVERTIDO. Apagar typecast rompe la escritura de fechas: ponerFecha produce un datetime (T12:00:00.000Z) y las columnas de Airtable son de SOLO FECHA; typecast es lo que hace que Airtable lo acepte. Ya se habia intentado y revertido el 01/08 (ficha WP-206b del mapa, cuatro combinaciones agotadas) y yo lo propuse sin releerlo. typecast se queda en TRUE. La proteccion real son las whitelists, verificado de nuevo hoy: 'Wakandiana' se descarta sin crear opcion.",
+      "notes": [
+        "CERRADO COMO DESCARTE, NO COMO LOGRO. typecast NO es lo que desplazaba la fecha: es lo que hace que Airtable la ACEPTE, porque ponerFecha produce un datetime y las columnas Empleados son de solo fecha. Las cuatro combinaciones estan agotadas: fecha desnuda + typecast ON = dia desplazado; desnuda + OFF = 422; T12:00:00.000Z + OFF = 422; T12:00:00.000Z + ON = funciona. Con typecast OFF el escritor devolvia {ok:false, error:persistencia_fallida} para CUALQUIER payload con fecha, y estuvo asi entre las 19:09 y las 19:43 del 06/08. La proteccion real de la base son las WHITELISTS, no el typecast: verificado que con typecast:true 'soy viuda'->viudo y 'Wakandiana'->descartada sin crear opcion nueva. Ficha completa en WP-206b, docs/prds/fase2/map.html. Estado vivo verificado por MCP el 07/08: options.typecast=true, 45 columnas mapeadas, retryOnFail ON, onError continueErrorOutput."
+      ]
+    },
+    "T041": {
+      "title": "Guardar adjunto: comprobar que Airtable lo descargo de verdad",
+      "milestone": "D0608",
+      "verify": "con una URL inaccesible, salta un aviso adjunto_no_descargado en vez de un ok:true silencioso",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "created_at": "2026-08-06T15:20:00Z",
+      "note": "Cerrada 12/08: beckham_adjuntos_huerfanos activo cada hora. Probado en vacio (cero falsos positivos); el camino positivo se vera cuando salte el primero.",
+      "planned_at": "2026-08-07T10:10:48Z",
+      "done_at": "2026-08-13T08:29:16Z"
+    },
+    "T042": {
+      "title": "Cambiar los 11 $(X).item que quedan a .first()",
+      "milestone": "D0708",
+      "verify": "cero coincidencias de \"\\.item\" en las expresiones del workflow, auditado por MCP",
+      "depends": [],
+      "effort": 0.5,
+      "status": "done",
+      "created_at": "2026-08-06T15:30:00Z",
+      "note": "CERRADO 07/08. Los 11 pasados a .first() y publicados (versionId fc11621a). 10 verificados por curl y traza; Callback_Intercom verificado en la conversacion real de las 11:12-11:47 (118 ejecuciones, todas success, el bot contesta).",
+      "in_progress_at": "2026-08-07T08:36:55Z",
+      "done_at": "2026-08-07T10:07:45Z"
+    },
+    "T043": {
+      "title": "Tanda A del escritor · resumen (ResumenBot) + Empresa=TaxDown",
+      "milestone": "D0708",
+      "verify": "curl con fecha y resumen: ResumenBot y Empresa='TaxDown' escritos en Airtable; resumen de menos de 80 caracteres aparece en descartados; ninguna opcion nueva creada en la columna Empresa; filas borradas",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "note": "CERRADA Y VERIFICADA 07/08 12:27 Madrid sobre versionId ccfc67e7 (publicado). Tool 33 parametros con resumen; Airtable 47 columnas con ResumenBot y Empresa; fields.ResumenBot en la linea 791 de Validar y Normalizar. TRES CURLS, todos con fecha: (A1) resumen de 440 caracteres + tres fechas -> ok:true y ResumenBot guardado LITERAL, palabra por palabra, con Empresa=TaxDown y las tres fechas al dia correcto (2026-05-20, 1990-04-25, 2026-04-14) y alta_ss true por punto=cualifica. (A2) resumen de 29 caracteres -> descartados='resumen=demasiado corto (29 caracteres)' y la celda ResumenBot quedo AUSENTE, o sea que un resumen corto NO pisa el bueno, que era el motivo del umbral de 80. (A3) estado_civil='pareja de hecho' -> descartados='estadoCivil=pareja de hecho', BUG REPRODUCIDO POR CURL: la opcion existe en Airtable (selZjRiXPEOov2bXp) y el prompt la ofrece, pero la whitelist del validador no la tiene. LA TRAMPA DEL TYPECAST EVITADA: las tres filas escribieron Empresa con el choice id PREEXISTENTE selMR00Bv3hFL4O2q, y la columna sigue con SUS CINCO OPCIONES de siempre, o sea que no se creo ninguna nueva. Status vacio en las tres, esperado: la tarea B todavia no esta publicada. Filas borradas (actionId actieV8CsPo49E8Ak).",
+      "created_at": "2026-08-07T10:07:45Z",
+      "done_at": "2026-08-07T10:28:45Z"
+    },
+    "T044": {
+      "title": "Status incremental monotonico · el bot solo puede AVANZAR el estado de la solicitud, nunca retrocederlo",
+      "milestone": "D0708",
+      "verify": "leer Status actual antes de escribir; con un Status posterior ya puesto a mano, un guardado del bot NO lo mueve; con la fila recien creada si lo pone",
+      "depends": [],
+      "effort": 2.0,
+      "status": "done",
+      "note": "CERRADA Y VERIFICADA 07/08 12:50 Madrid. versionId==activeVersionId==3f8d7016, 42 nodos, 48 columnas mapeadas, cero .item. SEIS CURLS, todos con fecha. STATUS: fila nueva -> '1. Interesado'; +quiere_acogerse=si -> AVANZA a '2. Pendiente llamada TD'; punto=descarte_residencia en fila nueva -> '12. Descartado'; y sobre una fila con '8. Confirmado' PUESTO A MANO, el bot mando primero quiere_acogerse=si y despues un descarte y NO LO MOVIO, siguio en 8, mientras seguia guardando el resto (telefono, AplicaBeckham, Descarte). EMPRESA: sobre la fila con 'Globant interno' puesto a mano NO LA PISO, y en fila nueva con la celda vacia RELLENO 'TaxDown'. Ninguna opcion nueva creada: Status sigue con 12 y Empresa con 5. Filas de prueba borradas (actionId act0xqLhv4xECA9yZ).",
+      "created_at": "2026-08-07T10:07:45Z",
+      "done_at": "2026-08-07T10:50:45Z"
+    },
+    "T045": {
+      "title": "Prompt v4 · idioma como primera pregunta con dos mensajes y banderas, separar inmuebles de inversiones, reglas de ficheros (rechazar lo que no tiene nada que ver y exigir SIEMPRE subida nueva)",
+      "milestone": "D0708",
+      "verify": "conversacion real: el idioma se pregunta primero en dos mensajes con bandera ES y EN; inmuebles e inversiones se preguntan por separado y no se mezclan; un fichero ajeno se rechaza y el bot insiste en que lo suba otra vez aunque el cliente diga que es correcto",
+      "depends": [],
+      "effort": 2.0,
+      "status": "done",
+      "note": "PROMPT v4 PUBLICADO Y VALIDADO EN CONVERSACION REAL 07/08 13:05-13:20. Verificado por MCP que el v4 estaba VIVO leyendo el propio bot_mobility_prompt de la ejecucion 8091027 (40.124 caracteres): los diez marcadores presentes y el D11 viejo ausente. LOS DOS ARREGLOS DE DOCUMENTOS FUNCIONARON: 5 de 5 ficheros en la columna CORRECTA, incluida AutorizacionEmpresa, que es la que quedo vacia por la manana. Cero ejecuciones en error. LO QUE NO FUNCIONO: el D0 del idioma. Causa raiz en la traza (ejecucion 8090968): cuando el agente entra, el canvas de Intercom YA LLEVA CINCO TURNOS en espanol (saludo, F1, F2, fecha de alta, veredicto de plazo), asi que el agente ve una conversacion empezada, da el idioma por resuelto y salta directo a la fecha de desplazamiento. La instruccion era correcta; lo que falla es que EL AGENTE NO ES QUIEN ABRE LA CONVERSACION. Arreglado en el v5 con un bloque explicito. El arreglo de verdad, para mas adelante, es mover la pregunta de idioma AL CANVAS, antes de F1.",
+      "created_at": "2026-08-07T10:07:45Z",
+      "planned_at": "2026-08-07T10:10:48Z",
+      "done_at": "2026-08-07T11:48:49Z"
+    },
+    "T046": {
+      "title": "Airtable · Propiedades e Inversiones tienen 5 opciones donde deberian haber 4 (dos son la misma cosa dicha al reves)",
+      "milestone": "D0708",
+      "verify": "4 opciones por columna; whitelist del validador cuadrada con las nuevas opciones; esquema del nodo refrescado; curl con las cuatro",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "note": "CERRADA 10/08 11:12 Madrid. El usuario borro la opcion huerfana en la UI (yo NO podia: el update_field del MCP de Airtable solo acepta options.formula y no toca las choices de un singleSelect). VERIFICADO POR MCP contra el esquema vivo: Propiedades y Inversiones han pasado de 5 a 4 opciones y selY2sxAXSQyCwq3Q ha desaparecido de las dos; las 4 que quedan son EXACTAMENTE las que mapea ponerSelect. CURL DE HUMO DESPUES DEL CAMBIO, hecho a proposito porque el nodo de Airtable CACHEA el esquema: propiedades='solo fuera' -> 'Tiene propiedades en el extranjero y no tiene propiedades en Espana' (selCOjF1LVk4szFcS) e inversiones='ninguna' -> 'No tiene inversiones en Espana ni en el extranjero' (selqDGh5vS0lYp8yL), ok:true y descartados null. O sea que la cache no se ha quedado colgada y las dos columnas siguen escribiendo. Fila reczUR6lwSNyRQpCA borrada (actionId actH6Cz1yxGuPn8PC). --- DEUDA COSMETICA QUE DEJA ESTE CAMBIO: el comentario de las lineas 338-339 de Validar y Normalizar sigue diciendo 'cada columna tiene DOS opciones que significan lo mismo; se usa la primera y la otra queda sin uso'. Ya es FALSO. No afecta al comportamiento, pero conviene corregirlo en la proxima publicacion que toque ese nodo para que nadie lo lea y se confunda.",
+      "created_at": "2026-08-07T10:07:45Z",
+      "planned_at": "2026-08-07T10:44:46Z",
+      "done_at": "2026-08-10T09:13:13Z"
+    },
+    "T047": {
+      "title": "Columna para el conyuge · el bot pregunta si el conyuge quiere acogerse y el dato se tira: no existe columna",
+      "milestone": "D0708",
+      "verify": "columna creada en Empleados; tres sitios cableados (tool + Validar y Normalizar + mapeo); curl con el valor y verificado en la fila; fila borrada",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "note": "CERRADA Y VERIFICADA 10/08 10:54 Madrid sobre versionId==activeVersionId==d853f599. Alcance decidido: SOLO el checkbox ConyugeQuiereAcogerse (fldo1CGNvK4LhWTbb), que es exactamente lo que el bot ya pregunta; si algun dia hacen falta nombre y NIF del conyuge se anaden columnas aparte sin rehacer nada (mismo argumento que funciono con AplicaBeckham el 6/08). Los tres sitios: tool param 34 conyuge_quiere_acogerse, validador tras la linea 196 con toBool, mapeo en el nodo de Airtable. VERIFICADO POR CURL: 'si' -> true, 'no' -> false, 'si' acentuado -> true. LA GUARDA QUE IMPORTA PROBADA: AplicaBeckham quedo AUSENTE en las CUATRO llamadas, o sea que el checkbox del conyuge NO contamina el del cliente, del que cuelgan las dos formulas de clasificacion fiscal. TRAMPA DE VERIFICACION FICHADA: Airtable OMITE los checkbox en false, asi que 'nunca escrito' y 'escrito a false' se leen igual; para probar el true hay que volver a mandar 'si' y releer.",
+      "created_at": "2026-08-07T10:10:48Z",
+      "done_at": "2026-08-10T08:55:40Z"
+    },
+    "T048": {
+      "title": "Registrar la discrepancia de fecha de alta SS · el bot la detecta en voz alta (01/04 declarada vs 13/07 del documento) y no queda en ninguna parte",
+      "milestone": "D0708",
+      "verify": "la discrepancia aparece en Airtable o como aviso de Slack; probado con una fecha de documento distinta a la declarada",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "note": "CERRADA Y VERIFICADA 10/08 10:54 Madrid. Columna DiscrepanciaFechaAlta (fldUj4OIc1SNHzeju, multilineText). DECISION DE NEGOCIO DEL USUARIO, dicha hoy: la discrepancia NO BLOQUEA AL CLIENTE, NO PARA EL PROCESO y NO DESCARTA. Se le avisa en el chat y como maximo se le manda a la llamada con el asesor fiscal AUNQUE FUERA CASO FACIL. La columna cumple eso por construccion: es texto, no toca punto ni Descarte ni Status ni la escalera. Formato 'Declarada DD/MM/AAAA vs documento DD/MM/AAAA'. POR QUE IMPORTA: F2 es el plazo de 6 meses desde el alta, asi que con 01/04 el plazo muere el 01/10 y con 13/07 el 13/01; si gana la fecha equivocada el bot cualifica o descarta mal. Quien decide cual vale es una persona, no el bot. VERIFICADO POR CURL: texto guardado LITERAL, y ADEMAS el caso adversarial -- mandar un OBJETO devolvio descartados='discrepancia_fecha_alta=forma invalida (no es texto)' y NO piso la celda buena, o sea que el bug silencioso del 03/08 ('[object Object]' escrito con ok:true) queda tapado en este campo. Fila recCsZXQPXrLWJjsa borrada (actionId actOrYnXTL4kIVtqP). PENDIENTE APARTE, de prompt: escribir la regla de avisar en el chat y ofrecer la llamada.",
+      "created_at": "2026-08-07T10:10:48Z",
+      "done_at": "2026-08-10T08:55:40Z"
+    },
+    "T049": {
+      "title": "Cerrar la conversacion de Intercom al terminar el flujo · POST /conversations/{id}/parts con message_type close, admin_id y token de Intercom",
+      "milestone": "D1008",
+      "verify": "al completar el expediente la conversacion queda cerrada en Intercom; probado en TEST y comprobado que NO se cierra cuando queda algun documento pendiente",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "note": "CERRADA 10/08. Mecanismo publicado y verificado por curl (versionId 7e499c3b, 51 nodos, 52 columnas, tool 36 params) mas el prompt v7, que anade la seccion CIERRE DE LA CONVERSACION con las dos condiciones, reescribe la regla 9 (el mensaje final SI pregunta por dudas; antes lo PROHIBIA y contradecia el diseno) y mete de paso la regla de un documento por mensaje. PENDIENTE DE MANANA, declarado: una conversacion real completa que llegue al final, porque los curls prueban que el DATO se guarda y no que la conversacion se CIERRE. El cierre en si ya esta probado aparte: la conversacion 215475426816321 quedo state=closed con una parte part_type=close firmada por el bot Luz.",
+      "created_at": "2026-08-07T11:48:49Z",
+      "in_progress_at": "2026-08-10T15:52:39Z",
+      "done_at": "2026-08-10T16:01:16Z"
+    },
+    "T050": {
+      "title": "Definir la ESTRUCTURA CANONICA de cada documento (autorizacion TaxDown, alta SS, DNI/NIE/pasaporte) para poder validarlos igual siempre",
+      "milestone": "D1008",
+      "verify": "un documento por tipo con sus campos obligatorios escritos; analizar_documento comprueba esos campos y no 'lo que le parece'; probado con un documento bueno y uno al que le falta un campo",
+      "depends": [],
+      "effort": 2.0,
+      "status": "done",
+      "note": "Cerrada 11/08: spec de documentos (10/08) + casillas del 030 (11/08). El 149 sale de alcance.",
+      "created_at": "2026-08-07T11:48:49Z",
+      "in_progress_at": "2026-08-10T10:58:36Z",
+      "done_at": "2026-08-11T12:51:15Z"
+    },
+    "T051": {
+      "title": "El email del expediente puede ser un placeholder de operador de Intercom (operator+XXXX@intercom.io) cuando el visitante es anonimo",
+      "milestone": "D1008",
+      "verify": "el escritor descarta los emails @intercom.io en vez de guardarlos; probado por curl con uno de esos y con uno real",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "note": "CERRADA POR DECISION DE NEGOCIO DEL USUARIO (10/08): TODOS los users que entran tienen email, no existen leads sin email. Por tanto el riesgo del visitante anonimo con body.user_email vacio NO SE DA en la practica y no hay que preguntarle nada a Paula. Se mantiene la regla del prompt de NO pedir el email. Recordatorio del hallazgo del 07/08 que SI sigue siendo valido y esta en el log: hay DOS campos user_email de origenes distintos, el que se guarda es body.user_email del cuerpo del webhook (correcto) y el operator+XXXX@intercom.io sale de Formatear_conversacion1 y NUNCA llega al escritor.",
+      "created_at": "2026-08-07T11:48:49Z",
+      "planned_at": "2026-08-07T12:01:23Z",
+      "done_at": "2026-08-10T07:46:09Z"
+    },
+    "T052": {
+      "title": "Idioma AL CANVAS antes de F1 · el arreglo de verdad del D0 que fallo el viernes",
+      "milestone": "D1008",
+      "verify": "Conversacion real: la PRIMERA pregunta que ve el cliente es el idioma, con banderas, ANTES de F1, y el agente ya no la repite",
+      "depends": [],
+      "effort": 2.0,
+      "status": "planned",
+      "note": "APLAZADA POR DECISION DEL USUARIO el 10/08: el idioma se mueve al canvas CUANDO SE EMPIECE A MIGRAR A PRODUCCION. Su razonamiento: es una cosa facil que solo consume tiempo, asi que no compite con el trabajo de riesgo. NO se reabre antes. El parche del prompt v5 sigue puesto como mitigacion parcial; lo que queda pendiente es mover la pregunta AL CANVAS, antes de F1 (causa raiz en la traza 8090968: cuando el agente entra, el canvas lleva ya cinco turnos en espanol).",
+      "created_at": "2026-08-10T07:50:23Z",
+      "planned_at": "2026-08-10T10:11:12Z"
+    },
+    "T053": {
+      "title": "WP-203 · auth de los webhooks del escritor y del lector",
+      "milestone": "D1008",
+      "verify": "curl sin credencial devuelve 401/403 y con credencial sigue devolviendo ok:true; el Data Connector de Intercom actualizado con la credencial",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "Auth: el usuario decide dejarlo OFF y hacerlo lo ultimo, antes de T008. 11/08.",
+      "created_at": "2026-08-10T07:50:23Z",
+      "in_progress_at": "2026-08-10T13:36:42Z",
+      "planned_at": "2026-08-11T11:26:34Z"
+    },
+    "T054": {
+      "title": "Bloque A · publicar T047+T037+T048+T046 en UNA sola publicacion y una sola auditoria MCP",
+      "milestone": "D1008",
+      "verify": "versionId==activeVersionId, diff de la LISTA de nombres de columna contra la version previa (no el numero), y un curl por campo nuevo con fila creada y borrada",
+      "depends": [],
+      "effort": 2.0,
+      "status": "done",
+      "note": "CERRADA COMO AGRUPADOR el 10/08: sus cuatro hijas estan hechas. T037 resulto ser ficha falsa (la nacionalidad ya se guardaba), T047 y T048 se publicaron y verificaron en una sola publicacion (versionId d853f599) y T046 la ejecuto el usuario en la UI porque el MCP de Airtable no borra opciones de un singleSelect.",
+      "created_at": "2026-08-10T07:50:24Z",
+      "done_at": "2026-08-10T16:01:16Z"
+    },
+    "T055": {
+      "title": "Prompt · regla de la discrepancia de fecha de alta: avisar en el chat, ofrecer la llamada aunque sea caso facil, y NUNCA bloquear ni descartar",
+      "milestone": "D1008",
+      "verify": "El prompt publicado con tag prod contiene la regla, y una conversacion real con fechas que no cuadran avisa, ofrece Calendly y sigue el flujo sin descartar",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "note": "CERRADA 10/08. La regla de la discrepancia entro en el prompt v6 (parche 2 del Bloque 8) con la decision de negocio del usuario dentro: avisar en el chat, ofrecer la llamada AUNQUE EL CASO SEA CLARO, y NO bloquear, NO descartar, NO parar el flujo. Verificado que el v6 esta vivo leyendo el prompt real de la ejecucion 8097481: contiene discrepancia_fecha_alta, conyuge_quiere_acogerse y la nota final 10. PENDIENTE APARTE, no de esta ficha: que una conversacion real con dos fechas que no cuadran dispare el aviso; hoy no se ha probado porque requiere subir un documento.",
+      "created_at": "2026-08-10T08:55:41Z",
+      "done_at": "2026-08-10T14:25:51Z"
+    },
+    "T056": {
+      "title": "WP-205b · guarda de UNICIDAD de UserId (PRECONDICION de los reintentos, que ya estan encendidos)",
+      "milestone": "D1008",
+      "verify": "Dos filas con el mismo UserId puesto a mano: el escritor no elige una al azar ni crea una tercera; avisa. Y un reintento de la misma escritura no duplica fila",
+      "depends": [],
+      "effort": 2.0,
+      "status": "done",
+      "note": "WP-205b CERRADA ENTERA (slices A y B) Y VERIFICADA 10/08 12:02 Madrid. versionId==activeVersionId==bc13ab33-b836-4d8e-a5e7-3dff43922a82, 47 nodos, 51 columnas, cero .item, typecast true. --- SLICE A (unicidad): count==0 crea, count==1 actualiza sin duplicar, count>1 devuelve {ok:false,resultado:'multi_match',filas:2} con HTTP 200, avisa a Slack (message_ts 1786355061.488799) y NO ESCRIBE -- comprobado campo a campo que ninguna de las dos filas gemelas cambio, y la llamada de prueba llevaba Descarte y punto=descarte_residencia a proposito, o sea que antes habria movido una a '12. Descartado'. El LECTOR ya detecta el duplicado (limit 1->2): duplicado:true/filas:2 con dos filas, duplicado:false/filas:1 con una. --- SLICE B (idempotencia): huella sobre el CONTENIDO de base.fields, no sobre user_id|punto|conversation_id como decia el PRD. LAS CINCO PRUEBAS: B1 nombre escribe, B2 nif escribe, B3 telefono escribe (las tres con user_id, punto y conversation_id IDENTICOS, que es lo que la huella del PRD habria descartado), B4 repeticion byte a byte de B3 -> {ok:true,dedup:true,resultado:'sin_cambios'}, B5 UN SOLO CARACTER distinto en el telefono -> vuelve a escribir, o sea que la huella no es demasiado gruesa. FILA FINAL con los TRES datos incrementales dentro: Nombre TEST-Idem (B1), NIF 12345678Z (B2), NumeroTelefono +34600555445 (B5), last_idem_key b728321828adbb67-198, Status '1. Interesado', Empresa TaxDown, fecha_alta_ss 2026-04-01 y alta_ss true. CON LA HUELLA DEL PRD SE HABRIAN PERDIDO EL NIF Y EL TELEFONO. --- PRUEBA DURA DEL DEDUP, no solo la respuesta: traza 8096438, 'Airtable Upser Expediente' NO APARECE EN EL runData, o sea que NO SE EJECUTO. _idem_key == _idem_actual == b728321828adbb67-198, _dedup true, y el flujo termino en Respond Dedup. --- COLUMNA NUEVA last_idem_key (fldsajPFtkh8lCvTn, singleLineText, tecnica). --- DECISION DE DISENO QUE ME APUNTO: la huella se calcula sobre base.fields (lo que MANDA el bot) y NO sobre los fields finales con Status y Empresa ya decididos, porque tras la primera escritura el Status ya ha avanzado y un reintento calcularia un Status distinto, la huella cambiaria y EL DEDUP NO DISPARARIA NUNCA. --- last_corr_id del PRD queda FUERA a proposito hasta que exista WP-208 (corr_id); hoy la columna se quedaria siempre vacia. --- Filas de prueba borradas (actionId actUGIRwMortD9CJa) y comprobado por segunda consulta: Empleados con UNA sola fila, la de ICIAR.",
+      "created_at": "2026-08-10T08:59:05Z",
+      "in_progress_at": "2026-08-10T09:42:18Z",
+      "done_at": "2026-08-10T10:03:30Z"
+    },
+    "T057": {
+      "title": "WP-236 · PDF-resguardo final para el usuario",
+      "milestone": "D1008",
+      "verify": "El cliente recibe un PDF con lo recogido al terminar el flujo",
+      "depends": [],
+      "effort": 2.0,
+      "status": "planned",
+      "note": "13/08: decidido que el informe se genera y se ENVIA ANTES de cerrar el chat, no como tool del agente sino en la cadena del cierre, antes de Cerrar_Conversacion. Consecuencia: el Status pasa directo a '4. Informe enviado' y el peldano 3 deja de aplicar.",
+      "created_at": "2026-08-10T08:59:05Z"
+    },
+    "T058": {
+      "title": "Whitelist: anadir nie:'DNI' a COLUMNA_POR_TIPO (linea 723) · hoy tipo_documento=nie se descarta con ok:true y el fichero NO se guarda",
+      "milestone": "D1008",
+      "verify": "curl con tipo_documento=nie guarda el fichero en la columna DNI y descartados queda null",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "note": "CERRADA Y VERIFICADA 10/08 13:27 Madrid. versionId==activeVersionId==d553809f, 47 nodos, 51 columnas, conexiones identicas, cero .item, validador 834->855 lineas y comprobado que NO hay declaraciones duplicadas (COLUMNA_POR_TIPO, tipoDoc, ultimo y el if de adjuntos aparecen UNA sola vez, que es el riesgo de pegar un bloque sin borrar bien el anterior). CURL D1: tipo_documento='nie' con un adjunto -> ok:true, descartados null, y el fichero TIE_NIE_prueba.pdf acabo en la columna DNI (fldxG8XsL5jlIP1OU) CON BYTES REALES (13.264) y miniaturas generadas, o sea que Airtable lo descargo de verdad. La columna Pasaporte quedo VACIA, asi que 'nie' no contamina la del pasaporte. ANTES DE ESTE CAMBIO ese mismo curl descartaba con 'tipo desconocido' y perdia el fichero devolviendo ok:true. CURL D3 de control: tipo_documento='nomina' sigue descartando con 'tipo desconocido', o sea que la whitelist no se ha abierto de mas. Fila borrada (actionId act7gDVDPzcvMb2jF).",
+      "created_at": "2026-08-10T10:58:36Z",
+      "done_at": "2026-08-10T11:28:18Z"
+    }
+  },
+  "next_task": 59,
+  "updated_at": "2026-08-13T16:14:27Z"
+}

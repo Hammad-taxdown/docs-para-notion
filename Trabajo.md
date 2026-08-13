@@ -973,3 +973,108 @@ un problema técnico: es una conversación con Ops.
 El usuario me dijo que no podía editar los scripts, y **seguí varios turnos dándole instrucciones para
 pegar código en esos mismos scripts**. Se lo había dicho claro. Cuando alguien declara un bloqueo, ese
 bloqueo entra en el plan inmediatamente; no se sigue produciendo entregables que lo ignoran.
+
+---
+
+## Cierre de sesión · 2026-08-13
+
+### La deuda de verificación se acabó
+
+Las tres cosas que llevaban dos días publicadas sin probar quedaron verificadas en una sola
+conversación: `WP-234`, `WP-238` y `WP-239`. 79 ejecuciones, cero errores.
+
+**Y `WP-238` arreglaba un caso peor del que fui a arreglar.** La traza demuestra que la fila estaba
+en `1. Interesado` y subió a `2` sólo por la rama nueva. La causa raíz que no vi al escribir el
+parche: **un caso complejo nunca marca `AplicaBeckham`** — esa confirmación sólo se pide en la rama
+de caso claro. Así que todo cliente complejo que agendaba llamada se quedaba en «1. Interesado» y el
+equipo no tenía forma de saber que había una llamada pendiente.
+
+**La protección del typecast se vio funcionar en vivo:** el agente mandó `El conyuge tambien quiere
+acogerse` sin acentos y en la celda quedó con ellos. Sin el normalizador, Airtable habría creado una
+opción nueva al lado de la buena.
+
+### Las automatizaciones, rehechas sin una línea de script
+
+La idea fue suya y era la buena: Airtable tiene acciones nativas de correo y de actualización, así
+que todo lo que hacía el script se puede hacer sin script. Y sin script **sí se pueden crear por
+API** — lo único que Airtable bloquea es `customScript`.
+
+`2b` y `3b` sustituyen a las viejas, encendidas, con los cuatro fallos corregidos.
+
+**Pero el arreglo que más valía no fue una automatización, fue una fórmula:** quitar `prefill_UserId`
+de los enlaces de formulario. Con el `UserId` duplicado, confirmar rompía el expediente — saltaba la
+guarda de unicidad y el bot dejaba de escribir. Sin él, la fila del formulario es inerte.
+
+### El `.030` deja de ser un misterio
+
+Dos tablas de conversión cerradas y comprobadas por script, tres columnas nuevas creadas y
+publicadas, y el corpus fiscal extraído del manual. De los tres bloqueos que tenía el paquete,
+quedan cero de conversión.
+
+### Dos fallos de método, míos
+
+1. **Mi propio script de auditoría dio una falsa alarma.** Dijo que se había perdido la columna
+   `Apellidos empleado` y a la vez que se había añadido. No había cambiado nada: usaba `comm` sobre
+   listas ordenadas, y las claves nuevas caen entre medias de la vieja con la ordenación local, lo
+   que rompe la premisa de `comm`. Comprobado en hexadecimal y repetido con `diff`. **Para columnas,
+   `diff`, nunca `comm`.**
+2. **Los dos agentes de fondo acertaron el tipo de problema y fallaron los detalles.** Uno dijo que
+   la vista se había quedado a medias y estaba entera; el otro atribuyó una errata a la columna
+   equivocada, contó cinco opciones donde hay cuatro e inventó unos espacios que no existen. Los dos
+   hubo que contrastarlos contra la fuente. **Verificar siempre, no leer su resumen.**
+
+### Lo que sigue esperando a una persona
+
+- El umbral pasa a **«entre 50.000 y 55.000»** por decisión suya, porque depende de la divisa. Toca
+  el prompt (6 menciones), el `.docx` del informe y el corpus.
+- La errata de la opción `Propiedades`: *«en España ni el extranjero»*, falta el «en».
+- **Qué año manda en la cabecera del informe**, que sigue sin responder.
+
+---
+
+## Cierre de sesión · 2026-08-13
+
+### Verificado en conversación real
+
+`WP-234`, `WP-238` y `WP-239`, los tres que llevaban dos días publicados a ciegas. 79 ejecuciones,
+cero errores.
+
+**Y el bug del `Status` era peor de lo que yo había diagnosticado.** Un caso complejo **nunca** marca
+`AplicaBeckham` — esa confirmación solo se pide en la rama de caso claro. Así que antes del parche,
+**todo cliente que agendaba llamada se quedaba en «1. Interesado»** y el equipo no tenía forma de
+saber que había una llamada pendiente. El parche arregla un caso más grave que el que fui a arreglar.
+
+También quedó demostrada en vivo la protección del `typecast`: el agente mandó
+`El conyuge tambien quiere acogerse` **sin acentos** y en la celda quedó el nombre canónico con
+ellos. Sin esa normalización, Airtable habría creado una opción nueva sin que nadie lo viera.
+
+### La idea del día fue suya
+
+Preguntó por qué no hacíamos las automatizaciones **desde Airtable**, que también manda correos. Y
+tenía razón: `2b` y `3b` están rehechas **sin una sola línea de script**, con acciones nativas. Eso
+resuelve de raíz el problema que nos tuvo atascados media tarde — los scripts no se pueden editar ni
+por UI ni por API, pero lo que no es script sí lo puedo crear yo por MCP.
+
+### El daño de las filas huérfanas, cortado por una fórmula
+
+Lo que rompía el expediente no era la fila duplicada: era que el enlace del formulario **prefijaba el
+`UserId`**, y dos filas con el mismo `UserId` hacen que el bot deje de escribir. Quitar ese trozo de
+la fórmula lo desactiva entero. Media tarde de plan de rehacer formularios evaporada por una línea.
+
+### Cuatro cifras para un mismo umbral
+
+Al contrastar el corpus contra el manual salió que **el umbral de salario no coincide entre
+documentos propios**: el manual dice 55.000, el informe que se lleva el cliente dice 50.000, y el
+prompt dice **55.000 y 60.000 a la vez** según el párrafo. El cliente puede oír una cifra en el chat
+y leer otra en su informe.
+
+### Mis errores de hoy
+
+- Propuse montar un formulario de interfaz en modo actualización **sin comprobar antes si Airtable
+  permite compartir con edición**. No lo permite: es solo lectura, y lo dice en su propia pantalla.
+  Le hice montar una página para nada.
+- En la auditoría dije que se había perdido una columna. **Era falso**: usé `sort` + `comm` para
+  comparar listas con acentos y el orden no coincide. Lo cacé antes de reportarlo, pero era el
+  género de falso positivo que este proyecto persigue en el código y yo cometí en la herramienta.
+- Insistí en diagnosticar por qué no podía editar los scripts cuando lo útil era darle el paso a
+  paso para crear una automatización nueva desde cero.

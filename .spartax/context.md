@@ -28,6 +28,74 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
   dentro del v6 y metió un bucle infinito en la pregunta del idioma.
 - **Slack** (MCP) para los avisos de negocio y de error.
 
+## Estado al 13/08/2026
+
+- **`beckham_bot`**: versionId `2787e0c7`, 52 nodos, **56 columnas**, tool de **40 parámetros**,
+  prompt v7 con tag `prod`. Cero `.item`, typecast en true. Auth OFF: es lo último de todo.
+- **Verificado en conversación real el 13/08**: `WP-234` (SenalesComplejidad), `WP-238` (el Status
+  depende de `motivo_cierre`) y `WP-239` (ResumenBot = ficha + prosa). Cero deuda de verificación.
+- **Columnas nuevas del `.030`**: `ApellidoPrimero`, `ApellidoSegundo`, `MunicipioResidencia`.
+- **Automatizaciones de Airtable rehechas SIN SCRIPT** y encendidas: `2b` (fusiona la confirmación)
+  y `3b` (manda los borradores). Las tres viejas, apagadas.
+
+## Ficheros de referencia nacidos el 13/08
+
+| Fichero | Qué es |
+|---|---|
+| `docs/tabla-paises-iso2-2026-08-13.js` | 245 países → ISO-2. Casillas 205 y 216 del `.030` |
+| `docs/tabla-provincias-030-2026-08-13.js` | 52 provincias, 97 alias. Casillas 404-405 y 406-435 |
+| `docs/corpus-fiscal-beckham-2026-08-13.md` | El conocimiento fiscal, del manual IRPF páginas 309-317 |
+| `docs/spec-informe-mobility-2026-08-13.md` | Cómo se monta el informe: los 17 marcadores |
+| `docs/contrato-fichero-030-2026-08-11.md` | El formato posicional del `.030`, decodificado |
+
+## Cómo se encadena el final del proceso (decidido el 13/08)
+
+El informe se genera y **se envía ANTES de cerrar el chat**, en la cadena del cierre y **no como tool
+del agente** — así el agente no puede olvidarlo ni dispararlo antes de tiempo. Consecuencia: el
+`Status` pasa directo a **`4. Informe enviado`** y el peldaño `3. Pte hacer informe` deja de aplicar.
+El `.030` se genera después, disparado por ese `Status`, más una casilla `Regenerar030` para rehacerlo.
+
+## Trampas de la API de Airtable, aprendidas a base de chocar
+
+- **No deja crear ni editar acciones `customScript` por API** (`readOnlyNodeType`). Solo UI.
+- **No devuelve el valor de un secreto**, solo su referencia.
+- **No hay acción nativa de borrar registro.** Por eso las filas del formulario se quedan.
+- **Compartir una página de interfaz públicamente es SOLO LECTURA.** Un formulario de vista clásica
+  es la única forma de que alguien de fuera escriba, y esos siempre crean fila nueva.
+- Un grupo condicional **debe ser el último nodo**: no se puede poner nada detrás.
+- `isAnyOf` **no vale** en las condiciones de un grupo condicional, aunque sí en el filtro de un
+  disparador. Hay que poner las comparaciones una a una con `or`.
+
+## Estado al 13/08/2026
+
+- **`beckham_bot`**: versionId `2787e0c7`, **52 nodos**, **56 columnas**, tool de **40 parámetros**,
+  prompt v7 con tag `prod`. Cero `.item`, typecast en true. Auth OFF, es lo último.
+- **Verificado hoy en conversación real** (`215475470864164`): `WP-234`, `WP-238` y `WP-239`.
+  Ya no queda deuda de verificación de esos tres.
+- **Columnas nuevas del `.030`**: `ApellidoPrimero`, `ApellidoSegundo`, `MunicipioResidencia`.
+  Publicadas y auditadas. **Falta el cuarto sitio: el prompt.**
+- **Automatizaciones de Airtable rehechas SIN SCRIPT**: `2b` (fusión del formulario) y `3b` (envío de
+  borradores), las dos encendidas. Las tres viejas, apagadas.
+- **Tablas de conversión del `.030` terminadas**: países ISO-2 (245/245) y provincias (52, 97 alias).
+- **Corpus fiscal extraído** del manual y contrastado contra el original.
+- **Spec del informe Mobility escrita**, con 13 de 17 marcadores resueltos.
+
+## El lío de las cifras del umbral — CUATRO valores distintos
+
+| Dónde | Dice |
+|---|---|
+| Manual fiscal (pág. 309) | 55.000 |
+| Prompt v7, líneas 22/226/227/290/352 | 55.000 |
+| Prompt v7, líneas 22 y 410 | **también 60.000** |
+| `.docx` del informe al cliente | 50.000 |
+| **Decisión del usuario 13/08** | **«entre 50.000 y 55.000», porque depende de la divisa** |
+
+**No es un buscar-y-reemplazar.** El prompt tiene los tramos montados sobre 60.000 («superior a
+60.000 suele ser favorable») y 55.000 («entre 55.000 y 60.000 está en el límite»). Cambiarlo
+**reescribe la semántica del enrutado**. No se toca sin Fiscal.
+
+Aplicado hasta ahora: solo el aviso en el corpus, dejando la cita del manual intacta.
+
 ## Estado al 12/08/2026
 
 - **`beckham_bot`**: versionId `1da91ade`, 51 nodos, **53 columnas**, tool de **37 parámetros**,
