@@ -1078,3 +1078,52 @@ y leer otra en su informe.
   género de falso positivo que este proyecto persigue en el código y yo cometí en la herramienta.
 - Insistí en diagnosticar por qué no podía editar los scripts cuando lo útil era darle el paso a
   paso para crear una automatización nueva desde cero.
+
+---
+
+## Cierre de sesión · 2026-08-14
+
+### El `.030` ya se genera solo
+
+`WP-235` cerrado y **probado de punta a punta**, no diagnosticado: la fila `recc6e7gYS6usQCQN` entró
+por el filtro, el generador devolvió `ok:true`, el fichero subió a Airtable y `Regenerar030` se
+limpió sola. **Descargado desde Airtable y comparado con `cmp` contra el que produce mi máquina:
+idéntico byte a byte, 2.700 bytes.**
+
+Contra el `.030` real de la AEAT de esa misma persona hay **5 bytes de diferencia de 2.700**, y los
+cinco están explicados: tres son la fecha de presentación (la muestra es del 11/08) y dos son una
+casilla de dirección que no sé cuál es.
+
+### Tres cosas que habrían salido mal y no salieron
+
+**La codificación.** El fichero va en **ISO-8859-1**, no UTF-8: `Ñ`, `Ó` y `È` ocupan **un byte**.
+En UTF-8 cada acento ocuparía dos posiciones y desplazaría el registro entero a partir de ahí. El
+fichero se vería perfecto al abrirlo y Hacienda lo devolvería. **Y sigue sin probarse en vivo**,
+porque el cliente de la prueba no tiene ni un acento en sus datos.
+
+**La `Ñ` de la tabla del INE.** Machacándola, en Granada `El Pinar` (18910) y `Píñar` (18159) se
+convierten en el mismo municipio. Es el único choque de las 9.620 claves.
+
+**El filtro vacío.** El SDK se comió el `filterByFormula` al crear el workflow y no lo vi: lo cazó
+él en una captura de pantalla. Con `Return All` encendido y sin filtro, habría intentado generar el
+`.030` de **todas** las filas de la tabla.
+
+### El método, que es lo que hizo que esto saliera
+
+No me fié de mi lectura a mano del formato: saqué el esqueleto **comparando las cuatro muestras
+reales posición a posición**. De 1.481 caracteres solo varían 190. Ocho tramos *parecían* constantes
+y no lo son —el mes de nacimiento de un solo dígito, el año 2026 de presentación— y van marcados
+como falsos en el código.
+
+Y la prueba de verdad no fue inventar casos: fue **coger los cuatro ficheros reales, extraerles los
+datos, regenerarlos y comparar byte a byte**. De 10.800 bytes acierta todos menos uno, el único que
+declaré indescifrable.
+
+### Mis errores de hoy
+
+- **El filtro no llegó al workflow y no lo comprobé.** Di por hecho que lo que valida el SDK es lo
+  que se guarda. No lo es: se perdieron `filterByFormula` y `returnAll` sin un solo aviso.
+- **Dije que la posición 778 era «la escalera»** con tres muestras. La cuarta lo desmiente. Es la
+  misma lección de las tres muestras del `20250203`, y la he vuelto a cometer.
+- Dos casos de mi propia prueba del INE daban FALLA y **las dos veces el error era mío**, no de la
+  tabla. Contrastados contra el fichero del INE antes de tocar nada.
