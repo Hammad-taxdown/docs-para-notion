@@ -43,6 +43,21 @@ El beneficio de este régimen es que durante el primer año de residencia fiscal
 
 El primer beneficio de la Ley Beckham es tributar a un tipo fijo del 24 %, lo que beneficia si se tienen rentas superiores a 55.000 €. Igualmente, implica que **no se declaran los bienes en el extranjero**.
 
+> ### ⚠️ EL UMBRAL QUE SE DICE AL CLIENTE ES UN RANGO, NO UNA CIFRA
+>
+> **Decisión del 13/08/2026.** Al cliente se le dice **«entre 50.000 y 55.000 € brutos anuales»**,
+> nunca una cifra exacta, **porque depende de la divisa y de la situación concreta**.
+>
+> El texto de arriba y el de más abajo son **cita literal del manual**, que dice 55.000, y se dejan
+> tal cual para no falsear la fuente. Pero **lo que se responde es el rango.**
+>
+> El motivo de la decisión es que había **tres documentos diciendo cosas distintas**: el manual
+> fiscal y el prompt del bot decían 55.000, y el informe que el cliente se lleva a casa decía
+> «a partir de unos 50.000». Un cliente podía oír una cifra en el chat y leer otra en su informe.
+>
+> **Ojo con el falso positivo:** el otro `50.000` que aparece en el informe —el de los Modelos 720
+> y 721— **es correcto y no se toca**: ese es el umbral de bienes en el extranjero, que es otra cosa.
+
 Para poder aplicar esta deducción se tiene un plazo de **6 meses** para poder optar al régimen; si pasase dicho plazo ya no se puede optar al régimen.
 
 El problema real es si nuestra renta no es superior a 55.000 €: al aplicarse durante 6 años se debe tener en consideración la posible subida de salario en años próximos para poder decidir si se opta o no por dicho régimen.
