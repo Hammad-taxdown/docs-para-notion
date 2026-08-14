@@ -12,8 +12,8 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
   Satélites: `beckham_alertas` (`BJfExmwu1fI1aPpY`, errorWorkflow), `beckham_f2_plazo.`
   (`wdOOF0ecCkgFOUjt`), `beckham_hypatia`, `Sync status_renta - Beckham`.
 - **Airtable** (MCP). Tabla `Empleados` = el expediente del cliente. El escritor único acepta
-  **52 columnas** y ninguna más (eran 20 hasta el 6/08 y 45 hasta el 7/08; la tool
-  `guardar_datos_cliente` va por **36 parámetros**): lo que no está en el contrato no se pierde por
+  **57 columnas** y ninguna más (20 hasta el 6/08, 45 hasta el 7/08, 56 hasta el 14/08; la tool
+  `guardar_datos_cliente` va por **41 parámetros**): lo que no está en el contrato no se pierde por
   un bug, NO EXISTE EL CAMINO (el escritor ignora claves desconocidas y devuelve `ok:true`).
   El nodo `Airtable Upser Expediente` va con **`typecast: true`, y eso NO se apaga**: `ponerFecha`
   produce un datetime y las columnas son de solo fecha, así que typecast es lo que hace que Airtable
@@ -23,7 +23,7 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
   en el canvas, F2 (plazo de 6 meses) delegado a n8n.
 - **LangSmith**: fuente de verdad del prompt. `promptName: bot_mobility_prompt`, `promptTag: prod`.
   **Manda el tag `prod`, no el último commit.**
-  Versión vigente: **v7** (10/08). Copias en `docs/prompt-langsmith-prod-*.txt`. **Nunca arrastrar a
+  Versión vigente: **v8** (14/08, `docs/prompt-final-2026-08-14-v8.txt`). Copias en `docs/prompt-langsmith-prod-*.txt`. **Nunca arrastrar a
   una publicación un parche que el log marque como no verificado**: el v5 iba sin validar, entró
   dentro del v6 y metió un bucle infinito en la pregunta del idioma.
 - **Slack** (MCP) para los avisos de negocio y de error.
@@ -31,15 +31,21 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
 ## Estado al 14/08/2026
 
 - **`WP-235` CERRADO Y PROBADO DE PUNTA A PUNTA.** El fichero `.030` se genera solo.
-- **`beckham_bot`**: `versionId` = **`284a542a`**,
-  **54 nodos**. Los 2 nodos de más respecto al 13/08 son **sticky notes que puso el usuario**
+- **`beckham_bot`**: `versionId` = **`d15a8da8`**, **54 nodos**, y desde el 14/08 por la tarde
+  **57 columnas** en el Upser y **41 parámetros** en la tool (entró `fecha_llamada`). Los 2 nodos de más respecto al 13/08 son **sticky notes que puso el usuario**
   (confirmado por él el 14/08). Todo lo demás auditado e intacto: 56 columnas, tool de 40 parámetros,
-  validador de 950 líneas, `Decidir_Status` con el parche de WP-238, typecast true, cero `.item`,
+  validador de 950 líneas (con `ponerFecha('FechaLlamada'…)` en la 222), `Decidir_Status` con el
+  parche de WP-238, typecast true, cero `.item` **en nodos de código**,
   promptTag `prod`.
 - **Workflow `beckham_generar_030`** = `OoJ2l7PmxSHLxXA4`, **activo**, cada 15 minutos,
-  **8 nodos**, `versionId` = `83c2ab54`. Filtro:
+  **8 nodos**, `versionId` = `b9653e09`. Filtro:
   `AND({Status}="4. Informe enviado", OR({Regenerar030}=1, {Fichero030}=BLANK()))`.
-- **Los tres fallos del `.030` del 14/08, arreglados y verificados** (ejecución 8108631, fichero
+- **LOS CUATRO FALLOS DEL `.030` DEL 14/08, ARREGLADOS Y PROBADOS CON BYTES.** El cuarto es el
+  `.first()` del nodo de subida, cerrado al final del día y **probado con DOS filas pendientes a la
+  vez** (ejecución 8109532): cada fila con su fichero, los dos con su NIF dentro y difiriendo en 102
+  de 2700 bytes. Con `.first()` habrían sido idénticos y una fila se habría quedado vacía, que es lo
+  que pasó por la mañana. `versionId` del `.030` = `b9653e09`.
+- **Los tres primeros fallos del `.030`, arreglados y verificados** (ejecución 8108631, fichero
   descargado y leído byte a byte): planta de **2** caracteres en A784-785, A1406 = **`4`**, y nodo
   nuevo `Vaciar Fichero030` (httpRequest PATCH con `{"fields":{"Fichero030":[]}}`) porque
   `uploadAttachment` **añade** adjunto, no lo reemplaza. El nodo de limpieza ya mapea
@@ -68,12 +74,14 @@ casi 3.000 y parece que el pegado se ha quedado corto. **Siempre en caracteres.*
 
 **El MCP de n8n devuelve `credentials={}` en TODOS los nodos**, también en los que funcionan. No se
 puede comprobar por MCP si una credencial está puesta: la única forma es **ejecutar**.
-- **El código a pegar**: `docs/nodo-montar-informe-COMPLETO.js`, **138.260 caracteres**
-  (el fichero tiene 138.261, sobra el salto final). Se genera con `bash docs/montar-nodo-informe.sh`.
-- **Siete pruebas verdes**, y el script **no regenera** el `COMPLETO` si alguna está roja; la de
+- **El código a pegar**: `docs/nodo-montar-informe-COMPLETO.js`, **239.131 CARACTERES**
+  (243.054 bytes: la diferencia son los acentos). Se genera con `bash docs/montar-nodo-informe.sh`.
+  El nodo vivo tiene 238.809: le faltan 322 caracteres **de comentario** del cierre del 14/08, y
+  eso entra con el siguiente cambio de verdad. **No es deriva.**
+- **Once pruebas verdes**, y el script **no regenera** el `COMPLETO` si alguna está roja; la de
   integración corre **después** de concatenar y **revierte** al `COMPLETO` anterior si falla.
 - **La prueba que más vale:** `qlmanage` de macOS **renderiza el PDF con Quartz**. No depende de
-  ninguna expresión regular mía. El informe de la fila real sale a **3 páginas y 17.218 bytes**.
+  ninguna expresión regular mía. El informe de la fila real sale a **3 páginas**, y con el logo pesa **29.639 bytes** en Airtable.
 
 
 

@@ -2562,13 +2562,17 @@ const MODELO_Y_PLAZO = {
 // 1b · LOS TEXTOS EN INGLES (§8.2)
 // ---------------------------------------------------------------------------
 // ###########################################################################
-// ##  AVISO: ESTA TRADUCCION NO ESTA REVISADA POR FISCAL.                  ##
+// ##  TRADUCCION REVISADA Y DADA POR BUENA POR EL USUARIO EL 14/08/2026.   ##
 // ##                                                                       ##
 // ##  Todo el texto en ingles de este fichero (y los de RENTAS_SUJETAS.en  ##
 // ##  y MODELO_Y_PLAZO.en, justo arriba) es una TRADUCCION del texto        ##
-// ##  espanol, no un texto redactado ni validado por el equipo Fiscal.     ##
-// ##  Va marcado asi para que se pueda revisar sin buscarlo: es el aviso   ##
-// ##  que exige el §8.2 del contrato.                                      ##
+// ##  espanol de la plantilla, frase a frase. EL USUARIO LA HA REVISADO Y   ##
+// ##  LA HA DADO POR CORRECTA Y VERIFICADA el 14/08/2026, asi que el aviso  ##
+// ##  del §8.2 del contrato queda CUMPLIDO Y CERRADO.                       ##
+// ##                                                                       ##
+// ##  SE DEJA EL BLOQUE, no se borra: si algun dia se cambia una frase del  ##
+// ##  ingles, hay que volver a pasar por la revision, y este es el sitio    ##
+// ##  donde se ve que la hubo y cuando.                                     ##
 // ##                                                                       ##
 // ##  Lo que hay que mirar cuando se revise, que es donde una traduccion   ##
 // ##  literal se equivoca:                                                 ##
