@@ -65,13 +65,6 @@
   .wave>summary::-webkit-details-marker{display:none}
   .wave>summary:hover{background:var(--moon-100)}
   .wave>summary .caret{color:var(--moon-500);font-size:12px;transition:transform .15s}
-  /* 11/08 · Respeta a quien tiene el movimiento reducido activado en el sistema.
-     Es la unica transicion del documento, pero la guarda va igual: no cuesta nada
-     y el mapa lo abre gente que no somos nosotros. */
-  @media (prefers-reduced-motion: reduce){
-    *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;
-      transition-duration:.01ms !important;scroll-behavior:auto !important}
-  }
   .wave[open]>summary .caret{transform:rotate(90deg)}
   .wave>summary h3{margin:0;font-size:16px;color:var(--dark);letter-spacing:-.01em}
   .wave>summary .meta{margin-left:auto;font-size:12px;color:var(--moon-500);font-weight:600}
@@ -159,17 +152,16 @@
     <p class="eyebrow">TaxDown · Mobility · Régimen Beckham</p>
     <h1>Mapa completo de Work Packages</h1>
     <p class="sub">Todo el proyecto en un solo mapa: los 11 WP del roadmap vigente (sesiones del 27 al 29
-      de julio) y los de la Fase 2 conversacional, reordenados en 8 olas de lo más rápido de quitar a
-      lo más complejo. Actualizado el <b>11 de agosto</b>: la conversación <b>se cierra sola de verdad</b>
-      — verificado en Intercom con <code>state:"closed"</code>, no por <code>ok:true</code> — y el prompt
-      v7 está vivo y comprobado leyendo la traza. Entran tres fichas nuevas y el <b>alcance del 030
-      se recorta: el 149 lo hacen los fiscales a mano</b>. Empieza por el <b>overview</b>: dónde estamos,
-      qué toca hoy y qué está esperando a otra persona. Todo lo demás es detalle.</p>
+      de julio) y los 33 de la Fase 2 conversacional, reordenados en 8 olas de lo más rápido de quitar a
+      lo más complejo. Actualizado el <b>6 de agosto a las 10:30</b>: el bot conversa de principio a fin y
+      el expediente <b>ya no se corrompe</b> — cuatro conversaciones reales seguidas con cero campos
+      cruzados. Empieza por el <b>overview</b>: dónde estamos, qué toca hoy y qué está esperando a otra
+      persona. Todo lo demás es detalle.</p>
     <div class="stamp">
-      <span>Actualizado 2026-08-13 · alcance completo al 31/08</span>
-      <span>versionId 2787e0c7 · 52 nodos · tool de 40 parámetros · 56 columnas</span>
-      <span>Cero <code>.item</code> · <code>typecast</code> en true · prompt v7 con tag <code>prod</code> (46.319 car. leídos en traza)</span>
-      <span>56 fichas · 15 done · 18 días naturales para la entrega</span>
+      <span>Actualizado 2026-08-07 13:00 · alcance completo al 31/08</span>
+      <span>versionId 3f8d7016 · 42 nodos · ai_tool = 3 · 48 columnas</span>
+      <span>Cero <code>.item</code> · Status incremental · adjuntos de Intercom resueltos</span>
+      <span>24 días naturales para la entrega</span>
     </div>
   </div>
 </header>
@@ -652,7 +644,7 @@ const OLAS = [
    "<b>Cero daño en datos:</b> un 422 rechaza la petición completa, así que no se escribió nada en ninguna llamada fallida."],
    verify:"Pendiente. Hipótesis para el próximo intento: <code>toIsoDate</code> debe devolver <code>YYYY-MM-DD</code> <b>desnudo</b> antes de quitar el typecast — y probablemente eso no reintroduce el desplazamiento de día del 27/07, porque sin typecast no hay aritmética de zona horaria por medio. Red de seguridad: <code>--t8</code>.",
    note:"Hallazgo real: <b><code>typecast:true</code> era carga estructural, no decoración</b> — sostenía el <code>T12:00:00.000Z</code> que se añadió el 27/07 para arreglar las fechas. El PRD lo daba como un cambio suelto de una línea. Son dos cambios acoplados en el camino de escritura."},
-  {id:"WP-205b",t:"Guarda de unicidad de UserId + idempotencia — CERRADA Y PROBADA el 10/08",st:"done",size:"M",crit:1,
+  {id:"WP-205b",t:"Guarda de unicidad de UserId",st:"new",size:"M",crit:1,
    dep:"WP-205a",
    goal:"<code>UserId</code> se usa como <code>matchingColumns</code> y <b>no es único</b> en la tabla: los formularios no lo rellenan, así que un empleado ya registrado que hable con el bot no hará match y creará una fila duplicada.",
    steps:["Contar los matches antes de escribir y abortar si son distintos de 1, devolviendo <code>multi_match</code> o <code>no_match</code>.",
@@ -696,7 +688,7 @@ const OLAS = [
    "Arreglo: una rama que detecte <code>jarry_ignore</code> y relance el reusable <code>n8n_BOT_mobility</code>. Es construir en Intercom, no cabía hoy."],
    verify:"Criterio de cierre: conversación con <code>ticket: null</code> · el agente responde en el turno 2 sin intervención · <b>dos</b> ejecuciones de <code>beckham_bot</code>, una por turno.",
    note:"Ninguna rama del distribuidor comprueba <code>jarry_ignore</code>, así que <b>está tocando las conversaciones del bot</b>, no solo las de soporte. Y la rama <code>D</code> ahora es un callejón sin salida silencioso — hay que avisar a Adri. Workaround mientras esté abierto: lanzar <code>n8n_BOT_mobility</code> a mano desde el Inbox después de cada respuesta."},
-  {id:"WP-209",t:"Conversación sonda — MUERTA (14/08): perdió sentido al ser el canvas producción directa",st:"kill",size:"M",crit:1,
+  {id:"WP-209",t:"Conversación sonda · 8 incógnitas",st:"spec",size:"M",crit:1,
    dep:"—",
    goal:"Una conversación real diseñada para observar el mecanismo en vez del negocio. Cada paso responde a una incógnita que bloquea la máquina de estados.",
    steps:["<b>APLAZADA, y ya no cuesta lo mismo.</b> Se montó para atacar WP-10 a ciegas; WP-10 se resolvió sin ella.",
@@ -704,7 +696,7 @@ const OLAS = [
    "Lo que sigue abierto y de verdad bloquea: <b>T2</b> (¿acepta <code>Set</code> un literal? bloquea el discriminador <code>punto</code> y la entrada al FAQ), <b>T3</b> (cadena vacía, bloquea el reset del modo) y <b>T4</b> (mensaje suelto tras un <code>Collect data</code>, que es la otra mitad del turno 2).",
    "T9 (4 reply buttons en móvil), T10 (enlace de la calculadora) y T6 (dos reusables encadenados) son decisiones de producto, no bloqueos."],
    verify:"Cada observación con evidencia no-Preview y ejecución correlativa. Nada por Preview.",
-   note:"Reducida de 8 observaciones a 3 que bloquean. Sigue necesitando a una persona delante del Messenger, con cooldown de 2 minutos entre pruebas. <b>11/08 · U2 RESUELTA Y AUTORIZADA:</b> el usuario autoriza, y además la premisa del riesgo ha caducado — <b>la conversación ya no se convierte en ticket ni envía correo</b>, así que el motivo por el que este WP necesitaba permiso explícito ha desaparecido. <b>Consecuencia a decidir:</b> el usuario declara que el canvas es ya implementación directa en producción porque \"solo es cablear más cosas y ya no rompe nada\" — si eso se sostiene, una <i>sonda desechable</i> pierde su razón de ser y estas 3 incógnitas se resuelven sobre el canvas real. <b>No lo doy por hecho: es decisión suya.</b>"}
+   note:"Reducida de 8 observaciones a 3 que bloquean. Sigue necesitando a una persona delante del Messenger, con cooldown de 2 minutos entre pruebas."}
   ]
 },
 {
@@ -729,7 +721,7 @@ const OLAS = [
    "Nodo <code>Log_Evento</code> con el evento, el <code>corr_id</code>, el <code>punto</code> y el resultado.",
    "Dedupe por <code>conversation_part_id</code>: hoy un doble clic produce <b>dos</b> upserts."],
    verify:"Dado un <code>conversation_id</code>, encontrar su ejecución en n8n sin mirar la hora."},
-  {id:"WP-203",t:"Auth en los dos webhooks y paths a UUID — PROBADO y DESACTIVADO a proposito (10/08)",st:"build",size:"S",crit:0,
+  {id:"WP-203",t:"Auth en los dos webhooks y paths a UUID",st:"spec",size:"S",crit:0,
    dep:"WP-207",
    goal:"Los dos webhooks son POST públicos, sin autenticación, con paths adivinables, y escriben en una tabla con datos reales de empleados. <code>Webhook1</code> además acepta cualquier <code>modo</code> del body, así que es falsificable.",
    steps:["Header secreto o HMAC en los dos webhooks, validado en el primer nodo.",
@@ -745,7 +737,7 @@ const OLAS = [
    "<code>maxIterations</code> y <code>returnIntermediateSteps</code> en el agente, <b>solo en pruebas</b> (decisión N13).",
    "Contador de <code>punto</code> por rama para ver si alguna nunca se ejecuta."],
    verify:"Un fallo provocado genera alerta en menos de un minuto, con su <code>corr_id</code>."},
-  {id:"WP-232",t:"Runbook, inventario y quality gates · inventario y runbook ENTREGADOS (12/08); faltan nombres y descriptions",st:"build",size:"S",crit:0,
+  {id:"WP-232",t:"Runbook, inventario y quality gates",st:"spec",size:"S",crit:0,
    dep:"—",
    goal:"Que la siguiente persona pueda operar esto sin arqueología.",
    steps:["Inventario de workflows, Data Connectors, atributos y campos, con dueño.",
@@ -912,7 +904,7 @@ const OLAS = [
    "Whitelist de <code>punto</code> + <code>modo</code> en el escritor único; 400 ante desconocido.",
    "Declaración honesta en la documentación: las capas 2 y 3 comparten origen con la 1 (la salida del resolver), así que protegen contra errores de cableado, no contra un resolver equivocado. La defensa independiente es la topológica."],
    verify:"10 prompts adversarios en modo FAQ → <b>cero</b> peticiones al webhook de upsert."},
-  {id:"WP-220",t:"System Prompt como fuente única de conocimiento fiscal · CORPUS EXTRAÍDO y umbral DESBLOQUEADO (14/08: los tramos no se tocan)",st:"build",size:"S",crit:1,
+  {id:"WP-220",t:"System Prompt como fuente única de conocimiento fiscal",st:"spec",size:"S",crit:1,
    dep:"—",
    goal:"El conocimiento fiscal va <b>inline en el prompt</b>, escrito y aprobado por Paula, Alina e Iciar. No hay corpus externo, ni vector store, ni tool de búsqueda.",
    steps:["Pedir la versión actual del prompt y pegarla en el <code>systemMessage</code> del <code>prompt_base</code>.",
@@ -920,7 +912,7 @@ const OLAS = [
    "Añadir la regla dura: si algo no está en las instrucciones, decir que no se sabe y ofrecer humano. <b>Sin esto el agente no tiene forma de saber cuándo se sale de su conocimiento.</b>",
    "Gate: el prompt no nombra ninguna tool que no esté cableada."],
    verify:"Batería de preguntas fuera del prompt → el agente responde que no lo cubre y ofrece humano, sin inventar.",
-   note:"Reescrito el 07/08 (M4): pasa de L bloqueado a S desbloqueado, y <b>desaparece la tool buscar_contexto_fiscal</b> del diseño. <b>11/08 · DESBLOQUEADO DEL TODO: el corpus fiscal ya está verificado por Alina.</b> Deja de ser una espera externa y pasa a ser trabajo de teclado. <b>Aviso:</b> el fichero <code>WP-220-corpus-fiscal-buscar-contexto.md</code> sigue con la redacción vieja (skeleton, tool de búsqueda, bloqueado por M4) y contradice a este mapa — el mapa manda."},
+   note:"Reescrito hoy (M4). Pasa de L bloqueado a S desbloqueado, y <b>desaparece la tool buscar_contexto_fiscal</b> del diseño. Es el cambio que libera el camino crítico."},
   {id:"WP-221",t:"FAQ de un turno",st:"spec",size:"L",crit:1,
    dep:"WP-213, WP-219, WP-220",
    goal:"El MVP del FAQ, con el mecanismo ya verificado: botón → <code>Set modo_bot</code> → colector → DC con <code>wait_for_callback</code> → respuesta del agente → botones de continuar.",
@@ -970,7 +962,7 @@ const OLAS = [
   n:"Ola 6", when:"Alcance nuevo · Fase 2", t:"Cualificación y documentos",
   why:"Alcance que apareció hoy y no existía en ningún PRD. Es la parte más compleja y la que más toca campos ajenos, así que va al final: cuando el resto ya sea estable y depurable.",
   wps:[
-  {id:"WP-234",t:"AplicaBeckham y complejidad del caso, escritos por el agente",st:"build",size:"M",crit:0,
+  {id:"WP-234",t:"AplicaBeckham y complejidad del caso, escritos por el agente",st:"new",size:"M",crit:0,
    dep:"WP-207, WP-218",
    goal:"El agente cualifica: si el caso vale la pena y si es fácil o complejo, evaluándolo desde los inputs que ha ido recogiendo.",
    steps:["Proponer el campo <code>complejidad_caso</code> (single-select: <code>facil</code> | <code>complejo</code> | <code>revisar</code>) — <b>decisión de esquema final de Alina e Iciar</b>.",
@@ -980,102 +972,31 @@ const OLAS = [
    "Un caso marcado <code>complejo</code> dispara el aviso de negocio por email (WP-202)."],
    verify:"Dos recorridos, uno simple y uno complejo, dejan el campo correcto y ninguno modifica <code>Status</code> ni <code>Estado030149</code>.",
    note:"Nuevo hoy. Decisión P2 = (a)+(c): se propone el campo, lo evalúa el prompt, y el esquema lo aprueban las dueñas."},
-  {id:"WP-235",t:"Generar el fichero .030 — HECHO Y PROBADO DE PUNTA A PUNTA (14/08): 2700 bytes en Airtable",st:"done",size:"M",crit:1,
+  {id:"WP-235",t:"Rellenar los modelos 030 y 149",st:"new",size:"L",crit:0,
    dep:"WP-234",
-   goal:"Que el agente lea el expediente de Airtable, monte el fichero <code>&lt;NIF&gt;.030</code> a partir de una plantilla y lo deje <b>adjunto en la propia fila</b>. A partir de ahí el circuito es humano.",
-   steps:["<b>EL CIRCUITO COMPLETO, DICHO POR EL USUARIO EL 11/08:</b> (1) el agente lee los datos de Airtable · (2) monta el <code>.030</code> sobre una plantilla · (3) lo devuelve <b>dentro de Airtable</b> · (4) el fiscal lo sube a la sede de la AEAT · (5) <b>la AEAT genera el PDF</b> · (6) el fiscal completa el PDF y lo mete a mano en <code>Borrador030</code> y <code>Borrador149</code> · (7) marca <code>EnviarBorradores</code> y sale el correo (WP-237, ya existe) · (8) el cliente confirma · (9) <b>el fiscal presenta a mano</b>. El bot no presenta nada ante Hacienda.",
-   "<b>DOS ENFOQUES DESCARTADOS EL 11/08, y conviene que quede escrito para que nadie los reintente:</b> rellenar un PDF (los dos PDF del modelo son renders planos, <b>cero AcroForm, cero XFA, cero Widget</b>: no hay campos que rellenar) y generar nuestro propio PDF. <b>El entregable nunca fue el PDF.</b>",
-   "<b>EL FORMATO NO ES XML.</b> Es el <b>posicional de ancho fijo</b> de la AEAT en dos registros, <code>T030010</code> (1481 car.) y <code>T030020</code> (1181), sin saltos de línea, 2.700 bytes. Contrato entero decodificado en <code>docs/contrato-fichero-030-2026-08-11.md</code>. Se monta con una plantilla de posiciones: <b>ni una librería de PDF</b>.",
-   "<b>LAS TRES CAUSAS SON CONSTANTES</b>, dichas por el usuario y confirmadas en el fichero: casillas <b>107, 103 y 105</b>, en las posiciones 160, 162 y 164. Hay una <b>cuarta marca en la 172</b> sin identificar (hipótesis: 201, residente fiscal).",
-   "<b>LO QUE DE VERDAD CUESTA NO SON COLUMNAS, SON TABLAS DE CONVERSIÓN:</b> el fichero quiere <b>códigos</b> y Airtable guarda <b>nombres</b>. Nacionalidad y país de nacimiento en <b>ISO-2</b> (245 opciones × 3 listas), sexo en <code>V</code>, tipo de vía con código, y el <b>código INE del municipio</b> (5 dígitos), que son más de 8.000 y se bajan del INE.",
-   "<b>UN HUECO SE CAE SOLO:</b> la provincia (casilla 425) <b>no necesita columna</b> — son los dos primeros dígitos del código postal, y la muestra lo confirma (<code>28015</code> → <code>28</code>).",
-   "<b>HUECOS VIVOS:</b> (a) <b>primer y segundo apellido</b>, dos campos de 50, contra una sola columna <code>Apellidos empleado</code>; (b) <b>municipio de residencia</b> y su código INE, que <b>no está en ninguna columna</b> — y ninguna plantilla puede inventárselo.",
-   "<b>CASILLA 217</b>, explicada por el usuario: residente fiscal si se desplaza antes del 1 de julio; si se desplaza después, entra en el ejercicio siguiente y la casilla vale <code>0101</code>+(año+1). <b>Esa lógica YA está escrita</b> en la fórmula <code>Situación fiscal Anio Desplazamiento</code> («183 días / 1 de julio»): hay que reutilizarla, no escribir una segunda que la contradiga.",
-   "<b>FALTA UNA SEGUNDA MUESTRA</b> de <code>.030</code> con datos distintos, mejor de alguien con dos apellidos y de otra provincia. Con una sola no se distingue el borde de un campo del relleno de espacios."],
-   verify:"Un caso de prueba genera el <code>.030</code> adjunto en su fila, y la sede de la AEAT lo acepta y devuelve el PDF. La aceptación de la AEAT es la única prueba que vale.",
-   note:"<b>Reescrito el 11/08 y avanzado el 13/08.</b> Nació como «rellenar los modelos 030 y 149», se recortó al 030 y luego cambió de naturaleza: no era un PDF, era texto posicional. <b>13/08 · HECHO:</b> tabla país→ISO-2 (<code>docs/tabla-paises-iso2-2026-08-13.js</code>, 245 de 245 comprobadas por script), tabla de provincias (<code>docs/tabla-provincias-030-2026-08-13.js</code>, 52 provincias y 97 alias), y las tres columnas <code>ApellidoPrimero</code>, <code>ApellidoSegundo</code> y <code>MunicipioResidencia</code> creadas y <b>publicadas con sus tres sitios</b> (versionId <code>2787e0c7</code>, 56 columnas, 40 parámetros, auditado). <b>El código de tipo de vía NO hacía falta:</b> va siempre a <code>00000</code>. <b>QUEDA:</b> el código INE de municipio (más de 8.000, se bajan del INE) y una muestra <code>.030</code> con dirección completa para cerrar las posiciones 772-790."},
-  {id:"WP-236",t:"Informe Mobility · SPEC ESCRITA y 16 de 17 marcadores resueltos (14/08). Se envía ANTES de cerrar el chat",st:"build",size:"L",crit:1,
+   goal:"Generar los dos modelos oficiales con los datos recogidos por el bot.",
+   steps:["Conseguir las plantillas oficiales y decidir el mecanismo de relleno.",
+   "Mapear cada campo del modelo al campo de Airtable o al dato de la conversación que lo alimenta.",
+   "<b>Riesgo declarado:</b> ya existen <code>Borrador030</code>, <code>Borrador149</code>, <code>LinkFormulario030149</code>, <code>Modificacion M030</code>, <code>Modificacion M149</code> y <code>Estado030149</code>, gobernados por otro proceso. Antes de escribir, hablar con su dueño.",
+   "Decidir dónde se guarda el PDF generado y quién lo revisa antes de enviarse.",
+   "Ningún modelo se envía a Hacienda desde el bot: se genera borrador y lo valida un humano."],
+   verify:"Un caso de prueba genera los dos modelos con los datos correctos, y ningún campo del proceso ajeno cambia de valor.",
+   note:"Nuevo hoy (N10). Es el WP más grande del plan y el que más superficie ajena toca."},
+  {id:"WP-236",t:"PDF-resguardo final para el usuario",st:"new",size:"M",crit:0,
    dep:"WP-235",
-   goal:"Al terminar el procedimiento, generar el <b>informe de memoria fiscal</b> del cliente y enviárselo. Se monta con <b>cabecera + bloque del año de desplazamiento + bloque del año siguiente</b>.",
-   steps:["<b>11/08 · LA PLANTILLA YA NO FALTA:</b> <code>[MOB] Bloques informe Mobility.docx</code>, 10.871 caracteres de texto. Esto deja de ser un WP sin contrato y <b>resucita la tool <code>generar_informe</code></b>, que se había descartado precisamente por no tenerlo.",
-   "Tres bloques excluyentes: <b>A)</b> Residente fiscal · <b>B)</b> No residente fiscal · <b>C)</b> Régimen especial (Beckham). <b>Encajan uno a uno con las dos columnas de fórmula que ya existen</b>: <code>Situación fiscal AnioDesplazamiento</code> y <code>Situación fiscal AnioSiguiente</code>, cuyos valores vivos son <i>Régimen Especial (Beckham)</i> / <i>Residente Fiscal</i> / <i>No residente UE</i>. El documento se arma solo leyendo esas dos.",
-   "<b>17 marcadores <code>{{...}}</code>. 10 salen de columnas que YA existen</b>: nombreCompleto, fechaDesplazamiento, estadoCivil, hijos, salarioBrutoAnual, sumaPropiedades, sumaInversiones, situacionAnioDesplazamiento, situacionAnioSiguiente, y anio/anioSiguiente por derivación.",
-   "<b>CUATRO HUECOS = campo nuevo = tres sitios</b> (tool + validador + mapeo Airtable): <code>{{fechaLlamada}}</code> (no hay columna de fecha de reunión), <code>{{residenciaFiscal5Anios}}</code> (solo existe como opción de <code>Descarte</code>, no como dato), <code>{{rentasSujetas}}</code> y <code>{{modeloYPlazo}}</code> (los dos se derivan del bloque elegido, no del cliente: pueden ser tabla fija en código en vez de columna).",
-   "<b>UNA AMBIGÜEDAD QUE HAY QUE ZANJAR:</b> <code>{{paisOrigen}}</code> — ¿es <code>UltimoPaisResidencia</code> (Francia en el caso de hoy) o <code>PaisNacimiento</code> (Rusia)? Fiscalmente parece el primero, pero <b>no se decide sin Fiscal</b>.",
-   "<b>VERIFICAR ANTES DE CONSTRUIR:</b> la fórmula <code>AnioDesplazamiento</code> apareció en <code>state:\"error\", errorType:\"emptyDependency\"</code> en la fila de prueba del 10/08. Si el informe la usa y está rota, el documento sale con un hueco.",
+   goal:"Al terminar el procedimiento, enviar al usuario un resguardo con los datos que ha ido dando y sus obligaciones fiscales.",
+   steps:["Definir el contenido: datos recogidos en Intercom y n8n + deberes y obligaciones fiscales a tener en cuenta.",
+   "Conseguir la plantilla, que hoy no existe.",
+   "Decidir el canal de envío y el momento exacto que lo dispara.",
    "Requiere aprobación humana antes de enviarse: es un documento que el cliente va a guardar."],
-   verify:"Un recorrido completo genera el informe con el bloque correcto según las dos columnas de fórmula, los 17 marcadores resueltos y ningún <code>{{...}}</code> literal en el resultado.",
-   note:"<b>Reescrito el 11/08.</b> Era <code>new</code>/<code>M</code>/no-crítico con la plantilla ausente; pasa a <code>spec</code>/<code>L</code>/crítico con la plantilla en la mano. Sube de tamaño porque los cuatro huecos son campo nuevo, no porque el montaje sea difícil."},
-
-  {id:"WP-237",t:"Enviar borradores y confirmación · MONTADA Y ENCENDIDA (12/08), sin probar",st:"build",size:"S",crit:1,
-   dep:"WP-235",
-   goal:"Que desde Airtable se envíen los borradores al cliente, que el cliente los confirme, y que esa confirmación mueva el <code>Status</code> sola.",
-   steps:["<b>AUDITADO POR MCP EL 11/08 ANTES DE ESCRIBIR NADA, Y CASI TODO ESTABA HECHO.</b> Nació como <code>M</code> y baja a <code>S</code>.",
-   "<b>El botón que pedía el usuario YA EXISTE:</b> <code>EnviarBorradores</code> (<code>fldGSgXLLCf2okzvB</code>), checkbox. Es el disparador de la automatización desplegada <i>3. Envio borradores 030 y 149</i> (<code>wflx5iCN4pXuwPAvO</code>).",
-   "Esa automatización ya hace TODO el envío: <b>dos ramas por idioma</b> (Español / Inglés según <code>Idioma</code>), adjunta <code>Borrador030</code> y <code>Borrador149</code>, manda el correo por el webhook <code>a6a3ebaa…</code> de n8n con la notificación <code>NOTIF_Mobility_BorradorM030</code>, mete el <code>Linkconfirmacionmodelos</code>, y después escribe <code>Status = 7. Pte confirmación usuario</code> y <code>Estado030149 = 3. Pendiente confirmación</code>.",
-   "<b>Y el bucle de vuelta también está cerrado:</b> <i>2. Usuario completa el formulario de confirmación M030</i> (<code>wflo1oMmSWlcYsO3V</code>) se dispara al enviar el formulario, que crea una fila nueva; el script la <b>fusiona en la original</b> buscándola por <code>recordId</code>, copia todo lo no computado y no vacío, y <b>borra el duplicado</b>. Evidencia en la fila de ICIAR: llegó con <code>Estado030149 = 4.3 Confirmo el modelo 030 pero necesito modificar el 149</code> y los dos campos <code>Modificacion M030/M149</code> rellenos.",
-   "<b>EL ÚNICO HUECO REAL, Y ES PEQUEÑO:</b> nadie mueve <code>Status</code> de <code>7. Pte confirmación usuario</code> a <code>8. Confirmado</code> cuando el cliente confirma. La automatización 2 <b>solo fusiona, no toca Status</b>. Eso es lo que hay que construir, y nada más.",
-   "<b>SIN COLISIÓN CON EL BOT, COMPROBADO:</b> <code>Decidir_Status</code> solo escribe si <code>nPropuesto &gt; nActual</code>, así que con la fila en 7 el bot nunca la baja a 3. Los dos escritores conviven porque la escalera solo sube.",
-   "<b>El recorte del 149 no obliga a tocar nada:</b> la automatización adjunta <code>Borrador149</code> <i>si existe</i>. Con los fiscales rellenándolo a mano, el mismo correo sigue saliendo con los dos."],
-   verify:"Un caso de prueba recorre marcar EnviarBorradores → correo con adjuntos → formulario confirmado → <code>Status = 8. Confirmado</code>, sin que el bot y la automatización se pisen.",
-   note:"<b>Nuevo el 11/08, reducido el mismo día y montado el 12/08.</b> Es la quinta vez que pasa lo mismo en este proyecto: <b>el camino existe y nadie lo usa</b>. <b>12/08:</b> automatización <code>wflYrTfhxYtRaLZkU</code> creada como <b>borrador, apagada</b> — trigger con <b>dos</b> condiciones (<code>Status=7</code> Y <code>Estado030149</code> en 4.1/4.3) y acción única <code>Status=8</code>. <b>OJO ANTES DE ENCENDER: la fila de ICIAR casa exactamente con el trigger</b> y se moverá sola. <b>Trampa aprendida:</b> el filtro NO admite un <code>or</code> anidado dentro del <code>and</code> — para varios valores de un select va <code>isAnyOf</code> con array."},
-
-  {id:"WP-238",t:"Fix de Decidir_Status: el Status final depende de motivo_cierre — BUG CONFIRMADO",st:"build",size:"S",crit:1,
-   dep:"—",
-   goal:"Que un expediente completo NO se quede en «2. Pendiente llamada TD».",
-   steps:["<b>BUG CONFIRMADO EL 11/08</b>, reportado por el usuario y localizado en el código: <code>Decidir_Status</code> hace <code>else if (fields.AplicaBeckham === true) propuesto = '2. Pendiente llamada TD'</code> y <b>no conoce <code>motivo_cierre</code></b>. Así que todo cliente que quiere acogerse acaba en «pendiente llamada», haya llamada o no.",
-   "Evidencia: conversación <code>215475438827585</code> del 11/08 — 5 de 5 documentos, <code>MotivoCierre = Expediente completo</code>, y <code>Status</code> se quedó en <code>2. Pendiente llamada TD</code>.",
-   "Arreglo: <code>motivo_cierre = llamada agendada</code> → <code>2. Pendiente llamada TD</code>; <code>motivo_cierre = expediente completo</code> → <b><code>3. Pte hacer informe</code></b>, que es el peldaño que ya existe en la escalera.",
-   "<b>Sube a <code>4. Informe enviado</code> en cuanto WP-236 genere el informe de verdad.</b>",
-   "<b>Cuidado al tocar este nodo:</b> la escalera <code>ORDEN</code> lleva los nombres copiados literales de Airtable, y con <code>typecast:true</code> un nombre mal escrito <b>crea una opción nueva</b> en vez de fallar."],
-   verify:"Dos conversaciones: una que agenda llamada queda en 2, otra que completa expediente queda en 3. Comprobado en la celda, no en el <code>ok:true</code>.",
-   note:"<b>Nuevo el 11/08.</b> Pequeño y crítico: es la bisagra entre el cierre de la conversación (ya verificado hoy) y todo el proceso de informe y borradores que viene detrás."},
-
-  {id:"WP-239",t:"ResumenBot = ficha + prosa · el formato YA existe, la tool pide lo contrario",st:"build",size:"S",crit:0,
-   dep:"—",
-   goal:"Que <code>ResumenBot</code> lleve primero la <b>ficha con etiquetas fijas</b> y después el resumen en prosa, en vez de solo la prosa.",
-   steps:["<b>HALLAZGO DEL 11/08 QUE CAMBIA LA FICHA:</b> el formato pedido por el usuario <b>ya está escrito en el prompt vivo</b>, líneas 58-83, con sus 18 etiquetas exactas (y una más, <i>Idioma de atención</i>). No hay que inventarlo.",
-   "El problema está en <b>otro sitio</b>: la descripción del parámetro <code>resumen</code> de la tool <code>guardar_datos_cliente</code> pide explícitamente lo contrario — <i>«redactado por ti y con tus palabras»</i>. El agente obedece a la tool, no al bloque de formato, porque el bloque de formato es para <b>enseñarlo en pantalla</b> y pedir confirmación, no para guardarlo.",
-   "Es el patrón de siempre y ya van cuatro: <b>el camino existe y nadie lo usa</b> (nacionalidad, cónyuge, discrepancia, y ahora el resumen).",
-   "Arreglo: reescribir la descripción de <code>resumen</code> (parámetro 33 de 36) para que mande <b>ficha + línea en blanco + prosa</b>. <b>No toca validador ni mapeo</b>: la columna existe y ya se llena.",
-   "<b>Engancha con WP-236:</b> esa misma descripción ya dice <i>«este texto se reutiliza como base del informe fiscal que se le enviará»</i>. Si la ficha y los marcadores del informe divergen, habrá dos verdades.",
-   "<b>Erratilla detectada de paso:</b> la línea 262 del prompt manda usar «el formato de la sección FORMATO DE RESPUESTA», pero la sección se llama <b>FORMATO DE RESUMEN</b>. Arreglar en el mismo viaje."],
-   verify:"Una conversación completa deja en <code>ResumenBot</code> la ficha con las 18 etiquetas y, debajo, el párrafo. Comprobado en la celda.",
-   note:"<b>Nuevo el 11/08.</b> Reescrito a los diez minutos de crearlo: nació como «cambio de prompt» y al leer la tool resultó ser <b>cambio de tool</b>. Escrito así para que nadie vuelva a buscarlo en el prompt."}
+   verify:"Un recorrido completo genera el resguardo con los datos correctos y no se envía sin aprobación.",
+   note:"Nuevo hoy (N14.2). Sustituye a la tool <code>generar_informe</code>, que se descarta por no tener contrato."}
   ]
 },
 {
   n:"Ola 7", when:"Cierre", t:"E2E y publicación",
   why:"Lo último. Un solo WP, pero es el que convierte «funciona en mi prueba» en «está publicado y verificado».",
   wps:[
-  {id:"WP-240",t:"T041 · Adjuntos que Airtable acepta pero nunca descarga — ACTIVO y probado en vacío (12/08)",st:"build",size:"S",crit:1,
-   dep:"—",
-   goal:"Detectar el fallo silencioso de los adjuntos que se pierden porque la URL de Intercom caduca antes de que Airtable vaya a buscarlos.",
-   steps:["<b>EL HALLAZGO, 11/08:</b> Airtable <b>no se descarga el fichero al escribirlo</b>. Acepta la URL, responde al instante y lo baja <b>después, en segundo plano</b>. Probado siguiendo el MISMO id de adjunto (<code>attoEXu6MW5VZlZMg</code>) en dos momentos: al escribir traía la URL de Intercom y <b>ni <code>size</code>, ni <code>type</code>, ni <code>thumbnails</code></b>; horas después, <code>v5.airtableusercontent.com</code> y los tres campos.",
-   "<b>POR QUÉ IMPORTA:</b> el escritor devuelve <code>ok:true</code> <b>antes</b> de que Airtable tenga nada. Si la URL caduca antes de la descarga, el adjunto se queda vacío y <b>no se entera nadie</b>: la ejecución ya terminó en <code>success</code>, no hay error que capturar y <code>beckham_alertas</code> no dispara. <b>Margen real medido: 32 minutos y medio.</b>",
-   "<b>DETECTARLO ES BARATO:</b> la señal es la <b>ausencia de <code>size</code></b>, no su valor. No hay que descargar nada.",
-   "<b>NO SE PUEDE ARREGLAR EN EL ESCRITOR</b>, porque el escritor no puede saberlo. Hace falta un chequeo posterior.",
-   "<b>12/08 · MONTADO:</b> workflow <code>beckham_adjuntos_huerfanos</code> (<code>9Dh7U9DIxvXvzPxG</code>), 5 nodos, <b>inactivo</b>. Cada hora → leer <code>Empleados</code> → recorrer las <b>nueve columnas que escribe el bot</b> (los dos <code>Borrador*</code> quedan fuera: los sube un fiscal en bytes, no por URL) → avisar. <b>La hora del schedule es la tregua</b>: Airtable tarda segundos.",
-   "<b>PENDIENTE PARA ACTIVARLO: falta la credencial de Airtable.</b> <code>autoAssignedCredentials</code> volvió vacío — el problema de siempre, las credenciales son de Ops/Fiscal y la identidad del MCP no las ve. Hay que asignarla a mano.",
-   "<b>Solución definitiva descartada por ahora</b> (decisión del usuario, 12/08): bajar el fichero en n8n y subirlo en bytes eliminaría el problema de raíz. Se escala si durante las pruebas da guerra."],
-   verify:"Un adjunto forzado a fallar (URL caducada) genera aviso en Slack en la siguiente pasada, y uno normal no genera ninguno.",
-   note:"<b>Nuevo el 12/08.</b> <code>T041</code> era la única tarea sin ficha en el mapa. Deja de ser «comprobar si funciona» y pasa a «detectar cuando no»."},
-
-  {id:"WP-241",t:"Automatizaciones de Airtable · REHECHAS SIN SCRIPT y encendidas (13/08)",st:"done",size:"M",crit:1,
-   dep:"—",
-   goal:"Arreglar los seis fallos encontrados el 12/08 en las automatizaciones que construyó Iciar sin contexto del proyecto.",
-   steps:["<b>🔴 1 · <code>3. Envio borradores</code> NO TIENE RAMA POR DEFECTO.</b> Solo Español e Inglés, ninguna <i>else</i>. Con <code>Idioma</code> vacío el fiscal marca <code>EnviarBorradores</code> y <b>no pasa nada</b>: ni correo, ni Status, ni error.",
-   "<b>🔴 2 · <code>3. Envio borradores</code> HACE RETROCEDER EL STATUS.</b> Escribe <code>7</code> sin condición, así que una fila en 8, 9 u 11 <b>baja a 7</b> al reenviar. Rompe la invariante que el bot respeta: <b>la escalera solo sube</b>.",
-   "<b>🔴 3 · <code>Crear Check out</code> tiene un BUSY-WAIT.</b> <code>while (Date.now()-start &lt; ms) {}</code> no duerme: gira bloqueando el hilo, hasta <b>125 segundos</b> contra un límite de ejecución de ~30 s. Y al lanzar el timeout el script peta, el <code>conditionalGroup</code> no corre y <b><code>Checkout Error</code> no se marca nunca</b>.",
-   "<b>🟠 4 ·</b> las dos ramas de la 3 leen el enlace de confirmación de sitios distintos; la inglesa puede estar mandándolo <b>vacío</b>.",
-   "<b>🟠 5 ·</b> <code>Modificacion M149</code> se recoge en los dos scripts y <b>no se usa en ninguno</b>: nunca llega al cliente.",
-   "<b>🟡 6 ·</b> <code>NO_COPIAR</code> de la 2 nombra dos campos <b>que no existen</b> y no protege <code>Status</code>, <code>last_idem_key</code>, <code>UserId</code> ni <code>AplicaBeckham</code>.",
-   "<b>POR QUÉ ESTÁ BLOQUEADO, y no es opinable:</b> Airtable devuelve <code>readOnlyNodeType: customScript</code> — <b>no se pueden crear ni editar acciones de script por API</b>. Solo desde la UI. Y el usuario <b>no puede editar scripts en la UI</b> pese a ser <b>Creator</b> de la base.",
-   "<b>EXPERIMENTO PENDIENTE, 30 segundos, discrimina las dos hipótesis:</b> automatización nueva → acción <i>Run script</i> → intentar escribir. Si escribe, el bloqueo son <b>los secretos ajenos</b> (<code>n8nApi</code>, <code>crear checkout BPM</code>); si no escribe, es una <b>restricción de la organización</b> y va a quien administre Airtable.",
-   "<b>ESTADO:</b> las tres viejas están <b>desactivadas</b>. Backup de los cinco scripts en <code>docs/backup-automatizaciones-20260812/</code>. Arreglos escritos en <code>docs/arreglos-automatizaciones-airtable-2026-08-12.md</code>. <b>Nada aplicado.</b>"],
-   verify:"Un caso con Idioma vacío recibe el correo en español; reenviar borradores a una fila en 8 no la baja a 7; Crear Check out marca Checkout Error cuando expira.",
-   note:"<b>Nuevo el 12/08.</b> Es el tercer sistema donde el proyecto se bloquea por <b>credenciales que no son del usuario</b> — antes fueron el auth de los webhooks y la credencial de Airtable en n8n. <b>Es conversación con Ops, no problema técnico.</b>"},
-
   {id:"WP-233",t:"End-to-end de la Fase 2 y publicación",st:"spec",size:"M",crit:1,
    dep:"WP-213, WP-216, WP-217, WP-221, WP-224, WP-227, WP-231, WP-232",
    goal:"Recorrer todos los caminos del bot en conversaciones reales y publicar con evidencia.",

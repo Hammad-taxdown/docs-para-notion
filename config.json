@@ -1,0 +1,21 @@
+{
+  "n8n": {
+    "base_url": "https://es.synapse.rentax.es",
+    "api_key_env": "N8N_API_KEY",
+    "_nota": "base_url ej: https://miinstancia.app.n8n.cloud — la key NUNCA va aquí, solo el nombre de su variable de entorno",
+    "workflows": {
+      "beckham_bot": "nhOwpiGxikeU5DLR",
+      "beckham_alertas": "BJfExmwu1fI1aPpY",
+      "beckham_f2_plazo": "wdOOF0ecCkgFOUjt",
+      "beckham_analizar_documento": "ONhveViBeiI6GXWd"
+    },
+    "webhooks": {
+      "escritor": "https://es.synapse.rentax.es/webhook/beckham-upsert-expediente",
+      "lector": "https://es.synapse.rentax.es/webhook/beckham-get-expediente"
+    }
+  },
+  "airtable": {
+    "base_id": "app5K8OnSObqwWweS",
+    "tabla_empleados": "tblTWCWu5nQXNOMR1"
+  }
+}

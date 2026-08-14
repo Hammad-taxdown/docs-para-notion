@@ -244,7 +244,12 @@ function construir030(d) {
 
   poner(a, 1390, 8, /^\d{8}$/.test(String(d.fechaEfectos || '')) ? String(d.fechaEfectos) : '00000000');
   poner(a, 1398, 8, '00000000');
-  poner(a, 1406, 1, ' ');   // el caracter sin descifrar. Ver la cabecera.
+  // El caracter sin descifrar de la 1406. Sigue sin saberse QUE significa, pero ya
+  // se sabe QUE VALOR lleva: '4' en 13 de las 14 muestras de la version 20250203
+  // (las 12 nuevas del 14/08 mas 48013946C y Z4447237P). Las dos unicas en blanco
+  // son Z3520584W y Z4871333F. Antes se puso blanco por seguir a esas dos; con 14
+  // muestras el recuento es 13 a 1 y manda el '4'.
+  poner(a, 1406, 1, '4');
 
   // --- 4.3 · Registro T030020 --------------------------------------------
   const b = lienzo(1181);
@@ -275,7 +280,10 @@ function escribirDomicilio(lienzo_, desp, d) {
   ponerNum(lienzo_, 767 + desp, 5,  d.numero);
   // La zona gris. En blanco salvo que se sepa; ver la cabecera del fichero.
   poner(lienzo_,    778 + desp, 1,  mayus(d.bloque || ''));
-  poner(lienzo_,    784 + desp, 1,  mayus(d.planta || ''));
+  // La planta ocupa DOS caracteres, no uno. Probado con 61078714Y, que lleva '04'
+  // en 784-785 y en su espejo del <T030020>. Con ancho 1 la planta '10' o '04' se
+  // recortaba a '1' y a '0' SIN FALLAR: dato equivocado en el fichero de Hacienda.
+  poner(lienzo_,    784 + desp, 2,  mayus(d.planta || ''));
   poner(lienzo_,    787 + desp, 2,  mayus(d.puerta || ''));
   poner(lienzo_,    860 + desp, 5,  String(d.cp));
   poner(lienzo_,    865 + desp, 5,  String(d.ineMunicipioResidencia));

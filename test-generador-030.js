@@ -4,12 +4,17 @@
 // Las muestras viven en ~/Downloads y NO se suben al repo: llevan datos reales.
 const fs=require('fs'), path=require('path');
 const {construir030}=require('/Users/hammad/Documents/Taxdown/Proyecto_Mobility_Beckham/Beckham__v0.12/docs/generador-030-2026-08-14.js');
-const DIR='/Users/hammad/Downloads';
+// Las muestras se movieron a ~/Downloads/nuevos030 el 14/08: se busca en los dos sitios.
+const DIRS=['/Users/hammad/Downloads','/Users/hammad/Downloads/nuevos030'];
+const DIR='';
+const donde=f=>{ for(const d of DIRS){ const p=path.join(d,f); if(fs.existsSync(p)) return p; } return null; };
 const buenos=['48013946C (1).030','Z3520584W (2).030','Z4447237P (1).030','Z4871333F.030'];
 const sub=(s,a,b)=>s.slice(a-1,b);
 let fallos=0;
 for(const f of buenos){
-  const orig=fs.readFileSync(path.join(DIR,f)).toString('latin1');
+  const p=donde(f);
+  if(!p){ console.log(`SALTA ${f.padEnd(20)} no esta en ninguna de las dos carpetas`); continue; }
+  const orig=fs.readFileSync(p).toString('latin1');
   const A=orig.match(/<T030010>([\s\S]*?)<\/T030010>/)[1];
   const B=orig.match(/<T030020>([\s\S]*?)<\/T030020>/)[1];
   const d={
@@ -30,7 +35,7 @@ for(const f of buenos){
     nombreVia: sub(A,714,763).trim(),
     numero: sub(A,767,771),
     bloque: sub(A,778,778).trim(),
-    planta: sub(A,784,784).trim(),
+    planta: sub(A,784,785).trim(),   // DOS caracteres: 61078714Y lleva '04'
     puerta: sub(A,787,788).trim(),
     cp: sub(A,860,864),
     ineMunicipioResidencia: sub(A,865,869),
