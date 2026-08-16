@@ -12,8 +12,8 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
   Satélites: `beckham_alertas` (`BJfExmwu1fI1aPpY`, errorWorkflow), `beckham_f2_plazo.`
   (`wdOOF0ecCkgFOUjt`), `beckham_hypatia`, `Sync status_renta - Beckham`.
 - **Airtable** (MCP). Tabla `Empleados` = el expediente del cliente. El escritor único acepta
-  **52 columnas** y ninguna más (eran 20 hasta el 6/08 y 45 hasta el 7/08; la tool
-  `guardar_datos_cliente` va por **36 parámetros**): lo que no está en el contrato no se pierde por
+  **57 columnas** y ninguna más (20 hasta el 6/08, 45 hasta el 7/08, 56 hasta el 14/08; la tool
+  `guardar_datos_cliente` va por **41 parámetros**): lo que no está en el contrato no se pierde por
   un bug, NO EXISTE EL CAMINO (el escritor ignora claves desconocidas y devuelve `ok:true`).
   El nodo `Airtable Upser Expediente` va con **`typecast: true`, y eso NO se apaga**: `ponerFecha`
   produce un datetime y las columnas son de solo fecha, así que typecast es lo que hace que Airtable
@@ -23,16 +23,166 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
   en el canvas, F2 (plazo de 6 meses) delegado a n8n.
 - **LangSmith**: fuente de verdad del prompt. `promptName: bot_mobility_prompt`, `promptTag: prod`.
   **Manda el tag `prod`, no el último commit.**
-  Versión vigente: **v7** (10/08). Copias en `docs/prompt-langsmith-prod-*.txt`. **Nunca arrastrar a
+  Versión vigente: **v8** (14/08, `docs/prompt-final-2026-08-14-v8.txt`). Copias en `docs/prompt-langsmith-prod-*.txt`. **Nunca arrastrar a
   una publicación un parche que el log marque como no verificado**: el v5 iba sin validar, entró
   dentro del v6 y metió un bucle infinito en la pregunta del idioma.
 - **Slack** (MCP) para los avisos de negocio y de error.
 
+## Estado al 16/08/2026 (sesión de madrugada, domingo)
+
+**Nada del bot se ha tocado.** Toda la sesión fue documentación, orden y metadatos. `beckham_bot`
+sigue en `d15a8da8` con 54 nodos, y los tres workflows principales están auditados y sin deriva.
+
+- **`docs/arquitectura-completa-2026-08-16.md`** — la arquitectura entera de punta a punta, con
+  5 diagramas Mermaid (los 5 pasan `mermaid.parse()` de Mermaid v11, el mismo parser que usa GitHub)
+  y las 14 decisiones de arquitectura con su porqué.
+- **`proyecto-mobility/`** — la carpeta lista para el repo nuevo: `README.md` de 894 líneas con el
+  banner y los 7 diagramas en PNG, y `workflows-n8n/` con **los 7 workflows exportados**, que es la
+  primera vez que están todos. `beckham_adjuntos_huerfanos` no tenía export hasta hoy.
+- **La carpeta de trabajo, reorganizada.** De 34 ficheros sueltos en la raíz a 1. Estructura nueva:
+  `plan/`, `informes/`, `referencia/`, `_archivo/`, `_externo/`. **`push-cierre.sh` actualizado**,
+  porque copiaba de la raíz por nombre y esas rutas ya no existían.
+- **Airtable: las 93 columnas de `Empleados` ya tienen descripción**, las 60 que faltaban escritas
+  por MCP. Cada una lleva delante su grupo (`① IDENTIDAD`, `② PERSONALES`…).
+
+### Tres correcciones a la documentación, cazadas esta sesión
+
+1. **La tabla `Empleados` tiene 93 columnas, no 64.** Estaba mal en tres sitios. Corregido.
+2. **NO es cierto que «no haya tests»**, y lo decían el README y el doc de arquitectura. Hay **14
+   ficheros de prueba y 3.609 líneas**, y `montar-nodo-informe.sh` los usa **como puerta**: `exit 1`
+   si alguna está roja, y revierte al `COMPLETO` anterior si falla la de integración. La frase venía
+   arrastrada del briefing del 12/08, que era cierto **antes** de que existieran los generadores.
+3. **«Campo nuevo = CUATRO sitios»**, no tres: la tool, el validador, el mapeo de Airtable **y el
+   prompt**. El doc seguía diciendo tres.
+
+### `AIRTABLE NO DEJA REORDENAR COLUMNAS POR API`
+
+El orden de campos es una propiedad **de la vista**, no de la tabla, y la Metadata API no expone
+ningún endpoint para reordenar. Comprobado contra el MCP: `create_field` añade **siempre al final**,
+`update_field` solo toca nombre/descripción/fórmula, y no hay `create_view`. **Se arrastra a mano en
+la UI.** El orden propuesto, en 11 grupos y con las 93 columnas numeradas, está en
+`docs/orden-columnas-empleados-2026-08-16.md`. El usuario hizo la mitad el 16/08.
+
+### Sin decidir, no se ha tocado nada
+
+`PaisNacimiento`, `Nacionalidad` y `UltimoPaisResidencia` llevan **la lista entera de 245 países
+volcada dentro del campo descripción**, lo que deja el popup de información inservible. Se preguntó
+si limpiarlas y no hubo respuesta. **No se han tocado.**
+
+### Lo siguiente, en este orden
+
+1. **Probar `FechaLlamada` en conversación real** — es lo único del 15/08 que quedó sin empezar.
+   Decirle al bot una fecha de reunión, ver que llega a la columna, marcar `RegenerarInforme` y
+   comprobar que el PDF la imprime en «Fecha de la reunión» en vez de «Por confirmar». Si llega
+   vacía, el sitio que falla es el prompt.
+2. **WP-220: el corpus fiscal al prompt.** Desbloquea las 14 fichas del FAQ. Ya extraído en
+   `docs/corpus-fiscal-beckham-2026-08-13.md`. Falta meter que **la prestación por paternidad de la
+   SS SÍ tributa**.
+
 ## Estado al 14/08/2026
 
 - **`WP-235` CERRADO Y PROBADO DE PUNTA A PUNTA.** El fichero `.030` se genera solo.
-- **Workflow nuevo `beckham_generar_030`** = `OoJ2l7PmxSHLxXA4`, **activo**, cada 15 minutos.
-  Filtro: `AND({Status}="4. Informe enviado", OR({Regenerar030}=1, {Fichero030}=BLANK()))`.
+- **`beckham_bot`**: `versionId` = **`d15a8da8`**, **54 nodos**, y desde el 14/08 por la tarde
+  **57 columnas** en el Upser y **41 parámetros** en la tool (entró `fecha_llamada`). Los 2 nodos de más respecto al 13/08 son **sticky notes que puso el usuario**
+  (confirmado por él el 14/08). Todo lo demás auditado e intacto: 56 columnas, tool de 40 parámetros,
+  validador de 950 líneas (con `ponerFecha('FechaLlamada'…)` en la 222), `Decidir_Status` con el
+  parche de WP-238, typecast true, cero `.item` **en nodos de código**,
+  promptTag `prod`.
+- **Workflow `beckham_generar_030`** = `OoJ2l7PmxSHLxXA4`, **activo**, cada 15 minutos,
+  **8 nodos**, `versionId` = `b9653e09`. Filtro:
+  `AND({Status}="4. Informe enviado", OR({Regenerar030}=1, {Fichero030}=BLANK()))`.
+- **LOS CUATRO FALLOS DEL `.030` DEL 14/08, ARREGLADOS Y PROBADOS CON BYTES.** El cuarto es el
+  `.first()` del nodo de subida, cerrado al final del día y **probado con DOS filas pendientes a la
+  vez** (ejecución 8109532): cada fila con su fichero, los dos con su NIF dentro y difiriendo en 102
+  de 2700 bytes. Con `.first()` habrían sido idénticos y una fila se habría quedado vacía, que es lo
+  que pasó por la mañana. `versionId` del `.030` = `b9653e09`.
+- **Los tres primeros fallos del `.030`, arreglados y verificados** (ejecución 8108631, fichero
+  descargado y leído byte a byte): planta de **2** caracteres en A784-785, A1406 = **`4`**, y nodo
+  nuevo `Vaciar Fichero030` (httpRequest PATCH con `{"fields":{"Fichero030":[]}}`) porque
+  `uploadAttachment` **añade** adjunto, no lo reemplaza. El nodo de limpieza ya mapea
+  `Regenerar030=false` y `Error030=''`: antes solo llevaba `id` y **no limpiaba nada**.
+- **`latin-1` PROBADO EN VIVO**: 2700 bytes exactos con 8 bytes no-ascii. En UTF-8 serían 2708.
+
+### `WP-236` · el informe Mobility — **FUNCIONANDO EN PRODUCCIÓN** el 14/08
+
+Probado con tres ejecuciones reales (8109089 español, 8109100 inglés, 8109104 vuelta al estado real)
+y **los tres correos llegaron**.
+
+- **Workflow** `beckham_informe_mobility` = `Us5sFgXD9qVxJvxO`, 9 nodos, **activo y publicado**.
+- **Automatización** `5. Envío del informe Mobility` = `wflZuMqIE5YYdnU8l`, **encendida y publicada**.
+- **Dos idiomas**: `Idioma = Ingles` → inglés, **todo lo demás incluido vacío** → español.
+- **`FechaLlamada`** (`fldv69piH32yZP89O`) creada. Pero **el origen bueno es Calendly**, no el bot:
+  el prompt le prohíbe al bot decir que ha agendado, y el cliente reserva en
+  `calendly.com/d/csbw-2wr-fq4/movilidad-internacional`. Lo que salva el parche del prompt es que
+  para cerrar con `motivo_cierre='llamada agendada'` **el cliente ya confirma en el chat que ha
+  reservado**: ahí se le pregunta el día. Al 100% sería un webhook `invitee.created` de Calendly.
+- **Prompt final**: `docs/prompt-final-2026-08-14-v8.txt`, 542 líneas, **46.878 caracteres**.
+  Generado parcheando el v7, no reescribiéndolo: el diff son dos añadidos y nada más.
+
+**LA UNIDAD DEL RECUENTO IMPORTA.** `wc -c` da **bytes**; el editor de n8n cuenta **caracteres**. El
+`COMPLETO` lleva ~1.500 acentos y en UTF-8 cada uno son dos bytes, así que los dos números se separan
+casi 3.000 y parece que el pegado se ha quedado corto. **Siempre en caracteres.**
+
+**El MCP de n8n devuelve `credentials={}` en TODOS los nodos**, también en los que funcionan. No se
+puede comprobar por MCP si una credencial está puesta: la única forma es **ejecutar**.
+- **El código a pegar**: `docs/nodo-montar-informe-COMPLETO.js`, **239.131 CARACTERES**
+  (243.054 bytes: la diferencia son los acentos). Se genera con `bash docs/montar-nodo-informe.sh`.
+  El nodo vivo tiene 238.809: le faltan 322 caracteres **de comentario** del cierre del 14/08, y
+  eso entra con el siguiente cambio de verdad. **No es deriva.**
+- **Once pruebas verdes**, y el script **no regenera** el `COMPLETO` si alguna está roja; la de
+  integración corre **después** de concatenar y **revierte** al `COMPLETO` anterior si falla.
+- **La prueba que más vale:** `qlmanage` de macOS **renderiza el PDF con Quartz**. No depende de
+  ninguna expresión regular mía. El informe de la fila real sale a **3 páginas**, y con el logo pesa **29.639 bytes** en Airtable.
+
+
+
+**Se monta un PDF a mano, no se rellena el `.docx`.** Razón, medida: de los 17 marcadores,
+**15 están partidos entre varios `<w:r>`** del XML de Word. Un buscar-y-reemplazar sobre
+`word/document.xml` sustituiría **2 de las 19 apariciones** y dejaría 17 `{{...}}` literales en el
+documento del cliente, sin fallar.
+
+**La cadena, y el correo NO lo manda n8n:**
+```
+beckham_bot cierra el chat  ->  Status = '4. Informe enviado'
+beckham_informe_mobility (n8n, cada 15 min)  ->  monta el PDF, lo sube, marca InformeListo
+Automatización Airtable wflZuMqIE5YYdnU8l  ->  correo con el PDF ADJUNTO
+```
+
+**Por qué el correo va por Airtable y no por n8n:** la acción nativa `sendEmail` **adjunta ficheros
+desde un campo de adjunto** (`spread`), y eso ya está funcionando en producción en la automatización
+`3b` con los borradores del 030 y del 149. **Cero credenciales nuevas**, que es el muro que bloquea
+este proyecto en tres sitios. Y el PDF va **adjunto, no por enlace**, porque las URLs de adjunto de
+Airtable **caducan el mismo día** (medido: una URL de las 10:26 caducaba a las 14:00).
+
+**Columnas nuevas (la tabla va por 64):** `InformePdf` (`fld4QLLBlaYhPjCYR`) ·
+`RegenerarInforme` (`fldTy5NrX11t7UetQ`) · `ErrorInforme` (`fldVeGnGp3QiBe0en`) ·
+`InformeListo` (`fldG6lJfbNCTn6Lg3`, **dispara el correo**) · `InformeEnviadoEl` (`fldBrcZeiZR2Fv77h`).
+
+**Las piezas** (contrato en `docs/contrato-informe-mobility-2026-08-14.md`):
+
+| Fichero | Qué es |
+|---|---|
+| `docs/metrica-helvetica-2026-08-14.js` | anchos de Helvetica y Helvetica-Bold, 256 códigos WinAnsi |
+| `docs/pdf-motor-2026-08-14.js` | el PDF byte a byte: objetos, `xref`, `WinAnsiEncoding` |
+| `docs/informe-datos-2026-08-14.js` | los 17 marcadores y la elección de bloque |
+| `docs/informe-cuerpo-2026-08-14.js` | la plantilla literal convertida al IR |
+| `docs/nodo-informe-glue-2026-08-14.js` | de la fila de Airtable al PDF |
+| `docs/montar-nodo-informe.sh` | **concatena de verdad** y no regenera si una prueba está roja |
+
+**`elegirBloque` acepta CUATRO valores, no tres.** `Situación fiscal Anio Desplazamiento` devuelve
+`No residente NO UE` además de `No residente UE`, y **los dos van al Bloque B**. El regex de la
+fórmula solo reconoce UE + Islandia, Liechtenstein y Noruega: Reino Unido, EEUU, México, Argentina,
+Colombia y Marruecos son todos `No residente NO UE`, o sea **la mayoría del embudo**. Sin esto el
+informe abortaba con casos legítimos. `Situación fiscal AnioSiguiente` solo devuelve dos valores, así
+que **el segundo bloque nunca es B**.
+
+**`.item` y `.first()` en expresiones: son lo contrario de la regla de los nodos de código.** En un
+nodo de código `.item` cuelga el task runner y se usa `.first()`. En una **expresión** de un nodo
+normal, `.item` es el item **emparejado** y `.first()` devuelve siempre el primero: con dos filas
+pendientes, `.first()` le sube el fichero de la primera fila a las dos.
+
+**Abierto, y no lo decide el código:** `{{fechaLlamada}}` no tiene columna (se imprime
+`Por confirmar`), y **la plantilla solo existe en español** mientras `Idioma` tiene opción `Ingles`.
 - **Columnas nuevas**: `Fichero030` (`fldRNvuSpdcRLUXQP`), `Regenerar030` (`fld2cRRnvp6gkz5qc`),
   `Error030` (`fldrKUZl4jdgRU7GO`). La tabla va por **59 columnas**.
 - **Node v26.7.0** instalado en la maquina. No habia runtime de JS y sin el no se puede probar nada

@@ -1,3 +1,13 @@
+> ⚠️ **DOCUMENTO HISTÓRICO · última verdad el 20/07/2026. NO es el estado actual.**
+>
+> Lo sustituye: **`docs/arquitectura-completa-2026-08-16.md`**.
+>
+> Describia solo el Bloque 1 y una arquitectura en la que los filtros F1/F2/F3 vivian en n8n. Desde finales de julio los filtros estan en el canvas de Intercom, asi que el reparto de responsabilidades que cuenta este fichero YA NO ES CIERTO.
+>
+> *Banner añadido el 16/08/2026 al ordenar el repositorio.*
+
+---
+
 # Bot Régimen Beckham — Callback, Fallback y Arquitectura (Bloque ①)
 
 Documento explicativo del mecanismo de comunicación Intercom↔n8n y de la arquitectura

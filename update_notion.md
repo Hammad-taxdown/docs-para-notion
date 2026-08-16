@@ -1,3 +1,13 @@
+> ⚠️ **DOCUMENTO HISTÓRICO · última verdad el 22/07/2026. NO es el estado actual.**
+>
+> Lo sustituye: **`scripts/push-cierre.sh`**.
+>
+> Describia como se subia la documentacion a Notion a mano. Hoy el destino es el repo `docs-para-notion` de GitHub y el proceso esta automatizado en un script.
+>
+> *Banner añadido el 16/08/2026 al ordenar el repositorio.*
+
+---
+
 # Update de seguimiento — Bot Mobility (Ley Beckham)
 
 **Proyecto:** automatización del alta al régimen Beckham vía bot conversacional (Intercom + n8n + Airtable).

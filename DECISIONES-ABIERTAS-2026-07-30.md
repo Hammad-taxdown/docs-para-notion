@@ -1,3 +1,13 @@
+> ⚠️ **DOCUMENTO HISTÓRICO · última verdad el 30/07/2026. NO es el estado actual.**
+>
+> Lo sustituye: **`.spartax/context.md`** (decisiones cerradas) y **`.spartax/log.md`** (el porque de cada una).
+>
+> La mayoria de las decisiones que lista como ABIERTAS estan CERRADAS desde entonces. Se conserva porque documenta el razonamiento previo, no porque el estado que describe siga siendo el actual.
+>
+> *Banner añadido el 16/08/2026 al ordenar el repositorio.*
+
+---
+
 # Decisiones abiertas · Bot Beckham · sesión del 2026-07-30
 
 > **Cómo usar este fichero.** Cada bloque es una pregunta. Debajo de cada una hay dos huecos:

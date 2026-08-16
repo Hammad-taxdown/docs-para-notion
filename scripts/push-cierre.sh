@@ -48,15 +48,37 @@ find "$TRABAJO/docs" -maxdepth 1 -type f -print0 2>/dev/null | while IFS= read -
 done
 echo "   docs/*.md|.txt|.js     -> raíz"
 
-# Planes, runbooks y notas de la raíz del directorio de trabajo
-for f in PLAN-*.md PLAN-RESTO-*.md RUNBOOK-*.md DECISIONES-ABIERTAS-*.md \
-         ESTUDIO-COSTES-*.md NOTAS-PONENTE-*.md INTERCOMDOC.md \
-         contexto_proyecto_beckham.md ARQUITECTURA_bloque1.md; do
-  for real in "$TRABAJO"/$f; do
-    [ -e "$real" ] && cp "$real" "./$(basename "$real")"
+# Planes, runbooks y notas.
+#
+# OJO — 16/08/2026: el directorio de trabajo se REORGANIZÓ y estos ficheros YA NO
+# están en la raíz. El REMOTO SIGUE SIENDO PLANO (decisión del 5/08, opción B), así
+# que se siguen copiando a la raíz del clon: cambia el origen, no el destino.
+#   PLAN-*, ARRANQUE-*, REANUDAR-*, DECISIONES-ABIERTAS-*, Trabajo.md, sesion_*  -> plan/
+#   ESTUDIO-COSTES-*, NOTAS-PONENTE-*                                            -> informes/
+#   INTERCOMDOC.md                                                               -> docs/ (ya lo copia el bloque de arriba)
+#   RUNBOOK-*, contexto_proyecto_beckham.md, ARQUITECTURA_bloque1.md             -> _archivo/
+#
+# Los de _archivo/ se siguen subiendo A PROPÓSITO: ya están en el remoto y quitarlos
+# de la copia no los borraría de allí, solo dejaría versiones viejas sin su banner de
+# «documento histórico». Se suben para que el remoto lleve el banner puesto.
+for origen in "$TRABAJO/plan" "$TRABAJO/plan/historico" "$TRABAJO/informes" "$TRABAJO/_archivo"; do
+  [ -d "$origen" ] || continue
+  find "$origen" -maxdepth 1 -type f -name "*.md" -print0 2>/dev/null | while IFS= read -r -d '' f; do
+    nombre="$(basename "$f")"
+    # Un LEEME.md suelto en la raíz PLANA del remoto no dice de qué carpeta habla.
+    # Se le pone delante el nombre de la carpeta de origen.
+    if [ "$nombre" = "LEEME.md" ]; then
+      nombre="LEEME-$(basename "$origen" | tr -d '_').md"
+    fi
+    cp "$f" "./$nombre"
   done
 done
-echo "   planes y runbooks      -> raíz"
+echo "   plan, informes, archivo -> raíz"
+
+# README del proyecto. En el remoto NO se llama README.md: ese nombre ya lo ocupa el
+# README propio del repo, y pisarlo borraría su portada.
+[ -f "$TRABAJO/README.md" ] && cp "$TRABAJO/README.md" "./LEEME-PROYECTO.md" \
+  && echo "   README.md              -> LEEME-PROYECTO.md"
 
 # Los scripts de prueba
 if [ -d "$TRABAJO/scripts" ]; then

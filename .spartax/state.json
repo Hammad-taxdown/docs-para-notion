@@ -618,7 +618,7 @@
       "depends": [],
       "effort": 2.0,
       "status": "planned",
-      "note": "APLAZADA POR DECISION DEL USUARIO el 10/08: el idioma se mueve al canvas CUANDO SE EMPIECE A MIGRAR A PRODUCCION. Su razonamiento: es una cosa facil que solo consume tiempo, asi que no compite con el trabajo de riesgo. NO se reabre antes. El parche del prompt v5 sigue puesto como mitigacion parcial; lo que queda pendiente es mover la pregunta AL CANVAS, antes de F1 (causa raiz en la traza 8090968: cuando el agente entra, el canvas lleva ya cinco turnos en espanol).",
+      "note": "16/08: sin empezar. Sigue planificada.",
       "created_at": "2026-08-10T07:50:23Z",
       "planned_at": "2026-08-10T10:11:12Z"
     },
@@ -674,9 +674,10 @@
       "verify": "El cliente recibe un PDF con lo recogido al terminar el flujo",
       "depends": [],
       "effort": 2.0,
-      "status": "planned",
-      "note": "13/08: decidido que el informe se genera y se ENVIA ANTES de cerrar el chat, no como tool del agente sino en la cadena del cierre, antes de Cerrar_Conversacion. Consecuencia: el Status pasa directo a '4. Informe enviado' y el peldano 3 deja de aplicar.",
-      "created_at": "2026-08-10T08:59:05Z"
+      "status": "done",
+      "note": "WP-236 cerrado y en produccion el 14/08: informe PDF ES/EN generado por beckham_informe_mobility y enviado por la automatizacion wflZuMqIE5YYdnU8l. Cuatro ejecuciones reales con los correos recibidos. La ficha estaba sin actualizar en state.json.",
+      "created_at": "2026-08-10T08:59:05Z",
+      "done_at": "2026-08-15T23:53:21Z"
     },
     "T058": {
       "title": "Whitelist: anadir nie:'DNI' a COLUMNA_POR_TIPO (linea 723) · hoy tipo_documento=nie se descarta con ok:true y el fichero NO se guarda",
@@ -691,5 +692,5 @@
     }
   },
   "next_task": 59,
-  "updated_at": "2026-08-13T16:14:27Z"
+  "updated_at": "2026-08-16T01:30:26Z"
 }

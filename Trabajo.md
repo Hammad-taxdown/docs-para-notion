@@ -1,3 +1,13 @@
+> ⚠️ **DOCUMENTO HISTÓRICO · última verdad el 13/08/2026. NO es el estado actual.**
+>
+> Lo sustituye: **`.spartax/log.md`**.
+>
+> Narrativa de cierres de sesion hasta el 13/08. Sigue siendo la mejor fuente para entender COMO se llego a cada decision, pero el estado que describe es el de esa fecha, no el de hoy.
+>
+> *Banner añadido el 16/08/2026 al ordenar el repositorio.*
+
+---
+
 # Trabajo — Bot Beckham (n8n) · Bitácora
 
 Bitácora de trabajo del proyecto de automatización del régimen Beckham (Intercom + n8n + Airtable).

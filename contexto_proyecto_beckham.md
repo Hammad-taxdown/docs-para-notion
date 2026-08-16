@@ -1,3 +1,13 @@
+> ⚠️ **DOCUMENTO HISTÓRICO · última verdad el 20/07/2026. NO es el estado actual.**
+>
+> Lo sustituye: **`.spartax/context.md`**.
+>
+> Era el resumen vivo del proyecto antes de que existiera `.spartax/`. Todos sus datos (ids, stack, convenciones) estan desactualizados.
+>
+> *Banner añadido el 16/08/2026 al ordenar el repositorio.*
+
+---
+
 # Contexto del proyecto — Automatización expediente Ley Beckham
 
 **Autor:** Hammad (Tax Operations, TaxDown) · con Paula Escudero como coautora
