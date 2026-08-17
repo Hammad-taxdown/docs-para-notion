@@ -613,7 +613,7 @@ separan casi 3.000 y parece que el pegado se quedó corto. **Siempre en caracter
 | Qué | Estado |
 |---|---|
 | `FechaLlamada` | Columna creada y los 4 sitios del bot puestos. **Sin probar en conversación real.** El origen bueno sería un webhook `invitee.created` de Calendly, no el bot. |
-| Corpus fiscal en el prompt (WP-220) | Extraído en `docs/corpus-fiscal-beckham-2026-08-13.md`, pendiente de entrar. Desbloquea las 14 fichas del FAQ. Falta añadir que **la prestación por paternidad de la SS sí tributa**. |
+| Corpus fiscal en el prompt (WP-220) | Extraído en `docs/corpus-fiscal-beckham-2026-08-13.md`, pendiente de entrar. Desbloquea el FAQ (`WP-221`), cuyo gate son las **30 preguntas doradas**. Falta añadir que **la prestación por paternidad de la SS sí tributa**. |
 | Auth de los webhooks (T053) | Probada y **apagada a propósito**. Se activa una vez en producción, con token nuevo. Ver §1.14. |
 | Casillas 772-790 del `.030` | Bloque/escalera/planta/puerta: no se sabe cuál es cuál. No se resuelve sin una muestra con planta **y** escalera a la vez, y no hay más muestras. |
 | Fecha de efectos (1390-1397) del `.030` | La regla es deducción nuestra, **no la ha firmado Fiscal**. Encaja con las cuatro muestras. |

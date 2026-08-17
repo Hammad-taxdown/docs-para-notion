@@ -274,6 +274,40 @@ En el apartado del Modelo 720 (declaración informativa sobre bienes y derechos 
 
 El único enunciado cerrado del manual sobre esta cuestión es el recogido en el apartado 2 de este corpus: acogerse al régimen «implica que no se declaran los bienes en el extranjero».
 
+### CERRADO EL 17/08/2026 · texto que sustituye a la anotación
+
+> Los contribuyentes acogidos al régimen especial de trabajadores desplazados (art. 93 LIRPF) **no
+> están obligados a presentar el Modelo 720**, durante todos los periodos impositivos en que el
+> régimen resulte de aplicación. El fundamento no es una exención textual del Reglamento, sino que la
+> obligación de informar solo genera consecuencias (sancionadoras y de imputación como ganancia no
+> justificada) para quienes tributan por la **integridad de su renta**, circunstancia que no concurre
+> en este régimen, donde se tributa según las normas del IRNR. **Fuente: AEAT/DGT, Preguntas
+> frecuentes Modelo 720, Pregunta 4** (cita literal: la respuesta es «No»).
+>
+> **Esta no obligación NO se extiende automáticamente al resto de la unidad familiar.** El cónyuge y
+> los hijos residentes fiscales en España que NO tengan su propio acogimiento al art. 93 **sí están
+> obligados** si superan los umbrales — esto también es criterio expreso de la Pregunta 4.
+
+**Alcance temporal: los 6 ejercicios completos, incluido el año de llegada.** La Pregunta 4 no
+distingue por ejercicio: liga la no obligación a «no tributar por la integridad de la renta», y eso
+concurre en todos los periodos en que el régimen esté vigente.
+
+**NIVELES DE CERTEZA, y en el prompt van marcados como tales:**
+
+| Afirmación | Certeza |
+|---|---|
+| No obligado al 720 mientras dure el régimen | **Cita literal** de la FAQ oficial, Pregunta 4 |
+| Los 6 ejercicios, incluido el de llegada | **Cita literal** (la FAQ no distingue por ejercicio) |
+| El familiar residente SIN acogimiento propio sí está obligado | **Cita literal**, segundo párrafo de la Pregunta 4 |
+| Al salir, la obligación renace desde el primer ejercicio en régimen general (renuncia → siguiente · exclusión → en curso · fin de los 6 años → 7.º) | **Regla derivada**, no cita textual. Combina la Pregunta 4 con lo que el manual ya dice de renuncia y exclusión |
+| El familiar CON acogimiento propio (vía art. 93.1.b, Ley 28/2022) también estaría exento | **Extensión razonada sin confirmación oficial.** La FAQ es anterior a la reforma de 2022 |
+| El Modelo 721 sigue el mismo criterio | **Extensión razonada.** El 721 es un calco estructural del 720, pero su FAQ oficial no dedica pregunta al régimen |
+
+**Fuentes:** DA 18.ª LGT y arts. 42 bis, 42 ter y 54 bis RGAT · AEAT/DGT *Preguntas frecuentes M.720*,
+Pregunta 4 · DA 19.ª LGT (Ley 11/2021) y art. 42 quater RGAT para el 721 · art. 93 LIRPF con la
+extensión familiar del 93.1.b) de la Ley 28/2022 · CV 1662-23 (tributación de criptos, cuestión
+DISTINTA de la obligación informativa).
+
 ---
 
 ## Marcas de contenido no recuperable
@@ -281,3 +315,46 @@ El único enunciado cerrado del manual sobre esta cuestión es el recogido en el
 - **Apartado 6:** el manual inserta una captura de la resolución de alta en la Seguridad Social como ejemplo visual; no es texto y no se ha reproducido.
 - **Apartado 6.1:** la chuleta de casillas aparece en el original como notas sueltas de maquetación; se ha tabulado sin añadir información.
 - **Apartado 10:** `[ILEGIBLE]` — frase cortada en el PDF original sobre exenciones del Modelo 720 para acogidos al régimen Beckham.
+
+---
+
+## APÉNDICE · Desajustes entre este corpus y el prompt vivo, detectados el 17/08/2026
+
+> **El contenido aprobado de arriba no se ha tocado.** Esto es una anotación posterior, escrita al
+> preparar `WP-220` (el corpus al prompt), y registra tres sitios donde el corpus y el prompt en
+> producción no dicen lo mismo.
+
+**1. El recuadro del umbral (apartado 2) está SUPERADO.** Dice que al cliente se le contesta «entre
+50.000 y 55.000 €». La decisión del **14/08/2026** lo rectifica expresamente: *«Umbral: NO SE TOCA,
+los tramos de 55.000 y 60.000 del prompt son correctos (rectifica lo del 13/08)»*. El prompt va con
+60.000 / 55.000 y **así se queda**. Ese recuadro **no se ha llevado al prompt**.
+
+**2. La paternidad — CERRADO EL 17/08/2026: TRIBUTA. Decisión del usuario, no se reabre.** Se aportó ese
+día un documento fiscal que concluía que estaba exenta (remisión del TRLIRNR al art. 7 LIRPF) y **se
+descartó** para el régimen Beckham. No se toca el prompt, ni este corpus, ni la plantilla del informe.
+Nota adicional: El apartado 3 de este corpus solo habla de
+**maternidad**. El prompt afirma, desde la versión v3 del **06/08/2026** y en todas las posteriores,
+que *«la prestación por paternidad (y la de maternidad) de la Seguridad Social SÍ tributa»*. El
+razonamiento es el mismo (exenta en IRPF, no exenta en IRNR), pero **el corpus aprobado no menciona la
+paternidad**. Conviene que Alina la bendiga explícitamente para que corpus y prompt digan lo mismo.
+
+**3. Los Modelos 720 y 721: el prompt afirma bastante más que el corpus, y lleva 11 días en
+producción.** Esto es lo importante de las tres.
+
+- Lo que tiene **cerrado** este corpus: la frase del apartado 2, *«implica que no se declaran los
+  bienes en el extranjero»* — sin años, sin modelos concretos y sin excepciones. Y el apartado 10
+  recoge que el **propio manual** dejó el punto abierto con un `[ILEGIBLE]` y la marca «(MIRAR?)».
+- Lo que **afirma el prompt** desde el 06/08 (línea 19): *«mientras dure el régimen, no hay obligación
+  de presentar los Modelos 720 (bienes en el extranjero) ni 721 (criptoactivos)»*. Eso añade **tres
+  cosas** que el corpus no dice: que son esos dos modelos concretos, que **incluye el 721**, y que
+  aplica **durante todo el régimen**.
+
+**Decisión tomada el 17/08 al construir el v9:** se **mantiene** la línea 19 tal cual, porque llevaba
+once días en producción y retirarla en silencio es peor que dejarla; el bloque fiscal nuevo se ha
+escrito **coherente con ella** para que el prompt no se contradiga consigo mismo; y se han **acotado
+expresamente** los tres bordes que nadie ha respondido (salida del régimen, cónyuge e hijos acogidos,
+y umbrales/plazos/sanciones), que ahora caen en «no lo tengo confirmado».
+
+**RESUELTO EL 17/08/2026.** La afirmación del prompt era **correcta** y ahora tiene respaldo: la FAQ
+oficial del Modelo 720, Pregunta 4, responde «No» expresamente para los acogidos al art. 93. Ver el
+cierre del apartado 10. Del 721 no hay FAQ oficial específica, así que va con su salvedad explícita.

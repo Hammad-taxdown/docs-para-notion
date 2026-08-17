@@ -1,7 +1,7 @@
 ---
 id: WP-236
 title: "Informe Mobility: memoria fiscal montada por bloques"
-status: specified
+status: done
 size: L
 depends_on: [WP-235]
 milestone: "Fase 2 conversacional — Expediente y documentos"

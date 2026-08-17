@@ -1,12 +1,12 @@
 ---
 id: WP-237
 title: "Enviar borradores y confirmación: solo falta el salto de Status 7 a 8"
-status: specified
+status: done
 size: S
 depends_on: [WP-235]
 milestone: "Fase 2 conversacional — Expediente y documentos"
 owner: "Hammad"
-external: "Decisión de negocio (¿4.3 confirma?)"
+external: ""
 critical: true
 issue: ""
 ---

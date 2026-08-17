@@ -1,7 +1,7 @@
 ---
 id: WP-235
 title: "Generar el fichero .030 desde plantilla (NO es un PDF, es texto posicional)"
-status: specified
+status: done
 size: M
 depends_on: [WP-234]
 milestone: "Fase 2 conversacional — Expediente y documentos"

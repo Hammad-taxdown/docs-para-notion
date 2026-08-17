@@ -1,7 +1,7 @@
 ---
 id: WP-238
 title: "Fix de Decidir_Status: el Status final depende de motivo_cierre"
-status: building
+status: done
 size: S
 depends_on: []
 milestone: "Fase 2 conversacional — Expediente y documentos"

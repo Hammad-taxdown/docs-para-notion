@@ -1,7 +1,7 @@
 ---
 id: WP-234
 title: "AplicaBeckham y complejidad del caso, escritos por el agente"
-status: building
+status: done
 size: M
 depends_on: []
 milestone: "Fase 2 conversacional — Expediente y documentos"

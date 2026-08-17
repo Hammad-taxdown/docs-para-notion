@@ -1,12 +1,12 @@
 ---
 id: WP-228
-title: "FAQ multi-turno en n8n detrás del trigger de mensaje (pospuesto hasta que cierre WP-10)"
-status: blocked
+title: "FAQ multi-turno en n8n detrás del trigger de mensaje"
+status: specified
 size: L
-depends_on: [WP-10, WP-221, WP-222, WP-227]
-milestone: "Fase 2 conversacional — Pospuesto"
+depends_on: [WP-221, WP-222, WP-227]
+milestone: "Fase 2 conversacional — FAQ"
 owner: "Hammad"
-external: "Adri / Fer (dueños del distribuidor y del ticket type) vía WP-10"
+external: ""
 critical: true
 issue: ""
 ---

@@ -22,6 +22,11 @@ issue: ""
 > callback por paso; y los reply buttons **no impiden** escribir en el composer, así que la mitigación
 > sería probabilística.
 
+> **CORREGIDO EL 17/08/2026:** la tool `buscar_contexto_fiscal` esta **DESCARTADA** por la
+> decision de `WP-220` (07/08, escrita el 11/08): el conocimiento fiscal va **inline en el
+> `systemMessage`**, sin corpus externo y sin tool de busqueda. Este documento seguia
+> nombrandola. El gate de `WP-220` prohibe que el prompt nombre una tool que no este cableada.
+
 ## 1. Objetivo
 
 Que el usuario pueda hacer una pregunta sobre el régimen, recibir respuesta del mismo agente sin
@@ -33,8 +38,9 @@ ninguna tool de escritura de expediente, y elegir explícitamente qué hacer des
 - `Set modo_bot=faq_regimen` (ya escrito por `AOPT`, WP-213).
 - `Collect data` con la pregunta libre.
 - DC con `punto=faq_entrada` y `wait_for_callback`.
-- Respuesta del nodo FAQ del agente, con `buscar_contexto_fiscal`, `escalar_humano` y
-  `registrar_optout` como únicas tools.
+- Respuesta del nodo FAQ del agente **con el conocimiento fiscal inline en su propio prompt**
+  (`WP-220`), y con `escalar_humano` y `registrar_optout` como **únicas dos tools**.
+  **`buscar_contexto_fiscal` NO existe: descartada en `WP-220`.**
 - Reply buttons `WDONE`: *otra pregunta* · *ya está, quiero empezar* · *hablar con una persona*.
   `WDONE` es un **botón**, nunca intención inferida por el LLM ni tool que fije el estado: si el LLM
   decide, elige su propio nivel de privilegio. El agente puede *proponer* (`sugerencia_modo` en su

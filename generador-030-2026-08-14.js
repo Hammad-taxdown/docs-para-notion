@@ -25,12 +25,21 @@
 //   posicion a posicion: solo 190 de 1481 varian entre ellos.
 //
 // LO QUE NO SE HA PODIDO DESCIFRAR, dicho aqui y no escondido:
-//   - Posiciones 772-790 (la "zona gris"): dentro viven bloque, planta y puerta,
-//     pero con una sola muestra por caso no se sabe el ancho real de cada uno.
-//     Se dejan como parametros opcionales y en blanco por defecto, que es
-//     exactamente lo que hace una de las cuatro muestras reales.
-//   - Posicion 1406: un caracter suelto, '4' en las muestras de mayo y julio y
-//     BLANCO en las dos de agosto. Se pone blanco por seguir a las mas recientes.
+//   - Posiciones 784 y 790 (dentro de la "zona gris" del domicilio): son DOS
+//     subcampos mas, probablemente escalera y portal. Solo UNA de las 16 muestras
+//     los usa (Z3520584W del 17/08, con '3' en 784 y 'A' en 790); las otras 15 los
+//     dejan en blanco, y en blanco se dejan. No hay columna en Airtable ni pregunta
+//     del bot para ellos.
+//     EL RESTO DE LA ZONA GRIS YA NO ES GRIS, y esta resuelto con 16 muestras:
+//     793-794 planta (dos caracteres, a la izquierda: 61078714Y lleva '04'),
+//     796-797 puerta (dos caracteres, a la izquierda: Z4447237P lleva '14') y
+//     787 bloque (uno). Ver el comentario de escribirDomicilio, que explica ademas
+//     el mapa alternativo que se probo el 17/08 y por que es FALSO.
+//   - Posicion 1406 del lienzo (absoluta 1415): un caracter suelto. Lleva '4' en
+//     13 de las 14 muestras de la version 20250203 y blanco en dos (Z3520584W y
+//     Z4871333F). MANDA EL '4' por recuento 13 a 1, y esas dos muestras son las dos
+//     unicas diferencias que dejan las pruebas. Ojo: la muestra NUEVA del 17/08 del
+//     mismo Z3520584W SI lleva '4', o sea que la eleccion se confirma.
 //   - Posiciones 627-639 y 670-671 (T030010) y 379-388, 419-423 y 642-656
 //     (T030020): identicas en las cuatro muestras y sin significado conocido.
 //     Se copian tal cual.
@@ -278,11 +287,36 @@ function escribirDomicilio(lienzo_, desp, d) {
   poner(lienzo_,    714 + desp, 50, mayus(d.nombreVia));
   poner(lienzo_,    764 + desp, 3,  'NUM');
   ponerNum(lienzo_, 767 + desp, 5,  d.numero);
-  // La zona gris. En blanco salvo que se sepa; ver la cabecera del fichero.
+
+  // ── 17/08/2026 · LA ZONA GRIS, REVISADA CON 16 MUESTRAS Y CONFIRMADA ────────
+  // Llego una muestra nueva (Z3520584W del 17/08) con SEIS subcampos del domicilio
+  // rellenos a la vez, la primera que los tiene. Se reviso todo el tramo y la
+  // conclusion es que ESTO YA ESTABA BIEN. Se deja escrito para no volver a dudar:
+  //
+  //   793-794  PLANTA, dos caracteres, ALINEADA A LA IZQUIERDA.
+  //            61078714Y lleva '0' en 793 y '4' en 794, o sea planta '04'.
+  //   796-797  PUERTA, dos caracteres, ALINEADA A LA IZQUIERDA.
+  //            Z4447237P lleva '1' en 796 y '4' en 797, o sea puerta '14'.
+  //            Las demas llevan una sola letra en 796: B, C, A.
+  //   787      BLOQUE, un caracter. 14263945N lo lleva con planta 3 y puerta B.
+  //
+  // SE PROBO A LEERLO COMO CINCO CAMPOS DE 3 ALINEADOS A LA DERECHA y ES FALSO:
+  // con ese mapa, Z4447237P sale '14 ' donde el fichero real dice ' 14', y
+  // 61078714Y pierde el '4' de su planta. Las pruebas contra las 16 muestras lo
+  // cazaron en el primer intento. NO SE VUELVE A INTENTAR sin una muestra que lo
+  // contradiga byte a byte.
+  //
+  // LO QUE SIGUE SIN ESCRIBIRSE, y es correcto no escribirlo: las posiciones 784 y
+  // 790 existen y son OTROS DOS subcampos (probablemente escalera y portal). Solo
+  // UNA de las 16 muestras los usa -- la del 17/08, que llevaba '3' en 784 y 'A' en
+  // 790 -- y las otras 15 los dejan en blanco. No hay columna en Airtable para
+  // ellos y el bot no los pregunta, asi que van en blanco como en las 15.
+  //
+  // ANOMALIA DE UNA MUESTRA, dicha y no tapada: Z3520584W(2) lleva su '2' de
+  // "Gaztambide 18, 2o C" en el BLOQUE (787) y no en la planta. Quien rellenó ese
+  // formulario en la sede metio el piso en la casilla equivocada. Es un error de
+  // tecleo de esa muestra, no del mapa.
   poner(lienzo_,    778 + desp, 1,  mayus(d.bloque || ''));
-  // La planta ocupa DOS caracteres, no uno. Probado con 61078714Y, que lleva '04'
-  // en 784-785 y en su espejo del <T030020>. Con ancho 1 la planta '10' o '04' se
-  // recortaba a '1' y a '0' SIN FALLAR: dato equivocado en el fichero de Hacienda.
   poner(lienzo_,    784 + desp, 2,  mayus(d.planta || ''));
   poner(lienzo_,    787 + desp, 2,  mayus(d.puerta || ''));
   poner(lienzo_,    860 + desp, 5,  String(d.cp));

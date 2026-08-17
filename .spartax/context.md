@@ -75,7 +75,7 @@ si limpiarlas y no hubo respuesta. **No se han tocado.**
    Decirle al bot una fecha de reunión, ver que llega a la columna, marcar `RegenerarInforme` y
    comprobar que el PDF la imprime en «Fecha de la reunión» en vez de «Por confirmar». Si llega
    vacía, el sitio que falla es el prompt.
-2. **WP-220: el corpus fiscal al prompt.** Desbloquea las 14 fichas del FAQ. Ya extraído en
+2. **WP-220: el corpus fiscal al prompt.** Desbloquea el FAQ (`WP-221`), cuyo gate son las **30 preguntas doradas**. Ya extraído en
    `docs/corpus-fiscal-beckham-2026-08-13.md`. Falta meter que **la prestación por paternidad de la
    SS SÍ tributa**.
 

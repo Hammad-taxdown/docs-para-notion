@@ -1,7 +1,7 @@
 ---
 id: WP-239
 title: "ResumenBot = ficha + prosa (el formato ya existe, la tool pedía lo contrario)"
-status: building
+status: done
 size: S
 depends_on: []
 milestone: "Fase 2 conversacional — Expediente y documentos"

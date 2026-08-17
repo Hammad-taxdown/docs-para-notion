@@ -1,7 +1,7 @@
 ---
 id: WP-209
-title: "Experimento sonda: duplicado desechable de OnClick Mobility que cierra nueve incógnitas"
-status: specified
+title: "MUERTA (14/08/2026) · Experimento sonda: duplicado desechable de OnClick Mobility que cierra nueve incógnitas"
+status: done
 size: M
 depends_on: []
 milestone: "Fase 2 conversacional — Prerrequisitos"

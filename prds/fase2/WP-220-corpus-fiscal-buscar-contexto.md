@@ -1,7 +1,7 @@
 ---
 id: WP-220
 title: "System Prompt como fuente única de conocimiento fiscal (sin corpus externo ni tool de búsqueda)"
-status: specified
+status: building
 size: S
 depends_on: []
 milestone: "Fase 2 conversacional — FAQ"

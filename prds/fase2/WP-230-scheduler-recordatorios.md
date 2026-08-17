@@ -3,10 +3,10 @@ id: WP-230
 title: "BECKHAM_recordatorios_leads: scheduler con cola derivada (solo si el manager mete los recordatorios en alcance)"
 status: specified
 size: L
-depends_on: [WP-10, WP-225]
+depends_on: [WP-225]
 milestone: "Fase 2 conversacional — Pospuesto"
 owner: "Sin asignar (decisión M2)"
-external: "Manager (M1, M2, M3) · Adri / Fer vía WP-10"
+external: "Manager (M1 alcance · M2 dueño)"
 critical: false
 issue: ""
 ---

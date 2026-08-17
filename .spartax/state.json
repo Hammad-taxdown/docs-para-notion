@@ -428,9 +428,10 @@
       "verify": "pendiente de definir",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
+      "status": "done",
       "created_at": "2026-08-06T12:30:00Z",
-      "note": "13/08: tres bloqueos de conversion resueltos (paises ISO-2 245/245, provincias 52/97 alias, tipo de via no hacia falta). Tres columnas creadas: ApellidoPrimero, ApellidoSegundo, MunicipioResidencia. Pendiente: publicar los tres sitios, el codigo INE de municipio, y una muestra .030 con direccion completa."
+      "note": "17/08: CERRADA con nota de alcance. El titulo dice 'modelos 030 Y 149' pero la decision tomada es que el bot SOLO genera el 030 (fichero posicional de 2700 bytes, ISO-8859-1, probado con bytes y con dos filas a la vez, ejecucion 8109532). El 149 lo rehace un fiscal a mano. Lo que estaba en alcance esta entregado. WP-235 = T036.",
+      "done_at": "2026-08-17T10:02:06Z"
     },
     "T037": {
       "title": "Decidir la nacionalidad: columna nueva o dejar de preguntarla",
@@ -692,5 +693,5 @@
     }
   },
   "next_task": 59,
-  "updated_at": "2026-08-16T01:30:26Z"
+  "updated_at": "2026-08-17T10:02:06Z"
 }

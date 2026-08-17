@@ -489,7 +489,7 @@ subworkflow-tool, con `modo` y `conversation_id` fijados por `workflowInputs.def
 
 | Tool | FAQ | Solicitud | Lead | Aprobación | Observaciones |
 |---|---|---|---|---|---|
-| `buscar_contexto_fiscal(consulta)` | ✔ | ✔ | ✔ | No | Corpus aprobado y versionado. Devuelve cita o `no_cubierto`. **Sin corpus, el modo FAQ no es publicable** — bloqueo de contenido, no de ingeniería |
+| ~~`buscar_contexto_fiscal(consulta)`~~ **DESCARTADA (WP-220)** | — | — | — | — | **No se implementa.** El conocimiento va inline en el `systemMessage`. **Sin corpus, el modo FAQ no es publicable** — bloqueo de contenido, no de ingeniería |
 | `escalar_humano(motivo)` | ✔ | ✔ | ✔ | No | Debe **asignar de verdad**. Coexiste con el botón. Es el freno legal |
 | `registrar_optout()` | ✔ | ✔ | ✔ | No (pasa por guarda) | **Única escritura permitida en FAQ.** Toca solo `recordatorio_optout` |
 | `iniciar_solicitud()` | ✔ | ✖ | ✔ | No (pasa por guarda) | Sustituye al inexistente `RESUME→B`. **Solo si V1 es viable** (WP-229) |
@@ -1104,7 +1104,7 @@ flowchart TB
     RSV["Resolver_Modo · determinista<br/>lee modo_bot de la API server-side<br/>NUEVO"]
     PB["Ensamblador de prompt<br/>base + modo + contexto + historial<br/>systemMessage a EXPRESION"]
     subgraph AG["MISMO AGENTE · mismo prompt base · mismo modelo David Beckham"]
-      AF["Nodo FAQ<br/>tools: buscar_contexto_fiscal,<br/>escalar_humano, registrar_optout,<br/>iniciar_solicitud"]
+      AF["Nodo FAQ · conocimiento inline<br/>tools: escalar_humano,<br/>registrar_optout, iniciar_solicitud"]
       AS["Nodo Solicitud<br/>tools: get/upsert expediente,<br/>escalar, cerrar"]
     end
     UPS["BECKHAM_upsert_expediente<br/>UNICO ESCRITOR · whitelist punto<br/>JSON.parse + guarda count==1<br/>EXTRAER"]
