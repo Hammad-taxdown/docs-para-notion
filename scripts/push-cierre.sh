@@ -80,6 +80,14 @@ echo "   plan, informes, archivo -> raíz"
 [ -f "$TRABAJO/README.md" ] && cp "$TRABAJO/README.md" "./LEEME-PROYECTO.md" \
   && echo "   README.md              -> LEEME-PROYECTO.md"
 
+# 19/08/2026 · El CLAUDE.md, que vive en la RAIZ y no en docs/, y que hasta hoy no
+# se subia nunca. Es el documento que se carga en cada sesion -- la rutina, las
+# reglas con prueba y las decisiones cerradas -- asi que dejarlo solo en el portatil
+# no tiene sentido. No expone nada nuevo: context.md y arquitectura-completa, que ya
+# estaban en el remoto, llevan los mismos IDs y la misma URL de webhook.
+[ -f "$TRABAJO/CLAUDE.md" ] && cp "$TRABAJO/CLAUDE.md" "./CLAUDE.md" \
+  && echo "   CLAUDE.md              -> raíz"
+
 # Los scripts de prueba
 if [ -d "$TRABAJO/scripts" ]; then
   mkdir -p scripts

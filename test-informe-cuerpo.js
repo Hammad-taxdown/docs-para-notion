@@ -36,7 +36,7 @@
 const {
   montarElementos,
   comprobarSalida
-} = require('/Users/hammad/Documents/Taxdown/Proyecto_Mobility_Beckham/Beckham__v0.12/docs/informe-cuerpo-2026-08-14.js');
+} = require('/Users/hammad/Documents/Taxdown/Proyecto_Mobility_Beckham/Beckham__v0.12/docs/informe-cuerpo-2026-08-19.js');
 
 let fallos = 0;
 let pruebas = 0;
@@ -64,6 +64,11 @@ const SITUACION = {
 function datosDeEjemplo(bloque1, bloque2, anioDesplazamiento) {
   return {
     nombreCompleto: 'Hammad Bellachhab',
+    // 19/08/2026 · los tres de la cabecera nueva. Los de abajo se quedan aunque ya
+    // no se impriman: el dia que se vuelva a poner uno, el fixture ya lo tiene.
+    nombre: 'Hammad',
+    apellidos: 'Bellachhab',
+    fechaAlta: 'Por confirmar',
     paisOrigen: 'Marruecos',
     fechaDesplazamiento: '01/09/' + anioDesplazamiento,
     fechaLlamada: 'Por confirmar',
@@ -289,21 +294,50 @@ comprobar('rentasSujetas y modeloYPlazo son los de bloque1, no los de bloque2',
   tablasDe(montados['CA'])[0].filas[3][1].indexOf('Modelo 151,') === 0);
 
 const campos = cabAC.filter(function (el) { return el.tipo === 'campo'; });
-comprobar('los 4 campos de la cabecera, en orden y con sus etiquetas',
-  campos.length === 4 &&
-  campos[0].etiqueta === 'Nombre' &&
-  campos[1].etiqueta === 'País de origen' &&
-  campos[2].etiqueta === 'Fecha de desplazamiento' &&
-  campos[3].etiqueta === 'Fecha de la reunión' &&
-  campos[3].valor === 'Por confirmar');
+// 19/08/2026 · La cabecera pasa de CUATRO campos a TRES: nombre, apellidos y
+// fecha de alta. Salen pais de origen, fecha de desplazamiento y fecha de la
+// reunion. Se comprueba el numero EXACTO, para que anadir un campo sin querer
+// tambien rompa la prueba.
+comprobar('los 3 campos de la cabecera, en orden y con sus etiquetas',
+  campos.length === 3 &&
+  campos[0].etiqueta === 'Nombre' && campos[0].valor === 'Hammad' &&
+  campos[1].etiqueta === 'Apellidos' && campos[1].valor === 'Bellachhab' &&
+  campos[2].etiqueta === 'Fecha de alta en la Seguridad Social' &&
+  campos[2].valor === 'Por confirmar',
+  JSON.stringify(campos.map(function (c) { return c.etiqueta + '=' + c.valor; })));
 
-const listaNotas = cabAC.filter(function (el) { return el.tipo === 'lista'; })[0];
-comprobar('la lista de notas tiene los 6 items de la plantilla, con su punto final',
-  listaNotas.items.length === 6 &&
-  listaNotas.items[2] === 'Salario bruto anual: 345.678 euros.' &&
-  listaNotas.items[3] === 'Residencia fiscal en los cinco años anteriores: Sí.' &&
-  listaNotas.items.every(function (i) { return /\.$/.test(i); }),
-  JSON.stringify(listaNotas.items, null, 1));
+comprobar('ya NO hay campo de pais de origen, de desplazamiento ni de reunion',
+  campos.every(function (c) {
+    return ['País de origen', 'Fecha de desplazamiento', 'Fecha de la reunión'].indexOf(c.etiqueta) === -1;
+  }));
+
+// 19/08/2026 · La seccion «Notas e informacion proporcionada» SE HA QUITADO
+// ENTERA de la cabecera: el titulo, la frase de entrada y las seis vinetas
+// (estado civil, hijos, salario, residencia fiscal, propiedades e inversiones).
+// Antes esta prueba comprobaba que las seis estaban; ahora comprueba que NO estan,
+// que es lo que hay que defender para que no vuelvan por accidente.
+// `cabAC` es el documento COMPLETO, no la cabecera: los bloques traen sus propias
+// listas y tablas. La cabecera es todo lo que va ANTES del primer 'titulo1', que
+// es el «BLOQUE ...». Se acota aqui para que las tres comprobaciones de abajo
+// hablen de la cabecera y no del documento entero.
+const iPrimerBloque = cabAC.findIndex(function (el) { return el.tipo === 'titulo1'; });
+const soloCabecera = cabAC.slice(0, iPrimerBloque === -1 ? cabAC.length : iPrimerBloque);
+
+const listaNotas = soloCabecera.filter(function (el) { return el.tipo === 'lista'; })[0];
+comprobar('la cabecera ya NO lleva la lista de las 6 notas', listaNotas === undefined,
+  listaNotas ? JSON.stringify(listaNotas.items) : 'ninguna lista en la cabecera');
+
+const textoCab = soloCabecera.map(function (el) {
+  return [el.texto, el.valor, el.etiqueta, el.titulo].filter(Boolean).join(' ');
+}).join('\n');
+comprobar('ni el titulo de Notas ni ninguna de las seis etiquetas',
+  ['Notas e información proporcionada', 'Según la información', 'Estado civil:',
+   'Hijos:', 'Salario bruto anual:', 'Residencia fiscal en los cinco',
+   'Propiedades:', 'Inversiones:'].every(function (w) { return textoCab.indexOf(w) === -1; }),
+  textoCab.slice(0, 300));
+
+comprobar('pero la tabla «Resumen» SIGUE en la cabecera (es «la info»)',
+  soloCabecera.filter(function (el) { return el.tipo === 'tabla'; }).length === 1);
 
 // ===========================================================================
 // 4 · LOS TRES DEFECTOS DE LA PLANTILLA (§5.4)
@@ -411,7 +445,10 @@ function lanza(fn) {
 }
 
 const conMarcadorCrudo = datosDeEjemplo('A', 'C', 2026);
-conMarcadorCrudo.nombreCompleto = '{{nombreCompleto}}';
+// 19/08/2026 · Antes se ensuciaba `nombreCompleto`, pero la cabecera ya no lo
+// imprime, asi que la guarda no saltaba y la prueba pasaba en falso. Se ensucia
+// `nombre`, que si es uno de los tres campos que se imprimen.
+conMarcadorCrudo.nombre = '{{nombre}}';
 const m1 = lanza(function () { montarElementos(conMarcadorCrudo); });
 comprobar('un marcador sin resolver en un campo hace saltar la guarda',
   m1 !== null && m1.indexOf('MARCADOR SIN RESOLVER') !== -1, 'mensaje: ' + m1);
@@ -422,11 +459,13 @@ const m2 = lanza(function () { montarElementos(enCelda); });
 comprobar('un marcador sin resolver en una celda de tabla hace saltar la guarda',
   m2 !== null && m2.indexOf('MARCADOR SIN RESOLVER') !== -1, 'mensaje: ' + m2);
 
+// 19/08/2026 · Era salarioBrutoAnual, que ya no se imprime. Se usa `apellidos`,
+// que si esta en la cabecera nueva.
 const sinClave = datosDeEjemplo('A', 'C', 2026);
-delete sinClave.salarioBrutoAnual;
+delete sinClave.apellidos;
 const m3 = lanza(function () { montarElementos(sinClave); });
 comprobar('si falta un marcador se para en vez de imprimir "undefined"',
-  m3 !== null && m3.indexOf('salarioBrutoAnual') !== -1, 'mensaje: ' + m3);
+  m3 !== null && m3.indexOf('apellidos') !== -1, 'mensaje: ' + m3);
 
 const bloqueRaro = datosDeEjemplo('A', 'C', 2026);
 bloqueRaro.bloque2 = 'D';

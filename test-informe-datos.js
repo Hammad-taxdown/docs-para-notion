@@ -35,8 +35,8 @@ const { execFileSync } = require('child_process');
 // --- Las piezas, en el orden del nodo --------------------------------------
 const PIEZAS = [
   'tabla-paises-iso2-2026-08-13.js',   // paisPresentacion()
-  'informe-datos-2026-08-14.js',       // lo que se prueba
-  'informe-cuerpo-2026-08-14.js'       // solo para la prueba de frontera (7)
+  'informe-datos-2026-08-19.js',       // lo que se prueba
+  'informe-cuerpo-2026-08-19.js'       // solo para la prueba de frontera (7)
 ];
 
 const codigo = PIEZAS
@@ -166,7 +166,12 @@ if (real) {
   igual('   nombreCompleto recapitalizado', real.nombreCompleto, 'Hammad Bellachhab');
   igual('   paisOrigen', real.paisOrigen, 'Marruecos');
   igual('   fechaDesplazamiento', real.fechaDesplazamiento, '01/09/2026');
-  igual('   fechaLlamada (no hay columna)', real.fechaLlamada, 'Por confirmar');
+  // 19/08/2026 · la cabecera es nombre + apellidos + fecha de alta. FILA_REAL no
+  // lleva fecha_alta_ss, asi que tiene que salir el literal de pendiente y NO abortar.
+  igual('   fechaAlta (FILA_REAL no lleva fecha_alta_ss)', real.fechaAlta, 'Por confirmar');
+  igual('   nombre suelto, recapitalizado', real.nombre, 'Hammad');
+  igual('   apellidos sueltos, recapitalizados', real.apellidos, 'Bellachhab');
+  igual('   fechaLlamada YA NO existe como marcador', real.fechaLlamada, undefined);
   igual('   estadoCivil (casado + Hombre)', real.estadoCivil, 'Casado');
   igual('   hijos', real.hijos, 'No');
   igual('   salarioBrutoAnual', real.salarioBrutoAnual, '345.678');
@@ -589,7 +594,10 @@ COMBINACIONES.forEach(function (caso) {
     'titulares: ' + titulares.map(function (t) { return t.texto; }).join(' | '));
   comprobar('   la cabecera dice "Situación en 2026" y "Situación en 2027"',
     todo.indexOf('Situación en 2026') !== -1 && todo.indexOf('Situación en 2027') !== -1);
-  comprobar('   y el nombre recapitalizado esta dentro', todo.indexOf('Hammad Bellachhab') !== -1);
+  // 19/08/2026 · nombre y apellidos van en DOS campos distintos de la cabecera, asi
+  // que ya no aparecen pegados en el texto plano. Se comprueban por separado.
+  comprobar('   y el nombre y los apellidos estan dentro, cada uno en su campo',
+    todo.indexOf('Hammad') !== -1 && todo.indexOf('Bellachhab') !== -1);
   comprobar('   ningun texto lleva "undefined" ni "NaN"',
     todo.indexOf('undefined') === -1 && todo.indexOf('NaN') === -1);
 });

@@ -74,3 +74,14 @@ Bajo, con una trampa: activar trazabilidad del agente reintroduce PII. Declarado
 ## 7. Rollback
 
 Las alertas se desactivan una a una; nada depende de ellas para funcionar.
+
+
+## Estado al 19/08/2026 · un trozo hecho
+
+**`errorWorkflow` puesto en los tres workflows.** Hasta el 19/08 solo lo tenía `beckham_bot`;
+`beckham_generar_030` y `beckham_informe_mobility` lo tenían **vacío**, así que si un generador se
+caía `beckham_alertas` no se encendía y nadie se enteraba. Los tres apuntan ya a `BJfExmwu1fI1aPpY`.
+
+Sigue pendiente el resto del WP: el `corr_id` en las métricas, las alertas accionables y el
+enmascarado de PII. Y sin tocar: `beckham_adjuntos_huerfanos`, `beckham_analizar_documento` y
+`beckham_f2_plazo.` tampoco tienen `errorWorkflow`.

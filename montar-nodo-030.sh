@@ -86,4 +86,10 @@ if [ "$rojas" -eq 1 ]; then
   exit 1
 fi
 echo "TODO EN ORDEN. El COMPLETO y sus piezas dicen lo mismo."
-echo "El nodo de n8n tiene que tener 197.924 caracteres (comprobado el 14/08 por sha256)."
+# 19/08/2026 · la cifra se calcula, no se escribe a mano. Antes decia 197.924 fijo,
+# que es lo que tiene el nodo VIVO, y el COMPLETO local ya iba por 198.509 -- 585
+# caracteres mas, todos comentarios anadidos despues del 14/08. Quien pegara hoy y
+# comprobara contra el script creeria que ha pegado mal.
+CAR=$(python3 -c "print(len(open('nodo-montar-030-COMPLETO.js',encoding='utf-8').read()))")
+BYT=$(wc -c < nodo-montar-030-COMPLETO.js | tr -d ' ')
+echo "El nodo de n8n tiene que tener $CAR caracteres (no $BYT, que son BYTES: el editor de n8n cuenta caracteres)."

@@ -89,3 +89,21 @@ respuesta al usuario.
 (esa prohíbe `.item` en **nodos de código**, donde cuelga el task runner) y funciona en producción,
 pero es la segunda de las dos únicas apariciones de `.item` en todo el workflow, junto con
 `Callback_Intercom`.
+
+
+## Estado al 19/08/2026 · CUATRO DE LOS CINCO CRITERIOS, MEDIDOS
+
+Auditado contra el sistema vivo. **Solo falta leer una traza.**
+
+| Criterio del §5 | Medido |
+|---|---|
+| `systemMessage` como expresión | `={{ $json.bot_mobility_prompt }}` · **sí** |
+| Cero `guardar_datos_airtable`, `agendar_llamada`, `transferir_humano` | **0, 0, 0** en el prompt v10 |
+| Contradicción del HTML resuelta | una sola instrucción (L53 + L56), coherente con el `replace` del callback |
+| `maxIterations` fijado | **6**, explícito en `options` |
+| Aristas `ai_tool` == tools nombradas | **3 == 3** (`guardar_datos_cliente`, `leer_expediente`, `analizar_documento`) |
+| Prompt observable **resuelto** en el log | **PENDIENTE** · solo se ve en la traza de una ejecución |
+
+Se queda en `building` por el último criterio, y no por trabajo pendiente: **la misma traza que
+valida el prompt v10 cierra este WP**. Desde que se publicó el bot el 19/08 a las 14:11 de Madrid hay
+cero ejecuciones.

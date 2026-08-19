@@ -27,8 +27,8 @@ PIEZAS=(
   metrica-times-2026-08-14.js
   pdf-motor-2026-08-14.js
   tabla-paises-iso2-2026-08-13.js
-  informe-datos-2026-08-14.js
-  informe-cuerpo-2026-08-14.js
+  informe-datos-2026-08-19.js
+  informe-cuerpo-2026-08-19.js
   nodo-informe-glue-2026-08-14.js
 )
 PRUEBAS=(
@@ -196,8 +196,14 @@ if [ -f "$PRUEBA_FINAL" ]; then
     printf '   ROJA   %s\n' "$PRUEBA_FINAL"
     printf '%s\n' "${malas:-$salida}" | head -8 | sed 's/^/            /'
     if [ -f "$SALIDA.anterior" ]; then
+      # 19/08/2026 · El candidato que ha fallado SE GUARDA antes de revertir. Hasta
+      # hoy el mv lo machacaba y no habia forma de mirar QUE se habia montado mal:
+      # solo se podia volver a montarlo a ciegas. La puerta sigue haciendo lo mismo
+      # -- el nodo bueno vuelve a su sitio -- pero deja la evidencia al lado.
+      cp "$SALIDA" "$SALIDA.rechazado"
       mv "$SALIDA.anterior" "$SALIDA"
       echo "   SE HA VUELTO ATRAS: $SALIDA es otra vez el de antes."
+      echo "   El candidato rechazado queda en $SALIDA.rechazado para poder mirarlo."
     else
       rm -f "$SALIDA"
       echo "   BORRADO $SALIDA: no habia version anterior a la que volver."

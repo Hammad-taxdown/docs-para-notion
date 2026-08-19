@@ -2330,7 +2330,7 @@ function paisPresentacionEn(nombrePais) {
   return presentacion !== undefined ? presentacion : clave;
 }
 
-// ==================== informe-datos-2026-08-14.js ====================
+// ==================== informe-datos-2026-08-19.js ====================
 // ============================================================================
 // DATOS Y MARCADORES DEL INFORME MOBILITY · Pieza 3 · §4 del contrato del 14/08
 // ----------------------------------------------------------------------------
@@ -2455,11 +2455,14 @@ const IDIOMA_EN = 'en';
 // problema de la columna, y se arregla en la columna.
 const OPCION_IDIOMA_INGLES = 'Ingles';
 
-// §8.5: la fecha de la reunion YA tiene columna (`FechaLlamada`), pero puede
+// §8.5 · SUPERADO EL 19/08/2026: la fecha de la reunion ya no se recoge ni se
+// imprime, y este marcador es ahora la FECHA DE ALTA. La regla de abajo (no
+// abortar nunca por una fecha administrativa) se conserva tal cual.
+// Texto original: la fecha de la reunion YA tiene columna (`FechaLlamada`), pero puede
 // estar vacia. Cuando lo esta se imprime esto y EL INFORME SIGUE SALIENDO: no
 // se aborta una memoria fiscal por la fecha de una reunion. NO se inventa una
 // fecha ni se pone la de hoy.
-const FECHA_LLAMADA_PENDIENTE = { es: 'Por confirmar', en: 'To be confirmed' };
+const FECHA_PENDIENTE = { es: 'Por confirmar', en: 'To be confirmed' };
 
 // Decision 7 del 14/08: todo el que llega al informe ya paso el filtro F3 (no
 // residente los ultimos cinco anios), asi que es constante. El dato no esta en
@@ -2674,8 +2677,17 @@ const COL = {
   situacion1: 'Situación fiscal Anio Desplazamiento',   // tilde en Situación, SIN tilde en Anio
   situacion2: 'Situación fiscal AnioSiguiente',
   idioma: 'Idioma',                                     // §8.2
-  fechaLlamada: 'FechaLlamada'                          // §8.5, columna nueva, sin espacio
+  // 19/08/2026 · LA CABECERA PASA A SER NOMBRE + APELLIDO + FECHA DE ALTA.
+  // fechaAlta sale de `fecha_alta_ss`, que es la que declara el cliente y el
+  // validador normaliza, NO de `FechaAlta`: esa es aiText extraida del documento
+  // y esta en state:'error' en las cuatro filas de la tabla.
+  fechaAlta: 'fecha_alta_ss'
 };
+
+// 19/08/2026 · FUERA `fechaLlamada`. La pregunta se quito del prompt, el parametro
+// salio de la tool y el validador ya no escribe la columna, asi que leerla aqui
+// solo podia devolver 'Por confirmar' para siempre. La columna se queda huerfana
+// en Airtable a proposito: borrarla se lleva el dato de las filas que ya lo tienen.
 
 // ---------------------------------------------------------------------------
 // 2 · LECTURA DE CELDAS
@@ -2788,13 +2800,17 @@ function formatearFecha(partes) {
 // ('Fecha de la reunión: el jueves que viene') queda peor que decir que esta por
 // confirmar, y abortar esta prohibido por el §8.5. Si un dia interesa enterarse
 // de que la celda trae basura, el sitio es un aviso aparte, no este marcador.
-function presentarFechaLlamada(valor, idioma) {
+// 19/08/2026 · Era presentarFechaLlamada y ahora es la FECHA DE ALTA en la
+// Seguridad Social. Se conserva la regla del §8.5 tal cual, que es la que importa:
+// NUNCA ABORTA. Una memoria fiscal no se tira por una fecha administrativa; si
+// falta o viene rara, se imprime 'Por confirmar' y el informe sale igual.
+function presentarFechaAlta(valor, idioma) {
   // Una columna de fecha no deberia venir en error nunca, pero si viniera,
   // partirFecha le haria textoCelda al objeto y saldria '' de todas formas. Se
   // comprueba explicito para que se lea la intencion.
-  if (esCeldaEnError(valor)) return FECHA_LLAMADA_PENDIENTE[idioma];
+  if (esCeldaEnError(valor)) return FECHA_PENDIENTE[idioma];
   const partes = partirFecha(valor);
-  if (!partes) return FECHA_LLAMADA_PENDIENTE[idioma];
+  if (!partes) return FECHA_PENDIENTE[idioma];
   return formatearFecha(partes);
 }
 
@@ -3100,6 +3116,12 @@ function resolverDatos(fila) {
   if (!nombreCompleto) {
     return { ok: false, error: 'No se genera el informe: falta el nombre del cliente.' };
   }
+  // 19/08/2026 · La cabecera nueva los imprime en DOS lineas, asi que hacen falta
+  // por separado. `nombreCompleto` SE QUEDA: de el salen el nombre del fichero y
+  // el titulo del /Info del PDF, en el glue. La guarda sigue siendo la de arriba,
+  // sobre el completo: con un solo apellido el informe se monta igual.
+  const soloNombre = recapitalizarNombre(textoCelda(fila[COL.nombre]));
+  const soloApellidos = recapitalizarNombre(textoCelda(fila[COL.apellidos]));
 
   // --- 4 · El salario ------------------------------------------------------
   const salario = leerSalario(fila[COL.salario]);
@@ -3132,11 +3154,16 @@ function resolverDatos(fila) {
 
       // Los marcadores de esta pieza, en el orden del §4.2 del contrato.
       nombreCompleto: nombreCompleto,
+      // 19/08/2026 · los tres de la cabecera nueva.
+      nombre: soloNombre,
+      apellidos: soloApellidos,
+      fechaAlta: presentarFechaAlta(fila[COL.fechaAlta], idioma),
       paisOrigen: presentarPais(fila[COL.nacionalidad], idioma),
-      // Las dos fechas van en DD/MM/AAAA en LOS DOS idiomas (§8.2): el cliente
-      // vive en Espana. Nada de MM/DD/AAAA en el informe ingles.
+      // Las fechas van en DD/MM/AAAA en LOS DOS idiomas (§8.2): el cliente vive en
+      // Espana. Nada de MM/DD/AAAA en el informe ingles.
+      // fechaDesplazamiento YA NO SE IMPRIME, pero se queda: de el salen el anio de
+      // la tabla y el de los bloques, y su ausencia sigue abortando.
       fechaDesplazamiento: formatearFecha(partes),
-      fechaLlamada: presentarFechaLlamada(fila[COL.fechaLlamada], idioma),
       estadoCivil: estadoCivilConcordado(fila[COL.estadoCivil], fila[COL.sexo], idioma),
       hijos: presentarHijos(fila[COL.hijos], idioma),
       salarioBrutoAnual: formatearMiles(salario, SEPARADOR_MILES[idioma]),
@@ -3173,7 +3200,7 @@ function resolverDatos(fila) {
 // `node --check` del script lo caza y se niega a regenerar, asi que el COMPLETO
 // no se puede montar hasta que esos tres pies se pongan tambien en una linea.
 
-// ==================== informe-cuerpo-2026-08-14.js ====================
+// ==================== informe-cuerpo-2026-08-19.js ====================
 // ============================================================================
 // CUERPO DEL INFORME MOBILITY · Pieza 4 · §5 y §8 del contrato del 14/08/2026
 // ----------------------------------------------------------------------------
@@ -3241,6 +3268,9 @@ const TEXTOS_ES = {
 
   // --- Cabecera (§5.1) ---
   campoNombre: 'Nombre',
+  // 19/08/2026 · las dos de la cabecera nueva.
+  campoApellidos: 'Apellidos',
+  campoFechaAlta: 'Fecha de alta en la Seguridad Social',
   campoPaisOrigen: 'País de origen',
   campoFechaDesplazamiento: 'Fecha de desplazamiento',
   campoFechaReunion: 'Fecha de la reunión',
@@ -3475,6 +3505,9 @@ const TEXTOS_EN = {
 
   // --- Header ---
   campoNombre: 'Name',
+  // 19/08/2026 · las dos de la cabecera nueva.
+  campoApellidos: 'Surname',
+  campoFechaAlta: 'Social Security registration date',
   campoPaisOrigen: 'Country of origin',
   campoFechaDesplazamiento: 'Date of relocation',
   campoFechaReunion: 'Date of the meeting',
@@ -3737,29 +3770,26 @@ function montarCabecera(datos, anioDesplazamiento, anioSiguiente, T) {
   const t = T || textosDeIdioma(datos.idioma);
   const bloque1 = normalizarBloque(datos.bloque1);
 
+  // ── 19/08/2026 · LA CABECERA SE QUEDA EN TRES CAMPOS ──────────────────────────
+  // Peticion del usuario: «solo que aparezca nombre apellido y fecha alta, y los
+  // bloques estos de la info ya esta». Asi que de la cabecera salen:
+  //   - Pais de origen
+  //   - Fecha de desplazamiento (el dato SIGUE calculandose: de el salen el anio de
+  //     la tabla y el de los bloques, y su ausencia sigue abortando el informe)
+  //   - Fecha de la reunion (ya no se pregunta ni se guarda desde el 19/08)
+  //   - Y la seccion «Notas e informacion proporcionada» ENTERA: el titulo, la
+  //     frase de entrada y las SEIS vinetas (estado civil, hijos, salario,
+  //     residencia fiscal, propiedades e inversiones).
+  // SE QUEDAN la tabla «Resumen» y los bloques fiscales, que son «la info».
+  // Las etiquetas y los marcadores de lo que sale NO se borran: siguen en la bolsa
+  // de textos y en `datos`, inertes, para que volver a poner cualquiera de ellos
+  // sea una linea y no una arqueologia.
   return [
-    { tipo: 'campo', etiqueta: t.campoNombre, valor: marcador(datos, 'nombreCompleto') },
-    { tipo: 'campo', etiqueta: t.campoPaisOrigen, valor: marcador(datos, 'paisOrigen') },
-    { tipo: 'campo', etiqueta: t.campoFechaDesplazamiento, valor: marcador(datos, 'fechaDesplazamiento') },
-    // La plantilla la llama "Fecha de la reunion". La columna FechaLlamada existe
-    // desde el §8.5; si esta vacia, la pieza 3 manda 'Por confirmar' / 'To be
-    // confirmed' y el informe SIGUE saliendo.
-    { tipo: 'campo', etiqueta: t.campoFechaReunion, valor: marcador(datos, 'fechaLlamada') },
-
-    { tipo: 'titulo2', texto: t.tituloNotas },
-    { tipo: 'parrafo', texto: t.introNotas },
-
-    // Las seis vinetas de la plantilla. El texto fijo (" euros.", los dos puntos)
-    // es de la plantilla; lo variable son los marcadores ya formateados y YA EN
-    // EL IDIOMA de datos.idioma (§8.2: el cuerpo no traduce datos).
-    { tipo: 'lista', items: [
-      t.notaEstadoCivil + marcador(datos, 'estadoCivil') + '.',
-      t.notaHijos + marcador(datos, 'hijos') + '.',
-      t.notaSalario + marcador(datos, 'salarioBrutoAnual') + t.notaSalarioSufijo,
-      t.notaResidencia + marcador(datos, 'residenciaFiscal5Anios') + '.',
-      t.notaPropiedades + marcador(datos, 'sumaPropiedades') + '.',
-      t.notaInversiones + marcador(datos, 'sumaInversiones') + '.'
-    ] },
+    { tipo: 'campo', etiqueta: t.campoNombre, valor: marcador(datos, 'nombre') },
+    { tipo: 'campo', etiqueta: t.campoApellidos, valor: marcador(datos, 'apellidos') },
+    // No aborta nunca: si falta o viene rara, la pieza 3 manda 'Por confirmar' /
+    // 'To be confirmed' y el informe sale igual. Es la regla del §8.5, conservada.
+    { tipo: 'campo', etiqueta: t.campoFechaAlta, valor: marcador(datos, 'fechaAlta') },
 
     // Tabla 1 de la plantilla. El titulo del resumen es titulo de la tabla, no un
     // titulo2.

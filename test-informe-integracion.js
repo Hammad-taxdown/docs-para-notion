@@ -159,12 +159,15 @@ function extraer(buf) {
 const dentro = extraer(pdf);
 comprobar('se recupera texto del PDF', dentro.length > 2000, dentro.length + ' caracteres');
 const esperados = [
-  ['el nombre recapitalizado', 'Hammad Bellachhab'],
-  ['el pais en espanol y capitalizado', 'Marruecos'],
-  ['el salario con punto de miles', '345.678'],
-  ['el estado civil concordado', 'Casado'],
-  ['la residencia fiscal constante', 'Sí'],
-  ['la errata de Propiedades CORREGIDA', 'ni en el extranjero'],
+  // 19/08/2026 · La cabecera es NOMBRE + APELLIDOS + FECHA DE ALTA. Se caen seis
+  // literales porque su contenido ya no se imprime: el pais de origen, el salario,
+  // el estado civil, la residencia fiscal de 5 anios y la errata de Propiedades
+  // salieron con la seccion de Notas. Sus presentadores SIGUEN probados uno a uno
+  // en test-informe-datos.js; lo que se pierde aqui es la comprobacion de que
+  // llegaban al PDF, y no puede comprobarse lo que no se imprime.
+  ['el nombre, recapitalizado y en su campo', 'Hammad'],
+  ['los apellidos, en campo aparte', 'Bellachhab'],
+  ['la etiqueta de la fecha de alta', 'Fecha de alta en la Seguridad Social'],
   ['la cabecera del anio de desplazamiento', 'Situación en 2026'],
   ['la cabecera del anio siguiente', 'Situación en 2027'],
   ['el bloque B, que es el suyo', 'NO RESIDENTE FISCAL EN ESPAÑA'],
@@ -228,28 +231,38 @@ comprobar('lleva el subtitulo',
 // comparaba los indices a secas y PASABA cuando el titulo no existia, porque
 // indexOf devuelve -1 y -1 es menor que cualquier posicion. Un falso verde.
 const iTit = dentro.indexOf('Reporte fiscal Mobility');
-const iNom = dentro.indexOf('Hammad Bellachhab');
+// 19/08/2026 · el nombre y los apellidos van en campos distintos, asi que ya no
+// aparecen pegados en el texto extraido. Se busca el nombre suelto.
+const iNom = dentro.indexOf('Hammad');
 comprobar('el titulo va ANTES del nombre del cliente',
           iTit >= 0 && iNom >= 0 && iTit < iNom,
           'titulo en ' + iTit + ', nombre en ' + iNom);
 
-// ── 7 · FechaLlamada (§8.5) ─────────────────────────────────────────────────
-console.log('\n── 7. FechaLlamada, el marcador 17 ──');
-comprobar('sin FechaLlamada se imprime "Por confirmar"', dentro.includes('Por confirmar'));
-const conFecha = ejecutar([conFila({ 'FechaLlamada': '2026-08-22' })])[0].json;
-comprobar('con FechaLlamada se imprime la fecha', conFecha.ok === true, conFecha.error || '');
+// ── 7 · LA FECHA DE ALTA (era FechaLlamada, §8.5) ───────────────────────────
+// 19/08/2026 · El tercer campo de la cabecera ya no es la fecha de la reunion sino
+// la FECHA DE ALTA en la Seguridad Social, leida de `fecha_alta_ss`. Se conserva
+// entera la bateria del §8.5 porque la regla que protege es la misma y es la que
+// importa: ESTE CAMPO NO ABORTA NUNCA. Una memoria fiscal no se tira por una fecha
+// administrativa.
+console.log('\n── 7. la fecha de alta, tercer campo de la cabecera ──');
+comprobar('sin fecha_alta_ss se imprime "Por confirmar"', dentro.includes('Por confirmar'));
+const conFecha = ejecutar([conFila({ 'fecha_alta_ss': '2026-06-01' })])[0].json;
+comprobar('con fecha_alta_ss se imprime la fecha', conFecha.ok === true, conFecha.error || '');
 if (conFecha.ok) {
   const t2 = extraer(Buffer.from(conFecha.base64, 'base64'));
-  comprobar('la fecha sale en DD/MM/AAAA', t2.includes('22/08/2026'),
-            (t2.match(/Fecha de la reuni[^\n]*/) || ['no aparece'])[0]);
+  comprobar('la fecha sale en DD/MM/AAAA', t2.includes('01/06/2026'),
+            (t2.match(/Fecha de alta[^\n]*/) || ['no aparece'])[0]);
   comprobar('y ya no dice "Por confirmar"', !t2.includes('Por confirmar'));
 }
-const fechaConHora = ejecutar([conFila({ 'FechaLlamada': '2026-08-22T12:00:00.000Z' })])[0].json;
-comprobar('FechaLlamada con hora tambien vale', fechaConHora.ok === true &&
-          extraer(Buffer.from(fechaConHora.base64, 'base64')).includes('22/08/2026'));
-const fechaBasura = ejecutar([conFila({ 'FechaLlamada': 'el jueves' })])[0].json;
-comprobar('FechaLlamada basura NO aborta el informe', fechaBasura.ok === true,
+const fechaConHora = ejecutar([conFila({ 'fecha_alta_ss': '2026-06-01T12:00:00.000Z' })])[0].json;
+comprobar('la fecha de alta con hora tambien vale', fechaConHora.ok === true &&
+          extraer(Buffer.from(fechaConHora.base64, 'base64')).includes('01/06/2026'));
+const fechaBasura = ejecutar([conFila({ 'fecha_alta_ss': 'el jueves' })])[0].json;
+comprobar('una fecha de alta basura NO aborta el informe', fechaBasura.ok === true,
           fechaBasura.ok ? 'sigue saliendo, con "Por confirmar"' : 'ABORTA, y no deberia');
+const fechaEnError = ejecutar([conFila({ 'fecha_alta_ss': { state: 'error', errorType: 'x' } })])[0].json;
+comprobar('una celda en error tampoco aborta', fechaEnError.ok === true,
+          fechaEnError.ok ? 'sigue saliendo' : 'ABORTA, y no deberia');
 
 // ── 8 · El informe en INGLES (§8.2) ─────────────────────────────────────────
 console.log('\n── 8. el informe en ingles ──');
@@ -258,23 +271,43 @@ comprobar('con Idioma=Ingles sale informe', en.ok === true, en.error || '');
 if (en.ok) {
   const pdfEn = Buffer.from(en.base64, 'base64');
   const tEn = extraer(pdfEn);
+  // 19/08/2026 · Un segundo PDF ingles, este CON fecha de alta, para comprobar que
+  // la fecha va en DD/MM/AAAA tambien en ingles (§8.2: el cliente vive en Espana,
+  // nada de MM/DD/AAAA). El caso base no la trae a proposito.
+  const enConAlta = ejecutar([conFila({ 'Idioma': 'Ingles', 'fecha_alta_ss': '2026-06-01' })])[0].json;
+  const tEnConAlta = enConAlta.ok ? extraer(Buffer.from(enConAlta.base64, 'base64')) : null;
   fs.writeFileSync('/tmp/informe-mobility-prueba-en.pdf', pdfEn);
   comprobar('el titulo en ingles', tEn.includes('Mobility Tax Report'));
   comprobar('el subtitulo en ingles', tEn.includes('Special regime for inbound workers'));
-  comprobar('el pais en ingles', tEn.includes('Morocco'), 'Marruecos -> Morocco');
-  comprobar('el estado civil en ingles', tEn.includes('Married'));
-  comprobar('la residencia fiscal en ingles', /: Yes/.test(tEn));
-  comprobar('el salario con COMA de miles en ingles', tEn.includes('345,678'),
-            tEn.includes('345.678') ? 'sale con PUNTO, y en ingles va con coma' : 'con coma');
-  comprobar('la fecha sigue en DD/MM/AAAA en ingles', tEn.includes('01/09/2026'));
+  // 19/08/2026 · Se caen los cinco espejos ingleses de lo que salio de la cabecera:
+  // el pais, el estado civil, la residencia fiscal, el salario y la fecha de
+  // desplazamiento ya no se imprimen en ningun idioma. Los presentadores ingleses
+  // (presentarPais, ESTADO_CIVIL_EN, el separador de miles con coma) SIGUEN
+  // probados en test-informe-datos.js; aqui se sustituyen por lo que el documento
+  // ingles SI tiene ahora, que es la cabecera nueva traducida.
+  comprobar('la fecha de alta en ingles sale en DD/MM/AAAA, no en MM/DD',
+            tEnConAlta === null || tEnConAlta.includes('01/06/2026'),
+            tEnConAlta === null ? 'no se pudo montar el ingles con fecha' :
+            (tEnConAlta.match(/Social Security registration date[^\n]*/) || ['no aparece'])[0]);
   comprobar('la situacion fiscal traducida', !tEn.includes('No residente NO UE'),
             tEn.includes('No residente NO UE') ? 'sigue en espanol' : 'traducida');
-  comprobar('sin FechaLlamada, en ingles, "To be confirmed"', tEn.includes('To be confirmed'));
+  // 19/08/2026 · «To be confirmed» ya no sale de FechaLlamada (que no existe) sino
+  // de la FECHA DE ALTA cuando la fila no la trae. Y se comprueba tambien que la
+  // etiqueta inglesa de la cabecera nueva esta traducida.
+  comprobar('la etiqueta inglesa de la fecha de alta', tEn.includes('Social Security registration date'));
+  comprobar('el apellido en ingles lleva su etiqueta', tEn.includes('Surname'));
   comprobar('NINGUN {{ en el ingles', !tEn.includes('{{'));
   // Palabras testigo: si alguna de estas aparece, se ha quedado texto en espanol.
-  const testigos = ['Según la información', 'residente fiscal en España', 'tributan únicamente',
-                    'Rendimientos del trabajo', 'Estado civil', 'País de origen',
-                    'Fecha de desplazamiento', 'Propiedades:', 'Inversiones:'];
+  // 19/08/2026 · Se caen seis testigos porque su contenido YA NO EXISTE en ninguno
+  // de los dos idiomas (la seccion de Notas, el pais de origen y la fecha de
+  // desplazamiento salieron de la cabecera), y un testigo que nunca puede aparecer
+  // no prueba nada: pasaria siempre. Se sustituyen por texto espanol que SI sigue
+  // en el documento -- la tabla, los bloques y las etiquetas nuevas -- para que la
+  // prueba siga cazando de verdad una fuga de espanol dentro del ingles.
+  const testigos = ['residente fiscal en España', 'tributan únicamente',
+                    'Rendimientos del trabajo', 'Situación en',
+                    'Fecha de alta en la Seguridad Social', 'Apellidos',
+                    'Declaración y plazo'];
   const colados = testigos.filter((w) => tEn.includes(w));
   comprobar('no se ha quedado texto en espanol dentro del ingles', colados.length === 0,
             colados.length ? 'COLADO: ' + colados.join(' | ') : testigos.length + ' testigos limpios');

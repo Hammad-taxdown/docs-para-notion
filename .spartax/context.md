@@ -28,6 +28,66 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
   dentro del v6 y metió un bucle infinito en la pregunta del idioma.
 - **Slack** (MCP) para los avisos de negocio y de error.
 
+## Estado al 19/08/2026 · EL DÍA DE LOS 14 CAMBIOS, TODOS PEGADOS Y VERIFICADOS
+
+Los tres workflows **publicados** (`versionId == activeVersionId`) y con `errorWorkflow` puesto:
+`beckham_bot` **55 nodos** (48 de lógica + 7 sticky), `beckham_informe_mobility` `74aa294c`,
+`beckham_generar_030` `94b353cd`. Los tres apuntan a `beckham_alertas` (`BJfExmwu1fI1aPpY`) — hasta
+hoy los dos generadores lo tenían **vacío**, así que si se caían nadie se enteraba.
+
+### La escalera de Status, rehecha
+
+| Peldaño | Quién lo escribe |
+|---|---|
+| **3. Pte hacer informe** | el bot, `Decidir_Status` (antes escribía el 4) |
+| **4. Informe enviado** | `beckham_informe_mobility`, `Marcar InformeListo` (antes nadie) |
+
+Los dos generadores filtran **`OR(Status=3, Status=4)`**. Y de la rama «Status del 1 al 6 o vacío» de
+la automatización `3b` se quitó el **`3`** — el `4` se queda, que 4 → 7 es el paso normal.
+
+**El bug que esto cierra, y es distinto del del 17/08:** el 18/08 el bot **sí** escribió el `4`
+(ejecución `8118002`, 11:02:25) y el informe **no salió**. El `.030` sí, pero por una ejecución
+**manual** 25 s después. El tick del informe de las 11:15:41 devolvió `data.main=[[]]`: `3b` había
+subido la fila al `7` en menos de 13 minutos. **La ventana era más corta que el tick.**
+
+### Los 14 cambios del día
+
+1. Los dos filtros a `OR(3,4)` · 2. `Marcar InformeListo` escribe el `Status` · 3 y 5. `errorWorkflow`
+en los dos generadores · 4. el filtro del `.030` · 6. **validador de 73.081 car** con **729
+gentilicios** (228 + 501 nuevos: de resolver 97 países de 245 a **241**), umbral a 50.000, estado
+civil a tres y fuera el 1 de julio · 7. la tool de 41 a **40** parámetros · 8. **vaciada la whitelist
+de 21 campos** del lector + `onError`/`retryOnFail` · 9. **lector de 47 claves** (antes 21) · 10.
+`Decidir_Status` de 8.977 car · 11. la guarda de adjuntos de `3b` · 12. el intercambio `2` ↔ `2b` ·
+13. **prompt v10, 60.328 car**, tag `prod`, con 17 cambios · 14. **informe PDF a nombre + apellidos +
+fecha de alta**, `COMPLETO` de **241.272 car**.
+
+### Las siete puertas
+
+`test-decidir-status.js` 15 · `test-validador-2026-08-19.js` 31 · `test-prompt-v10.js` 35 ·
+`test-lector-expediente.js` 14 · `test-informe-datos.js` 226 · `test-informe-cuerpo.js` ·
+`montar-nodo-030.sh` y `montar-nodo-informe.sh` en `exit 0`. **Cero rojas.**
+
+### Lo único que NO se pudo verificar
+
+**El prompt v10.** No se ve ni por MCP ni por API: solo leyendo la traza de una ejecución del agente.
+Desde que se publicó el bot (14:11 de Madrid) hay **cero ejecuciones**. La misma traza cierra
+`WP-204`, que ya cumple 4 de sus 5 criterios medidos.
+
+### Y lo que sigue sin verse funcionar NUNCA
+
+**Ningún tick de 15 minutos ha producido nada.** Las 5 generaciones que existen son `mode=manual`
+lanzadas desde la UI. La prueba pendiente es: cerrar con «expediente completo», **no tocar nada**, y
+comprobar que en ≤15 min salen el `.030` y el PDF con dos ejecuciones **`mode=trigger`**.
+
+### Tres correcciones a cosas que yo mismo había afirmado
+
+- **`AnioDesplazamiento` no es el año de la cabecera del informe.** Dije que había que ver con qué año
+  salió el PDF. Es falso: el código dice desde el 14/08 que **no se usa a propósito** y el año sale de
+  `fechaDesplazamiento`. Probado con los dos `aiText` en `state:'error'`: da 2026 y 2027.
+- **El `1415` y el `1406` del `.030` son el MISMO byte**, en dos sistemas de coordenadas (bloque A vs
+  fichero; `1415 − 1406 = 9`). Di el `1415` por errata y no lo era.
+- **Las pruebas del informe son 9**, no 14, más 8 comprobaciones de presencia de piezas.
+
 ## Estado al 16/08/2026 (sesión de madrugada, domingo)
 
 **Nada del bot se ha tocado.** Toda la sesión fue documentación, orden y metadatos. `beckham_bot`
