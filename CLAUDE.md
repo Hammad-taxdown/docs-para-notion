@@ -180,6 +180,14 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
 - **En expresiones de nodos normales es AL REVÉS:** `.item` es el item emparejado y `.first()`
   devuelve siempre el primero. Con dos filas pendientes, `.first()` le sube el fichero de la primera
   a las dos.
+  **Y EL 20/08 SE ENCONTRÓ VIVO EN EL INFORME, seis días después de arreglarlo en el `.030`:**
+  `Subir el PDF a Airtable` usaba `.first()` en la URL (`recordId`) y en el `filename`, con el `file`
+  en `.item`. Con nueve filas pendientes, los nueve PDF fueron a la **primera** fila con el nombre de
+  la primera (medido: 9 adjuntos de tamaños distintos en una, y cero en cuatro), y las que se
+  quedaban sin PDF **reentraban en cada tick para siempre**. En producción eso le manda a un cliente
+  **el informe fiscal de otro**, porque la automatización `5` adjunta lo que haya en `InformePdf`.
+  Lo prohibía el sticky del propio nodo. **Al arreglar esta clase de bug, revisar los DOS
+  generadores**, no solo aquel donde apareció.
 - **El recuento de un pegado va en CARACTERES, no en bytes.** `wc -c` da bytes; el editor de n8n
   cuenta caracteres. El `COMPLETO` lleva ~1.500 acentos y los dos números se separan casi 3.000.
 - **`typecast: true` en el Upser NO SE APAGA.** Se intentó y se revirtió dos veces (01/08 y 06/08).
