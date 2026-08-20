@@ -701,8 +701,49 @@
       "note": "19/08: PRIMERA MITAD HECHA, PEGADA Y VERIFICADA. El PDF ya lleva solo nombre, apellidos y fecha de alta (de fecha_alta_ss, y no aborta nunca); fuera pais de origen, fecha de desplazamiento, fecha de la reunion y la seccion de Notas con sus 6 vinetas. La tabla Resumen y los bloques A/B/C se quedan. COMPLETO de 241.272 caracteres, identico al nodo vivo, workflow publicado 74aa294c. Piezas nuevas informe-datos-2026-08-19.js e informe-cuerpo-2026-08-19.js, y las tres pruebas del informe actualizadas. FALTA LA SEGUNDA MITAD: los PDF adicionales, que el usuario pasara especificados.",
       "created_at": "2026-08-19T11:06:46Z",
       "in_progress_at": "2026-08-19T13:15:00Z"
+    },
+    "T060": {
+      "title": "Pegar el prompt v11 en LangSmith y mover el tag prod",
+      "milestone": "",
+      "verify": "el bot responde en una traza con el v11: repregunta el municipio y no vuelve a preguntar inversiones",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-20T09:20:23Z"
+    },
+    "T061": {
+      "title": "Conversacion 2 · camino limpio hasta Status 3 y LA PRUEBA DEL DISPARADOR",
+      "milestone": "",
+      "verify": "fila nueva en Status 3, y en <=15 min .030 de 2700 bytes + PDF + InformeListo + Status 4, con las DOS ejecuciones en mode=trigger",
+      "depends": [],
+      "effort": 2.0,
+      "status": "done",
+      "note": "20/08 · Verificado punta a punta: Status 3 a las 09:51:57Z sin tocar nada, y en el tick de las 10:00 salieron los dos. 8125154 (.030) y 8125157 (informe), LAS DOS mode=trigger, 18 s de diferencia. Fichero030 de 2700 bytes con INE 28079 dentro, PDF de 33.089 bytes con la fecha de alta 01/04/2026 y cero marcadores, InformeListo=true y Status 4. Los dos ficheros descargados y leidos, no solo comprobado que existe el adjunto.",
+      "created_at": "2026-08-20T09:20:23Z",
+      "done_at": "2026-08-20T10:03:43Z"
+    },
+    "T062": {
+      "title": "Conversacion 3 · el umbral de 50.000-60.000 (declarar 52.000)",
+      "milestone": "",
+      "verify": "el bot dice al limite, NO descarta, ofrece Calendly y NO pregunta la fecha de la llamada",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-20T09:20:23Z"
+    },
+    "T063": {
+      "title": "Conversacion 4 · la discrepancia de fecha con el v11 (declarar 01/06 con documento de 01/04)",
+      "milestone": "",
+      "verify": "el turno del aviso lleva pregunta detras, y cierra con MotivoCierre=Expediente completo y Status 3 pese a la discrepancia",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-20T09:20:23Z"
     }
   },
-  "next_task": 60,
-  "updated_at": "2026-08-19T13:15:00Z"
+  "next_task": 64,
+  "updated_at": "2026-08-20T10:03:43Z"
 }

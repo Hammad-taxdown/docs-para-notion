@@ -1,9 +1,9 @@
 # Beckham · Fase 2 conversacional — PRD roadmap
 
-> Regenerado por `/prd:map` el **19/08/2026**. No se edita a mano: la fuente de verdad es el
+> Regenerado por `/prd:map` el **20/08/2026**. No se edita a mano: la fuente de verdad es el
 > frontmatter de cada `WP-NN-*.md` de esta carpeta. Versión interactiva: [`map.html`](./map.html).
 
-**39 paquetes · 11 cerrados · 28 abiertos · 51 puntos pendientes** (S=1 · M=2 · L=3).
+**39 paquetes · 12 cerrados · 27 abiertos · 50 puntos pendientes** (S=1 · M=2 · L=3).
 
 ## Mapa de dependencias
 
@@ -18,7 +18,7 @@ flowchart TD
   WP201["WP-201 · Prerrequisito P0"]:::done
   WP202["WP-202 · Prerrequisito P1"]:::done
   WP203["WP-203 · Prerrequisito P2"]:::building
-  WP204["WP-204 · Prerrequisito P3"]:::building
+  WP204["WP-204 · Prerrequisito P3"]:::done
   WP205["WP-205 · Prerrequisito P4"]:::done
   WP206["WP-206 · Prerrequisito P5"]:::done
   WP207["WP-207 · Prerrequisito P6"]:::specified
@@ -128,7 +128,6 @@ El primer eslabón **sin cerrar** es **`WP-207`** — Prerrequisito P6. Es el qu
 Sin empezar y con **todas** sus dependencias en `done`:
 
 - [`WP-203`](./WP-203-auth-webhooks.md) · `building` · S — Prerrequisito P2
-- [`WP-204`](./WP-204-systemmessage-expresion.md) · `building` · S — Prerrequisito P3
 - [`WP-207`](./WP-207-extraer-subworkflow-upsert.md) · `specified` · M — Prerrequisito P6
 - [`WP-210`](./WP-210-atributo-modo-bot-contrato.md) · `specified` · S — Contrato del modo
 - [`WP-216`](./WP-216-correcciones-canvas.md) · `building` · M — Correcciones del canvas
@@ -148,7 +147,7 @@ Sin empezar y con **todas** sus dependencias en `done`:
 | [`WP-201`](./WP-201-fix-content-type-escritor.md) | Prerrequisito P0: parsear el body urlencoded del Data Connector en el escritor único | S | ✅ `done` | — | Hammad | — |
 | [`WP-202`](./WP-202-red-de-errores.md) | Prerrequisito P1: enchufar la red de errores (errorWorkflow, retryOnFail, onError) | S | ✅ `done` | — | Hammad | — |
 | [`WP-203`](./WP-203-auth-webhooks.md) | Prerrequisito P2: autenticación en los dos webhooks y rotación del path a UUID | S | 🔨 `building` | — | Hammad | — |
-| [`WP-204`](./WP-204-systemmessage-expresion.md) | Prerrequisito P3: systemMessage como expresión y purga de las tools fantasma del prompt | S | 🔨 `building` | — | Hammad | — |
+| [`WP-204`](./WP-204-systemmessage-expresion.md) | Prerrequisito P3: systemMessage como expresión y purga de las tools fantasma del prompt | S | ✅ `done` | — | Hammad | — |
 | [`WP-205`](./WP-205-guarda-unicidad-userid.md) | Prerrequisito P4: guarda de unicidad de UserId (count==0 crea · ==1 actualiza · >1 multi_match) | M | ✅ `done` | `WP-201` | Hammad | — |
 | [`WP-206`](./WP-206-whitelist-punto-descarte.md) | Prerrequisito P5: whitelist de punto y de Descarte en n8n, y typecast a false | S | ✅ `done` | `WP-201` | Hammad | — |
 | [`WP-207`](./WP-207-extraer-subworkflow-upsert.md) | Prerrequisito P6: extraer BECKHAM_upsert_expediente a subworkflow propio | M | 📘 `specified` | `WP-201`, `WP-205`, `WP-206` | Hammad | — |

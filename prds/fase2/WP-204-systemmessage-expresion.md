@@ -1,7 +1,7 @@
 ---
 id: WP-204
 title: "Prerrequisito P3: systemMessage como expresión y purga de las tools fantasma del prompt"
-status: building
+status: done
 size: S
 depends_on: []
 milestone: "Fase 2 conversacional — Prerrequisitos"
@@ -107,3 +107,19 @@ Auditado contra el sistema vivo. **Solo falta leer una traza.**
 Se queda en `building` por el último criterio, y no por trabajo pendiente: **la misma traza que
 valida el prompt v10 cierra este WP**. Desde que se publicó el bot el 19/08 a las 14:11 de Madrid hay
 cero ejecuciones.
+
+---
+
+## CIERRE · 2026-08-20 · los CINCO criterios medidos
+
+| Criterio | Medida |
+|---|---|
+| `systemMessage` como expresion | `={{ $json.bot_mobility_prompt }}` en el nodo `AI Agent` del bot vivo (`versionId ce6e486b`) |
+| `maxIterations` explicito | **6**, en `parameters.options`. Era el ❌ del 5/08 |
+| Cero tools fantasma | `grep` del prompt v12: 0 para `guardar_datos_airtable`, `agendar_llamada` y `transferir_humano` |
+| Aristas `ai_tool` == tools nombradas | **3 y 3**: las aristas salen de `guardar_datos_cliente`, `leer_expediente` y `analizar_documento`, y el v12 las nombra 5, 3 y 4 veces. Era el otro ❌ del 5/08 |
+| El contexto llega RESUELTO en una ejecucion no-Preview | Traza **8125098** (20/08, 09:51:43Z, `mode=webhook`): el campo `contexto` de `Preparar_Prompt` trae los 24 datos del expediente, los 5 documentos como booleanos, el estado y el resumen anterior. Cero `{{contexto}}` y cero `{{current_date}}` literales |
+
+Este ultimo era el que faltaba desde el 19/08 y **no se puede ver ni por MCP ni por API**: solo
+leyendo la traza de una ejecucion real del prompt publicado. De propina, la misma traza prueba que
+el lector de 47 claves del 19/08 hace su trabajo.

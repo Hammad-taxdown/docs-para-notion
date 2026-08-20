@@ -23,10 +23,72 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
   en el canvas, F2 (plazo de 6 meses) delegado a n8n.
 - **LangSmith**: fuente de verdad del prompt. `promptName: bot_mobility_prompt`, `promptTag: prod`.
   **Manda el tag `prod`, no el último commit.**
-  Versión vigente: **v8** (14/08, `docs/prompt-final-2026-08-14-v8.txt`). Copias en `docs/prompt-langsmith-prod-*.txt`. **Nunca arrastrar a
+  Versión vigente: **v10** (19/08, 60.328 car., `docs/prompt-final-2026-08-19-v10.txt`), publicada con tag `prod` y **todavía sin ninguna ejecución que la ejerza**. Copias en `docs/prompt-langsmith-prod-*.txt`. **Nunca arrastrar a
   una publicación un parche que el log marque como no verificado**: el v5 iba sin validar, entró
   dentro del v6 y metió un bucle infinito en la pregunta del idioma.
 - **Slack** (MCP) para los avisos de negocio y de error.
+
+## Estado al 20/08/2026 · EL DÍA EN QUE EL CAMINO AUTOMÁTICO FUNCIONÓ
+
+### Lo que se consiguió, y nunca se había visto
+
+**Un tick de 15 minutos encontró una fila y produjo los dos entregables.** Conversación cerrada a
+las 11:51:57 con `MotivoCierre='Expediente completo'` → el bot escribió el `3` → **no se tocó nada**
+→ tick de las 12:00: `8125154` (`.030`) y `8125157` (informe), **las dos `mode=trigger`**, con los
+18 segundos de separación de los dos schedule.
+
+| Salida | Medida real, con el fichero descargado |
+|---|---|
+| `.030` | 2.700 bytes · cabecera `<T030010> 20250203Z3520584W BELLACHHAB` · `fechaEfectos` 01012026 · **INE 28079 dentro** |
+| PDF | 33.089 bytes · «Nombre: Hammad», «Apellidos: Bellachhab», «Fecha de alta…: 01/04/2026» · cero `{{` · cero «Notas e información» |
+| Fila | `InformeListo=true` · `InformeEnviadoEl=12:00:43` · **Status 4** · `Error030` y `ErrorInforme` vacíos |
+
+Las 289 ejecuciones `trigger` anteriores habían corrido **siempre en vacío**, y las 5 generaciones
+que existían eran `mode=manual`. La escalera del 19/08 funciona entera.
+
+### Tres conversaciones y dos prompts nuevos
+
+**Conversación 1** (10:38–11:01, prompt v10). Cerró en `Llamada agendada` con el expediente
+**completo**: Status 2, cero entregables. Tres fallos, los tres de prompt.
+
+**v11** (62.725 car., 5 parches): `municipio_residencia` en D5 · recordatorio 10b · precedencia en
+PF6 · la discrepancia no mata el turno · y no cambia el `motivo_cierre` (repetido en CIERRE).
+
+**Conversación 2** (11:25–11:52, prompt v11). Llegó al Status 3 y **disparó**. P1 funcionó en vivo:
+dirección sin ciudad → «¿En qué municipio está ese domicilio?» → «Madrid» → `MunicipioResidencia`
+→ INE 28079 en el fichero. Dos defectos nuevos, uno de ellos **culpa de mi propio parche**: el v11
+hacía la confirmación de PF6 **obligatoria** y el bot la soltó descolgada, y encima preguntó los
+hijos justo después de «soltero, sin hijos».
+
+**v12** (63.932 car., 3 parches): confirmación de PF6 **opcional** y seguir por el dato que falte ·
+PF8 no se pregunta si ya lo dijo en PF5a · el SLA de 24-48 h una sola vez.
+
+**Puertas:** `test-prompt-v11.js` 60 verdes y `test-prompt-v12.js` **77 verdes, 0 rojas**. No son
+copias que miden el fichero viejo: se generan sustituyendo la ruta para que las heredadas midan el
+fichero NUEVO, y cada tanda lleva su comprobación de contraste contra el anterior («el v11 SÍ
+ordenaba pasar a PF8»), que es lo único que prueba que el parche entró.
+
+### El bug que habría reventado la prueba aunque todo lo demás fuera bien
+
+`municipio_residencia` estaba en la tool, el validador, el mapeo y el lector — **y no en el
+prompt**. Nadie lo preguntaba, `MunicipioResidencia` salía vacío, y son 2 de los 17 `OBLIGATORIOS`
+del `.030`. Medido: `ineMunicipio('Madrid','28046')` → `28079`, `ineMunicipio('','28046')` → `null`.
+
+### WP-204 cerrado, con los cinco criterios
+
+Los dos ❌ del 5/08 resueltos (`maxIterations`=6, aristas `ai_tool` 3 y 3) y el quinto, que solo se
+ve en una traza, cerrado con la ejecución **8125098**: el `contexto` llega resuelto con los 24 datos
+del expediente. De propina prueba que el **lector de 47 claves** hace su trabajo.
+
+**Tracker: 39 WPs · 12 cerrados · 27 abiertos · 50 puntos.** Camino crítico 21 puntos, primer
+eslabón sin cerrar **WP-207**.
+
+### Filas de prueba: siete, tres neutralizadas
+
+Para que el bot no reconozca al cliente se le pone al `UserId` el prefijo `ARCHIVADA-<fecha>`: es el
+**único** enganche (el Upser matchea por `UserId`, y `Leer_Expediente_Para_Prompt` y la tool
+`leer_expediente` filtran por él). Reversible, y conserva la fila como evidencia. **No** se borra
+ninguna sin pedirlo.
 
 ## Estado al 19/08/2026 · EL DÍA DE LOS 14 CAMBIOS, TODOS PEGADOS Y VERIFICADOS
 

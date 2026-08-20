@@ -68,6 +68,7 @@ node docs/test-informe-integracion.js
 node docs/test-decidir-status.js        # la escalera de Status: 15 comprobaciones
 node docs/test-validador-2026-08-19.js  # gentilicios, umbral, estado civil: 31
 node docs/test-prompt-v10.js           # los 17 cambios del prompt v10: 35
+node docs/test-prompt-v12.js           # el prompt VIGENTE, 77 (hereda las 60 del v11)
 node docs/test-lector-expediente.js    # el lector de 47 claves: 14
 
 # Los pasos de un cambio, EN LA TERMINAL (no en un .md que hay que abrir)
@@ -185,6 +186,14 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   Lo que protege la base son **las whitelists**, no el typecast.
 - **Campo nuevo = CINCO sitios:** la tool, el validador, el mapeo del Upser, el prompt **y el
   lector**. Si falta el quinto, el dato se guarda bien y **el bot lo vuelve a preguntar**.
+  **Y funciona AL REVÉS igual de mal** (20/08): `municipio_residencia` estaba en la tool, en el
+  validador, en el mapeo y en el lector, y **no estaba en el prompt** — nadie se lo preguntaba al
+  cliente, así que `MunicipioResidencia` salía vacío y el `.030` **abortaba**, porque
+  `municipioResidencia` e `ineMunicipioResidencia` son 2 de sus 17 `OBLIGATORIOS`. Y el código
+  postal **no salva la papeleta**: `ineMunicipio(nombre, cp)` busca por NOMBRE normalizado y el CP
+  solo aporta las dos cifras de provincia (`ineMunicipio('Madrid','28046')` → `28079`;
+  `ineMunicipio('','28046')` → `null`). Al añadir un campo, recorrer los cinco **en los dos
+  sentidos**.
 - **El escritor ignora las claves que no conoce y devuelve `ok:true`.** Lo que no está en el contrato
   no se pierde por un bug: **no existe el camino**.
 - **`uploadAttachment` de Airtable AÑADE adjunto, no lo reemplaza.** Hay que vaciar el campo antes.
@@ -203,6 +212,14 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
 - **El Messenger REANUDA el hilo abierto.** Para probar desde cero hace falta incógnito o cerrar los
   hilos: es el mecanismo que rompió el D0 del idioma.
 - **Valores para pegar en n8n: sin el `=` inicial y sin salto de línea final.**
+- **EL CAMINO AUTOMÁTICO ESTÁ PROBADO PUNTA A PUNTA (20/08), y es la primera vez.** Cerrar con
+  `MotivoCierre='Expediente completo'` → el bot escribe el `3` → **sin tocar nada** → en el tick
+  siguiente salen los dos: `8125154` (`.030`) y `8125157` (informe), **las dos `mode=trigger`**, con
+  los 18 segundos de separación de los dos schedule. Resultado medido: `.030` de 2.700 bytes con el
+  INE `28079` dentro, PDF de 33.089 bytes con la fecha de alta impresa, `InformeListo=true` y Status
+  `4`. Las 289 ejecuciones `trigger` anteriores habían corrido **siempre en vacío**. Si algún día
+  vuelve a no salir, esto es la referencia de que el mecanismo funciona: el fallo estará en el dato
+  o en el Status, no en el reloj.
 - **Un cambio de Status son CINCO sitios** (19/08): `Decidir_Status`, el filtro del `.030`, el filtro
   del informe, `Marcar InformeListo` y la automatización **`3b` de Airtable**. Si falta el quinto, una
   fila marcada con `EnviarBorradores` se escapa de la ventana antes del tick. Ya pasó el 18/08.
@@ -260,6 +277,14 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   de la fila del formulario: Airtable no tiene acción nativa de borrar, así que se acumulan huérfanas
   y se barren con la vista `Filas huerfanas del formulario` (`viwg0qUDTQVZvuadi`). Son inofensivas —
   desde el 13/08 el enlace no prefija `UserId`, y sin `UserId` el bot no las ve.
+- **`DiscrepanciaFechaAlta` NO cambia el `motivo_cierre`** (20/08, decidido con datos). El 20/08 el
+  bot cerró como `Llamada agendada` un expediente **completo, con los cinco documentos dentro**,
+  solo porque la fecha declarada no cuadraba con la del documento: la fila se quedó en el peldaño
+  `2` y **no habría producido jamás ni informe ni `.030`**, que es justo lo que el fiscal necesita
+  para esa llamada. La discrepancia y el expediente completo son **ortogonales**: el aviso viaja en
+  su columna, la llamada se ofrece igual, y el cierre sigue siendo `Expediente completo`. Está
+  escrito en el prompt en **dos sitios** (la ficha del documento de alta y la sección CIERRE),
+  porque con uno solo ya falló.
 - **El bot solo genera el `.030`, no el 149.** El 149 lo rehace un fiscal a mano.
 - **El correo del informe lo manda Airtable, no n8n**, porque `sendEmail` adjunta desde un campo de
   adjunto y eso ya funciona en producción. **Cero credenciales nuevas**, que es el muro que bloquea
@@ -287,7 +312,7 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
 | `docs/prds/fase2/` | 39 PRDs `WP-2NN` + `map.html` + `ROADMAP-FASE2.md`. Estados válidos: `skeleton, specified, building, done` |
 | `docs/arquitectura-completa-2026-08-16.md` | Punta a punta, 5 diagramas Mermaid, 14 decisiones |
 | `docs/corpus-fiscal-beckham-2026-08-13.md` | El conocimiento fiscal aprobado, con su apéndice de desajustes |
-| `docs/prompt-final-*.txt` | Copias versionadas del prompt. **La fuente de verdad es LangSmith**, `bot_mobility_prompt` tag `prod` |
+| `docs/prompt-final-*.txt` | Copias versionadas del prompt. **La fuente de verdad es LangSmith**, `bot_mobility_prompt` tag `prod`. Vigente: **v12** (20/08, 63.932 car.), con su puerta `test-prompt-v12.js` — que hereda las 60 del v11 **midiendo el v12**, no el fichero viejo |
 | `plan/` · `plan/historico/` | Plan maestro, arranques de sesión, reanudaciones |
 | `proyecto-mobility/` | La carpeta lista para el repo público: README de 894 líneas y los **7 workflows exportados** |
 | `referencia/documentos-test/` | **PII real. Gitignored.** |
