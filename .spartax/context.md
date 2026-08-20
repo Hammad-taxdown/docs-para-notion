@@ -83,6 +83,22 @@ del expediente. De propina prueba que el **lector de 47 claves** hace su trabajo
 **Tracker: 39 WPs · 12 cerrados · 27 abiertos · 50 puntos.** Camino crítico 21 puntos, primer
 eslabón sin cerrar **WP-207**.
 
+### La decisión del final del día: el informe cambia de motor
+
+**`beckham_informe_mobility_v2`** (`snoDqB063jMSgzUq`) **es el que se va a usar.** Lo construye
+Iciar; 13 nodos; hoy `active=false` y sin publicar. Copia una de **ocho plantillas de Google Docs**
+(4 regímenes × 2 idiomas), rellena 14 marcadores y descarga el PDF, en lugar de escribirlo byte a
+byte. Usa `.item` en todo, vacía `InformePdf` antes de subir, para y explica el motivo si falta un
+dato, y saca el id de `r.id` porque la columna `recordId` viene vacía en las filas creadas por API.
+
+**Cuatro cosas que hay que resolver al cablearlo** (T065): su `Marcar InformeListo` **no escribe el
+`Status`** y sin eso nadie pone el peldaño `4`; su filtro es idéntico al del v1, así que el viejo se
+despublica en el mismo movimiento; no tiene `errorWorkflow`; y el informe pasa a depender de
+credenciales de Google.
+
+**Efecto colateral bueno:** el bug del `.first()` que apareció hoy en el v1 (T064) **muere con él**
+si el v2 entra. Ese arreglo solo hace falta mientras el v1 siga publicado.
+
 ### Filas de prueba: siete, tres neutralizadas
 
 Para que el bot no reconozca al cliente se le pone al `UserId` el prefijo `ARCHIVADA-<fecha>`: es el

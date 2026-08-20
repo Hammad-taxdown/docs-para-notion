@@ -293,6 +293,15 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   su columna, la llamada se ofrece igual, y el cierre sigue siendo `Expediente completo`. Está
   escrito en el prompt en **dos sitios** (la ficha del documento de alta y la sección CIERRE),
   porque con uno solo ya falló.
+- **EL INFORME PASA A `beckham_informe_mobility_v2`** (`snoDqB063jMSgzUq`), decidido el 20/08. Deja
+  de escribirse el PDF **byte a byte** y pasa a copiarse una de **ocho plantillas de Google Docs**
+  (4 combinaciones de régimen × 2 idiomas), rellenar 14 marcadores con `replaceAll`, descargarla
+  como PDF y subirla. Lo construye Iciar. **Al cablearlo hay que despublicar el v1 en el MISMO
+  movimiento** — su filtro es idéntico y dos workflows sobre las mismas filas son dos escritores.
+  **Y su `Marcar InformeListo` NO escribe el `Status`**: si sustituye al v1 tal cual, nadie escribe
+  el peldaño `4` y la escalera se rompe por tercera vez, como el 17/08 y el 18/08. A cambio del
+  cambio de motor, el informe **pasa a depender de credenciales de Google Drive y Docs**, que es
+  justo lo que el motor a mano evitaba.
 - **El bot solo genera el `.030`, no el 149.** El 149 lo rehace un fiscal a mano.
 - **El correo del informe lo manda Airtable, no n8n**, porque `sendEmail` adjunta desde un campo de
   adjunto y eso ya funciona en producción. **Cero credenciales nuevas**, que es el muro que bloquea
