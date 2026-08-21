@@ -222,7 +222,14 @@ echo "   El fichero ENTERO."
 # y en UTF-8 cada uno ocupa DOS bytes, asi que los dos numeros se separan casi
 # 3.000. Dar el numero en bytes hace creer que el pegado se ha quedado corto y que
 # hay que repegar 190 KB para nada. Se da EN CARACTERES, que es lo que se compara.
-CARACT=$(node -e 'const c=require("fs").readFileSync(process.argv[1],"utf8");console.log(c.length)' "$SALIDA")
+# console.log NO, process.stdout.write: node 26 COLOREA la salida de console.log de
+# un numero incluso escribiendo a una tuberia, y los codigos ANSI se colaban dentro de
+# la variable. Se veia el 21/08/2026 como "el nodo tiene que tener ^[[33m241272^[[39m
+# CARACTERES" y ademas reventaba el $((CAR - CARACT)) de tres lineas mas abajo con
+# "syntax error: operand expected". El script seguia acabando en exit 0, asi que la
+# puerta parecia verde mientras daba el numero corrompido que se usa para comprobar
+# el pegado en n8n.
+CARACT=$(node -e 'const c=require("fs").readFileSync(process.argv[1],"utf8");process.stdout.write(String(c.length))' "$SALIDA")
 echo "   COMPROBACION: el nodo tiene que tener $CARACT CARACTERES (no bytes)."
 echo "   Para verlo: en el editor del nodo, Cmd+A y mira el contador de seleccion."
 echo "   ($CAR bytes en disco: la diferencia de $((CAR - CARACT)) son los acentos,"

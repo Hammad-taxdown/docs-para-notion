@@ -1,11 +1,11 @@
-// Puerta del nodo «Decidir_Status» · 19/08/2026
+// Puerta del nodo «Decidir_Status» · 19/08/2026, ampliada el 21/08/2026
 // Comprueba la escalera nueva: el bot escribe el 3 (expediente cerrado, informe
 // pendiente) y el 4 lo escribe el generador del informe, no este nodo.
 // Se ejecuta con `node docs/test-decidir-status.js`. Sin framework, como el resto.
 const fs = require('fs');
 const path = require('path');
 
-const RUTA = path.join(__dirname, 'nodo-decidir-status-2026-08-19.js');
+const RUTA = path.join(__dirname, 'nodo-decidir-status-2026-08-21.js');
 const CODIGO = fs.readFileSync(RUTA, 'utf8');
 
 // Corre el nodo con $ y $input simulados, igual que haria n8n.
@@ -25,6 +25,14 @@ const COMPLETO = { fields: { UserId: 'u1', MotivoCierre: 'Expediente completo' }
 const LLAMADA  = { fields: { UserId: 'u1', MotivoCierre: 'Llamada agendada' } };
 const DESCARTE = { fields: { UserId: 'u1', Descarte: true } };
 const SUELTO   = { fields: { UserId: 'u1', Salario: 80000 } };
+// 21/08 · Lo que manda el bot en cuanto el cliente dice un salario al limite: las
+// senales llegan SIN motivo de cierre y sin AplicaBeckham, y eso ya es "hay que
+// llamar". Es el caso exacto de la conversacion 215475580835251.
+const SENAL    = { fields: { UserId: 'u1', Salario: 52000, SenalesComplejidad: ['Salario no definido o en el límite'] } };
+const SENAL_2  = { fields: { UserId: 'u1', SenalesComplejidad: ['Salario no definido o en el límite', 'Cónyuge quiere acogerse'] } };
+const SENAL_0  = { fields: { UserId: 'u1', Salario: 80000, SenalesComplejidad: [] } };
+// Airtable devuelve los multipleSelects como objetos, igual que los singleSelect.
+const filaSenal = (status, senales) => ({ id: 'recX', fields: { Status: status, Empresa: 'TaxDown', SenalesComplejidad: senales.map(n => ({ id: 'sel' + n.length, name: n, color: 'redLight2' })) } });
 
 // Una fila de Airtable tal y como la devuelve Leer_Status_Actual.
 const fila = (status) => ({ id: 'recX', fields: { Status: status, Empresa: 'TaxDown' } });
@@ -64,6 +72,43 @@ const CASOS = [
 
   ['la lectura de Airtable fallo -> no se toca el Status',
    { enviado: COMPLETO, filas: [{ error: 'timeout' }] }, null],
+
+  // ── 21/08 · el 2 al OFRECER la llamada, no al confirmarla ────────────────────
+  ['SENALES sin motivo de cierre desde el 1 -> escribe el 2 (el fallo de la conv 3)',
+   { enviado: SENAL, filas: [fila('1. Interesado')] }, '2. Pendiente llamada TD'],
+
+  ['SENALES con el cliente nuevo (0 filas) -> escribe el 2',
+   { enviado: SENAL, filas: [{}] }, '2. Pendiente llamada TD'],
+
+  ['DOS senales -> el 2 igual, no hace falta que sean del salario',
+   { enviado: SENAL_2, filas: [fila('1. Interesado')] }, '2. Pendiente llamada TD'],
+
+  ['senales VACIAS con el cliente nuevo -> el 1, no basta con que exista la clave',
+   { enviado: SENAL_0, filas: [{}] }, '1. Interesado'],
+
+  ['senales VACIAS y la fila YA en el 1 -> no reescribe: la escalera sube ESTRICTO',
+   { enviado: SENAL_0, filas: [fila('1. Interesado')] }, null],
+
+  ['las senales ya estaban en la FILA y este turno no las manda -> el 2 igual',
+   { enviado: { fields: { UserId: 'u1', NumeroTelefono: '+34600' } },
+     filas: [filaSenal('1. Interesado', ['Salario no definido o en el límite'])] }, '2. Pendiente llamada TD'],
+
+  ['NO REGRESION: senales con la fila ya en el 3 -> NO baja al 2',
+   { enviado: SENAL, filas: [fila('3. Pte hacer informe')] }, null],
+
+  ['NO REGRESION: senales con la fila ya en el 4 -> NO baja al 2',
+   { enviado: SENAL, filas: [fila('4. Informe enviado')] }, null],
+
+  ['NO REGRESION: senales Y expediente completo -> manda el 3, no el 2',
+   { enviado: { fields: { UserId: 'u1', MotivoCierre: 'Expediente completo', SenalesComplejidad: ['Salario no definido o en el límite'] } },
+     filas: [fila('2. Pendiente llamada TD')] }, '3. Pte hacer informe'],
+
+  ['NO REGRESION: senales Y descarte -> manda el descarte',
+   { enviado: { fields: { UserId: 'u1', Descarte: true, SenalesComplejidad: ['Salario no definido o en el límite'] } },
+     filas: [fila('1. Interesado')] }, '12. Descartado'],
+
+  ['SENALES con la lectura fallida -> no se toca el Status',
+   { enviado: SENAL, filas: [{ error: 'timeout' }] }, null],
 
 ];
 
@@ -109,6 +154,20 @@ for (const [nombre, entrada] of MULTI) {
 // El 4 no lo puede escribir este nodo por ningun camino: lo escribe el generador.
 if (/propuesto\s*=\s*'4\./.test(CODIGO)) { console.log("ROJO  el nodo sigue asignando el peldano 4 a propuesto"); mal++; }
 else { console.log("verde el nodo NO asigna nunca el peldano 4 (lo escribe Marcar InformeListo)"); ok++; }
+
+// 21/08 · la traza tiene que poder explicar POR QUE subio al 2: sin estos dos
+// campos, un 2 inesperado no se puede depurar sin releer el codigo.
+{
+  const r = correr({ enviado: SENAL, filas: [fila('1. Interesado')] });
+  if (r._requiere_llamada === true && Array.isArray(r._senales) && r._senales.length === 1) {
+    console.log("verde la traza lleva _requiere_llamada y _senales"); ok++;
+  } else {
+    console.log(`ROJO  la traza no explica el 2: _requiere_llamada=${r._requiere_llamada} _senales=${JSON.stringify(r._senales)}`); mal++;
+  }
+  const r2 = correr({ enviado: SENAL_0, filas: [fila('1. Interesado')] });
+  if (r2._requiere_llamada === false) { console.log("verde sin senales, _requiere_llamada en false"); ok++; }
+  else { console.log(`ROJO  _requiere_llamada=${r2._requiere_llamada} con senales vacias`); mal++; }
+}
 
 // La regla del proyecto: en nodos de codigo, jamas .item
 if (/\)\s*\.item\b/.test(CODIGO)) { console.log("ROJO  hay $(...).item en un nodo de codigo"); mal++; }

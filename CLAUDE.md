@@ -65,11 +65,13 @@ node docs/test-generador-030.js
 node docs/test-informe-integracion.js
 
 # Las cuatro puertas nacidas el 19/08 (node plano, exit 1 si algo esta rojo)
-node docs/test-decidir-status.js        # la escalera de Status: 15 comprobaciones
+node docs/test-decidir-status.js        # la escalera de Status: 28 comprobaciones
 node docs/test-validador-2026-08-19.js  # gentilicios, umbral, estado civil: 31
 node docs/test-prompt-v10.js           # los 17 cambios del prompt v10: 35
-node docs/test-prompt-v12.js           # el prompt VIGENTE, 77 (hereda las 60 del v11)
+node docs/test-prompt-v12.js           # el prompt v12, 77 (hereda las 60 del v11)
+node docs/test-prompt-v13.js           # el v13 PREPARADO, 103 (hereda las 77 del v12)
 node docs/test-lector-expediente.js    # el lector de 47 claves: 14
+node docs/test-v2-preparar-informe.js  # el nodo del informe v2: 74
 
 # Los pasos de un cambio, EN LA TERMINAL (no en un .md que hay que abrir)
 bash docs/pasos.sh          # las puertas + los pasos con workflow, nodo y casilla
@@ -133,8 +135,18 @@ escribe un peldaño enciende o apaga media entrega, y ya ha pasado **dos veces**
 
 | Peldaño | Quién lo escribe | Cuándo |
 |---|---|---|
+| **2. Pendiente llamada TD** | el bot, en `Decidir_Status` | **`SenalesComplejidad` no vacío** (21/08), o `MotivoCierre='Llamada agendada'`, o `AplicaBeckham` |
 | **3. Pte hacer informe** | el bot, en `Decidir_Status` | `MotivoCierre='Expediente completo'` |
 | **4. Informe enviado** | `beckham_informe_mobility`, en `Marcar InformeListo` | cuando el PDF ya está subido |
+
+**El 2 se escribe AL OFRECER la llamada, no al confirmarla** (21/08, decisión del usuario con datos).
+Antes exigía `motivo_cierre='Llamada agendada'`, y el prompt solo manda ese motivo si el cliente
+confirma **dos cosas más**: que reservó en Calendly y que no tiene dudas. La cola del fiscal
+dependía de que el cliente contestase dos veces más — y medido en la conversación `215475580835251`
+(52.000 €), no contestó: la fila se quedó en el `1` y **el fiscal no la veía**. `AplicaBeckham` no
+salva esto: un caso complejo no lo marca nunca, a propósito. Se resolvió con `SenalesComplejidad`,
+que ya llega en la misma llamada, así que **cero campos nuevos**. A cambio, el 2 aparece a mitad de
+conversación y el fiscal ve casos incompletos: es deliberado.
 
 Y los dos generadores filtran **`OR(Status=3, Status=4)`**, no solo uno: los dos schedule van con 18
 segundos de diferencia, y si filtrasen solo el `3` un `.030` que hubiera fallado **no reintentaría
@@ -188,6 +200,22 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   **el informe fiscal de otro**, porque la automatización `5` adjunta lo que haya en `InformePdf`.
   Lo prohibía el sticky del propio nodo. **Al arreglar esta clase de bug, revisar los DOS
   generadores**, no solo aquel donde apareció.
+- **Un parche que toca DOS sitios de un nodo de código se entrega ENTERO, para pegar con Cmd+A.**
+  El 21/08 entregué el arreglo del v2 como «busca esta línea y sustituye por estas otras» y el
+  pegado acabó con la línea de prosa «Cambio 2 — las cuatro últimas líneas del return:» **dentro**
+  del código, las cuatro líneas nuevas en medio del fichero y el `return` de abajo sin tocar:
+  `SyntaxError: Unexpected number`. Un parche por trozos se puede pegar de más; un fichero completo
+  con Cmd+A, no.
+- **`console.log` de node 26 COLOREA la salida aunque escriba a una tubería.** Los códigos ANSI se
+  colaron dentro de una variable de `montar-nodo-informe.sh` y corrompieron justo el número de
+  caracteres que sirve para comprobar un pegado de 241 KB, además de reventar la resta de la línea
+  siguiente. **Y el script seguía saliendo con `exit 0`**: la puerta parecía verde mientras mentía.
+  En scripts, `process.stdout.write(String(x))`, nunca `console.log`. Corolario: **un `exit 0` no
+  dice que el script haya hecho su trabajo, solo que no abortó.**
+- **Airtable OMITE las celdas vacías en la respuesta.** Si pides tres campos y te devuelve una sola
+  clave, esa clave **no dice cuál es**: hay que resolver el `fld` id antes de interpretar. El 21/08
+  leí un `true` de `InformeListo` como si fuera `RegenerarInforme` y concluí que alguien había
+  tocado dos casillas. No era verdad.
 - **El recuento de un pegado va en CARACTERES, no en bytes.** `wc -c` da bytes; el editor de n8n
   cuenta caracteres. El `COMPLETO` lleva ~1.500 acentos y los dos números se separan casi 3.000.
 - **`typecast: true` en el Upser NO SE APAGA.** Se intentó y se revirtió dos veces (01/08 y 06/08).
@@ -329,7 +357,7 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
 | `docs/prds/fase2/` | 39 PRDs `WP-2NN` + `map.html` + `ROADMAP-FASE2.md`. Estados válidos: `skeleton, specified, building, done` |
 | `docs/arquitectura-completa-2026-08-16.md` | Punta a punta, 5 diagramas Mermaid, 14 decisiones |
 | `docs/corpus-fiscal-beckham-2026-08-13.md` | El conocimiento fiscal aprobado, con su apéndice de desajustes |
-| `docs/prompt-final-*.txt` | Copias versionadas del prompt. **La fuente de verdad es LangSmith**, `bot_mobility_prompt` tag `prod`. Vigente: **v12** (20/08, 63.932 car.), con su puerta `test-prompt-v12.js` — que hereda las 60 del v11 **midiendo el v12**, no el fichero viejo |
+| `docs/prompt-final-*.txt` | Copias versionadas del prompt. **La fuente de verdad es LangSmith**, `bot_mobility_prompt` tag `prod`. Vigente: **v13** (21/08, 65.848 car., pegado y verificado en la conversación `215475581167582`), con su puerta `test-prompt-v13.js` de 103 comprobaciones — hereda las 77 del v12 **midiendo el v13**, no el fichero viejo. Sus cuatro cambios, los cuatro medidos turno a turno: D3 pide NIF o NIE sin nombrar el pasaporte · inversiones pegadas a inmuebles · hijos y observaciones en el orden en que se preguntan · el mensaje del Calendly termina preguntando, que es la mitad del arreglo del peldaño 2 |
 | `plan/` · `plan/historico/` | Plan maestro, arranques de sesión, reanudaciones |
 | `proyecto-mobility/` | La carpeta lista para el repo público: README de 894 líneas y los **7 workflows exportados** |
 | `referencia/documentos-test/` | **PII real. Gitignored.** |

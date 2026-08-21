@@ -28,6 +28,72 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
   dentro del v6 y metió un bucle infinito en la pregunta del idioma.
 - **Slack** (MCP) para los avisos de negocio y de error.
 
+## Estado al 21/08/2026 · EL DÍA DEL PELDAÑO 2 Y DE LA PRUEBA DE LAS DOS FILAS
+
+### Lo que quedó cerrado
+- **T064, con la prueba que la distingue.** El `.first()` de `Subir el PDF a Airtable` del informe
+  v1 está parcheado, publicado (`versionId == activeVersionId == a80561ef`) y probado con **dos
+  filas en el mismo tick** (ejecución `8128203`): `recIvWrCD6PcsE10p` recibió su PDF de 33.114 bytes
+  y `recp0TwCJ7RPzhwbA` el suyo de 33.094, **un solo adjunto cada una y tamaños distintos**. Era la
+  única prueba que separa `.item` de `.first()` y no se había hecho nunca: hasta hoy siempre había
+  una sola fila pendiente.
+- **El informe v1 vuelve a estar publicado.** Decisión del usuario: el v2 espera a que **Alina**
+  vuelva de vacaciones a conectar la credencial de Google, y eso son días, no horas.
+- **Los textos de no residente del v2 ya no se calculan cuando no aplican.** Un caso Beckham de
+  Alemania producía «Alemania está fuera de la Unión Europea» — falso dos veces. Verificado en la
+  ejecución `8128159`: los cuatro marcadores salen vacíos en `BCK+BCK|ES`.
+
+### El peldaño 2 pasa a escribirse AL OFRECER la llamada
+Decisión del usuario del 21/08, tomada con la conversación 3 delante. Antes el `2. Pendiente llamada
+TD` exigía `motivo_cierre='Llamada agendada'`, y ese motivo el prompt solo lo manda si el cliente
+confirma **dos cosas más**: que ya reservó en Calendly y que no le queda ninguna duda. **La cola del
+fiscal dependía de que el cliente contestase dos veces más.** Medido en la conversación
+`215475580835251` (52.000 €, caso al límite): el bot dio el enlace, el cliente no contestó, y la
+fila se quedó en `1. Interesado` — un caso que necesita llamada y que el fiscal no ve.
+
+**Ahora basta con que `SenalesComplejidad` no esté vacío**, que llega en la misma llamada que el
+salario. Cero campos nuevos, o sea que no hay que recorrer los cinco sitios. **Efecto aceptado a
+propósito: el 2 se escribe a mitad de conversación y el fiscal verá casos incompletos.** La escalera
+sigue subiendo sola, así que un caso que luego se complete pasa al 3 sin que nadie lo baje.
+
+### El reparto de Status queda así
+| Peldaño | Quién lo escribe | Cuándo |
+|---|---|---|
+| **2. Pendiente llamada TD** | el bot, en `Decidir_Status` | `SenalesComplejidad` no vacío, o `MotivoCierre='Llamada agendada'`, o `AplicaBeckham` |
+| **3. Pte hacer informe** | el bot, en `Decidir_Status` | `MotivoCierre='Expediente completo'` |
+| **4. Informe enviado** | `beckham_informe_mobility`, en `Marcar InformeListo` | cuando el PDF ya está subido |
+
+### Prompt v13 preparado (65.848 caracteres, puerta de 103 comprobaciones)
+1. **D3 pide «NIF o NIE» y ya no nombra el pasaporte.** El 21/08 el cliente dijo `XDA123456`, el
+   agente lo mandó como `PasaporteNumero` y la columna `NIF` quedó vacía — y sin NIF no hay `.030`,
+   porque el fichero se llama `<NIF>.030`. Si no tiene ninguno de los dos se le pide el pasaporte y
+   se sigue: no se bloquea la conversación.
+2. **Las inversiones van pegadas a los inmuebles.** Orden nuevo: PF1 salario · PF2 inmuebles ·
+   PF3 inversiones · PF4 motivo · PF5 documentación · PF6a/b/c familia · PF7 hijos · PF8
+   observaciones. **Y OJO: el bot no había desordenado nada** — seguía el prompt al pie de la letra,
+   que tenía el patrimonio partido por tres preguntas. Esto es diseño nuevo, no un arreglo.
+3. **PF7 y PF8 dejan de estar del revés.**
+4. **El mensaje del Calendly ya no termina en el enlace:** pide que avise al reservar y pregunta por
+   dudas, y se le prohíbe insistir si el cliente no vuelve.
+
+### Tres trampas nuevas, medidas
+- **Un parche por trozos se puede pegar de más.** El del v2 acabó con la línea de prosa «Cambio 2 —
+  las cuatro últimas líneas del return:» **dentro** del código y un `SyntaxError`. Desde hoy: si un
+  cambio toca dos sitios de un nodo de código, **se entrega el nodo entero y se pega con Cmd+A**.
+- **`console.log` de node 26 colorea la salida aunque escriba a una tubería.** Los códigos ANSI se
+  colaban en la variable de `montar-nodo-informe.sh` y corrompían justo el número de caracteres que
+  sirve para comprobar el pegado, además de reventar una resta. **El script seguía acabando en
+  `exit 0`**: la puerta parecía verde mientras mentía. Arreglado con `process.stdout.write`.
+- **Airtable omite las celdas vacías en la respuesta**, así que si pides tres campos y te devuelve
+  una sola clave, **esa clave no dice cuál es**. Hay que resolver el `fld` id antes de interpretar.
+  Por saltarme esto conclui que alguien había tocado dos casillas y no era verdad.
+
+### Estado de los tres workflows al cerrar
+`beckham_bot` publicado (`6266c993`), `beckham_informe_mobility` publicado con el parche
+(`a80561ef`), `beckham_generar_030` publicado, `beckham_informe_mobility_v2` **sin publicar y
+bloqueado** por la credencial `googleDriveOAuth2Api` `6926ysfsHBouOgnM`, que necesita a Alina — y
+hacen falta **dos**, Drive y Docs, de la misma cuenta.
+
 ## Estado al 20/08/2026 · EL DÍA EN QUE EL CAMINO AUTOMÁTICO FUNCIONÓ
 
 ### Lo que se consiguió, y nunca se había visto
