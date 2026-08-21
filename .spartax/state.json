@@ -839,11 +839,12 @@
       "verify": "las imagenes del README regeneradas y subidas",
       "depends": [],
       "effort": 0.5,
-      "status": "in_progress",
-      "note": "21/08: prompt escrito, docs/prompt-claude-design-2026-08-21.md (~11 KB). Lleva la infra completa al 21/08 (incluido el peldanio 2 nuevo y el v2 del informe marcado como FUTURO con borde discontinuo), las 8 rutas exactas del repo para que el push sustituya sin tocar el README, y los cuatro defectos medidos del set actual: texto RECORTADO en cuatro cajas del diagrama 1 ('Cliente en el Messenge', 'app5K8OnSObqwWwe', 'AEAT · fichero 03(', 'es.synapse.rentax.e'), peso visual todo a la derecha, aristas cruzadas sin necesidad y legibilidad a 900 px, que es el ancho al que se ven en el README.",
+      "status": "done",
+      "note": "21/08: los 8 diagramas regenerados por Claude Design, colocados en assets con copia de seguridad de los viejos, comprobados uno a uno y subidos en el commit 47b1819. El 01 (texto recortado), el 07 (peldanio 2) y el 04 (v2 como futuro) verificados abriendo la imagen, no solo por tamanio.",
       "created_at": "2026-08-21T10:37:01Z",
       "planned_at": "2026-08-21T10:37:01Z",
-      "in_progress_at": "2026-08-21T11:19:08Z"
+      "in_progress_at": "2026-08-21T11:19:08Z",
+      "done_at": "2026-08-21T11:54:46Z"
     },
     "T073": {
       "title": "El nodo 'Copiar la plantilla' del v2 tiene un ID de documento FIJO: hay que devolverlo a la expresion",
@@ -854,8 +855,19 @@
       "status": "planned",
       "note": "",
       "created_at": "2026-08-21T11:50:39Z"
+    },
+    "T074": {
+      "title": "Automatizaciones de Airtable: la 5 apagada (nadie manda el informe) y la 3 con script resucitada (hace retroceder el Status)",
+      "milestone": "F5",
+      "verify": "alguien manda el informe con el PDF adjunto; ninguna automatizacion escribe Status sin comprobar el peldanio; un solo escritor por trigger",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "21/08: la 5 SE APARCA por decision del usuario (las comunicaciones iran por otra via, sin definir). El alcance de la tarea queda solo en las tres que reactivo Iciar. Correcciones entregadas en docs/correcciones-automatizaciones-airtable-2026-08-21.md y en un mensaje corto para ella. Lo mas grave sigue siendo que la 3 hace retroceder el Status del 8 al 7.",
+      "created_at": "2026-08-21T12:06:27Z",
+      "planned_at": "2026-08-21T12:12:57Z"
     }
   },
-  "next_task": 74,
-  "updated_at": "2026-08-21T11:50:39Z"
+  "next_task": 75,
+  "updated_at": "2026-08-21T12:12:57Z"
 }
