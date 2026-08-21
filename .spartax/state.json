@@ -750,9 +750,9 @@
       "depends": [],
       "effort": 1.0,
       "status": "planned",
-      "note": "20/08 · BAJA DE PRIORIDAD: el informe pasa al v2 de Iciar (T065), que ya usa .item en todas sus expresiones. Este arreglo SOLO hace falta mientras el v1 siga publicado y activo. Si manana se cablea el v2 y se despublica el v1, el bug muere con el y esta tarea se cierra sin tocar nada. Si el v2 se retrasa, hay que pegarlo: la hoja esta en docs/pegar-informe-item-2026-08-20.md",
+      "note": "21/08: NO se ha pegado el parche, pero el v1 quedo DESPUBLICADO anoche, asi que el bug esta dormido, no muerto. Si se republica el v1 por cualquier razon, este parche va ANTES: dos expresiones de 'Subir el PDF a Airtable', .first() -> .item en recordId y en filename.",
       "created_at": "2026-08-20T14:52:12Z",
-      "planned_at": "2026-08-20T15:03:10Z"
+      "planned_at": "2026-08-21T01:11:08Z"
     },
     "T065": {
       "title": "Cablear beckham_informe_mobility_v2 y despublicar el v1 en el mismo movimiento",
@@ -760,11 +760,12 @@
       "verify": "v2 publicado con errorWorkflow y escribiendo Status='4. Informe enviado'; v1 despublicado; una fila en Status 3 produce SU PDF por tick mode=trigger",
       "depends": [],
       "effort": 2.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-08-20T15:02:54Z"
+      "status": "in_progress",
+      "note": "21/08 02:15: A MEDIAS Y BLOQUEADA POR CREDENCIAL DE GOOGLE. Hecho y verificado: credencial Airtable Mobility2026 en los 5 nodos (leyendo y escribiendo), Resource=Record en Buscar filas pendientes, parche de fila cruda/aplanada en Preparar el informe (comprobado en la ejecucion 8127042: los 14 marcadores salen bien) y Status='4. Informe enviado' en su Marcar InformeListo. Se para en 'Copiar la plantilla': credencial 'Google Drive -DaniMario' (6926ysfsHBouOgnM) sin autorizar, 'Unable to sign without access token'. La tiene que conectar quien tenga acceso a las 8 plantillas. LOS DOS INFORMES ESTAN DESPUBLICADOS: si no se cablea el v2, republicar el v1 Y pegar antes el parche de T064.",
+      "created_at": "2026-08-20T15:02:54Z",
+      "in_progress_at": "2026-08-21T01:11:08Z"
     }
   },
   "next_task": 66,
-  "updated_at": "2026-08-20T15:03:10Z"
+  "updated_at": "2026-08-21T01:11:08Z"
 }
