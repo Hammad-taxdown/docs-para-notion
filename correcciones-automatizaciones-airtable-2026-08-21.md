@@ -10,6 +10,40 @@ Todo lo de abajo está leído de la **configuración actual** de las automatizac
 
 ---
 
+## AÑADIDO EL 24/08/2026 · las seis correcciones YA ESTÁN HECHAS: es un swap, no un arreglo
+
+Releído el estado en vivo de la base, y esto es más corto de lo que parecía. **La `3b. Envio
+borradores 030 y 149 sin script`** (`wflbayW4R4IvjHLTQ`, nativa, hecha el 13/08) **ya lleva dentro
+las seis correcciones** de este documento, y está en `undeployed`. La de script está en `deployed`.
+
+Así que no hay que editar ningún script: son **tres clics**, y los tres son reversibles.
+
+| | Automatización | Hoy | Hay que dejarla |
+|---|---|---|---|
+| 1 | `3b. Envio borradores 030 y 149 sin script` (`wflbayW4R4IvjHLTQ`) | `undeployed` | **`deployed`** |
+| 2 | `1. Envio borradores 030 y 149` (`wflx5iCN4pXuwPAvO`) | `deployed` | **`undeployed`** |
+| 3 | `2. Usuario completa el formulario de confirmación M030` (`wflo1oMmSWlcYsO3V`) | `deployed` | **`undeployed`** |
+
+**OJO CON EL NOMBRE: la automatización que este documento llama «la `3`» está renombrada en la base
+como `1. Envio borradores 030 y 149`.** Es la misma: mismo trigger (`EnviarBorradores` marcada y
+`fldZ6RNPfTbK2S3MR` no vacío), un grupo condicional de dos ramas, y en cada rama un `customScript`
+más un `updateRecord`. Buscarla por el número `3` no la encuentra.
+
+**Y el orden de los dos primeros clics importa:** entre uno y otro las dos quedan `deployed` a la
+vez, y con una fila con `EnviarBorradores` marcada eso son **dos correos al cliente**. O se hace con
+la vista sin filas pendientes, o se hace al revés: primero el `undeployed` de la vieja, después el
+`deployed` de la `3b`.
+
+El clic 3 no es nuevo: **el intercambio `2` ↔ `2b` ya se decidió y se probó en vivo el 19/08**, y se
+ha vuelto a activar la vieja. Hoy las dos escriben sobre el mismo formulario `viwjxT8e1uLg7K4OC`,
+o sea **dos escritores**: la de script copia las 93 columnas con lista negra de 5, la `2b` copia
+**tres campos** con whitelist.
+
+Lo que sigue vale igual: es el **por qué** de cada corrección, y es lo que hay que leer antes de
+volver a publicar la de script por cualquier motivo.
+
+---
+
 ## La `5` (envío del informe) queda APARCADA — decisión del usuario, 21/08/2026
 
 **No hay que arreglarla ni republicarla.** Las comunicaciones al cliente van a pasar a otra vía, así

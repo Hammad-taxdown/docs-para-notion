@@ -23,7 +23,9 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
   en el canvas, F2 (plazo de 6 meses) delegado a n8n.
 - **LangSmith**: fuente de verdad del prompt. `promptName: bot_mobility_prompt`, `promptTag: prod`.
   **Manda el tag `prod`, no el último commit.**
-  Versión vigente: **v10** (19/08, 60.328 car., `docs/prompt-final-2026-08-19-v10.txt`), publicada con tag `prod` y **todavía sin ninguna ejecución que la ejerza**. Copias en `docs/prompt-langsmith-prod-*.txt`. **Nunca arrastrar a
+  Versión vigente: **v13** (21/08, 65.848 car., `docs/prompt-final-2026-08-21-v13.txt`), pegada y con
+  el tag `prod` movido, verificada turno a turno en la conversación `215475581167582`. Su puerta es
+  `docs/test-prompt-v13.js`, 103 comprobaciones. Copias en `docs/prompt-langsmith-prod-*.txt`. **Nunca arrastrar a
   una publicación un parche que el log marque como no verificado**: el v5 iba sin validar, entró
   dentro del v6 y metió un bucle infinito en la pregunta del idioma.
 - **Slack** (MCP) para los avisos de negocio y de error.
@@ -63,7 +65,7 @@ sigue subiendo sola, así que un caso que luego se complete pasa al 3 sin que na
 | **3. Pte hacer informe** | el bot, en `Decidir_Status` | `MotivoCierre='Expediente completo'` |
 | **4. Informe enviado** | `beckham_informe_mobility`, en `Marcar InformeListo` | cuando el PDF ya está subido |
 
-### Prompt v13 preparado (65.848 caracteres, puerta de 103 comprobaciones)
+### Prompt v13 · PEGADO y con el tag `prod` movido (65.848 caracteres, puerta de 103 comprobaciones)
 1. **D3 pide «NIF o NIE» y ya no nombra el pasaporte.** El 21/08 el cliente dijo `XDA123456`, el
    agente lo mandó como `PasaporteNumero` y la columna `NIF` quedó vacía — y sin NIF no hay `.030`,
    porque el fichero se llama `<NIF>.030`. Si no tiene ninguno de los dos se le pide el pasaporte y
@@ -88,11 +90,15 @@ sigue subiendo sola, así que un caso que luego se complete pasa al 3 sin que na
   una sola clave, **esa clave no dice cuál es**. Hay que resolver el `fld` id antes de interpretar.
   Por saltarme esto conclui que alguien había tocado dos casillas y no era verdad.
 
-### Estado de los tres workflows al cerrar
-`beckham_bot` publicado (`6266c993`), `beckham_informe_mobility` publicado con el parche
-(`a80561ef`), `beckham_generar_030` publicado, `beckham_informe_mobility_v2` **sin publicar y
-bloqueado** por la credencial `googleDriveOAuth2Api` `6926ysfsHBouOgnM`, que necesita a Alina — y
-hacen falta **dos**, Drive y Docs, de la misma cuenta.
+### Estado de los cuatro workflows al cerrar
+`beckham_bot` publicado (**`c4e05e77`**, 55 nodos), `beckham_informe_mobility` publicado con el
+parche (`a80561ef`, 9 nodos), `beckham_generar_030` publicado (`94b353cd`, 8 nodos),
+`beckham_informe_mobility_v2` (`4892b872`, 14 nodos) **sin publicar y bloqueado** por la credencial
+`googleDriveOAuth2Api` `6926ysfsHBouOgnM`, que necesita a Alina — y hacen falta **dos**, Drive y
+Docs, de la misma cuenta.
+
+> **Corrección del 24/08:** aquí figuraba `6266c993` como versión publicada del bot. **Es falso**:
+> el `versionId` vivo es `c4e05e77`, y `activeVersionId` coincide. Comprobado por MCP.
 
 ## Estado al 20/08/2026 · EL DÍA EN QUE EL CAMINO AUTOMÁTICO FUNCIONÓ
 

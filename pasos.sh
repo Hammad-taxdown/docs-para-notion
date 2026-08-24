@@ -1,9 +1,10 @@
 #!/bin/bash
-# Los pasos del 21/08 en la terminal. Sin abrir ningun fichero.
-#   bash docs/pasos.sh        -> los 4 pasos y el orden
-#   bash docs/pasos.sh 1      -> solo el paso 1, Y te lo copia al portapapeles
-#   bash docs/pasos.sh test   -> pasa las siete puertas
-#   bash docs/pasos.sh 19     -> los pasos del 19/08, que ya estan hechos
+# Los pasos del 24/08 en la terminal. Sin abrir ningun fichero.
+#   bash docs/pasos.sh        -> los 3 pasos y el orden
+#   bash docs/pasos.sh 1      -> solo el paso 1, Y te copia al portapapeles lo que haya que pegar
+#   bash docs/pasos.sh test   -> pasa las NUEVE puertas
+#   bash docs/pasos.sh 21     -> los pasos del 21/08, ya hechos
+#   bash docs/pasos.sh 19     -> los pasos del 19/08, ya hechos
 cd "$(dirname "$0")/.." || exit 1
 B=$(printf '\033[1m'); D=$(printf '\033[2m'); V=$(printf '\033[32m'); A=$(printf '\033[33m')
 R=$(printf '\033[31m'); C=$(printf '\033[36m'); N=$(printf '\033[0m')
@@ -18,39 +19,68 @@ ${D}como:${N}     $5
 EOF
 }
 
-p1(){ paso 1 "el peldano 2 se escribe AL OFRECER la llamada" "beckham_bot · nhOwpiGxikeU5DLR" "Decidir_Status" "Cmd+A dentro del codigo, Cmd+V, guardar y PUBLICAR"
-echo "${A}fichero:${N} docs/nodo-decidir-status-2026-08-21.js"
-echo "${A}el contador tiene que decir:${N} ${V}11.191 caracteres${N} ${D}(antes 8.977)${N}"
-echo "${R}EL NODO ENTERO, no por trozos: hoy un parche 'busca esta linea' acabo con una linea${N}"
-echo "${R}de prosa dentro del codigo y un SyntaxError.${N}"
-echo "${D}por que: la cola del fiscal dependia de que el cliente contestase DOS veces mas${N}"
-echo "${D}despues del Calendly. Medido en la conv 215475580835251: se quedo en el peldano 1.${N}"
-echo "${D}efecto aceptado: el 2 llega a mitad de conversacion, con casos aun incompletos.${N}"
-[ "$1" = copia ] && pbcopy < docs/nodo-decidir-status-2026-08-21.js && echo "${B}-> copiado (11.191 car)${N}"; }
+p1(){ paso 1 "T073 · devolver al v2 la plantilla que calcula, en vez de una fija" \
+  "beckham_informe_mobility_v2 · snoDqB063jMSgzUq" "Copiar la plantilla (Google Drive, operation=copy)" \
+  "A MANO EN LA UI DE n8n. NO por MCP."
+echo "${A}campo File:${N} modo ${V}By ID${N}, en ${V}Expression${N}, con  ${V}{{ \$json.plantilla }}${N}"
+echo "${A}hoy tiene:${N}  ${R}1DgRGflmdr7_-W16kf4Oo3NVoMtQ3QoshWNUGEgjSlx4${N} ${D}(literal, y NO es ninguna de las 8)${N}"
+echo "${A}y en Options:${N} volver a anadir ${V}Same Folder As Original = true${N} ${D}(se perdio en el mismo cambio)${N}"
+echo "${R}NUNCA con update_workflow del MCP: cada reescritura por API BORRA las credenciales${N}"
+echo "${R}de los 14 nodos, y lo dice el sticky del propio workflow.${N}"
+echo "${D}por que corre prisa: 'Preparar el informe' elige bien entre las ocho plantillas${N}"
+echo "${D}(regimen x idioma) y NADIE USA ESE CALCULO. En cuanto la credencial de Google firme,${N}"
+echo "${D}los ocho casos salen del MISMO documento: regimen e idioma equivocados en 7 de cada 8.${N}"
+echo "${D}Y no falla: el PDF sale bien formado, se sube y se manda. Es el fallo mas caro que hay.${N}"
+echo "${A}como comprobarlo despues:${N} reexportar por MCP y ver que el fileId vuelve a ser"
+echo "${D}{'mode':'id','value':'={{ \$json.plantilla }}'} y que options trae sameFolder:true.${N}"
+[ "$1" = copia ] && printf '{{ $json.plantilla }}' | pbcopy && echo "${B}-> copiado al portapapeles: {{ \$json.plantilla }}${N}"; }
 
-p2(){ paso 2 "prompt v13: NIF/NIE, patrimonio junto, y el Calendly pregunta" "LANGSMITH" "bot_mobility_prompt" "pegar Y mover el tag prod"
-echo "${A}fichero:${N} docs/prompt-final-2026-08-21-v13.txt"
-echo "${A}contador:${N} ${V}65.848 caracteres${N} ${D}(v12: 63.932, +1.916)${N}"
-echo "${R}GUARDAR **Y** MOVER EL TAG prod. Sin el tag el bot sigue leyendo el v12.${N}"
-echo "${D}4 cambios: D3 pide NIF o NIE sin nombrar el pasaporte · inversiones PEGADAS a${N}"
-echo "${D}inmuebles (PF2, PF3) · hijos PF7 y observaciones PF8, ya no al reves · el mensaje${N}"
-echo "${D}del Calendly termina pidiendo que avise y preguntando por dudas.${N}"
-[ "$1" = copia ] && pbcopy < docs/prompt-final-2026-08-21-v13.txt && echo "${B}-> copiado (65.848 car)${N}"; }
+p2(){ paso 2 "T074 · el swap de las automatizaciones de Airtable" \
+  "AIRTABLE Mobility_2026 · app5K8OnSObqwWweS" "3b, '1. Envio borradores', 2 y 2b" \
+  "TRES CLICS de deployed/undeployed. NO hay que editar ningun script."
+echo "${V}HALLAZGO DEL 24/08: no hay que arreglar nada, hay que INTERCAMBIAR.${N} La 3b nativa"
+echo "${D}(wflbayW4R4IvjHLTQ, hecha el 13/08) YA LLEVA DENTRO las seis correcciones, y esta${N}"
+echo "${D}undeployed. La de script esta deployed. Es un swap, y es reversible.${N}"
+echo
+echo "${A}clic 1:${N} ${V}3b. Envio borradores 030 y 149 sin script${N} -> ${V}deployed${N}"
+echo "${A}clic 2:${N} ${R}1. Envio borradores 030 y 149${N} ${D}(wflx5iCN4pXuwPAvO, la que los docs llaman${N}"
+echo "${D}        'la 3': ESTA RENOMBRADA en la base)${N} -> ${R}undeployed${N}"
+echo "${A}clic 3:${N} ${R}2. Usuario completa el formulario de confirmacion M030${N} -> ${R}undeployed${N}"
+echo "${D}        (deja solo la 2b nativa, que ya esta deployed: hoy las DOS escriben sobre el${N}"
+echo "${D}        mismo formulario viwjxT8e1uLg7K4OC. Esto ya se decidio el 19/08 y se ha vuelto${N}"
+echo "${D}        a activar.)${N}"
+echo
+echo "${A}lo que se gana, medido en la config de las dos:${N}"
+echo "${D} · la de script escribe Status=7 SIN condicion en las dos ramas -> una fila en 8 con${N}"
+echo "${D}   EnviarBorradores marcada BAJA a 7. La 3b lo mete en un condicional duplicado dentro${N}"
+echo "${D}   de cada rama de idioma (Airtable no deja nodos detras de un grupo condicional).${N}"
+echo "${D} · la de script compara Idioma con 'Espanol'/'Ingles' exactos: con idioma vacio no manda${N}"
+echo "${D}   nada y la ejecucion sale verde. En la 3b el ingles es el caso explicito y el espanol${N}"
+echo "${D}   es la RAMA POR DEFECTO.${N}"
+echo "${D} · el trigger de la 3b exige la tercera condicion (fldHucVawayh0zYvk no vacio): que los${N}"
+echo "${D}   borradores EXISTAN. El de la de script no.${N}"
+echo "${D} · Modificacion M149 llega al cliente, y el enlace sale del REGISTRO en las dos ramas${N}"
+echo "${D}   (la rama inglesa de la vieja lo leia de la variable).${N}"
+echo
+echo "${R}OJO al orden del clic 1 y el 2:${N} entre uno y otro las DOS estan deployed. Con"
+echo "${D}EnviarBorradores marcada eso son dos correos. Hazlo con la vista sin filas pendientes,${N}"
+echo "${D}o al reves: primero undeploy de la vieja y luego deploy de la 3b.${N}"
+echo "${V}LA 5 NO SE TOCA.${N} ${D}Aparcada a proposito: las comunicaciones al cliente iran por otra${N}"
+echo "${D}via. Que nadie mande el informe desde Airtable NO es un fallo ahora mismo.${N}"
+echo "${D}el detalle largo: docs/correcciones-automatizaciones-airtable-2026-08-21.md${N}"
+[ "$1" = copia ] && echo "${D}(nada que copiar: son clics en Airtable)${N}"; }
 
-p3(){ paso 3 "comprobar que el 2 se escribe de verdad" "beckham_bot" "(ninguno: conversacion real)" "Messenger en INCOGNITO, workspace TEST"
-echo "${A}que hacer:${N} conversacion nueva, y al llegar al salario decir ${V}52.000${N}"
-echo "${A}que mirar SIN llegar al final:${N} la fila tiene que estar ya en ${V}2. Pendiente llamada TD${N}"
-echo "${D}en la traza de Decidir_Status: _requiere_llamada:true y _senales con la senal dentro.${N}"
+p3(){ paso 3 "T068 · la no regresion que importa" "beckham_bot + los dos generadores" "(ninguno)" \
+  "una conversacion que llegue al final, Messenger en INCOGNITO, workspace TEST"
+echo "${A}un expediente que se cierra COMPLETO tiene que seguir yendo al${N} ${V}3. Pte hacer informe${N}"
+echo "${D}o sea: el cambio del peldano 2 del 21/08 no puede dejar casos clavados en el 2. La${N}"
+echo "${D}puerta test-decidir-status.js lo cubre con cinco no regresiones, pero conviene verlo${N}"
+echo "${D}una vez en vivo.${N}"
+echo "${D}y detras: informe y .030 en el tick siguiente, cada fila con SU fichero.${N}"
 echo "${R}el Messenger REANUDA el hilo abierto: sin incognito no arrancas de cero.${N}"
 echo "${D}y la fila del cliente anterior hay que neutralizarla (prefijo ARCHIVADA en UserId).${N}"; }
 
-p4(){ paso 4 "la no regresion que importa" "beckham_bot + los dos generadores" "(ninguno)" "una conversacion que llegue al final"
-echo "${A}un expediente que se cierra COMPLETO tiene que seguir yendo al${N} ${V}3. Pte hacer informe${N}"
-echo "${D}o sea: el cambio del paso 1 no puede dejar casos clavados en el 2. La puerta lo${N}"
-echo "${D}cubre con cinco no regresiones, pero conviene verlo una vez en vivo.${N}"
-echo "${D}y detras: informe y .030 en el tick siguiente, cada fila con SU fichero.${N}"; }
-
-puertas(){ echo "${B}${C}━━━ LAS SIETE PUERTAS ━━━${N}"
+puertas(){ echo "${B}${C}━━━ LAS NUEVE PUERTAS ━━━${N}"
 for t in test-decidir-status.js test-validador-2026-08-19.js test-prompt-v10.js test-prompt-v12.js test-prompt-v13.js test-lector-expediente.js test-v2-preparar-informe.js; do
   r=$(node "docs/$t" 2>&1 | grep -oE "[0-9]+ verdes, [0-9]+ rojas|TODO PASA · [0-9]+ comprobaciones"); node "docs/$t" >/dev/null 2>&1 \
     && printf "  ${V}OK${N}   %-38s %s\n" "$t" "$r" || printf "  ${R}FALLA${N} %-38s %s\n" "$t" "$r"
@@ -61,16 +91,19 @@ bash docs/montar-nodo-informe.sh >/dev/null 2>&1 && printf "  ${V}OK${N}   %-38s
 
 case "$1" in
   test|puertas) puertas ;;
+  21) bash docs/pasos-2026-08-21.sh ;;
   19|viejo) bash docs/pasos-2026-08-19.sh ;;
   ''|todos) puertas
-    echo; echo "${B}${C}════ 4 PASOS · 21/08 ════${N}"
-    for i in 1 2 3 4; do "p$i"; done
+    echo; echo "${B}${C}════ 3 PASOS · 24/08 ════${N}"
+    for i in 1 2 3; do "p$i"; done
     echo; echo "${B}${C}━━━ ORDEN ━━━${N}"
-    echo "  1 (publicar) -> 2 (tag prod) -> 3 -> 4"
-    echo "  ${R}el 1 y el 2 van juntos el mismo dia:${N} el prompt le dice al bot que no insista"
-    echo "  porque 'el equipo ya lo ve', y eso solo es verdad con el nodo pegado."
+    echo "  1 (el v2, a mano) -> 2 (Airtable) -> 3 (la no regresion en vivo)"
+    echo "  ${R}el 1 y el 2 van antes de que vuelva Alina:${N} el 1 porque en cuanto haya"
+    echo "  credencial de Google el fallo se vuelve invisible, y el 2 porque la 3 ya puede"
+    echo "  hacer retroceder una fila hoy mismo."
     echo; echo "${D}un paso suelto y copiado al portapapeles:${N}  bash docs/pasos.sh 1"
+    echo "${D}los pasos del 21/08, ya hechos:${N}              bash docs/pasos.sh 21"
     echo "${D}los pasos del 19/08, ya hechos:${N}              bash docs/pasos.sh 19" ;;
-  [0-4]) "p$1" copia ;;
-  *) echo "uso: bash docs/pasos.sh [1-4|test|19]" ;;
+  [1-3]) "p$1" copia ;;
+  *) echo "uso: bash docs/pasos.sh [1-3|test|21|19]" ;;
 esac

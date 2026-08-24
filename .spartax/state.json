@@ -853,7 +853,7 @@
       "depends": [],
       "effort": 0.5,
       "status": "planned",
-      "note": "",
+      "note": "24/08 confirmado contra el workflow vivo (4892b872): fileId={value:'1DgRGflmdr7_...',mode:'id'} y options:{} sin sameFolder. A MANO EN LA UI, nunca por MCP: cada reescritura por API borra las credenciales de los 14 nodos. Paso 1 de docs/pasos.sh, con el valor al portapapeles.",
       "created_at": "2026-08-21T11:50:39Z"
     },
     "T074": {
@@ -863,11 +863,11 @@
       "depends": [],
       "effort": 1.0,
       "status": "planned",
-      "note": "21/08: la 5 SE APARCA por decision del usuario (las comunicaciones iran por otra via, sin definir). El alcance de la tarea queda solo en las tres que reactivo Iciar. Correcciones entregadas en docs/correcciones-automatizaciones-airtable-2026-08-21.md y en un mensaje corto para ella. Lo mas grave sigue siendo que la 3 hace retroceder el Status del 8 al 7.",
+      "note": "24/08: NO es un arreglo, es un SWAP de tres clics. La 3b nativa (wflbayW4R4IvjHLTQ) ya lleva las seis correcciones y esta undeployed; la de script, renombrada como '1. Envio borradores 030 y 149' (wflx5iCN4pXuwPAvO), esta deployed. Tercer clic: undeploy de la 2 (wflo1oMmSWlcYsO3V), que hoy convive con la 2b sobre el mismo formulario. LA 5 NO SE TOCA. Paso 2 de docs/pasos.sh.",
       "created_at": "2026-08-21T12:06:27Z",
       "planned_at": "2026-08-21T12:12:57Z"
     }
   },
   "next_task": 75,
-  "updated_at": "2026-08-21T12:12:57Z"
+  "updated_at": "2026-08-24T10:13:40Z"
 }

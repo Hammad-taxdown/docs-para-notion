@@ -31,9 +31,12 @@ Consecuencias prácticas:
 
 ## 2 · Rutina obligatoria de cada sesión
 
-1. **Auditar por MCP al empezar**: `beckham_bot` (`nhOwpiGxikeU5DLR`), `beckham_generar_030`
-   (`OoJ2l7PmxSHLxXA4`), `beckham_informe_mobility` (`Us5sFgXD9qVxJvxO`). Comprobar `versionId`,
-   número de nodos y que `activeVersionId == versionId` (si difieren, hay cambios sin publicar).
+1. **Auditar por MCP al empezar. Son CUATRO workflows, no tres**: `beckham_bot`
+   (`nhOwpiGxikeU5DLR`), `beckham_generar_030` (`OoJ2l7PmxSHLxXA4`), `beckham_informe_mobility`
+   (`Us5sFgXD9qVxJvxO`) y **`beckham_informe_mobility_v2` (`snoDqB063jMSgzUq`)**. Comprobar
+   `versionId`, número de nodos y que `activeVersionId == versionId` (si difieren, hay cambios sin
+   publicar). **El v2 entra en la rutina porque lo tocan otras manos**: el 21/08 apareció con una
+   plantilla fija que nadie había pedido, y no se detecta si no se mira.
 2. **Leer `.spartax/log.md`** (las entradas del último día) y `.spartax/context.md`.
 3. **Tras cerrar cada bloque, dar la tabla de pendientes sin que la pida.**
 4. **Logs al día sobre la marcha**, no al final: `python3 ~/.claude/skills/spartax/scripts/state.py log "..."`.
@@ -64,12 +67,13 @@ bash docs/montar-nodo-informe.sh
 node docs/test-generador-030.js
 node docs/test-informe-integracion.js
 
-# Las cuatro puertas nacidas el 19/08 (node plano, exit 1 si algo esta rojo)
+# LAS NUEVE PUERTAS: siete de node plano mas los dos montadores. `bash docs/pasos.sh test`
+# las pasa las nueve de una vez. Todas exit 1 si algo esta rojo.
 node docs/test-decidir-status.js        # la escalera de Status: 28 comprobaciones
 node docs/test-validador-2026-08-19.js  # gentilicios, umbral, estado civil: 31
 node docs/test-prompt-v10.js           # los 17 cambios del prompt v10: 35
 node docs/test-prompt-v12.js           # el prompt v12, 77 (hereda las 60 del v11)
-node docs/test-prompt-v13.js           # el v13 PREPARADO, 103 (hereda las 77 del v12)
+node docs/test-prompt-v13.js           # el v13 VIVO con el tag prod, 103 (hereda las 77 del v12)
 node docs/test-lector-expediente.js    # el lector de 47 claves: 14
 node docs/test-v2-preparar-informe.js  # el nodo del informe v2: 74
 
@@ -326,10 +330,22 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   (4 combinaciones de régimen × 2 idiomas), rellenar 14 marcadores con `replaceAll`, descargarla
   como PDF y subirla. Lo construye Iciar. **Al cablearlo hay que despublicar el v1 en el MISMO
   movimiento** — su filtro es idéntico y dos workflows sobre las mismas filas son dos escritores.
-  **Y su `Marcar InformeListo` NO escribe el `Status`**: si sustituye al v1 tal cual, nadie escribe
-  el peldaño `4` y la escalera se rompe por tercera vez, como el 17/08 y el 18/08. A cambio del
-  cambio de motor, el informe **pasa a depender de credenciales de Google Drive y Docs**, que es
-  justo lo que el motor a mano evitaba.
+  A cambio del cambio de motor, el informe **pasa a depender de credenciales de Google Drive y
+  Docs**, que es justo lo que el motor a mano evitaba, y por eso sigue `active=false`.
+  **CORREGIDO EL 24/08 CONTRA EL WORKFLOW VIVO: su `Marcar InformeListo` SÍ escribe el `Status`.**
+  Aquí se dio por hecho lo contrario desde el 20/08 y era falso: el nodo manda
+  `{Status:'4. Informe enviado', InformeListo:true, RegenerarInforme:false, ErrorInforme:'',
+  InformeEnviadoEl:$now.toISO()}`. La escalera **no** se rompe por ahí; el quinto sitio de un cambio
+  de Status sigue siendo el mismo, pero en el v2 ya está cubierto.
+  **Y OJO CON DOS COSAS DE ESTE WORKFLOW:**
+  - **Cada reescritura por API BORRA las credenciales de sus 14 nodos.** Lo dice su propio sticky.
+    Un cambio pequeño **se hace a mano en la UI**, nunca con `update_workflow` del MCP.
+  - **El 21/08 a las 13:46 alguien le puso al nodo `Copiar la plantilla` un ID de documento FIJO**
+    (`1DgRGflmdr7_…`, que no es ninguna de las ocho plantillas) en lugar de la expresión
+    `{{ $json.plantilla }}`, y se perdió el `sameFolder:true`. Tal cual está, en cuanto la credencial
+    de Google funcione **los ocho casos saldrían del mismo documento**, con el régimen y el idioma
+    equivocados en siete de cada ocho — y el PDF saldría bien formado, se subiría y se mandaría. Es
+    el fallo silencioso más caro que tiene el sistema ahora mismo. `T073`.
 - **El bot solo genera el `.030`, no el 149.** El 149 lo rehace un fiscal a mano.
 - **El correo del informe lo manda Airtable, no n8n**, porque `sendEmail` adjunta desde un campo de
   adjunto y eso ya funciona en producción. **Cero credenciales nuevas**, que es el muro que bloquea
