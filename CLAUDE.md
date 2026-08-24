@@ -347,9 +347,38 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
     equivocados en siete de cada ocho — y el PDF saldría bien formado, se subiría y se mandaría. Es
     el fallo silencioso más caro que tiene el sistema ahora mismo. `T073`.
 - **El bot solo genera el `.030`, no el 149.** El 149 lo rehace un fiscal a mano.
-- **El correo del informe lo manda Airtable, no n8n**, porque `sendEmail` adjunta desde un campo de
-  adjunto y eso ya funciona en producción. **Cero credenciales nuevas**, que es el muro que bloquea
-  este proyecto en tres sitios.
+- **SUPERADO EL 24/08 — el correo del informe NO lo manda Airtable.** Aquí decía lo contrario
+  («`sendEmail` adjunta desde un campo de adjunto y eso ya funciona»), y era verdad como mecanismo
+  pero **no es el canal de la casa**. Las automatizaciones de Iciar no mandan el correo: hacen `POST`
+  a `https://es.synapse.rentax.es/webhook/a6a3ebaa-0d63-4edf-baef-30effc5fdf60` con
+  `notif: "NOTIF_Mobility_BorradorM030"`, `transactionalIDCustomer: 54` y el `x-make-apikey` del
+  secreto `n8nApi` — o sea que **el correo sale por el sistema transaccional de TaxDown**. Eso es
+  «la otra vía» de la decisión de aparcar la `5`, y sigue cumpliendo lo de **cero credenciales
+  nuevas**, porque el secreto ya está en la base.
+- **SE QUEDAN LAS AUTOMATIZACIONES DE ICIAR** (24/08, decisión del usuario, y el canal la respalda).
+  Consecuencias, y no se reabren:
+  - **La `3b` se queda en `undeployed` PARA SIEMPRE**, y la `5` aparcada. No es que sean peores: usan
+    `sendEmail` de Airtable, que es **otro canal**. Publicar la `3b` le manda al cliente **dos
+    correos** por el mismo hito, uno por cada vía. Está escrito en
+    `docs/correcciones-automatizaciones-airtable-2026-08-21.md` para no repetir el análisis.
+  - **La que todos los documentos llaman «la `3`» está RENOMBRADA en la base** como
+    `1. Envio borradores 030 y 149` (`wflx5iCN4pXuwPAvO`). Buscarla por el número no la encuentra.
+  - **Sus tres fallos graves están en la parte NATIVA, no en el script**, así que sí se arreglan:
+    (1) los dos `updateRecord` escriben `Status=7` sin condición y hay que envolverlos en una guarda
+    de `1,2,4,5,6,vacío` — **con el `4` y sin el `3`**; (2) las ramas comparan `Idioma` con valores
+    exactos y **con la celda vacía no se manda nada y la ejecución sale verde** (se arregla poniendo
+    la rama española en `Idioma no es Ingles`, que en Airtable incluye las vacías); (3) el trigger no
+    exige `Borrador149` no vacío. El script **no se toca**.
+  - **`comentarios149` se recibe y se tira**: el cuerpo del correo solo usa `comentarios030`. No se
+    puede arreglar sin editar el script, y el script no se edita. Es decisión de producto.
+  - **La `2` y la `2b` siguen las dos `deployed` sobre el mismo formulario** `viwjxT8e1uLg7K4OC`:
+    dos escritores, y con eso **la whitelist del 19/08 está de hecho anulada** porque la `2`
+    sobrescribe igual. Hay que apagar una y el usuario no lo ha decidido aún.
+  - **Lo que yo escribí el 21/08 de que «la rama inglesa lee el enlace de la variable en vez del
+    registro» es literalmente cierto y NO es un fallo.** La variable está enlazada a
+    `fldraDKaVYKWXqiSq`, que **es** `Linkconfirmacionmodelos`, el mismo campo que lee la rama
+    española; y la fórmula solo depende de nombre, apellidos, NIF y `RECORD_ID()`. No hay nada que
+    arreglar, y menos tocando un script intocable.
 - **La errata de la opción `Propiedades`** («en España ni el extranjero») **se deja**: el informe la
   traduce con un mapa de presentación y cambiarla lo rompe.
 - **El volcado de 245 países dentro de tres descripciones de Airtable se queda**, y el duplicado

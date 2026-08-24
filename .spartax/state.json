@@ -618,10 +618,11 @@
       "verify": "Conversacion real: la PRIMERA pregunta que ve el cliente es el idioma, con banderas, ANTES de F1, y el agente ya no la repite",
       "depends": [],
       "effort": 2.0,
-      "status": "planned",
-      "note": "16/08: sin empezar. Sigue planificada.",
+      "status": "done",
+      "note": "24/08 CERRADA POR DECISION DEL USUARIO: el idioma esta bien como esta. Que se pregunte en el turno 8, despues de los filtros, se acepta; no se toca el canvas.",
       "created_at": "2026-08-10T07:50:23Z",
-      "planned_at": "2026-08-10T10:11:12Z"
+      "planned_at": "2026-08-10T10:11:12Z",
+      "done_at": "2026-08-24T10:44:46Z"
     },
     "T053": {
       "title": "WP-203 · auth de los webhooks del escritor y del lector",
@@ -742,9 +743,10 @@
       "verify": "el turno del aviso lleva pregunta detras, y cierra con MotivoCierre=Expediente completo y Status 3 pese a la discrepancia",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-08-20T09:20:23Z"
+      "status": "done",
+      "note": "24/08 CERRADA POR DECISION DEL USUARIO: la discrepancia de fecha de alta ya se ha probado de sobra. La regla esta en el prompt en dos sitios y la decision del 20/08 (DiscrepanciaFechaAlta NO cambia el motivo_cierre) esta cerrada. No se vuelve a probar.",
+      "created_at": "2026-08-20T09:20:23Z",
+      "done_at": "2026-08-24T10:44:46Z"
     },
     "T064": {
       "title": "Arreglar el .first() del nodo 'Subir el PDF a Airtable' del informe",
@@ -818,9 +820,10 @@
       "verify": "se sabe si aborta con Error030 o si escribe algo, y esta decidido que debe hacer",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-08-21T10:09:50Z"
+      "status": "done",
+      "note": "24/08 CERRADA POR DECISION DEL USUARIO: no hay caso. El NIE es obligatorio si o si, asi que un expediente que solo trae pasaporte no es un escenario que haya que soportar. El .030 se llama <NIF>.030 y el prompt v13 ya pide NIF o NIE sin ofrecer el pasaporte.",
+      "created_at": "2026-08-21T10:09:50Z",
+      "done_at": "2026-08-24T10:44:46Z"
     },
     "T071": {
       "title": "Ordenar las columnas de Empleados en Airtable",
@@ -863,11 +866,11 @@
       "depends": [],
       "effort": 1.0,
       "status": "planned",
-      "note": "24/08: NO es un arreglo, es un SWAP de tres clics. La 3b nativa (wflbayW4R4IvjHLTQ) ya lleva las seis correcciones y esta undeployed; la de script, renombrada como '1. Envio borradores 030 y 149' (wflx5iCN4pXuwPAvO), esta deployed. Tercer clic: undeploy de la 2 (wflo1oMmSWlcYsO3V), que hoy convive con la 2b sobre el mismo formulario. LA 5 NO SE TOCA. Paso 2 de docs/pasos.sh.",
+      "note": "24/08 REORIENTADA: se quedan las de Iciar. Su customScript NO manda el correo -- POST al webhook a6a3ebaa de n8n con notif=NOTIF_Mobility_BorradorM030 y transactionalIDCustomer=54, o sea el sistema transaccional de TaxDown. Nuestras 3b y 5 usan sendEmail de Airtable = otro canal, asi que la 3b queda undeployed PARA SIEMPRE y la 5 aparcada. LO QUE HAY QUE HACER, todo en la parte NATIVA de '1. Envio borradores 030 y 149' (wflx5iCN4pXuwPAvO), sin tocar el script: A) envolver los dos updateRecord en la guarda de Status 1,2,4,5,6,vacio (con el 4 y SIN el 3), duplicada por rama de idioma; B) la rama espanola pasa de 'Idioma es Espanol' a 'Idioma NO es Ingles', que incluye las vacias -- hoy con Idioma vacio no se manda nada y la ejecucion sale verde; C) anadir Borrador149 no vacio al trigger. PENDIENTE DE DECISION DEL USUARIO: que hacer con comentarios149 (se recibe y se tira, y no se puede arreglar sin editar el script) y cual apagar de la 2 / 2b, que hoy estan las dos deployed sobre viwjxT8e1uLg7K4OC.",
       "created_at": "2026-08-21T12:06:27Z",
       "planned_at": "2026-08-21T12:12:57Z"
     }
   },
   "next_task": 75,
-  "updated_at": "2026-08-24T10:13:40Z"
+  "updated_at": "2026-08-24T10:48:40Z"
 }

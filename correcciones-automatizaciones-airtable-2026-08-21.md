@@ -10,37 +10,116 @@ Todo lo de abajo está leído de la **configuración actual** de las automatizac
 
 ---
 
-## AÑADIDO EL 24/08/2026 · las seis correcciones YA ESTÁN HECHAS: es un swap, no un arreglo
+## REESCRITO EL 24/08/2026 · SE QUEDAN LAS AUTOMATIZACIONES DE ICIAR, y hay un motivo técnico
 
-Releído el estado en vivo de la base, y esto es más corto de lo que parecía. **La `3b. Envio
-borradores 030 y 149 sin script`** (`wflbayW4R4IvjHLTQ`, nativa, hecha el 13/08) **ya lleva dentro
-las seis correcciones** de este documento, y está en `undeployed`. La de script está en `deployed`.
+**Decisión: las de Iciar son las que se quedan.** Y al leer su script entero se ve que no es una
+preferencia, es lo correcto: **su `customScript` no manda el correo**. Hace `POST` a
+`https://es.synapse.rentax.es/webhook/a6a3ebaa-0d63-4edf-baef-30effc5fdf60` con
+`notif: "NOTIF_Mobility_BorradorM030"`, `transactionalIDCustomer: 54` y el `x-make-apikey` del
+secreto `n8nApi` — o sea que **el correo sale por el sistema transaccional de TaxDown**, no por
+Airtable.
 
-Así que no hay que editar ningún script: son **tres clics**, y los tres son reversibles.
+Nuestras `3b` y `5` usan `sendEmail` **de Airtable**. Son otro canal: otra plantilla, otro remitente,
+otra trazabilidad, y fuera de lo que Marketing y Ops ven. Por eso:
 
-| | Automatización | Hoy | Hay que dejarla |
-|---|---|---|---|
-| 1 | `3b. Envio borradores 030 y 149 sin script` (`wflbayW4R4IvjHLTQ`) | `undeployed` | **`deployed`** |
-| 2 | `1. Envio borradores 030 y 149` (`wflx5iCN4pXuwPAvO`) | `deployed` | **`undeployed`** |
-| 3 | `2. Usuario completa el formulario de confirmación M030` (`wflo1oMmSWlcYsO3V`) | `deployed` | **`undeployed`** |
+- **La `3b` se queda en `undeployed` PARA SIEMPRE.** No es que sea peor — es que manda por el canal
+  equivocado. Si alguien la vuelve a publicar, el cliente recibe **dos correos** por el mismo hito,
+  uno de cada canal. Que quede escrito aquí para que nadie repita el análisis.
+- **La `5` sigue aparcada**, y ahora se entiende del todo: «las comunicaciones al cliente irán por
+  otra vía» **es este webhook**. Que el informe no salga hoy desde Airtable no es un fallo.
 
-**OJO CON EL NOMBRE: la automatización que este documento llama «la `3`» está renombrada en la base
-como `1. Envio borradores 030 y 149`.** Es la misma: mismo trigger (`EnviarBorradores` marcada y
-`fldZ6RNPfTbK2S3MR` no vacío), un grupo condicional de dos ramas, y en cada rama un `customScript`
-más un `updateRecord`. Buscarla por el número `3` no la encuentra.
+### Lo que sí hay que arreglar, y se puede: los tres fallos están en la parte NATIVA
 
-**Y el orden de los dos primeros clics importa:** entre uno y otro las dos quedan `deployed` a la
-vez, y con una fila con `EnviarBorradores` marcada eso son **dos correos al cliente**. O se hace con
-la vista sin filas pendientes, o se hace al revés: primero el `undeployed` de la vieja, después el
-`deployed` de la `3b`.
+Esto es la buena noticia. Los fallos graves **no están dentro del script** — están en el trigger, en
+las condiciones de las ramas y en los `updateRecord`, que son acciones nativas y **sí se editan en la
+UI**. El script se queda intacto, no hay que tocar ni una línea.
 
-El clic 3 no es nuevo: **el intercambio `2` ↔ `2b` ya se decidió y se probó en vivo el 19/08**, y se
-ha vuelto a activar la vieja. Hoy las dos escriben sobre el mismo formulario `viwjxT8e1uLg7K4OC`,
-o sea **dos escritores**: la de script copia las 93 columnas con lista negra de 5, la `2b` copia
-**tres campos** con whitelist.
+**A · La guarda del `Status`. Es la grave, y hay que hacerla en las dos ramas.**
 
-Lo que sigue vale igual: es el **por qué** de cada corrección, y es lo que hay que leer antes de
-volver a publicar la de script por cualquier motivo.
+Hoy el `updateRecord` de cada rama escribe, sin ningún condicional alrededor:
+
+```
+Status        → "7. Pte confirmación usuario"   (sel1oCLW0XPLZNZz7)
+Estado030149  → "3. Pendiente confirmación"     (selBhjx9YrZGJUSz0)
+```
+
+Una fila en `8. Confirmado`, en `9` o en `11` a la que alguien marque `EnviarBorradores` **baja al
+7**. Hay que **envolver el `updateRecord` en un grupo condicional** (el script se queda fuera, antes
+del grupo):
+
+| Rama | Condición sobre `Status` | Qué escribe |
+|---|---|---|
+| Peldaño bajo o vacío | es cualquiera de **1, 2, 4, 5, 6** o está vacío | `Status = 7` **y** `Estado030149` |
+| Ya en 7 o más | el resto | **solo** `Estado030149` |
+
+**En esa lista va el `4` y NO va el `3`.** No es un detalle: el 18/08 una fila llegó al peldaño `3`,
+alguien marcó `EnviarBorradores`, esto la subió al `7` **antes del tick de 15 minutos**, y el informe
+**no se generó nunca** — los dos generadores solo miran las filas en `3` o en `4`. Con el `4` sí es
+seguro, porque a esa altura el informe y el `.030` ya están subidos: `4 → 7` es el paso normal.
+
+Y la guarda va **duplicada dentro de cada rama de idioma**, porque Airtable no deja poner ningún nodo
+después de un grupo condicional.
+
+**B · Un `Idioma` vacío hoy no manda nada, y la ejecución sale verde.**
+
+Las dos ramas comparan con un valor exacto: `Idioma = Español` (`selpK6kadMNE60g0g`) y
+`Idioma = Ingles` (`selB0lkXu3bmepNM3`). `Idioma` es un `singleSelect` de solo esas dos opciones,
+así que **con la celda vacía no entra en ninguna rama**: no sale correo, no hay error, y la
+automatización se marca como correcta. Es el mismo fallo silencioso de la clase «pasa desapercibido».
+
+**Corrección de un solo clic:** cambiar la condición de la rama española de `Idioma es Español` a
+**`Idioma no es Ingles`**. En Airtable el `is not` de un `singleSelect` **sí incluye las celdas
+vacías**, así que el español pasa a ser la rama por defecto sin tocar el orden ni la rama inglesa.
+
+**C · El trigger no exige que los borradores existan.**
+
+Hoy pide `EnviarBorradores` marcada y **`Borrador030` no vacío** (`fldZ6RNPfTbK2S3MR`). No pide
+`Borrador149` (`fldHucVawayh0zYvk`) — y los dos scripts adjuntan los dos, y el correo dice
+literalmente «los dos trámites». Hay que **añadir `Borrador149` no vacío** al trigger. Es la misma
+tercera condición que lleva la `3b`.
+
+### Lo que NO se puede arreglar sin tocar el script, y qué hacer
+
+**`comentarios149` se recibe y se tira.** El `inputObj` de los dos scripts pasa
+`comentarios149` (`fldQ3T7KtPYTZeYcK`), y el cuerpo del correo **solo usa `comentarios030`**:
+
+```js
+const comentarios = inputConfig.comentarios030 ? inputConfig.comentarios030 + "<br><br>" : "";
+```
+
+O sea que si un fiscal escribe una observación en `comentarios149`, **el cliente no la ve nunca** y
+nada avisa. Como el script no se toca, hay dos salidas y son las dos de producto, no técnicas:
+escribir siempre en `comentarios030`, o **ocultar o renombrar la columna `comentarios149`** para que
+nadie escriba ahí creyendo que viaja. Decisión pendiente.
+
+### Y una corrección a lo que yo mismo escribí el 21/08
+
+Dije que **la rama inglesa lee el enlace de la variable en vez del registro**, y es verdad
+literalmente pero **no es un fallo**: la variable `linkConfirmacion030` está enlazada a
+`fldraDKaVYKWXqiSq`, que **es** `Linkconfirmacionmodelos`, el mismo campo que la rama española lee
+con `getCellValueAsString`. Y esa fórmula solo depende de nombre, apellidos, NIF y `RECORD_ID()`, así
+que la foto del trigger y la lectura fresca dan lo mismo. **No hay nada que arreglar aquí, y menos
+tocando un script que no se puede tocar.** Queda como diferencia de estilo entre las dos ramas.
+
+### La `2` y la `2b` sí siguen chocando, y esto necesita tu decisión
+
+`2. Usuario completa el formulario de confirmación M030` (`wflo1oMmSWlcYsO3V`, `customScript`) y
+`2b` (`wflvsvULr5SUHcgPN`, nativa) están **las dos en `deployed` sobre el mismo formulario**
+(`viwjxT8e1uLg7K4OC`). Son **dos escritores** sobre la misma fila.
+
+Aquí el argumento del canal **no aplica**: la `2` no manda nada al cliente, solo fusiona la respuesta
+del formulario en el expediente. Y las dos hacen cosas distintas:
+
+| | `2` (de Iciar, script) | `2b` (nuestra, nativa) |
+|---|---|---|
+| Qué copia | **todo lo no computado y no vacío** — las 93 columnas, con lista negra de 5 | **tres campos**, explícitos, con whitelist |
+| Borra la fila del formulario | **sí** | no (Airtable no tiene acción nativa de borrar) |
+| Editable | no | sí |
+
+Con las dos publicadas, **la whitelist del 19/08 está de hecho anulada**: la `2` sobrescribe igual.
+Hay que apagar una, y cuál depende de si pesa más el borrado automático de la fila huérfana (la `2`)
+o que un campo nuevo en el formulario no pueda sobrescribir el expediente sin que nadie lo decida
+(la `2b`).
 
 ---
 
