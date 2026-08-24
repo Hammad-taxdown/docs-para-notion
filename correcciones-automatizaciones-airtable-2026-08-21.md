@@ -28,7 +28,36 @@ otra trazabilidad, y fuera de lo que Marketing y Ops ven. Por eso:
 - **La `5` sigue aparcada**, y ahora se entiende del todo: «las comunicaciones al cliente irán por
   otra vía» **es este webhook**. Que el informe no salga hoy desde Airtable no es un fallo.
 
-### Lo que sí hay que arreglar, y se puede: los tres fallos están en la parte NATIVA
+### HECHO Y PUBLICADO EL 24/08/2026
+
+Los tres arreglos están dentro y en vivo. `configurationStatus: valid`, `deploymentStatus: deployed`,
+`deployedVersion: null` (el desplegado no difiere del borrador). El grupo condicional queda con
+**tres** ramas, porque **Airtable no deja crear un grupo anidado dentro de una rama** y la inglesa
+hubo que partirla en dos al nivel de arriba:
+
+| Rama | Condición | Qué hace |
+|---|---|---|
+| 1 | `Idioma != Ingles` (entra el vacío) | script ES → grupo anidado: `Status ∈ {1,2,4,5,6}` → `7` + `Estado030149` · else → **solo** `Estado030149` |
+| 2 | `Idioma = Ingles` **y** `Status ∈ {1,2,4,5,6}` | script EN → `7` + `Estado030149` |
+| 3 | **else** | script EN → **solo** `Estado030149` |
+
+Los cuatro casos cubiertos y **el mismo comportamiento en los dos idiomas**: un cliente ya
+confirmado sigue recibiendo el reenvío y no pierde el peldaño.
+
+**La llave fue que `Grupo duplicado` está en gris en la rama española y habilitado en la inglesa** —
+el gris no era por el script, era por el grupo anidado que la española ya tenía dentro.
+
+**El precio: el script inglés existe ahora DOS VECES** (`wacPpABiplv5tO7OM` y `wac2hg1IZkE0yOxMF`).
+Si se cambia el texto del correo inglés **hay que cambiarlo en los dos**.
+
+**Y el motivo real de que el script sea intocable no es el tipo de nodo, es el secreto:** «Los
+colaboradores de todos los secretos añadidos son los únicos que pueden hacer ediciones». El secreto
+es `n8nApi` (`eacbfZbyDYjL9UWCW`). **Quien sea colaborador de ese secreto sí puede editarlo**, así
+que lo de `comentarios149` es un permiso, no un imposible.
+
+---
+
+### El por qué de cada arreglo, que es lo que hay que leer antes de tocarlo otra vez
 
 Esto es la buena noticia. Los fallos graves **no están dentro del script** — están en el trigger, en
 las condiciones de las ramas y en los `updateRecord`, que son acciones nativas y **sí se editan en la

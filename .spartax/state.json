@@ -855,9 +855,10 @@
       "verify": "el nodo vuelve a tener fileId = {{ $json.plantilla }} en modo id, y una fila NRF copia una plantilla distinta que una BCK",
       "depends": [],
       "effort": 0.5,
-      "status": "planned",
-      "note": "24/08 confirmado contra el workflow vivo (4892b872): fileId={value:'1DgRGflmdr7_...',mode:'id'} y options:{} sin sameFolder. A MANO EN LA UI, nunca por MCP: cada reescritura por API borra las credenciales de los 14 nodos. Paso 1 de docs/pasos.sh, con el valor al portapapeles.",
-      "created_at": "2026-08-21T11:50:39Z"
+      "status": "done",
+      "note": "24/08 HECHO Y VERIFICADO POR MCP: versionId nuevo 261b2e30, updatedAt 2026-08-24T11:08:08Z, y el nodo Copiar la plantilla ya lleva fileId={value:'={{ $json.plantilla }}',mode:'id'}. El calculo de las ocho plantillas de 'Preparar el informe' vuelve a usarse. PENDIENTE MENOR: options sigue vacio, o sea que NO se ha repuesto sameFolder:true -- sin el la copia se crea en la raiz de Mi unidad en vez de junto a la plantilla, pero como 'Borrar el Doc temporal' la borra al final del flujo, es cosmetico.",
+      "created_at": "2026-08-21T11:50:39Z",
+      "done_at": "2026-08-24T11:52:12Z"
     },
     "T074": {
       "title": "Automatizaciones de Airtable: la 5 apagada (nadie manda el informe) y la 3 con script resucitada (hace retroceder el Status)",
@@ -865,12 +866,13 @@
       "verify": "alguien manda el informe con el PDF adjunto; ninguna automatizacion escribe Status sin comprobar el peldanio; un solo escritor por trigger",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "24/08 REORIENTADA: se quedan las de Iciar. Su customScript NO manda el correo -- POST al webhook a6a3ebaa de n8n con notif=NOTIF_Mobility_BorradorM030 y transactionalIDCustomer=54, o sea el sistema transaccional de TaxDown. Nuestras 3b y 5 usan sendEmail de Airtable = otro canal, asi que la 3b queda undeployed PARA SIEMPRE y la 5 aparcada. LO QUE HAY QUE HACER, todo en la parte NATIVA de '1. Envio borradores 030 y 149' (wflx5iCN4pXuwPAvO), sin tocar el script: A) envolver los dos updateRecord en la guarda de Status 1,2,4,5,6,vacio (con el 4 y SIN el 3), duplicada por rama de idioma; B) la rama espanola pasa de 'Idioma es Espanol' a 'Idioma NO es Ingles', que incluye las vacias -- hoy con Idioma vacio no se manda nada y la ejecucion sale verde; C) anadir Borrador149 no vacio al trigger. PENDIENTE DE DECISION DEL USUARIO: que hacer con comentarios149 (se recibe y se tira, y no se puede arreglar sin editar el script) y cual apagar de la 2 / 2b, que hoy estan las dos deployed sobre viwjxT8e1uLg7K4OC.",
+      "status": "done",
+      "note": "24/08 HECHO Y PUBLICADO. Trigger con las tres condiciones; rama 1 Idioma!=Ingles con grupo anidado de la guarda; rama 2 Ingles Y Status bajo -> 7; rama 3 else -> solo Estado030149. Verificado por get_automation: valid, deployed, deployedVersion=null. QUEDAN DOS DECISIONES DEL USUARIO QUE NO SON ESTA TAREA: comentarios149 y apagar la 2 o la 2b.",
       "created_at": "2026-08-21T12:06:27Z",
-      "planned_at": "2026-08-21T12:12:57Z"
+      "planned_at": "2026-08-21T12:12:57Z",
+      "done_at": "2026-08-24T12:00:18Z"
     }
   },
   "next_task": 75,
-  "updated_at": "2026-08-24T10:48:40Z"
+  "updated_at": "2026-08-24T12:00:18Z"
 }

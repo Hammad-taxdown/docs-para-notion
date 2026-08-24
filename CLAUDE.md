@@ -363,12 +363,37 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
     `docs/correcciones-automatizaciones-airtable-2026-08-21.md` para no repetir el análisis.
   - **La que todos los documentos llaman «la `3`» está RENOMBRADA en la base** como
     `1. Envio borradores 030 y 149` (`wflx5iCN4pXuwPAvO`). Buscarla por el número no la encuentra.
-  - **Sus tres fallos graves están en la parte NATIVA, no en el script**, así que sí se arreglan:
-    (1) los dos `updateRecord` escriben `Status=7` sin condición y hay que envolverlos en una guarda
-    de `1,2,4,5,6,vacío` — **con el `4` y sin el `3`**; (2) las ramas comparan `Idioma` con valores
-    exactos y **con la celda vacía no se manda nada y la ejecución sale verde** (se arregla poniendo
-    la rama española en `Idioma no es Ingles`, que en Airtable incluye las vacías); (3) el trigger no
-    exige `Borrador149` no vacío. El script **no se toca**.
+  - **HECHO Y PUBLICADO EL 24/08.** Sus tres fallos graves estaban en la parte NATIVA, no en el
+    script, así que se arreglaron sin tocar una línea: (1) el `Status` ya no retrocede; (2) un
+    `Idioma` vacío ya no se queda sin correo — la rama española es `Idioma no es Ingles`, que en
+    Airtable **incluye las celdas vacías**; (3) el trigger ya exige `Borrador030` **y** `Borrador149`.
+    Verificado con `get_automation`: `valid`, `deployed`, `deployedVersion=null`.
+  - **CÓMO SE HIZO, porque Airtable pone un muro donde no se espera.** No hay forma de crear un
+    grupo condicional **anidado** dentro de una rama: el `+` de la rama solo lista acciones y su
+    menú `...` solo añade ramas hermanas. Así que la rama inglesa **se partió en dos al nivel de
+    arriba**. El grupo `wdePz0CexeOQUlQZ6` queda con **tres** ramas:
+    `Idioma != Ingles` → script ES + grupo anidado [`Status ∈ {1,2,4,5,6}` → `7`+`Estado030149` /
+    else → solo `Estado030149`] · `Idioma = Ingles` **y** `Status ∈ {1,2,4,5,6}` → script EN +
+    `7`+`Estado030149` · **else** → script EN + solo `Estado030149`. Los cuatro casos cubiertos y
+    **el mismo comportamiento en los dos idiomas**: cero cambio de producto.
+  - **LA LLAVE: `Grupo duplicado` sale en GRIS en la rama española y HABILITADO en la inglesa.** El
+    gris **no era por el `customScript`** — era por el grupo anidado que la española ya tenía dentro.
+    Duplicando la rama inglesa sale una copia con su script y su `updateRecord`, y solo hay que
+    ponerle la condición a una y el `else` a la otra. **Cero arrastres.** Si vuelve a hacer falta
+    anidar en una rama, este es el camino.
+  - **EL PRECIO: el script inglés existe DOS VECES**, `wacPpABiplv5tO7OM` (rama 2) y
+    `wac2hg1IZkE0yOxMF` (rama 3, el `else`). **Si se cambia el texto del correo inglés hay que
+    cambiarlo en los dos.** No se pudo dejar escrito en la `Descripción` del nodo: al abrirse el
+    editor de script encima, el texto se pierde.
+  - **Y EL MOTIVO REAL DE QUE EL SCRIPT SEA INTOCABLE no es el tipo de nodo, es el SECRETO.** El
+    editor lo dice literalmente: «No puedes editar este script. Los colaboradores de todos los
+    secretos añadidos son los únicos que pueden hacer ediciones.» El secreto es `n8nApi`
+    (`eacbfZbyDYjL9UWCW`). **Quien sea colaborador de ese secreto sí puede editarlo**, así que el
+    `comentarios149` no es un imposible eterno: es un permiso.
+  - **La API no sirve para NADA en esta automatización.** `update_automation` devuelve
+    `isValid:false` con `kind: readOnlyNodeType` — «contains a read-only node (customScript) that
+    cannot be edited through the API» — aunque el cambio sea solo en la parte nativa, porque el
+    update es un **reemplazo completo**. Todo a mano en la UI.
   - **`comentarios149` se recibe y se tira**: el cuerpo del correo solo usa `comentarios030`. No se
     puede arreglar sin editar el script, y el script no se edita. Es decisión de producto.
   - **La `2` y la `2b` siguen las dos `deployed` sobre el mismo formulario** `viwjxT8e1uLg7K4OC`:
