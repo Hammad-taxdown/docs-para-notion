@@ -800,9 +800,10 @@
       "verify": "conversacion que cierra con MotivoCierre='Expediente completo' -> Status 3 y los dos generadores producen sus ficheros en el tick siguiente",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-08-21T10:09:50Z"
+      "status": "done",
+      "note": "24/08 CERRADO Y VERIFICADO EN VIVO, las dos mitades, sin conversacion de Intercom. Fila recn63lCzMQzMz8Cf por el webhook del escritor: senal -> Status 2; motivo_cierre='Expediente completo' -> Status 3. Tick de las 12:45: ejecuciones 8135726 y 8135728, las dos mode=trigger con 18 s de diferencia, y las dos guardas parando con motivo legible (falta municipio/INE y falta fechaDesplazamiento). Status intacto en 3. Fila limpiada a '12. Descartado' con prefijo ARCHIVADA para que no reentre en cada tick.",
+      "created_at": "2026-08-21T10:09:50Z",
+      "done_at": "2026-08-24T12:48:44Z"
     },
     "T069": {
       "title": "Contraprueba NRF del parche de textos de no residente en el v2",
@@ -874,5 +875,5 @@
     }
   },
   "next_task": 75,
-  "updated_at": "2026-08-24T12:00:18Z"
+  "updated_at": "2026-08-24T12:48:44Z"
 }
