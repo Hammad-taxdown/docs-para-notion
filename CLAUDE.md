@@ -395,10 +395,27 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
     cannot be edited through the API» — aunque el cambio sea solo en la parte nativa, porque el
     update es un **reemplazo completo**. Todo a mano en la UI.
   - **`comentarios149` se recibe y se tira**: el cuerpo del correo solo usa `comentarios030`. No se
-    puede arreglar sin editar el script, y el script no se edita. Es decisión de producto.
-  - **La `2` y la `2b` siguen las dos `deployed` sobre el mismo formulario** `viwjxT8e1uLg7K4OC`:
-    dos escritores, y con eso **la whitelist del 19/08 está de hecho anulada** porque la `2`
-    sobrescribe igual. Hay que apagar una y el usuario no lo ha decidido aún.
+    arregla sin editar el script. **Mitigado el 24/08 renombrando las dos columnas**:
+    `fldRb66vq77ugTYUo` → **`Comentarios al cliente (SÍ se envía)`** y `fldQ3T7KtPYTZeYcK` →
+    **`Notas internas 149 (NO se envía)`**, las dos con descripción. Es seguro porque sus dos
+    consumidores las reciben **por ID de campo**, y porque `comentarios030`/`comentarios149` **no
+    aparecen en el validador, ni en el lector, ni en los dos generadores, ni en el prompt**:
+    comprobado antes de tocar.
+  - **CUATRO NOMBRES QUE NO SE PUEDEN RENOMBRAR NUNCA.** El script lee **por nombre** la tabla
+    **`Empleados`** y los campos **`Borrador030`**, **`Borrador149`** y
+    **`Linkconfirmacionmodelos`**. Renombrar cualquiera rompe el envío de borradores y **no hay
+    forma de arreglarlo desde fuera**. Vale para `T071`: **mover columnas es inofensivo, renombrar
+    no.**
+  - **LA `2` Y LA `2b` SE QUEDAN LAS DOS ENCENDIDAS** (24/08, decisión del usuario), y no hay nada
+    que adaptar. Leído el script de la `2`: copia lo no computado y no vacío con lista negra de
+    **cinco nombres** (`recordId`, `RecordID Formulario`, `Nombre completo`, `Enlace formulario
+    nombre y apellidos`, `EnlaceFormulario030149`) y acaba en `deleteRecordAsync`, o sea que **sí
+    borra la fila del formulario**. Y lo que el formulario recoge son **tres respuestas** más
+    nombre, apellidos y NIF, **prefijados desde la fila original**: las dos escriben **los mismos
+    valores en los mismos campos de la misma fila**, así que el orden da igual y **no hay
+    conflicto**. A cambio **vuelve el borrado automático de la huérfana** que se perdió el 19/08 y
+    la `2b` queda de red. El precio asumido: la whitelist deja de proteger, así que **un campo
+    nuevo en el formulario se copiará al expediente sin que nadie lo decida**. **No se reabre.**
   - **Lo que yo escribí el 21/08 de que «la rama inglesa lee el enlace de la variable en vez del
     registro» es literalmente cierto y NO es un fallo.** La variable está enlazada a
     `fldraDKaVYKWXqiSq`, que **es** `Linkconfirmacionmodelos`, el mismo campo que lee la rama

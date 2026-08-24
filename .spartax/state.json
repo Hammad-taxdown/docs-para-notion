@@ -868,12 +868,12 @@
       "depends": [],
       "effort": 1.0,
       "status": "done",
-      "note": "24/08 HECHO Y PUBLICADO. Trigger con las tres condiciones; rama 1 Idioma!=Ingles con grupo anidado de la guarda; rama 2 Ingles Y Status bajo -> 7; rama 3 else -> solo Estado030149. Verificado por get_automation: valid, deployed, deployedVersion=null. QUEDAN DOS DECISIONES DEL USUARIO QUE NO SON ESTA TAREA: comentarios149 y apagar la 2 o la 2b.",
+      "note": "24/08 CERRADO DEL TODO, incluidas las dos decisiones. La 2 y la 2b se quedan LAS DOS encendidas (escriben los mismos valores en los mismos campos; se recupera el borrado automatico de la fila huerfana y la 2b hace de red). Y las dos columnas de comentarios renombradas a 'Comentarios al cliente (SI se envia)' y 'Notas internas 149 (NO se envia)' con descripcion; seguro porque sus consumidores las reciben por ID. INTOCABLES POR NOMBRE: Empleados, Borrador030, Borrador149, Linkconfirmacionmodelos.",
       "created_at": "2026-08-21T12:06:27Z",
       "planned_at": "2026-08-21T12:12:57Z",
       "done_at": "2026-08-24T12:00:18Z"
     }
   },
   "next_task": 75,
-  "updated_at": "2026-08-24T12:48:44Z"
+  "updated_at": "2026-08-24T13:06:42Z"
 }
