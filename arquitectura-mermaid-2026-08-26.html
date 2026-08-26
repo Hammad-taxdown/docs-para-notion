@@ -1,0 +1,238 @@
+<title>Beckham · arquitectura</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{--verde:#14503c;--fondo:#fcfbf8;--sup:#fff;--linea:#e0ddd4;--texto:#1d2420;--suave:#5f6b64;
+  --sombra:0 1px 2px rgba(20,80,60,.05),0 10px 30px -16px rgba(20,80,60,.18)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--verde:#7ed2b0;--fondo:#0f1512;
+  --sup:#18201c;--linea:#2b3630;--texto:#e6ece8;--suave:#95a49c;
+  --sombra:0 1px 2px rgba(0,0,0,.4),0 10px 30px -16px rgba(0,0,0,.7)}}
+:root[data-theme="dark"]{--verde:#7ed2b0;--fondo:#0f1512;--sup:#18201c;--linea:#2b3630;
+  --texto:#e6ece8;--suave:#95a49c;--sombra:0 1px 2px rgba(0,0,0,.4),0 10px 30px -16px rgba(0,0,0,.7)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--texto);
+  font:16px/1.6 "Source Sans 3",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.w{max-width:1180px;margin:0 auto;padding:clamp(24px,4vw,56px) clamp(14px,3vw,36px) 80px}
+h1{font:600 clamp(28px,4.6vw,42px)/1.1 Fraunces,Georgia,serif;color:var(--verde);
+  margin:0 0 6px;letter-spacing:-.015em}
+.f{font:500 12px/1 "JetBrains Mono",monospace;color:var(--suave);text-transform:uppercase;
+  letter-spacing:.08em;margin:0 0 26px}
+.lg{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 34px}
+.lg div{display:flex;align-items:center;gap:8px;background:var(--sup);border:1px solid var(--linea);
+  border-radius:8px;padding:8px 13px;font-size:13.5px;box-shadow:var(--sombra)}
+.sw{width:13px;height:13px;border-radius:4px;flex:none;border:1px solid rgba(0,0,0,.15)}
+h2{font:600 12.5px/1 "JetBrains Mono",monospace;color:var(--verde);text-transform:uppercase;
+  letter-spacing:.09em;margin:38px 0 10px;padding-top:20px;border-top:1px solid var(--linea)}
+h2 b{color:var(--suave);font-weight:400;margin-right:10px}
+.d{background:var(--sup);border:1px solid var(--linea);border-radius:12px;padding:20px;
+  overflow-x:auto;box-shadow:var(--sombra)}
+.d pre.mermaid{margin:0;background:none;min-width:min-content}
+.p{font-size:13px;color:var(--suave);margin:9px 0 0}
+footer{margin-top:50px;padding-top:20px;border-top:1px solid var(--linea);color:var(--suave);
+  font-size:12.5px;font-family:"JetBrains Mono",monospace}
+</style>
+<div class="w">
+<h1>Beckham · arquitectura</h1>
+<p class="f">26 de agosto de 2026</p>
+
+<div class="lg">
+  <div><span class="sw" style="background:#e8f2ee"></span> Hammad</div>
+  <div><span class="sw" style="background:#fdf0e2"></span> Iciar</div>
+  <div><span class="sw" style="background:#eaf0f7"></span> por construir</div>
+  <div><span class="sw" style="background:#f1efe9"></span> externo</div>
+</div>
+
+<h2><b>01</b> Vista de sistema</h2>
+<div class="d"><pre class="mermaid">
+flowchart LR
+  subgraph IC["INTERCOM"]
+    CB["Custom Bot<br/>OnClick Mobility"]
+    AGI["agente IA<br/>turnos 2..n"]
+  end
+  subgraph N8["N8N"]
+    BOT["beckham_bot<br/>55 nodos"]
+    SUB["escritor unico<br/>SUBWORKFLOW<br/>no por HTTP"]
+    F2["beckham_f2_plazo<br/>solo calcula"]
+    DOC["beckham_analizar_documento"]
+    AL["beckham_alertas"]
+    G30["beckham_generar_030<br/>cada 15 min"]
+    GIN["beckham_informe_v2<br/>cada 15 min"]
+  end
+  subgraph AT["AIRTABLE · Empleados"]
+    FIL["la fila<br/>93 columnas"]
+    ST["columna Status"]
+    AU["automatizaciones"]
+  end
+  TRX["transaccional<br/>de TaxDown"]
+  CLI["el cliente"]
+  AEAT["sede AEAT"]
+
+  CB --> BOT
+  AGI --> BOT
+  BOT --> F2
+  BOT --> DOC
+  BOT --> AL
+  BOT --> SUB --> FIL --> ST
+  ST -->|"OR Status=4, Status=5"| G30
+  ST -->|"OR Status=4, Status=5"| GIN
+  G30 -->|"fichero .030"| FIL
+  GIN -->|"PDF"| FIL
+  ST --> AU -->|"POST notif"| TRX --> CLI
+  FIL -.->|"lo sube un fiscal"| AEAT
+
+  classDef mio fill:#e8f2ee,stroke:#14503c,color:#0f2f24
+  classDef suyo fill:#fdf0e2,stroke:#a8551a,color:#4a2409
+  classDef nvo fill:#eaf0f7,stroke:#2c5578,color:#12293d
+  classDef ext fill:#f1efe9,stroke:#6f6a5d,color:#2b2822
+  class CB,AGI,BOT,F2,DOC,AL,G30,FIL,ST mio
+  class GIN,AU suyo
+  class SUB nvo
+  class TRX,CLI,AEAT ext
+</pre></div>
+<p class="p">El correo al cliente sale del transaccional de TaxDown, nunca de Airtable.</p>
+
+<h2><b>02</b> Canvas final · con la etiqueta de <code>punto</code> de cada persistencia</h2>
+<div class="d"><pre class="mermaid">
+flowchart TD
+  A["bienvenida"] --> MENU{"MENU"}
+  MENU -->|"comprobar si aplico"| F1{"F1 · residente fiscal<br/>ultimos 5 anos"}
+  MENU -->|"calculadora"| CAL["enlace y vuelta<br/>no persiste"]
+  MENU -->|"tengo preguntas"| FAQ["FAQ<br/>punto = faq_entrada"]
+  MENU -->|"hablar con una persona"| HUM["escalar a Ops_Mobility<br/>24 a 48 h"]
+
+  F1 -->|"si"| D["D · descarte duro<br/>punto = descarte_residencia<br/>CIERRA"]
+  F1 -->|"no"| F3{"F3 · alta en la<br/>Seguridad Social"}
+  F3 -->|"no"| H["H · lead potencial<br/>punto = lead<br/>hilo ABIERTO"]
+  F3 -->|"si"| FEC["pide la fecha de alta"]
+  FEC --> DC["beckham_f2_plazo<br/>SINCRONO"]
+  DC --> F2{"F2 · plazo de 6 meses"}
+  F2 -->|"en plazo"| G["G · cualifica<br/>punto = cualifica"]
+  F2 -->|"fuera de plazo"| N["N · descarte por plazo<br/>punto = descarte_plazo<br/>CIERRA"]
+  F2 -->|"fecha ilegible"| RE["repreguntar<br/>maximo 2 veces"]
+  F2 -->|"veredicto vacio"| HUM
+  RE --> FEC
+  G --> AGT["agente de solicitud"]
+  FAQ -->|"se autodescarta"| AD["punto = autodescarte_declarado"]
+
+  classDef mio fill:#e8f2ee,stroke:#14503c,color:#0f2f24
+  classDef nvo fill:#eaf0f7,stroke:#2c5578,color:#12293d
+  classDef fin fill:#f7e9e8,stroke:#9c2a25,color:#4a1210
+  class A,F1,F3,FEC,DC,F2,G,H,RE,AGT mio
+  class MENU,CAL,FAQ,HUM,AD nvo
+  class D,N fin
+</pre></div>
+<p class="p">Los seis valores de <code>punto</code> son la whitelist cerrada del escritor: uno que no esté en ella se rechaza y no escribe nada.</p>
+
+<h2><b>03</b> Fase 2 · el modo, los dos agentes y las tools como aristas</h2>
+<div class="d"><pre class="mermaid">
+flowchart TD
+  DCX["Data Connector<br/>manda modo + punto<br/>en CADA llamada"] --> RM{"Resolver_Modo<br/>FAIL-CLOSED"}
+  RM -->|"sin modo"| CORTE["corta el turno<br/>y avisa<br/>NO inventa valor"]
+  RM -->|"solicitud"| AS["agente de SOLICITUD"]
+  RM -->|"faq_regimen"| AF["agente de FAQ"]
+  RM -->|"humano"| ESC["escalar a persona"]
+
+  AS --> GD["guarda de modo"] --> T1["tool guardar_datos_cliente<br/>ESCRIBE"]
+  AS --> T2["tool leer_expediente"]
+  AS --> T3["tool analizar_documento"]
+  AF --> T2
+  AF --> T4["tool responder_faq"]
+
+  T1 --> SUB["escritor unico<br/>subworkflow"]
+  SUB --> LOG["Log_Evento · 6 campos<br/>corr_id, modo, punto,<br/>resultado, ms, dropped"]
+  CORTE --> LOG
+  LOG --> ERR["errorWorkflow<br/>beckham_alertas"]
+
+  NOTA["el agente de FAQ NO tiene arista<br/>hacia la tool que escribe:<br/>aislamiento TOPOLOGICO"]
+  AF -.-> NOTA
+
+  classDef nvo fill:#eaf0f7,stroke:#2c5578,color:#12293d
+  classDef mio fill:#e8f2ee,stroke:#14503c,color:#0f2f24
+  classDef alerta fill:#f7e9e8,stroke:#9c2a25,color:#4a1210
+  class DCX,RM,AS,AF,GD,T4,ESC,NOTA,SUB nvo
+  class T1,T2,T3,LOG,ERR mio
+  class CORTE alerta
+</pre></div>
+<p class="p">El modo viaja como input obligatorio, no como atributo guardado en la conversación: no hay estado que resetear.</p>
+
+<h2><b>04</b> Escalera de <code>Status</code> · trece peldaños, y solo sube</h2>
+<div class="d"><pre class="mermaid">
+flowchart TD
+  S1["1 · Interesado"] --> S2["2 · Pte agendar llamada"] --> S3["3 · Pendiente llamada TD"]
+  S3 --> S4["4 · Pte hacer informe"] --> S5["5 · Informe enviado"]
+  S5 --> S6["6 · Pte formulario usuario"] --> S7["7 · Pte hacer TD"]
+  S7 --> S8["8 · Pte confirmacion usuario"] --> S9["9 · Confirmado"]
+  S9 --> S10["10 · Finalizado"] --> S11["11 · Pendiente resolucion"] --> S12["12 · Concedido"]
+  S13["13 · Descartado"]
+
+  W1["bot · Decidir_Status<br/>senales de complejidad<br/>o llamada agendada"] -.-> S3
+  W2["bot · Decidir_Status<br/>MotivoCierre =<br/>expediente completo"] -.-> S4
+  W3["generador del informe<br/>Marcar InformeListo"] -.-> S5
+  W4["automatizacion de Airtable<br/>envio de borradores<br/>solo desde peldanos bajos"] -.-> S7
+  W5["bot · solo desde<br/>peldanos bajos"] -.-> S13
+
+  classDef pel fill:#ffffff,stroke:#9aa3a0,color:#1d2420
+  classDef fin fill:#f7e9e8,stroke:#9c2a25,color:#4a1210
+  classDef mio fill:#e8f2ee,stroke:#14503c,color:#0f2f24
+  classDef suyo fill:#fdf0e2,stroke:#a8551a,color:#4a2409
+  class S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11,S12 pel
+  class S13 fin
+  class W1,W2,W5 mio
+  class W3,W4 suyo
+</pre></div>
+<p class="p">Los peldaños sin flecha no los escribe nadie automáticamente. El bot solo escribe si el peldaño que propone es mayor que el actual.</p>
+
+<h2><b>05</b> Un turno real · ejecución 8129120, 24,2 s</h2>
+<div class="d"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant C as cliente
+  participant I as Intercom
+  participant W as beckham_bot
+  participant L as modelo
+  participant A as Airtable
+  C->>I: escribe un mensaje
+  I->>W: Webhook1
+  Note over W: If2 · 1 ms
+  Note over W: Wait2 · 3.001 ms
+  W->>I: Traer_Conversacion · 630 ms
+  Note over W: Formatear_conversacion · 1.376 ms
+  W->>A: Leer_Expediente_Para_Prompt · 472 ms
+  Note over W: Preparar_Prompt · 23 ms
+  W->>L: AI Agent · 2.199 ms
+  L-->>W: 3 llamadas al modelo · 14.002 ms
+  W->>A: tool guardar_datos_cliente · 2.708 ms
+  W->>A: tool leer_expediente · 546 ms
+  W->>A: Leer_MotivoCierre · 436 ms
+  W->>I: Callback_Intercom · 343 ms
+  I->>C: responde
+  Note over C,A: total 24,2 s · el modelo se lleva el 58%
+</pre></div>
+<p class="p">Tiempos medidos, no estimados. El <code>Wait2</code> es el 12,4% y se puede quitar cuando exista dedupe por identidad de mensaje.</p>
+
+<h2><b>06</b> El camino automático · de expediente a entregable</h2>
+<div class="d"><pre class="mermaid">
+flowchart LR
+  CI["el bot cierra con<br/>MotivoCierre =<br/>expediente completo"] --> P4["escribe el peldano 4"]
+  P4 --> RE{"los dos schedule<br/>18 s de diferencia"}
+  RE --> A30["beckham_generar_030<br/>2.700 bytes<br/>ISO-8859-1"]
+  RE --> AIN["beckham_informe_v2<br/>plantilla de Google Docs<br/>14 marcadores"]
+  A30 -->|"Fichero030"| FIL["la fila"]
+  AIN -->|"InformePdf"| FIL
+  AIN --> P5["marca el peldano 5<br/>e InformeListo"]
+  P5 --> AU["automatizacion<br/>envio de borradores"]
+  AU -->|"POST notif"| TRX["transaccional"] --> CLI["el cliente"]
+  FIL -.->|"un fiscal lo descarga"| AEAT["sede AEAT"]
+
+  classDef mio fill:#e8f2ee,stroke:#14503c,color:#0f2f24
+  classDef suyo fill:#fdf0e2,stroke:#a8551a,color:#4a2409
+  classDef ext fill:#f1efe9,stroke:#6f6a5d,color:#2b2822
+  class CI,P4,RE,A30,FIL mio
+  class AIN,P5,AU suyo
+  class TRX,CLI,AEAT ext
+</pre></div>
+<p class="p">Los generadores filtran por <code>OR(Status=4, Status=5)</code>: con un solo peldaño, un <code>.030</code> que fallara no reintentaría nunca.</p>
+
+<footer>fuentes · PRD-FASE2.md §9 §10 §12 §13 §14 §30 · canvas-final-mapa-2026-08-26.md ·
+contrato-upsert-expediente-v1.json · WP-207 208 210 211 213 218 219 221 223 227 228 ·
+ejecucion 8129120 · los sistemas vivos por MCP</footer>
+</div>
