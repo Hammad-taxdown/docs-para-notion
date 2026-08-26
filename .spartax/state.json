@@ -872,8 +872,28 @@
       "created_at": "2026-08-21T12:06:27Z",
       "planned_at": "2026-08-21T12:12:57Z",
       "done_at": "2026-08-24T12:00:18Z"
+    },
+    "T075": {
+      "title": "DEUDA ACEPTADA · el else perdido de la guarda espanola en 1. Envio borradores",
+      "milestone": "",
+      "verify": "el grupo anidado wdemO53kDKIOZowhY vuelve a tener DOS ramas y la segunda escribe solo Estado030149",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "26/08 NO SE ARREGLA HASTA QUE ROMPA, decision del usuario. Lo tocaron Iciar y el usuario en su llamada al fusionar las de partners, creyendo que las dos ramas del grupo anidado hacian el trabajo dos veces. NO lo hacian: son if/else EXCLUSIVOS. --- SINTOMA POR EL QUE SE VA A DETECTAR: un fiscal dice que le ha mandado los borradores a un cliente ESPANOL y que Estado030149 esta VACIO, o que no le aparece como 'pendiente de confirmacion'. Solo pasa si la fila ya iba por el peldano 8 o mas. En ingles NO pasa, porque esa rama si conserva su equivalente (wacXaCNO32OIRpZc8): la asimetria entre los dos idiomas es la firma del fallo. --- NO HAY RIESGO DE RETROCESO: la guarda del Status sigue entera, solo se pierde el marcado de Estado030149. --- ARREGLO, 3 minutos: en 1. Envio borradores (wflx5iCN4pXuwPAvO), rama espanola, grupo anidado wdemO53kDKIOZowhY -> anadir una segunda rama con 'Si no se cumplen otras condiciones' (else puro) y dentro un Actualizar registro con tabla Empleados, Registro de ID = token Airtable record ID, y UN SOLO campo: Estado030149 = '3. Pendiente confirmacion'. SIN el campo Status. Es identico a lo que se hizo el 24/08.",
+      "created_at": "2026-08-26T09:33:44Z"
+    },
+    "T076": {
+      "title": "DEUDA ACEPTADA · el filtro Empresa != TaxDown deja pasar la celda VACIA",
+      "milestone": "",
+      "verify": "las dos ramas de 1. Envio mensaje agendar llamada exigen Empresa es cualquiera de las cuatro opciones reales, no != TaxDown",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "26/08 NO SE ARREGLA HASTA QUE ROMPA, decision del usuario. En 1. Envio mensaje agendar llamada (wflt5fYbezBibUnpk) las dos ramas exigen Empresa != selMR00Bv3hFL4O2q (TaxDown). Eso protege bien a las filas del bot, que nacen con Empresa=TaxDown. Pero '!=' tambien es VERDADERO con la celda VACIA. --- SINTOMA POR EL QUE SE VA A DETECTAR: un cliente que ya iba avanzado (peldano 8, confirmando modelos) se queja de que ha recibido un correo de BIENVENIDA pidiendole que agende la llamada. O aparece una fila del formulario con Status='2. Pte agendar llamada' antes de que la borren. --- POR QUE HOY NO SE NOTA, y esto es lo peligroso: las filas del formulario de confirmacion nacen sin Empresa Y SIN EMAIL, asi que emailUser sale vacio y el envio no llega. Se salva POR ACCIDENTE. El dia que alguien anada prefill del email al formulario, o cree una fila a mano sin poner Empresa, el correo sale de verdad. --- ARREGLO, 2 clics: cambiar en las DOS ramas la condicion de 'Empresa no es TaxDown' a 'Empresa es cualquiera de' con las cuatro reales: Globant interno (selvPy4OQTrdu7w2d), Globant externo (selwh21qW11myQkAL), Factorial interno (selyyru93UP2xue08), Factorial externo (selvqYRYsoeXVbzCF). Con la celda vacia no entra.",
+      "created_at": "2026-08-26T09:33:44Z"
     }
   },
-  "next_task": 75,
-  "updated_at": "2026-08-24T13:06:42Z"
+  "next_task": 77,
+  "updated_at": "2026-08-26T09:34:13Z"
 }

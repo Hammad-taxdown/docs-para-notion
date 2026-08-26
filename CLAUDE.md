@@ -366,6 +366,23 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
     de Google funcione **los ocho casos saldrían del mismo documento**, con el régimen y el idioma
     equivocados en siete de cada ocho — y el PDF saldría bien formado, se subiría y se mandaría. Es
     el fallo silencioso más caro que tiene el sistema ahora mismo. `T073`.
+- **DOS DEUDAS ACEPTADAS EL 26/08. NO SE ARREGLAN HASTA QUE ROMPAN**, decisión del usuario, y no
+  se vuelve a proponer. Están apuntadas **por el síntoma**, que es lo que se verá cuando pase:
+  - **`T075` · el fiscal manda los borradores a un cliente ESPAÑOL y `Estado030149` se queda
+    vacío.** Solo si la fila ya iba por el peldaño 8 o más. **La firma es la asimetría**: en inglés
+    sí se marca. Causa: al fusionar las de partners se quitó la rama `else` del grupo anidado
+    `wdemO53kDKIOZowhY` (`wacz1Ex78A9y2q4mu`), creyendo que las dos ramas hacían el trabajo dos
+    veces — **son `if`/`else` exclusivos, solo corre una**. La guarda del Status sigue entera, así
+    que **no hay riesgo de retroceso**: solo se pierde el marcado.
+  - **`T076` · un cliente que ya iba avanzado recibe el correo de BIENVENIDA «agenda tu llamada».**
+    Causa: en `1. Envio mensaje agendar llamada` las ramas exigen `Empresa != TaxDown`, y **`!=` es
+    verdadero también con la celda VACÍA**. Las filas del formulario de confirmación nacen sin
+    `Empresa`. **Hoy se salva POR ACCIDENTE**, no por diseño: esas filas tampoco traen email, así
+    que `emailUser` sale vacío y el envío no llega. **El día que alguien añada el prefill del email
+    al formulario, o cree una fila a mano sin `Empresa`, el correo sale de verdad.**
+  - Lo que **sí** funciona de ese filtro y conviene no romper: `Decidir_Status` escribe
+    `Empresa = 'TaxDown'` cuando la celda está vacía, así que **toda fila del bot nace excluida** y
+    los leads no reciben ese correo.
 - **El bot solo genera el `.030`, no el 149.** El 149 lo rehace un fiscal a mano.
 - **SUPERADO EL 24/08 — el correo del informe NO lo manda Airtable.** Aquí decía lo contrario
   («`sendEmail` adjunta desde un campo de adjunto y eso ya funciona»), y era verdad como mecanismo
