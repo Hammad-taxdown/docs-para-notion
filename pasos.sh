@@ -109,6 +109,34 @@ echo "${A}y al acabar, limpiar la fila${N} ${D}(ponerla en '13. Descartado' y pr
 echo "${D}en el UserId): si se queda en el 4 sin ficheros, reentra en cada tick.${N}"
 echo "${D}esto lo puedo lanzar yo cuando me digas que ya has publicado.${N}"; }
 
+p7(){ paso 7 "EL SEXTO SITIO: el schema cacheado del nodo que escribe" \
+  "beckham_bot · nhOwpiGxikeU5DLR" "Airtable Upser Expediente" \
+  "un icono de refrescar, y PUBLICAR"
+echo "${R}ESTE ES EL QUE HIZO FALLAR LA PRUEBA.${N} El nodo guarda la lista de opciones del"
+echo "${D}Status en parameters.columns.schema y VALIDA CONTRA SU COPIA antes de llamar a${N}"
+echo "${D}Airtable. Tenia las 12 opciones VIEJAS, asi que rechazo el valor nuevo y el${N}"
+echo "${D}escritor devolvio {ok:false,error:'persistencia_fallida'} sin escribir nada.${N}"
+echo "${A}que hacer:${N} en la seccion de columnas del nodo, el icono ${V}⟳${N} de refrescar la lista"
+echo "${D}   de campos. Si no aparece: cambia el selector de tabla a otra y vuelve a${N}"
+echo "${D}   Empleados, que al volver relee el schema.${N}"
+echo "${A}comprobar:${N} el campo Status tiene que ofrecer ${V}13 opciones${N} ${D}y '2. Pte agendar${N}"
+echo "${D}   llamada' entre ellas.${N}"
+echo "${R}Y OJO AL REFRESCAR: n8n puede REACTIVAR campos que estaban quitados a proposito.${N}"
+echo "${D}   Este nodo mapea 57 y deja 36 FUERA: formulas, campos de IA, lo que rellena un${N}"
+echo "${D}   fiscal (Borrador030, EnviarBorradores, las dos columnas de comentarios) y lo${N}"
+echo "${D}   que escriben los generadores (InformePdf, InformeListo, Fichero030...).${N}"
+echo "${R}   Un campo reactivado se escribe VACIO en cada llamada${N}${D}, y el bot escribe varias${N}"
+echo "${D}   veces por conversacion: le borraria al fiscal su comentario o los ficheros ya${N}"
+echo "${D}   generados. Quitalos con la ✕ de su fila.${N}"
+echo "${B}la lista buena:${N}  cat docs/upser-campos-mapeados-2026-08-26.txt   ${D}(57 campos)${N}"
+echo "${B}verificar:${N}      lo hago yo por MCP: columns.value con 57 claves y Status con 13.${N}"; }
+
+p8(){ paso 8 "la prueba, ya en un script" "el webhook del escritor" "(ninguno)" "un comando"
+echo "${B}lanzar:${N}  bash docs/prueba-renumeracion.sh"
+echo "${D}1) senal sin cierre -> 3. Pendiente llamada TD · 2) cierre completo -> 4. Pte hacer${N}"
+echo "${D}informe · 3) el tick con DOS ejecuciones mode=trigger a ~18 s. El 3 y la limpieza${N}"
+echo "${D}de la fila los hago yo por MCP.${N}"; }
+
 puertas(){ echo "${B}${C}━━━ LAS NUEVE PUERTAS ━━━${N}"
 for t in test-decidir-status.js test-validador-2026-08-19.js test-prompt-v10.js test-prompt-v12.js test-prompt-v13.js test-lector-expediente.js test-v2-preparar-informe.js; do
   r=$(node "docs/$t" 2>&1 | grep -oE "[0-9]+ verdes, [0-9]+ rojas|TODO PASA · [0-9]+ comprobaciones"); node "docs/$t" >/dev/null 2>&1 \
@@ -125,7 +153,7 @@ case "$1" in
   19|viejo) bash docs/pasos-2026-08-19.sh ;;
   ''|todos) puertas
     echo; echo "${B}${C}════ ADAPTAR A LA ESCALERA NUEVA · 26/08 ════${N}"
-    for i in 1 2 3 4 5 6; do "p$i"; done
+    for i in 1 2 3 4 5 7 8; do "p$i"; done
     echo; echo "${B}${C}━━━ ORDEN ━━━${N}"
     echo "  ${R}1 -> 2 -> 3 son los que desatascan.${N} Mientras no esten los tres, el"
     echo "  informe y el .030 NO SALEN: sus filtros buscan nombres que ya no existen"
@@ -133,6 +161,6 @@ case "$1" in
     echo "  El 4 va detras para que el v2 no nazca roto, el 5 son dos clics y el 6 es"
     echo "  la unica forma de saber que ha quedado bien."
     echo; echo "${D}un paso suelto y copiado al portapapeles:${N}  bash docs/pasos.sh 1" ;;
-  [1-6]) "p$1" copia ;;
-  *) echo "uso: bash docs/pasos.sh [1-6|test|24|21|19]" ;;
+  [1-8]) "p$1" copia ;;
+  *) echo "uso: bash docs/pasos.sh [1-8|test|24|21|19]" ;;
 esac

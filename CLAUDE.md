@@ -216,6 +216,26 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   siguiente. **Y el script seguía saliendo con `exit 0`**: la puerta parecía verde mientras mentía.
   En scripts, `process.stdout.write(String(x))`, nunca `console.log`. Corolario: **un `exit 0` no
   dice que el script haya hecho su trabajo, solo que no abortó.**
+- **UN NODO DE AIRTABLE DE n8n GUARDA LA LISTA DE OPCIONES DEL `singleSelect` Y VALIDA CONTRA SU
+  PROPIA COPIA, NO CONTRA AIRTABLE.** Vive en `parameters.columns.schema[].options`. El 26/08 la
+  escalera de `Status` se renumeró en Airtable, se actualizaron los cinco sitios de siempre, y el bot
+  seguía devolviendo `{ok:false, error:'persistencia_fallida'}`: `Airtable Upser Expediente` tenía
+  **12 opciones cacheadas con los nombres viejos** y rechazaba el valor nuevo **antes de llamar a la
+  API** (`Invalid input for 'Status'. 'Status' expects one of the following values: […] but we got
+  '3. Pendiente llamada TD'`). Se arregla **refrescando la lista de campos del nodo en la UI**, no
+  tocando código. **Es el SEXTO sitio de un cambio de Status** y no estaba en ninguna lista.
+  - **Solo afecta a los nodos que ESCRIBEN.** Los de `operation=search` no llevan `columns.schema`.
+    En `beckham_bot` el único es `Airtable Upser Expediente` (`upsert`); los otros cuatro son search.
+  - **Y desmiente lo que creíamos del `typecast`:** con `typecast: true` se esperaba que el bot
+    creara opciones fantasma y partiera la escalera en dos numeraciones **en silencio**. Es falso:
+    no llega ni a Airtable. **El fallo es ruidoso y no escribe nada**, así que no deja basura.
+  - **AL REFRESCAR, n8n PUEDE REACTIVAR CAMPOS QUE ESTABAN QUITADOS A PROPÓSITO.** Ese nodo mapea
+    **57** y deja **36 fuera** — fórmulas, campos de IA, lo que rellena un fiscal a mano
+    (`Borrador030`, `EnviarBorradores`, las dos columnas de comentarios) y lo que escriben los
+    generadores (`InformePdf`, `InformeListo`, `Fichero030`…). **Un campo reactivado se escribe
+    VACÍO en cada llamada**, y el bot escribe varias veces por conversación: le borraría al fiscal
+    su comentario, o los ficheros ya generados. La lista buena está en
+    `docs/upser-campos-mapeados-2026-08-26.txt` y se comprueba por MCP contra `columns.value`.
 - **Airtable OMITE las celdas vacías en la respuesta.** Si pides tres campos y te devuelve una sola
   clave, esa clave **no dice cuál es**: hay que resolver el `fld` id antes de interpretar. El 21/08
   leí un `true` de `InformeListo` como si fuera `RegenerarInforme` y concluí que alguien había

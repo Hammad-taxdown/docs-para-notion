@@ -1,0 +1,57 @@
+AltaSeguridadSocial
+ApellidoPrimero
+ApellidoSegundo
+Apellidos empleado
+AplicaBeckham
+Apostilla
+AutorizacionEmpleado
+AutorizacionEmpresa
+CertificadoEnisa
+Codigo Postal
+Contratotrabajo
+ConyugeQuiereAcogerse
+DNI
+Descarte
+DiscrepanciaFechaAlta
+Empresa
+FechaLlamada
+FechaNacimiento
+Idioma
+Inversiones
+MotivoCierre
+Municipio de Nacimiento / Birth Municipality
+MunicipioResidencia
+NIF
+Nacionalidad
+Nombre de la calle / Name of street
+Nombre empleado
+NumeroTelefono
+Número de tu domicilio / House Number
+PaisNacimiento
+Pasaporte
+PasaporteNumero
+Planta
+Propiedades
+Provincia de Nacimiento / Province of Birth
+Puerta
+ResumenBot
+Salario
+SenalesComplejidad
+Sexo
+Status
+Tipo de vía / Type of road
+TipoBeckham
+UltimoPaisResidencia
+UserId
+Visado
+alta_ss
+email
+estadoCivil
+fechaDesplazamiento
+fecha_alta_ss
+fecha_limite_plazo
+fecha_prevista_alta
+hijos
+intercom_conversation_id
+last_idem_key
+lead_potencial
