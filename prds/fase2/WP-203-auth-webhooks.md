@@ -1,15 +1,27 @@
 ---
 id: WP-203
 title: "Prerrequisito P2: autenticación en los dos webhooks y rotación del path a UUID"
-status: building
+status: done
 size: S
 depends_on: []
 milestone: "Fase 2 conversacional — Prerrequisitos"
 owner: "Hammad"
 external: ""
-critical: true
+critical: false
 issue: ""
 ---
+
+> **CERRADO SIN CONSTRUIR — decisión del usuario al cerrar `T053`. No se reabre.**
+>
+> Este paquete pasa a `done` **no porque se haya hecho, sino porque se ha cerrado**: el vocabulario de
+> estados del tracker (`skeleton · specified · building · done`) no tiene un valor para «descartado», y
+> mientras estuvo en `building` **todos los recuentos lo contaban como trabajo listo para empezar** —
+> incluidos los míos, hasta el 26/08. `critical` pasa también a `false`: dejaba la ruta crítica
+> contaminada con un nodo que nadie va a construir.
+>
+> Lo que decía este PRD (auth en los dos webhooks y rotación del path a UUID) **sigue siendo cierto
+> como riesgo**: los webhooks son públicos y sin autenticar. Lo que cambió es la decisión de gastar
+> tiempo en ello antes del 31/08.
 
 # PRD · WP-203 — P2: auth en `Webhook1` y en `beckham-upsert-expediente`
 

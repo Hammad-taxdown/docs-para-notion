@@ -1,0 +1,232 @@
+<title>Los 25 que faltan</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --tinta:#12233d; --tinta2:#2b4160; --papel:#fbfaf7; --sup:#ffffff; --linea:#dcd8d0;
+  --texto:#1b2430; --suave:#5d6675; --lacre:#a4231f; --verde:#1f6b4a; --ambar:#8a5a08;
+  --sombra:0 1px 2px rgba(18,35,61,.05),0 8px 24px -12px rgba(18,35,61,.14);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --tinta:#c9d8ee; --tinta2:#93a7c4; --papel:#0e141c; --sup:#161e29; --linea:#2a3542;
+  --texto:#e4e9f0; --suave:#93a0b2; --lacre:#e8736e; --verde:#5bbd92; --ambar:#d9a441;
+  --sombra:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}}
+:root[data-theme="dark"]{
+  --tinta:#c9d8ee; --tinta2:#93a7c4; --papel:#0e141c; --sup:#161e29; --linea:#2a3542;
+  --texto:#e4e9f0; --suave:#93a0b2; --lacre:#e8736e; --verde:#5bbd92; --ambar:#d9a441;
+  --sombra:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--papel);color:var(--texto);
+  font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:clamp(24px,5vw,64px) clamp(16px,4vw,40px) 80px}
+h1{font:600 clamp(30px,5vw,46px)/1.1 Newsreader,Georgia,serif;color:var(--tinta);
+  margin:0 0 8px;text-wrap:balance;letter-spacing:-.01em}
+.sub{color:var(--suave);max-width:62ch;margin:0 0 36px;font-size:17px}
+.cifras{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 40px}
+.cifra{background:var(--sup);border:1px solid var(--linea);border-radius:10px;
+  padding:14px 20px;box-shadow:var(--sombra);flex:1 1 150px}
+.cifra b{display:block;font:500 30px/1 "IBM Plex Mono",monospace;color:var(--tinta);
+  font-variant-numeric:tabular-nums}
+.cifra span{font-size:12.5px;color:var(--suave);text-transform:uppercase;letter-spacing:.07em}
+.ruta{background:var(--sup);border:1px solid var(--linea);border-left:3px solid var(--lacre);
+  border-radius:0 10px 10px 0;padding:18px 22px;margin:0 0 44px;overflow-x:auto;box-shadow:var(--sombra)}
+.ruta h2{font:600 13px/1 "IBM Plex Sans";text-transform:uppercase;letter-spacing:.09em;
+  color:var(--lacre);margin:0 0 12px}
+.ruta p{margin:0;white-space:nowrap;font-size:14px}
+.ruta code{font-family:"IBM Plex Mono",monospace;font-size:13px;padding:3px 7px;border-radius:5px}
+code.hecho{background:color-mix(in srgb,var(--verde) 14%,transparent);color:var(--verde)}
+code.pte{background:color-mix(in srgb,var(--lacre) 12%,transparent);color:var(--lacre);font-weight:500}
+.fl{color:var(--suave);font-size:12px}
+.ruta .pie{margin-top:12px;color:var(--suave);font-size:13.5px;white-space:normal}
+h2.g{font:600 clamp(20px,3vw,26px)/1.2 Newsreader,Georgia,serif;color:var(--tinta);
+  margin:44px 0 6px;padding-top:22px;border-top:1px solid var(--linea)}
+.gd{color:var(--suave);font-size:14.5px;margin:0 0 22px;max-width:70ch}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr))}
+.c{background:var(--sup);border:1px solid var(--linea);border-radius:10px;padding:16px 18px;
+  box-shadow:var(--sombra);display:flex;flex-direction:column;gap:9px}
+.c.crit{border-left:3px solid var(--lacre)}
+.c header{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.id{font:500 13px/1 "IBM Plex Mono",monospace;color:var(--tinta);background:color-mix(in srgb,var(--tinta) 8%,transparent);
+  padding:4px 8px;border-radius:5px}
+.sz{font:500 11px/1 "IBM Plex Mono",monospace;color:var(--suave);border:1px solid var(--linea);
+  padding:3px 6px;border-radius:4px}
+.rc{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--lacre);font-weight:600}
+.c h3{font:600 15.5px/1.35 "IBM Plex Sans";margin:0;color:var(--texto);text-wrap:balance}
+.obj{margin:0;font-size:13.5px;color:var(--suave);line-height:1.55}
+.meta{display:flex;gap:5px;flex-wrap:wrap}
+.sis{font-size:11px;background:color-mix(in srgb,var(--tinta2) 12%,transparent);color:var(--tinta2);
+  padding:3px 8px;border-radius:20px;font-weight:500}
+.dep{font-size:12.5px;color:var(--suave)}
+.dep .lbl{text-transform:uppercase;font-size:10.5px;letter-spacing:.07em;margin-right:6px}
+.dep code{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ambar);
+  background:color-mix(in srgb,var(--ambar) 12%,transparent);padding:2px 6px;border-radius:4px}
+.ext{font-size:12.5px;color:var(--lacre);background:color-mix(in srgb,var(--lacre) 8%,transparent);
+  padding:8px 10px;border-radius:6px}
+.nota{font-size:13px;line-height:1.5;color:var(--texto);border-top:1px dashed var(--linea);padding-top:9px}
+footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--linea);color:var(--suave);font-size:13px}
+</style>
+<div class="wrap">
+<h1>Los 25 que faltan</h1>
+<p class="sub">Fase 2 del bot Beckham, estado real leído de los 39 PRD el 26 de agosto. Lo que sale
+aquí no es el plan: es lo que los ficheros dicen hoy, con las dependencias que de verdad faltan.</p>
+
+<div class="cifras">
+  <div class="cifra"><b>39</b><span>paquetes en total</span></div>
+  <div class="cifra"><b>14</b><span>cerrados</span></div>
+  <div class="cifra"><b>25</b><span>pendientes</span></div>
+  <div class="cifra"><b>4</b><span>empezables hoy</span></div>
+  <div class="cifra"><b>2</b><span>bloqueados fuera</span></div>
+</div>
+
+<div class="ruta">
+  <h2>La ruta crítica · peso 21</h2>
+  <p><code class="hecho">WP-201</code> <span class="fl">→</span> <code class="hecho">WP-205</code> <span class="fl">→</span> <code class="pte">WP-207</code> <span class="fl">→</span> <code class="pte">WP-208</code> <span class="fl">→</span> <code class="pte">WP-211</code> <span class="fl">→</span> <code class="pte">WP-218</code> <span class="fl">→</span> <code class="pte">WP-219</code> <span class="fl">→</span> <code class="pte">WP-221</code> <span class="fl">→</span> <code class="pte">WP-222</code> <span class="fl">→</span> <code class="pte">WP-228</code></p>
+  <p class="pie">El primer no hecho es <code class="pte">WP-207</code>, y no pasa por el menú: la
+  cadena larga es la del <strong>FAQ</strong>. Todo lo que cuelga del menú (213, 214, 227) es ancho,
+  no profundo — se puede construir en paralelo sin retrasar el final.</p>
+</div>
+
+<h2 class="g">Empezables hoy · 4</h2>
+<p class="gd">Sin ninguna dependencia pendiente y sin bloqueo externo. Dos son míos y dos necesitan
+tus manos en una interfaz que no tiene API.</p>
+<div class="grid"><article class="c crit">
+  <header><code class="id">WP-207</code><span class="sz">M</span><span class="rc">ruta crítica</span></header>
+  <h3>Prerrequisito P6: extraer BECKHAM_upsert_expediente a subworkflow propio</h3>
+  <p class="obj">Un único escritor de `Empleados`, invocable como subworkflow, con contrato versionado y sin pasar por HTTP para las llamadas internas.</p>
+  <div class="meta"><span class="sis">Intercom</span> <span class="sis">n8n</span></div><div class="nota">Su contrato ya esta escrito y con puerta (26/08). Falta cablear, y eso es el reenvio de 55 nodos: va en un solo movimiento con el 208.</div>
+</article><article class="c">
+  <header><code class="id">WP-210</code><span class="sz">S</span></header>
+  <h3>Contrato del modo: el modo viaja como input del Data Connector, no como atributo persistido</h3>
+  <p class="obj">Que cualquier rama del canvas sepa **qué modo tiene que declarar y cómo**, y que n8n pueda determinar el modo de cada turno sin leer estado persistido y sin poder ser engañado desde fuera.</p>
+  <div class="meta"><span class="sis">Intercom</span> <span class="sis">n8n</span></div><div class="nota">Reescrito el 26/08 con transporte B, que era tu decision. Ya no depende de la sonda muerta. Deja una pregunta abierta: T081.</div>
+</article><article class="c">
+  <header><code class="id">WP-216</code><span class="sz">M</span></header>
+  <h3>Correcciones del canvas: borrar M. Path y SAVE, Close solo en D y N, typo veredicto_f2</h3>
+  <p class="obj">Dejar `OnClick Mobility` sin las piezas que el Council descartó y con los tres verbos de cierre separados, antes de añadirle ramas nuevas.</p>
+  <div class="meta"><span class="sis">docs</span></div><div class="nota">Lo mas urgente de la lista y no es el mas grande: el typo del veredicto puede estar cerrando conversaciones de clientes AHORA. Paso 2 de pasos.sh.</div>
+</article><article class="c">
+  <header><code class="id">WP-220</code><span class="sz">S</span></header>
+  <h3>System Prompt como fuente única de conocimiento fiscal (sin corpus externo ni tool de búsqueda)</h3>
+  <p class="obj">Que el agente solo pueda afirmar cosas de fiscalidad que estén **escritas en su propio prompt**, y que diga que no lo sabe y ofrezca humano en cualquier otro caso.</p>
+  <div class="meta"><span class="sis">LangSmith</span></div><div class="nota">Solo le falta que corras las 33 preguntas doradas en una conversacion real contra el v14. Necesita Messenger en incognito, asi que es tuyo.</div>
+</article></div>
+
+<h2 class="g">Encadenados · 19</h2>
+<p class="gd">Ordenados por cuántas dependencias les faltan. Los de una sola caen en cuanto se cierra
+la anterior; <code>WP-233</code> espera nueve porque es la prueba final.</p>
+<div class="grid"><article class="c crit">
+  <header><code class="id">WP-208</code><span class="sz">M</span><span class="rc">ruta crítica</span></header>
+  <h3>Prerrequisito P7: corr_id de extremo a extremo y nodo Log_Evento de 6 campos</h3>
+  <p class="obj">Que desde una fila de Airtable se llegue a la ejecución de n8n y a la conversación de Intercom **sin buscar por hora**.</p>
+  <div class="meta"><span class="sis">Intercom</span> <span class="sis">n8n</span> <span class="sis">Airtable</span></div><div class="dep"><span class="lbl">espera</span><code>WP-207</code></div><div class="nota">El corr_id ya esta resuelto en diseno y probado contra un body real. Solo espera al cableado del 207.</div>
+</article><article class="c">
+  <header><code class="id">WP-212</code><span class="sz">S</span></header>
+  <h3>Reset de modo_bot al inicio del canvas, con centinela si Set no admite cadena vacía</h3>
+  <p class="obj">Que ninguna sesión herede el modo de una sesión anterior.</p>
+  <div class="meta"><span class="sis">Intercom</span> <span class="sis">n8n</span></div><div class="dep"><span class="lbl">espera</span><code>WP-210</code></div><div class="nota">Con B pura este paquete DESAPARECE: si el modo no se persiste, no hay nada que resetear. Depende de T081.</div>
+</article><article class="c">
+  <header><code class="id">WP-213</code><span class="sz">S</span></header>
+  <h3>Menú AOPT: tres reply buttons más &#x27;hablar con una persona&#x27; y las transiciones de entrada</h3>
+  <p class="obj">Cuatro salidas del menú que lleven al destino correcto y escriban la transición de entrada del modo, sin que ninguna toque `ticket.state`.</p>
+  <div class="meta"><span class="sis">docs</span></div><div class="dep"><span class="lbl">espera</span><code>WP-212</code></div>
+</article><article class="c">
+  <header><code class="id">WP-214</code><span class="sz">S</span></header>
+  <h3>Rama calculadora: enlace y botones de vuelta al menú, sin cerrar la conversación</h3>
+  <p class="obj">Ofrecer la calculadora sin perder al usuario ni cerrar la conversación.</p>
+  <div class="meta"><span class="sis">docs</span></div><div class="dep"><span class="lbl">espera</span><code>WP-213</code></div>
+</article><article class="c">
+  <header><code class="id">WP-217</code><span class="sz">M</span></header>
+  <h3>Handoff en frío de G: inputs de último mensaje a Optional y asignación al team del bot</h3>
+  <p class="obj">Que el handoff funcione en arranque en frío, cuando todavía no existe un &quot;último mensaje&quot; del usuario.</p>
+  <div class="meta"><span class="sis">docs</span></div><div class="dep"><span class="lbl">espera</span><code>WP-216</code></div>
+</article><article class="c crit">
+  <header><code class="id">WP-218</code><span class="sz">M</span><span class="rc">ruta crítica</span></header>
+  <h3>Aislamiento topológico: dos nodos AI Agent con prompt_base y modelo compartidos</h3>
+  <p class="obj">Que el modo determine qué tools **existen** para el agente, sin depender de que el LLM obedezca.</p>
+  <div class="meta"><span class="sis">LangSmith</span></div><div class="dep"><span class="lbl">espera</span><code>WP-211</code></div>
+</article><article class="c crit">
+  <header><code class="id">WP-222</code><span class="sz">M</span><span class="rc">ruta crítica</span></header>
+  <h3>Corte de contexto al salir de FAQ, resumen de 400 caracteres y enmascarado de PII</h3>
+  <p class="obj">Que al pasar de FAQ a solicitud el agente no arrastre ni el volumen ni las suposiciones de la conversación anterior, y que la PII del texto libre no entre en el prompt ni en los logs.</p>
+  <div class="meta"><span class="sis">n8n</span> <span class="sis">LangSmith</span></div><div class="dep"><span class="lbl">espera</span><code>WP-221</code></div>
+</article><article class="c">
+  <header><code class="id">WP-231</code><span class="sz">M</span></header>
+  <h3>Observabilidad: alertas accionables, métricas etiquetadas con corr_id y PII fuera de los logs</h3>
+  <p class="obj">Que los cinco modos de fallo caros del diseño sean detectables sin leer conversaciones a mano, y que ningún log contenga PII.</p>
+  <div class="meta"><span class="sis">n8n</span></div><div class="dep"><span class="lbl">espera</span><code>WP-208</code></div><div class="nota">Parte ya existe (beckham_alertas, adjuntos_huerfanos). Lo que falta son las metricas etiquetadas con corr_id, o sea el 208.</div>
+</article><article class="c crit">
+  <header><code class="id">WP-211</code><span class="sz">M</span><span class="rc">ruta crítica</span></header>
+  <h3>Resolver_Modo: derivación server-side del modo, fail-closed en memoria y evento modo_ausente</h3>
+  <p class="obj">Un único punto en n8n que determine el modo de cada turno, de forma determinista, auditable y sin poder ser falsificado desde fuera.</p>
+  <div class="meta"><span class="sis">Intercom</span> <span class="sis">n8n</span></div><div class="dep"><span class="lbl">espera</span><code>WP-208</code> <code>WP-210</code></div>
+</article><article class="c">
+  <header><code class="id">WP-215</code><span class="sz">S</span></header>
+  <h3>Autodescarte declarado: traza punto=autodescarte_declarado sin escribir Descarte ni cerrar</h3>
+  <p class="obj">No perder al usuario que se autodescarta, y dejar traza distinguible de un descarte real.</p>
+  <div class="meta"><span class="sis">docs</span></div><div class="dep"><span class="lbl">espera</span><code>WP-207</code> <code>WP-213</code></div>
+</article><article class="c">
+  <header><code class="id">WP-223</code><span class="sz">M</span></header>
+  <h3>escalar_humano con asignación real a Ops_Mobility y registrar_optout como única escritura del FAQ</h3>
+  <p class="obj">Un único camino de escalado, con una sola redacción, que **asigne de verdad**; y una baja que se pueda registrar desde cualquier modo.</p>
+  <div class="meta"><span class="sis">LangSmith</span></div><div class="dep"><span class="lbl">espera</span><code>WP-218</code> <code>WP-219</code></div><div class="nota">Desbloqueado el 26/08: el SLA de 24-48 h ya esta decidido y metido en el prompt v14.</div>
+</article><article class="c">
+  <header><code class="id">WP-224</code><span class="sz">M</span></header>
+  <h3>Registro del lead en H con punto=lead, precisión de fecha, ventana y texto literal</h3>
+  <p class="obj">Que todo usuario que llega a `H` quede registrado con `lead_potencial=true` y una precisión de fecha no vacía, antes de que pueda abandonar.</p>
+  <div class="meta"><span class="sis">n8n</span></div><div class="dep"><span class="lbl">espera</span><code>WP-207</code> <code>WP-216</code></div>
+</article><article class="c">
+  <header><code class="id">WP-227</code><span class="sz">M</span></header>
+  <h3>Trigger Reopened y matriz de reentrada: hilo abierto, cerrado, cooldown y vuelta a los 3 días</h3>
+  <p class="obj">Que un usuario que vuelve — al rato, al día siguiente o desde un enlace — caiga en el modo correcto y no en un estado indefinido.</p>
+  <div class="meta"><span class="sis">Intercom</span></div><div class="dep"><span class="lbl">espera</span><code>WP-211</code> <code>WP-212</code></div><div class="nota">Con B pura se reduce a la mitad: la reentrada cae siempre al menu. Depende de T081.</div>
+</article><article class="c">
+  <header><code class="id">WP-229</code><span class="sz">M</span></header>
+  <h3>FAQ → solicitud: iniciar_solicitud con relanzamiento del reusable (V1) o intake por el agente (V2)</h3>
+  <p class="obj">Que el usuario que termina sus preguntas entre en el flujo de solicitud sin perder el hilo ni arrastrar el contexto del FAQ.</p>
+  <div class="meta"><span class="sis">docs</span></div><div class="dep"><span class="lbl">espera</span><code>WP-221</code> <code>WP-222</code></div>
+</article><article class="c crit">
+  <header><code class="id">WP-219</code><span class="sz">M</span><span class="rc">ruta crítica</span></header>
+  <h3>Guarda de modo en el borde de cada tool de escritura (capa 2) y whitelist en el escritor (capa 3)</h3>
+  <p class="obj">Que ninguna tool de escritura pueda ejecutarse con un modo que no la tiene permitida, ni con parámetros que el LLM haya podido elegir.</p>
+  <div class="meta"><span class="sis">n8n</span> <span class="sis">LangSmith</span></div><div class="dep"><span class="lbl">espera</span><code>WP-207</code> <code>WP-211</code> <code>WP-218</code></div>
+</article><article class="c">
+  <header><code class="id">WP-226</code><span class="sz">L</span></header>
+  <h3>Semántica de reset por punto: qué pone y qué borra a propósito cada punto de escritura</h3>
+  <p class="obj">Que cada `punto` declare explícitamente qué campos pone y qué campos borra, y que ninguna rama pise datos de otra por omisión.</p>
+  <div class="meta"><span class="sis">docs</span></div><div class="dep"><span class="lbl">espera</span><code>WP-207</code> <code>WP-215</code> <code>WP-224</code></div>
+</article><article class="c crit">
+  <header><code class="id">WP-228</code><span class="sz">L</span><span class="rc">ruta crítica</span></header>
+  <h3>FAQ multi-turno en n8n detrás del trigger de mensaje</h3>
+  <p class="obj">Mover el FAQ entero a n8n detrás del trigger de mensaje, dejando en el canvas solo la entrada en frío.</p>
+  <div class="meta"><span class="sis">Intercom</span> <span class="sis">n8n</span></div><div class="dep"><span class="lbl">espera</span><code>WP-221</code> <code>WP-222</code> <code>WP-227</code></div>
+</article><article class="c crit">
+  <header><code class="id">WP-221</code><span class="sz">L</span><span class="rc">ruta crítica</span></header>
+  <h3>FAQ de un turno: Collect data + DC punto=faq_entrada + callback + botones WDONE</h3>
+  <p class="obj">Que el usuario pueda hacer una pregunta sobre el régimen, recibir respuesta del mismo agente sin ninguna tool de escritura de expediente, y elegir explícitamente qué hacer después.</p>
+  <div class="meta"><span class="sis">LangSmith</span></div><div class="dep"><span class="lbl">espera</span><code>WP-211</code> <code>WP-213</code> <code>WP-218</code> <code>WP-219</code> <code>WP-220</code></div>
+</article><article class="c">
+  <header><code class="id">WP-233</code><span class="sz">M</span></header>
+  <h3>Prueba end-to-end de la Fase 2 y publicación del canvas</h3>
+  <p class="obj">Demostrar que los cuatro recorridos del menú y los cuatro escenarios de reentrada funcionan en conversación real, y publicar.</p>
+  <div class="meta"><span class="sis">docs</span></div><div class="dep"><span class="lbl">espera</span><code>WP-213</code> <code>WP-214</code> <code>WP-215</code> <code>WP-216</code> <code>WP-217</code> <code>WP-221</code> <code>WP-224</code> <code>WP-227</code> <code>WP-231</code></div><div class="nota">La prueba end-to-end. Depende de nueve paquetes: es el ultimo por definicion, no por prioridad.</div>
+</article></div>
+
+<h2 class="g">Bloqueados fuera de este equipo · 2</h2>
+<p class="gd">No son trabajo pendiente: son decisiones de otra persona. Ponerlos en la misma lista que
+el resto es lo que hace que un plan parezca más grande de lo que se puede mover.</p>
+<div class="grid"><article class="c">
+  <header><code class="id">WP-225</code><span class="sz">M</span></header>
+  <h3>Vista Leads potenciales, opt-in explícito trazable y contrato de datos para el tercero</h3>
+  <p class="obj">Dejar los leads visibles, con consentimiento trazable, y con un contrato escrito que impida que un tercero envíe sin comprobarlo.</p>
+  <div class="meta"><span class="sis">docs</span></div><div class="dep"><span class="lbl">espera</span><code>WP-224</code></div><div class="ext">Dueño del seguimiento de leads (decisiones M1, M2, M3)</div><div class="nota">Bloqueado de verdad, y no por mi: hacen falta las decisiones M1, M2 y M3 del dueno del seguimiento de leads.</div>
+</article><article class="c">
+  <header><code class="id">WP-230</code><span class="sz">L</span></header>
+  <h3>BECKHAM_recordatorios_leads: scheduler con cola derivada (solo si el manager mete los recordatorios en alcance)</h3>
+  <p class="obj">Enviar recordatorios acotados a los leads que dieron consentimiento, sin duplicados y sin poder colgar ninguna conversación.</p>
+  <div class="meta"><span class="sis">Intercom</span> <span class="sis">n8n</span></div><div class="dep"><span class="lbl">espera</span><code>WP-225</code></div><div class="ext">Manager (M1 alcance · M2 dueño)</div><div class="nota">Bloqueado por M1 (alcance) y M2 (dueno). Es el unico L que ademas depende de otro bloqueado.</div>
+</article></div>
+
+<footer>Generado del contenido de <code>docs/prds/fase2/</code> el 26/08/2026 · 12 puertas en verde ·
+<code>WP-203</code> pasó a cerrado sin construir, y hasta hoy contaminaba todos estos recuentos.</footer>
+</div>

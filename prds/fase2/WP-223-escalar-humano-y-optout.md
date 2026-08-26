@@ -6,10 +6,14 @@ size: M
 depends_on: [WP-218, WP-219]
 milestone: "Fase 2 conversacional — FAQ"
 owner: "Hammad"
-external: ""   # M6 DECIDIDO el 26/08/2026: el SLA es de 24 a 48 horas
+external: ""
 critical: true
 issue: ""
 ---
+
+> **M6 DECIDIDO el 26/08/2026 por el usuario: el SLA es de 24 a 48 horas.** El bloqueo externo queda
+> levantado y `external` vacío. *(El comentario vivía en la propia línea del campo, y aunque YAML lo
+> trata como comentario, mi parser lo leía como valor y este WP seguía apareciendo bloqueado.)*
 
 # PRD · WP-223 — Escalado humano y opt-out
 
