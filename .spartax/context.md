@@ -30,6 +30,68 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
   dentro del v6 y metió un bucle infinito en la pregunta del idioma.
 - **Slack** (MCP) para los avisos de negocio y de error.
 
+## Estado al 26/08/2026 · EL DÍA DE LOS CONTRATOS Y DE LOS DOS TRACKERS QUE MENTÍAN
+
+### La escalera de Status se renumeró (la renumeró Iciar) y se adaptó en SIETE sitios
+Trece peldaños. Nuestros cinco nombres cambiaron y entró uno nuevo, `2. Pte agendar llamada`.
+`Decidir_Status` pasa a **11.975 car.** y su puerta a **30** comprobaciones. **Y apareció un SEXTO
+sitio que no estaba en ninguna lista:** un nodo de Airtable de n8n **guarda la lista de opciones del
+`singleSelect` y valida contra su propia copia** (`parameters.columns.schema[].options`), así que el
+bot devolvía `persistencia_fallida` **antes de llamar a la API**. Se arregla refrescando la lista de
+campos del nodo en la UI. Solo afecta a los nodos que **escriben** (`upsert`), no a los `search`.
+
+### Los dos entregables nuevos son CONTRATOS, y los dos tienen puerta
+- **`docs/contrato-upsert-expediente-v1.json`** · las **46 claves** de entrada del escritor,
+  **extraídas del nodo vivo** (73.081 car.), no escritas de memoria. Puerta de **25** que compara
+  schema contra nodo **en los dos sentidos**, probada rompiéndola dos veces.
+- **`docs/nodo-validar-normalizar-COMPLETO.js`** · **76.156 car.**, el nodo del escritor **con el
+  `corr_id` y el `Log_Evento`**, listo para Cmd+A. **Tercer montador del proyecto**
+  (`montar-nodo-validar.sh`), que monta **desde el código vivo del export y por anclas de texto**: si
+  un ancla desaparece, **aborta**. Su puerta **ejecuta el nodo** con un `$input` de mentira — 35
+  comprobaciones, y **seis son de PII**.
+
+### El `corr_id` no necesitaba nada nuevo, y eso desbloqueó `WP-208`
+Medido en el body real de la ejecución `8129120`: `conversation_id` y `conversationPartId` **ya
+llegan**. `corr_id = 215475581167582:52219039912`. **Tres claves para dos cosas:**
+`conversationPartId` es camelCase y `conversation_part_id_debounce` trae el **mismo valor** (es la
+única que lee `If2`). Y el body lleva `message` y `user_email`, que es **por qué** el `Log_Evento`
+tiene 6 campos: `dropped` guarda **nombres** y tira los valores.
+
+### DOS TRACKERS MENTÍAN, y los dos me habían hecho contar mal
+- **`WP-203`** estaba en `building` con `critical: true` pero se cerró **sin construir** (`T053`). El
+  vocabulario de estados **no tiene «descartado»**, así que se contaba como trabajo **listo** en todos
+  los recuentos, incluidos los míos de ese día. Pasa a `done` con la cabecera que lo explica.
+- **`WP-223`** tenía `external: ""   # M6 DECIDIDO…`. YAML trata el `#` como comentario, **pero mi
+  parser lo leía como valor**, y el WP aparecía bloqueado por una decisión ya tomada.
+
+### El push mentía también, y en verde
+`push-cierre.sh` copiaba `docs/` con `find -maxdepth 1`, así que **los subdirectorios se ignoraban en
+silencio**. Dos víctimas: `docs/contratos/` de ese día, y `docs/backup-automatizaciones-20260812/`,
+**catorce días sin subirse**, con el código de los `customScript` de Airtable — los que
+`readOnlyNodeType` impide leer por API, o sea **el único backup que existía, en un solo portátil**.
+Ahora aborta. **Un push en verde no prueba que subiera lo que creías: hay que mirar el remoto.**
+
+### Las TRECE puertas
+`test-decidir-status` 30 · `test-validador-2026-08-19` 31 · `test-prompt-v10` 35 · `v12` 77 ·
+`v13` 103 · **`v14` 110** · `test-lector-expediente` 14 · `test-v2-preparar-informe` 74 ·
+**`test-contrato-upsert` 25** · **`test-log-evento` 25** · `montar-nodo-030` ·
+`montar-nodo-informe` · **`montar-nodo-validar` 35**. `bash docs/pasos.sh test` las pasa todas.
+
+### Reglas nuevas, las dos con número detrás
+- **Antes de renombrar un nodo, contar sus referencias separando las de nodos `code` de las de
+  expresiones.** n8n reescribe `connections` y las expresiones; **dentro de un `code` no reescribe
+  nada**. `If2`, `Wait2` y `Airtable Upser Expediente` tienen **cero** y son gratis; **`Webhook1`
+  tiene 13, y 2 viven en `code`** — una es `Preparar_Prompt`, así que el síntoma sería **el peor del
+  proyecto**.
+- **`docs/` es plana y ahora el push lo impone**, no lo confía.
+
+### Estado de la Fase 2 al cerrar
+**39 paquetes · 14 cerrados · 25 pendientes · 4 empezables** (`WP-207`, `WP-210`, `WP-216`,
+`WP-220`) · 2 bloqueados fuera (`WP-225`, `WP-230`, por M1/M2/M3). Camino crítico **peso 21**, primer
+no hecho **`WP-207`**, y **no pasa por el menú**: la cadena larga es la del FAQ. `WP-210` reescrito con
+**transporte B**, lo que desbloqueó 17 PRDs; `WP-212` y `WP-227` escritos para **las dos ramas de
+`T081`**, que es la única decisión de diseño pendiente.
+
 ## Estado al 21/08/2026 · EL DÍA DEL PELDAÑO 2 Y DE LA PRUEBA DE LAS DOS FILAS
 
 ### Lo que quedó cerrado
@@ -211,7 +273,7 @@ de 21 campos** del lector + `onError`/`retryOnFail` · 9. **lector de 47 claves*
 13. **prompt v10, 60.328 car**, tag `prod`, con 17 cambios · 14. **informe PDF a nombre + apellidos +
 fecha de alta**, `COMPLETO` de **241.272 car**.
 
-### Las siete puertas
+### Las siete puertas (de entonces; al 26/08 son TRECE)
 
 `test-decidir-status.js` 15 · `test-validador-2026-08-19.js` 31 · `test-prompt-v10.js` 35 ·
 `test-lector-expediente.js` 14 · `test-informe-datos.js` 226 · `test-informe-cuerpo.js` ·

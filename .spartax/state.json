@@ -914,9 +914,10 @@
       "verify": "una conversacion con fecha no parseable repregunta en vez de cerrarse, y el hilo sigue abierto en G y en H",
       "depends": [],
       "effort": 3.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-08-26T10:34:52Z"
+      "status": "done",
+      "note": "WP-216 entregado clic por clic como paso 2 de docs/pasos.sh, con el aviso de duplicar el Custom Bot antes",
+      "created_at": "2026-08-26T10:34:52Z",
+      "done_at": "2026-08-26T12:24:42Z"
     },
     "T079": {
       "title": "Reescribir WP-210 con el transporte B: el modo como input del Data Connector",
@@ -924,9 +925,10 @@
       "verify": "WP-210 sin depends_on de WP-209, con la tabla de que punto pasa el modo y con Resolver_Modo fail-closed puro",
       "depends": [],
       "effort": 2.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-08-26T11:30:21Z"
+      "status": "done",
+      "note": "WP-210 reescrito con transporte B: el modo como input obligatorio del DC. depends_on de [WP-209] a []. Desbloquea 17 PRDs y deja T081 como unica decision de diseno",
+      "created_at": "2026-08-26T11:30:21Z",
+      "done_at": "2026-08-26T12:25:28Z"
     },
     "T080": {
       "title": "SLA de 24-48 h del escalado: al prompt y al mecanismo de WP-223",
@@ -948,8 +950,52 @@
       "status": "planned",
       "note": "",
       "created_at": "2026-08-26T11:30:21Z"
+    },
+    "T082": {
+      "title": "WP-232 cerrado: convencion de nombres como §30 del PRD maestro, con el coste de cada renombrado CONTADO (Webhook1 tiene 13 referencias y 2 en nodos code)",
+      "milestone": "",
+      "verify": "status done en el PRD y la regla en CLAUDE.md",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "note": "hecho y subido",
+      "created_at": "2026-08-26T12:25:28Z",
+      "done_at": "2026-08-26T12:25:38Z"
+    },
+    "T083": {
+      "title": "WP-207 entregable 3: contrato del escritor en JSON Schema extraido del nodo vivo (46 claves) con puerta de 25 que compara en los dos sentidos",
+      "milestone": "",
+      "verify": "node docs/test-contrato-upsert.js -> 25 verdes, y muerde al romperlo",
+      "depends": [],
+      "effort": 2.0,
+      "status": "done",
+      "note": "hecho, subido, y probado rompiendo la puerta dos veces",
+      "created_at": "2026-08-26T12:25:28Z",
+      "done_at": "2026-08-26T12:25:39Z"
+    },
+    "T084": {
+      "title": "WP-207+208 · PEGAR nodo-validar-normalizar-COMPLETO.js (76.156 car.) en Validar y Normalizar con Cmd+A. Paso 4 de docs/pasos.sh, desatasca los dos WP",
+      "milestone": "",
+      "verify": "el contador dice 76.156 y en el log de una ejecucion real sale UNA linea [conv:part] con 6 campos y cero datos del cliente",
+      "depends": [],
+      "effort": 2.0,
+      "status": "in_progress",
+      "note": "el COMPLETO esta montado y su puerta en 35 verdes EJECUTANDO el nodo; falta que el usuario lo pegue",
+      "created_at": "2026-08-26T12:25:28Z",
+      "in_progress_at": "2026-08-26T12:25:39Z"
+    },
+    "T085": {
+      "title": "PEGAR el prompt v14 en LangSmith Y MOVER EL TAG prod (66.020 car.). Sin mover el tag el bot sigue leyendo el v13",
+      "milestone": "",
+      "verify": "node docs/test-prompt-v14.js -> 110 verdes, y el tag prod apunta al v14",
+      "depends": [],
+      "effort": 1.0,
+      "status": "in_progress",
+      "note": "el v14 esta escrito con su puerta de 110; falta pegar y mover el tag",
+      "created_at": "2026-08-26T12:25:28Z",
+      "in_progress_at": "2026-08-26T12:25:39Z"
     }
   },
-  "next_task": 82,
-  "updated_at": "2026-08-26T11:56:41Z"
+  "next_task": 86,
+  "updated_at": "2026-08-26T12:25:39Z"
 }

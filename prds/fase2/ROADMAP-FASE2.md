@@ -55,7 +55,6 @@ flowchart TD
     WP207 --> WP208
     WP208 --> WP211
     WP210 --> WP211
-    WP209 --> WP212
     WP210 --> WP212
     WP212 --> WP213
     WP213 --> WP214
@@ -126,7 +125,7 @@ flowchart TD
 | [WP-209](WP-209-conversacion-sonda.md) · MUERTA (14/08/2026) · Experimento sonda: duplicado d | M | ✅ done | — | Hammad | — |
 | [WP-210](WP-210-atributo-modo-bot-contrato.md) · Contrato del modo: el modo viaja como input del Data | S | 📘 specified | — | Hammad | — |
 | [WP-211](WP-211-resolver-modo-fail-closed.md) · Resolver_Modo: derivación server-side del modo, fail | M | 📘 specified | `WP-208` `WP-210` | Hammad | — |
-| [WP-212](WP-212-reset-modo-inicio-canvas.md) · Reset de modo_bot al inicio del canvas, con centinel | S | 📘 specified | `WP-209` `WP-210` | Hammad | — |
+| [WP-212](WP-212-reset-modo-inicio-canvas.md) · Reset de modo_bot al inicio del canvas, con centinel | S | 📘 specified | `WP-210` | Hammad | — |
 | [WP-213](WP-213-menu-aopt.md) · Menú AOPT: tres reply buttons más 'hablar con una pe | S | 📘 specified | `WP-212` | Hammad | — |
 | [WP-214](WP-214-rama-calculadora.md) · Rama calculadora: enlace y botones de vuelta al menú | S | 📘 specified | `WP-213` | Hammad | — |
 | [WP-215](WP-215-autodescarte-declarado.md) · Autodescarte declarado: traza punto=autodescarte_dec | S | 📘 specified | `WP-207` `WP-213` | Hammad | — |
@@ -157,9 +156,10 @@ flowchart TD
 
 ## Cómo se lee este mapa
 
-- **Camino crítico (peso 21):** `WP-201 → WP-205 → WP-207 → WP-208 → WP-211 → WP-218 → WP-219 → WP-221 → WP-222 → WP-228`. El primer no hecho es **`WP-207`**, y **no pasa por el menú**: la cadena larga es la del FAQ. Lo que cuelga del menú es ancho, no profundo.
+- **Camino crítico (peso 21):** `WP-201 → WP-205 → WP-207 → WP-208 → WP-211 → WP-218 → WP-219 → WP-221 → WP-222 → WP-228`. El primer no hecho es **`WP-207`**, y **no pasa por el menú**: la cadena larga es la del FAQ.
 - **Empezables hoy (4):** `WP-207`, `WP-210`, `WP-216`, `WP-220`
-- **Bloqueados fuera del equipo:** `WP-225` y `WP-230`, por las decisiones M1/M2/M3 del dueño del seguimiento de leads. No son trabajo pendiente.
-- **`WP-203` está `done` sin haberse construido:** se cerró por decisión del usuario (`T053`) y el vocabulario de estados no tiene un valor para «descartado». Mientras estuvo en `building` **contaminaba todos los recuentos** contándose como trabajo listo.
+- **Bloqueados fuera del equipo:** `WP-225` y `WP-230` (decisiones M1/M2/M3). No son trabajo pendiente.
+- **`WP-203` está `done` sin construirse:** cerrado por decisión (`T053`); el vocabulario de estados no tiene «descartado», y en `building` contaminaba los recuentos.
+- **`WP-212` depende solo de `WP-210`:** su dependencia de `WP-209` (muerta el 14/08) desapareció con el transporte B.
 
-*39 paquetes · 14 cerrados · 57 aristas de dependencia.*
+*39 paquetes · 14 cerrados · 56 aristas de dependencia.*
