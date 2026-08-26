@@ -120,8 +120,16 @@ cazado cuatro fallos silenciosos. Se reactiva **al final**, y con **token nuevo*
 ## Deuda de este inventario
 
 - **`beckham_bot` tiene la `description` vacía.** `WP-232` pide dueño + PRD en cada workflow del bot.
-- **Nombres fuera de convención**, pendientes de renombrar: `beckham_f2_plazo.` (punto final),
-  `Airtable Upser Expediente` (falta la `t`), `Webhook1`, `If2`, `Wait2`.
+- **Nombres fuera de convención · MEDIDO EL 26/08, y no todos cuestan lo mismo.** Cuatro salen gratis
+  porque tienen **cero referencias en expresiones** y n8n reescribe `connections` solo: `If2`, `Wait2`,
+  `Airtable Upser Expediente` (falta la `t`) y el punto final de `beckham_f2_plazo.` — este último se
+  llama por **id** desde el Data Connector, así que el nombre da igual. **`Webhook1` no:** tiene **13
+  referencias**, y **2 están dentro de nodos `code`** (`Formatear_conversacion1` y `Preparar_Prompt`),
+  donde **n8n no reescribe nada al renombrar**. Se rompen en silencio, y como una es `Preparar_Prompt`
+  el síntoma sería que el bot vuelve a preguntar lo ya contado. Los cuatro primeros son el paso 3 de
+  `docs/pasos.sh`; el quinto está razonado en la **§30.2 del PRD maestro** y no se toca solo.
+- **La `description` de `beckham_bot` no se pone por MCP:** `update_workflow` exige reenviar el
+  workflow entero, 55 nodos con dos de código de 198 y 241 KB. Va a mano en la UI.
 - **Las credenciales son de Ops/Fiscal y la identidad del MCP no las ve.** Consecuencia práctica: al
   crear un workflow por MCP hay que **asignar la credencial a mano** en la UI. Pasó con
   `beckham_adjuntos_huerfanos` el 12/08.

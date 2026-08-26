@@ -903,9 +903,10 @@
       "verify": "WP-210 reescrito con la opcion elegida y sin dependencia de WP-209",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-08-26T10:34:52Z"
+      "status": "done",
+      "note": "26/08 DECIDIDO POR EL USUARIO: OPCION B. El modo viaja como INPUT EXPLICITO Y OBLIGATORIO de cada llamada al Data Connector, no como atributo persistido. Consecuencias asumidas: (1) YA NO DEPENDE DE WP-209, la sonda muerta, asi que WP-210 se desbloquea y con el los 17 PRDs que colgaban; (2) CADA PUNTO DEL CANVAS TIENE QUE PASAR EL MODO -- un punto que se olvide manda un turno sin modo; (3) por eso Resolver_Modo pasa a ser FAIL-CLOSED PURO: si el modo no llega, no se adivina, se corta y se avisa, y ese estado NO SE PERSISTE NUNCA; (4) WP-212 (el reset del modo al inicio) PIERDE SU RAZON DE SER en su forma actual: si el modo no se persiste, no hay nada que resetear -- hay que reescribirlo o cerrarlo; (5) WP-229 tambien se desbloquea por el lado del transporte, aunque le sigue faltando saber si Pass to entre reusables funciona. HAY QUE REESCRIBIR WP-210 con este transporte antes de construir nada.",
+      "created_at": "2026-08-26T10:34:52Z",
+      "done_at": "2026-08-26T11:29:49Z"
     },
     "T078": {
       "title": "WP-216 · correcciones del canvas: el typo veredicto_f2, borrar M. Path y SAVE, Close solo en D y N",
@@ -916,8 +917,38 @@
       "status": "planned",
       "note": "",
       "created_at": "2026-08-26T10:34:52Z"
+    },
+    "T079": {
+      "title": "Reescribir WP-210 con el transporte B: el modo como input del Data Connector",
+      "milestone": "",
+      "verify": "WP-210 sin depends_on de WP-209, con la tabla de que punto pasa el modo y con Resolver_Modo fail-closed puro",
+      "depends": [],
+      "effort": 2.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-26T11:30:21Z"
+    },
+    "T080": {
+      "title": "SLA de 24-48 h del escalado: al prompt y al mecanismo de WP-223",
+      "milestone": "",
+      "verify": "el prompt vigente dice el plazo, y la puerta del prompt lo comprueba",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-26T11:30:21Z"
+    },
+    "T081": {
+      "title": "DECIDIR: con el transporte B, la reentrada cae siempre al menu o se persiste el modo solo para eso",
+      "milestone": "",
+      "verify": "WP-212 cerrado o reescrito, y WP-227 con la regla de reentrada decidida",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-26T11:30:21Z"
     }
   },
-  "next_task": 79,
-  "updated_at": "2026-08-26T10:34:52Z"
+  "next_task": 82,
+  "updated_at": "2026-08-26T11:30:21Z"
 }

@@ -1305,6 +1305,66 @@ Cubre **todos** los nodos del diagrama propuesto por el usuario.
 
 ---
 
+
+---
+
+## 30. Convención de nombres, y el coste medido de aplicarla
+
+> Añadido el 26/08/2026 al cerrar `WP-232`. Las reglas de bitácora (3×90, gate de dos fuentes,
+> checklist de publicación) ya estaban en §19 y §20; la convención `_bot` / `_f2` en §13. Esto
+> cierra lo que faltaba: **el nombre de las piezas, y qué cuesta renombrar las que hoy están mal.**
+
+### 30.1 · La convención
+
+| Capa | Regla | Ejemplo bueno |
+|---|---|---|
+| Workflow de n8n del bot | `beckham_<qué hace>`, minúsculas, sin punto final | `beckham_generar_030` |
+| Data Connector de Intercom | `beckham_<qué pide>` | `beckham_upsert_expediente` |
+| Atributo de conversación | sufijo **`_bot`** | `intentos_fecha_bot` |
+| Salida del cálculo F2 | sufijo **`_f2`** | `veredicto_f2` |
+| Path del canvas | **letra + punto + nombre** | `I. Path` |
+| Nodo de n8n | qué hace, en español, sin número de serie | `Decidir_Status` |
+
+**La regla que de verdad importa es la última, y es sobre lo NUEVO:** un nodo que nace llamándose
+`If3` obliga a leer el nodo para saber qué decide. Todo lo que se añada de aquí a la entrega nace con
+nombre. Lo que ya existe se trata en 30.2.
+
+### 30.2 · Los cinco nombres fuera de convención, con su coste real
+
+Medido el 26/08 contando referencias sobre el export de `beckham_bot`, no estimado:
+
+| Nombre de hoy | Debería ser | Sitios que toca | Coste | Veredicto |
+|---|---|---|:--:|---|
+| `beckham_f2_plazo.` | `beckham_f2_plazo` | 1 (el punto final) | Nulo. El DC lo llama por **id**, no por nombre, y el path del webhook no cambia | **se puede** |
+| `If2` | `If_debounce` | 2 · nodo + `connections` | Nulo. **Cero referencias en expresiones.** n8n reescribe `connections` solo | **se puede** |
+| `Wait2` | `Wait_debounce` | 2 · nodo + `connections` | Nulo, idéntico caso | **se puede** |
+| `Airtable Upser Expediente` | `Airtable_Upsert_Expediente` | 2 · nodo + `connections` | Nulo, idéntico caso. *(De paso se corrige la errata «Upser».)* | **se puede** |
+| `Webhook1` | `Webhook_Intercom` | **15** · nodo + `connections` + **13 referencias** | **NO es nulo.** 11 de las 13 son expresiones en nodos normales y n8n las reescribe al renombrar. **Las otras 2 están dentro de nodos `code` — `Formatear_conversacion1` y `Preparar_Prompt` — y n8n NO reescribe referencias dentro de código.** Se rompen en silencio | **solo con las dos manuales** |
+
+**Por qué el caso de `Webhook1` es el peligroso y no un renombrado más:** el segundo nodo de código es
+`Preparar_Prompt`, el que arma el bloque «DATOS QUE YA CONOCEMOS». Si su `$('Webhook1')` se queda
+apuntando a un nodo que ya no existe, el bloque sale vacío o el nodo revienta, y el síntoma que ve el
+cliente es **que el bot le vuelve a preguntar todo lo que ya había contado** — exactamente el fallo del
+19/08, por otra causa. Un renombrado cosmético puede producir el peor síntoma del proyecto.
+
+**Regla que sale de esto:** antes de renombrar cualquier nodo, contar sus referencias **separando las
+que viven en nodos `code` de las que viven en expresiones**. n8n solo arregla las segundas.
+
+```bash
+# el comando que da el número, sobre el export del repo
+python3 - <<'PY'
+import json,re
+w=json.load(open('proyecto-mobility/workflows-n8n/beckham_bot.json'))
+NOMBRE='Webhook1'
+pat=re.compile(r"\$\(\s*['\"]%s['\"]\s*\)|\$node\[\s*['\"]%s['\"]\s*\]"%(NOMBRE,NOMBRE))
+for n in w['nodes']:
+    c=len(pat.findall(json.dumps(n.get('parameters',{}),ensure_ascii=False)))
+    if c: print(n['name'], n['type'].split('.')[-1], c, '<-- CODE, a mano' if n['type'].endswith('.code') else '')
+PY
+```
+
+---
+
 *Fin del PRD maestro. Ninguna afirmación etiquetada HECHO VERIFICADO se apoya en este documento: todas
 proceden del Council del 2026-07-29 (MCP de solo lectura o lectura de fichero) y de la bitácora del
 proyecto. Donde no hubo evidencia, queda declarada la incógnita y el experimento que la cierra.*

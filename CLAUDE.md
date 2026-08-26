@@ -76,6 +76,7 @@ node docs/test-prompt-v12.js           # el prompt v12, 77 (hereda las 60 del v1
 node docs/test-prompt-v13.js           # el v13 VIVO con el tag prod, 103 (hereda las 77 del v12)
 node docs/test-lector-expediente.js    # el lector de 47 claves: 14
 node docs/test-v2-preparar-informe.js  # el nodo del informe v2: 74
+node docs/test-contrato-upsert.js      # el contrato del escritor contra el nodo vivo: 25
 
 # Los pasos de un cambio, EN LA TERMINAL (no en un .md que hay que abrir)
 bash docs/pasos.sh          # las puertas + los pasos con workflow, nodo y casilla
@@ -254,6 +255,15 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   solo aporta las dos cifras de provincia (`ineMunicipio('Madrid','28046')` → `28079`;
   `ineMunicipio('','28046')` → `null`). Al añadir un campo, recorrer los cinco **en los dos
   sentidos**.
+- **Antes de renombrar un nodo, contar sus referencias SEPARANDO las de nodos `code` de las de
+  expresiones.** n8n reescribe `connections` y las expresiones de nodos normales al renombrar; **dentro
+  de un nodo `code` no reescribe nada**, y la referencia rota no da error hasta que se ejecuta. Medido
+  el 26/08: `If2`, `Wait2` y `Airtable Upser Expediente` tienen **cero** referencias en expresiones y
+  se renombran gratis; **`Webhook1` tiene 13, y 2 viven en nodos `code`** —
+  `Formatear_conversacion1` y **`Preparar_Prompt`**. Renombrarlo sin repegar esos dos deja
+  `Preparar_Prompt` apuntando a un nodo inexistente, y el síntoma es **el peor del proyecto: el bot
+  vuelve a preguntar lo que el cliente ya contó.** Un renombrado cosmético puede producirlo. El
+  comando que da el número está en la §30.2 del PRD maestro.
 - **El escritor ignora las claves que no conoce y devuelve `ok:true`.** Lo que no está en el contrato
   no se pierde por un bug: **no existe el camino**.
 - **`uploadAttachment` de Airtable AÑADE adjunto, no lo reemplaza.** Hay que vaciar el campo antes.

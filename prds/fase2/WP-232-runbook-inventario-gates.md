@@ -1,7 +1,7 @@
 ---
 id: WP-232
 title: "Runbook, inventario de automatizaciones y gates anti-reincidencia en el repo"
-status: specified
+status: done
 size: S
 depends_on: []
 milestone: "Fase 2 conversacional — Prerrequisitos"
@@ -17,6 +17,26 @@ issue: ""
 > síntesis. Este WP los pone en el repo, donde se usan.
 > Ejemplo de coste real de no tener el inventario con **capa**: `distribuidor - usuario envia mensaje`
 > **no existe en n8n** — es un workflow de **Intercom** — y averiguarlo costó tiempo (HECHO VERIFICADO).
+
+> **CERRADO EL 26/08/2026.** Los cuatro entregables existen y están verificados:
+> `scripts/contract-test.sh` con sus bloques A/B/C (los **6 `punto` válidos**, el `punto` inventado que
+> devuelve **400**, y el caso `x-www-form-urlencoded` del Data Connector) ·
+> `docs/runbook-turno-mudo.md` con los 5 pasos en orden y su llamada MCP ·
+> `docs/inventario-automatizaciones.md` con las 4 capas · y las reglas de bitácora, que ya vivían en
+> **§19 y §20 del PRD maestro** (regla 3×90, gate de dos fuentes, checklist de publicación).
+>
+> **Lo que se cerró hoy fue la convención de nombres, y no como documentación:** es la nueva
+> **§30 del PRD maestro**, con el coste de cada renombrado **contado, no estimado**. El resultado
+> cambia la recomendación de este PRD: `If2`, `Wait2`, `Airtable Upser Expediente` y el punto final de
+> `beckham_f2_plazo.` **no tienen ni una referencia en expresiones** y se renombran gratis; pero
+> `Webhook1` tiene **13**, y **2 viven dentro de nodos `code`** (`Formatear_conversacion1` y
+> `Preparar_Prompt`), donde **n8n no reescribe nada al renombrar**. Renombrarlo sin tocar esas dos a
+> mano deja `Preparar_Prompt` apuntando a un nodo inexistente, y el síntoma es el peor del proyecto:
+> el bot vuelve a preguntar lo que el cliente ya contó.
+>
+> **La `description` de `beckham_bot` sigue vacía y se rellena a mano en la UI** (paso 3 de
+> `docs/pasos.sh`). No se hace por MCP: `update_workflow` exige reenviar el workflow entero, y son 55
+> nodos con dos de código de 198 y 241 KB. Cambiar un campo de texto no vale ese riesgo.
 
 ## 1. Objetivo
 

@@ -6,7 +6,7 @@ size: M
 depends_on: [WP-218, WP-219]
 milestone: "Fase 2 conversacional — FAQ"
 owner: "Hammad"
-external: "Ops_Mobility (SLA y cobertura: decisión M6)"
+external: ""   # M6 DECIDIDO el 26/08/2026: el SLA es de 24 a 48 horas
 critical: true
 issue: ""
 ---
@@ -37,8 +37,10 @@ registrar desde cualquier modo.
 - `registrar_optout()`: toca **solo** `recordatorio_optout`; pasa por la guarda de WP-219.
 
 **Out:**
-- Definir el SLA: es decisión del manager (M6). El WP se construye con el mecanismo; el **texto** que
-  promete un plazo no se publica hasta que M6 esté decidido.
+- ~~Definir el SLA: es decisión del manager (M6).~~ **M6 DECIDIDO EL 26/08/2026 por el usuario: el
+  plazo es de 24 a 48 horas.** El texto ya se puede publicar, y va **en dos sitios**: el mecanismo de
+  este WP y **el prompt** (ver `WP-220` y la regla 11), porque el bot lo dice antes de que exista
+  ningún escalado real.
 - `cerrar_conversacion`: requiere aprobación y solo al completar el expediente → no en este WP.
 
 ## 3. Dependencias

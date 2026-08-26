@@ -226,16 +226,15 @@
        status: "skeleton" | "specified" | "building" | "done"
        size:   "S" | "M" | "L"
      ──────────────────────────────────────────────────────────────────────── */
-  const DATA = /*PRD-KIT:DATA*/
-{
-  "project": "Beckham · Fase 2 conversacional (Mobility, TaxDown)",
-  "updated": "2026-08-20",
-  "source": "docs/prds/fase2/",
+  const DATA = /*PRD-KIT:DATA*/{
+  "project": "Bot Beckham · Fase 2 conversacional",
+  "updated": "2026-08-26",
+  "source": "docs/prds/fase2",
   "wps": [
     {
       "id": "WP-201",
-      "title": "Prerrequisito P0: parsear el body urlencoded del Data Connector en el escritor único",
-      "desc": "Que una llamada del DC con Content-Type:",
+      "title": "Prerrequisito P0: parsear el body urlencoded del Data Connector en el ",
+      "desc": "Que una llamada del DC con `Content-Type: application/x-ww",
       "owner": "Hammad",
       "status": "done",
       "size": "S",
@@ -246,8 +245,8 @@
     },
     {
       "id": "WP-202",
-      "title": "Prerrequisito P1: enchufar la red de errores (errorWorkflow, retryOnFail, onError)",
-      "desc": "Que ningún fallo de escritura o de lectura…",
+      "title": "Prerrequisito P1: enchufar la red de errores (errorWorkflow, retryOnFa",
+      "desc": "Que ningún fallo de escritura o de lectura de Intercom que",
       "owner": "Hammad",
       "status": "done",
       "size": "S",
@@ -258,8 +257,8 @@
     },
     {
       "id": "WP-203",
-      "title": "Prerrequisito P2: autenticación en los dos webhooks y rotación del path a UUID",
-      "desc": "Que ninguna llamada anónima pueda escribir en el…",
+      "title": "Prerrequisito P2: autenticación en los dos webhooks y rotación del pat",
+      "desc": "Que ninguna llamada anónima pueda escribir en el expedient",
       "owner": "Hammad",
       "status": "building",
       "size": "S",
@@ -270,8 +269,8 @@
     },
     {
       "id": "WP-204",
-      "title": "Prerrequisito P3: systemMessage como expresión y purga de las tools fantasma del prompt",
-      "desc": "Que el prompt final que recibe el modelo…",
+      "title": "Prerrequisito P3: systemMessage como expresión y purga de las tools fa",
+      "desc": "Que el prompt final que recibe el modelo sea observable en",
       "owner": "Hammad",
       "status": "done",
       "size": "S",
@@ -282,8 +281,8 @@
     },
     {
       "id": "WP-205",
-      "title": "Prerrequisito P4: guarda de unicidad de UserId (count==0 crea · ==1 actualiza · >1 multi_match)",
-      "desc": "Que ninguna escritura pueda actualizar la fila equivocada…",
+      "title": "Prerrequisito P4: guarda de unicidad de UserId (count==0 crea · ==1 ac",
+      "desc": "Que ninguna escritura pueda actualizar la fila equivocada ",
       "owner": "Hammad",
       "status": "done",
       "size": "M",
@@ -296,8 +295,8 @@
     },
     {
       "id": "WP-206",
-      "title": "Prerrequisito P5: whitelist de punto y de Descarte en n8n, y typecast a false",
-      "desc": "Que ningún valor no listado pueda entrar en…",
+      "title": "Prerrequisito P5: whitelist de punto y de Descarte en n8n, y typecast ",
+      "desc": "Que ningún valor no listado pueda entrar en la taxonomía, ",
       "owner": "Hammad",
       "status": "done",
       "size": "S",
@@ -310,8 +309,8 @@
     },
     {
       "id": "WP-207",
-      "title": "Prerrequisito P6: extraer BECKHAM_upsert_expediente a subworkflow propio",
-      "desc": "Un único escritor de Empleados, invocable como subworkflow,…",
+      "title": "Prerrequisito P6: extraer BECKHAM_upsert_expediente a subworkflow prop",
+      "desc": "Un único escritor de `Empleados`, invocable como subworkfl",
       "owner": "Hammad",
       "status": "specified",
       "size": "M",
@@ -326,8 +325,8 @@
     },
     {
       "id": "WP-208",
-      "title": "Prerrequisito P7: corr_id de extremo a extremo y nodo Log_Evento de 6 campos",
-      "desc": "Que desde una fila de Airtable se llegue…",
+      "title": "Prerrequisito P7: corr_id de extremo a extremo y nodo Log_Evento de 6 ",
+      "desc": "Que desde una fila de Airtable se llegue a la ejecución de",
       "owner": "Hammad",
       "status": "specified",
       "size": "M",
@@ -340,8 +339,8 @@
     },
     {
       "id": "WP-209",
-      "title": "MUERTA (14/08/2026) · Experimento sonda: duplicado desechable de OnClick Mobility que cierra nueve incógnitas",
-      "desc": "Responder con una sola conversación no-Preview si un…",
+      "title": "MUERTA (14/08/2026) · Experimento sonda: duplicado desechable de OnCli",
+      "desc": "Responder con una sola conversación no-Preview si un Conve",
       "owner": "Hammad",
       "status": "done",
       "size": "M",
@@ -352,22 +351,20 @@
     },
     {
       "id": "WP-210",
-      "title": "Contrato del modo: familia de atributos *_bot y tabla de transiciones con dueño único",
-      "desc": "Escribir y publicar el contrato del modo, para…",
+      "title": "Contrato del modo: el modo viaja como input del Data Connector, no com",
+      "desc": "Que cualquier rama del canvas sepa **qué modo tiene que de",
       "owner": "Hammad",
       "status": "specified",
       "size": "S",
-      "deps": [
-        "WP-209"
-      ],
+      "deps": [],
       "external": "",
       "issue": "",
       "critical": true
     },
     {
       "id": "WP-211",
-      "title": "Resolver_Modo: derivación server-side del modo, fail-closed en memoria y evento modo_ausente",
-      "desc": "Un único punto en n8n que determine el…",
+      "title": "Resolver_Modo: derivación server-side del modo, fail-closed en memoria",
+      "desc": "Un único punto en n8n que determine el modo de cada turno,",
       "owner": "Hammad",
       "status": "specified",
       "size": "M",
@@ -381,8 +378,8 @@
     },
     {
       "id": "WP-212",
-      "title": "Reset de modo_bot al inicio del canvas, con centinela si Set no admite cadena vacía",
-      "desc": "Que ninguna sesión herede el modo de una…",
+      "title": "Reset de modo_bot al inicio del canvas, con centinela si Set no admite",
+      "desc": "Que ninguna sesión herede el modo de una sesión anterior",
       "owner": "Hammad",
       "status": "specified",
       "size": "S",
@@ -396,8 +393,8 @@
     },
     {
       "id": "WP-213",
-      "title": "Menú AOPT: tres reply buttons más 'hablar con una persona' y las transiciones de entrada",
-      "desc": "Cuatro salidas del menú que lleven al destino…",
+      "title": "Menú AOPT: tres reply buttons más 'hablar con una persona' y las trans",
+      "desc": "Cuatro salidas del menú que lleven al destino correcto y e",
       "owner": "Hammad",
       "status": "specified",
       "size": "S",
@@ -410,8 +407,8 @@
     },
     {
       "id": "WP-214",
-      "title": "Rama calculadora: enlace y botones de vuelta al menú, sin cerrar la conversación",
-      "desc": "Ofrecer la calculadora sin perder al usuario ni…",
+      "title": "Rama calculadora: enlace y botones de vuelta al menú, sin cerrar la co",
+      "desc": "Ofrecer la calculadora sin perder al usuario ni cerrar la ",
       "owner": "Hammad",
       "status": "specified",
       "size": "S",
@@ -424,8 +421,8 @@
     },
     {
       "id": "WP-215",
-      "title": "Autodescarte declarado: traza punto=autodescarte_declarado sin escribir Descarte ni cerrar",
-      "desc": "No perder al usuario que se autodescarta, y…",
+      "title": "Autodescarte declarado: traza punto=autodescarte_declarado sin escribi",
+      "desc": "No perder al usuario que se autodescarta, y dejar traza di",
       "owner": "Hammad",
       "status": "specified",
       "size": "S",
@@ -439,8 +436,8 @@
     },
     {
       "id": "WP-216",
-      "title": "Correcciones del canvas: borrar M. Path y SAVE, Close solo en D y N, typo veredicto_f2",
-      "desc": "Dejar OnClick Mobility sin las piezas que el…",
+      "title": "Correcciones del canvas: borrar M. Path y SAVE, Close solo en D y N, t",
+      "desc": "Dejar `OnClick Mobility` sin las piezas que el Council des",
       "owner": "Hammad",
       "status": "building",
       "size": "M",
@@ -451,8 +448,8 @@
     },
     {
       "id": "WP-217",
-      "title": "Handoff en frío de G: inputs de último mensaje a Optional y asignación al team del bot",
-      "desc": "Que el handoff funcione en arranque en frío,…",
+      "title": "Handoff en frío de G: inputs de último mensaje a Optional y asignación",
+      "desc": "Que el handoff funcione en arranque en frío, cuando todaví",
       "owner": "Hammad",
       "status": "specified",
       "size": "M",
@@ -465,8 +462,8 @@
     },
     {
       "id": "WP-218",
-      "title": "Aislamiento topológico: dos nodos AI Agent con prompt_base y modelo compartidos",
-      "desc": "Que el modo determine qué tools existen para…",
+      "title": "Aislamiento topológico: dos nodos AI Agent con prompt_base y modelo co",
+      "desc": "Que el modo determine qué tools **existen** para el agente",
       "owner": "Hammad",
       "status": "specified",
       "size": "M",
@@ -480,8 +477,8 @@
     },
     {
       "id": "WP-219",
-      "title": "Guarda de modo en el borde de cada tool de escritura (capa 2) y whitelist en el escritor (capa 3)",
-      "desc": "Que ninguna tool de escritura pueda ejecutarse con…",
+      "title": "Guarda de modo en el borde de cada tool de escritura (capa 2) y whitel",
+      "desc": "Que ninguna tool de escritura pueda ejecutarse con un modo",
       "owner": "Hammad",
       "status": "specified",
       "size": "M",
@@ -496,8 +493,8 @@
     },
     {
       "id": "WP-220",
-      "title": "System Prompt como fuente única de conocimiento fiscal (sin corpus externo ni tool de búsqueda)",
-      "desc": "Que el agente solo pueda afirmar cosas de…",
+      "title": "System Prompt como fuente única de conocimiento fiscal (sin corpus ext",
+      "desc": "Que el agente solo pueda afirmar cosas de fiscalidad que e",
       "owner": "Hammad",
       "status": "building",
       "size": "S",
@@ -508,8 +505,8 @@
     },
     {
       "id": "WP-221",
-      "title": "FAQ de un turno: Collect data + DC punto=faq_entrada + callback + botones WDONE",
-      "desc": "Que el usuario pueda hacer una pregunta sobre…",
+      "title": "FAQ de un turno: Collect data + DC punto=faq_entrada + callback + boto",
+      "desc": "Que el usuario pueda hacer una pregunta sobre el régimen, ",
       "owner": "Hammad",
       "status": "specified",
       "size": "L",
@@ -526,8 +523,8 @@
     },
     {
       "id": "WP-222",
-      "title": "Corte de contexto al salir de FAQ, resumen de 400 caracteres y enmascarado de PII",
-      "desc": "Que al pasar de FAQ a solicitud el…",
+      "title": "Corte de contexto al salir de FAQ, resumen de 400 caracteres y enmasca",
+      "desc": "Que al pasar de FAQ a solicitud el agente no arrastre ni e",
       "owner": "Hammad",
       "status": "specified",
       "size": "M",
@@ -540,8 +537,8 @@
     },
     {
       "id": "WP-223",
-      "title": "escalar_humano con asignación real a Ops_Mobility y registrar_optout como única escritura del FAQ",
-      "desc": "Un único camino de escalado, con una sola…",
+      "title": "escalar_humano con asignación real a Ops_Mobility y registrar_optout c",
+      "desc": "Un único camino de escalado, con una sola redacción, que *",
       "owner": "Hammad",
       "status": "specified",
       "size": "M",
@@ -555,8 +552,8 @@
     },
     {
       "id": "WP-224",
-      "title": "Registro del lead en H con punto=lead, precisión de fecha, ventana y texto literal",
-      "desc": "Que todo usuario que llega a H quede…",
+      "title": "Registro del lead en H con punto=lead, precisión de fecha, ventana y t",
+      "desc": "Que todo usuario que llega a `H` quede registrado con `lea",
       "owner": "Hammad",
       "status": "specified",
       "size": "M",
@@ -570,8 +567,8 @@
     },
     {
       "id": "WP-225",
-      "title": "Vista Leads potenciales, opt-in explícito trazable y contrato de datos para el tercero",
-      "desc": "Dejar los leads visibles, con consentimiento trazable, y…",
+      "title": "Vista Leads potenciales, opt-in explícito trazable y contrato de datos",
+      "desc": "Dejar los leads visibles, con consentimiento trazable, y c",
       "owner": "Hammad",
       "status": "specified",
       "size": "M",
@@ -584,8 +581,8 @@
     },
     {
       "id": "WP-226",
-      "title": "Semántica de reset por punto: qué pone y qué borra a propósito cada punto de escritura",
-      "desc": "Que cada punto declare explícitamente qué campos pone…",
+      "title": "Semántica de reset por punto: qué pone y qué borra a propósito cada pu",
+      "desc": "Que cada `punto` declare explícitamente qué campos pone y ",
       "owner": "Hammad",
       "status": "specified",
       "size": "L",
@@ -600,8 +597,8 @@
     },
     {
       "id": "WP-227",
-      "title": "Trigger Reopened y matriz de reentrada: hilo abierto, cerrado, cooldown y vuelta a los 3 días",
-      "desc": "Que un usuario que vuelve — al rato,…",
+      "title": "Trigger Reopened y matriz de reentrada: hilo abierto, cerrado, cooldow",
+      "desc": "Que un usuario que vuelve — al rato, al día siguiente o de",
       "owner": "Hammad",
       "status": "specified",
       "size": "M",
@@ -616,7 +613,7 @@
     {
       "id": "WP-228",
       "title": "FAQ multi-turno en n8n detrás del trigger de mensaje",
-      "desc": "Mover el FAQ entero a n8n detrás del…",
+      "desc": "Mover el FAQ entero a n8n detrás del trigger de mensaje, d",
       "owner": "Hammad",
       "status": "specified",
       "size": "L",
@@ -631,8 +628,8 @@
     },
     {
       "id": "WP-229",
-      "title": "FAQ → solicitud: iniciar_solicitud con relanzamiento del reusable (V1) o intake por el agente (V2)",
-      "desc": "Que el usuario que termina sus preguntas entre…",
+      "title": "FAQ → solicitud: iniciar_solicitud con relanzamiento del reusable (V1)",
+      "desc": "Que el usuario que termina sus preguntas entre en el flujo",
       "owner": "Hammad",
       "status": "skeleton",
       "size": "M",
@@ -647,8 +644,8 @@
     },
     {
       "id": "WP-230",
-      "title": "BECKHAM_recordatorios_leads: scheduler con cola derivada (solo si el manager mete los recordatorios en alcance)",
-      "desc": "Enviar recordatorios acotados a los leads que dieron…",
+      "title": "BECKHAM_recordatorios_leads: scheduler con cola derivada (solo si el m",
+      "desc": "Enviar recordatorios acotados a los leads que dieron conse",
       "owner": "Sin asignar (decisión M2)",
       "status": "specified",
       "size": "L",
@@ -661,8 +658,8 @@
     },
     {
       "id": "WP-231",
-      "title": "Observabilidad: alertas accionables, métricas etiquetadas con corr_id y PII fuera de los logs",
-      "desc": "Que los cinco modos de fallo caros del…",
+      "title": "Observabilidad: alertas accionables, métricas etiquetadas con corr_id ",
+      "desc": "Que los cinco modos de fallo caros del diseño sean detecta",
       "owner": "Hammad",
       "status": "building",
       "size": "M",
@@ -675,8 +672,8 @@
     },
     {
       "id": "WP-232",
-      "title": "Runbook, inventario de automatizaciones y gates anti-reincidencia en el repo",
-      "desc": "Que el diagnóstico, la publicación y el cierre…",
+      "title": "Runbook, inventario de automatizaciones y gates anti-reincidencia en e",
+      "desc": "Que el diagnóstico, la publicación y el cierre de un WP si",
       "owner": "Hammad",
       "status": "specified",
       "size": "S",
@@ -688,7 +685,7 @@
     {
       "id": "WP-233",
       "title": "Prueba end-to-end de la Fase 2 y publicación del canvas",
-      "desc": "Demostrar que los cuatro recorridos del menú y…",
+      "desc": "Demostrar que los cuatro recorridos del menú y los cuatro ",
       "owner": "Hammad",
       "status": "specified",
       "size": "M",
@@ -711,7 +708,7 @@
     {
       "id": "WP-234",
       "title": "AplicaBeckham y complejidad del caso, escritos por el agente",
-      "desc": "Que el expediente diga, escrito por el agente,…",
+      "desc": "Que el expediente diga, escrito por el agente, si el clien",
       "owner": "Hammad",
       "status": "done",
       "size": "M",
@@ -722,8 +719,8 @@
     },
     {
       "id": "WP-235",
-      "title": "Generar el fichero .030 desde plantilla (NO es un PDF, es texto posicional)",
-      "desc": "1.",
+      "title": "Generar el fichero .030 desde plantilla (NO es un PDF, es texto posici",
+      "desc": "",
       "owner": "Hammad",
       "status": "done",
       "size": "M",
@@ -737,7 +734,7 @@
     {
       "id": "WP-236",
       "title": "Informe Mobility: memoria fiscal montada por bloques",
-      "desc": "Al terminar el procedimiento, generar el informe de…",
+      "desc": "Al terminar el procedimiento, generar el **informe de memo",
       "owner": "Hammad",
       "status": "done",
       "size": "L",
@@ -751,7 +748,7 @@
     {
       "id": "WP-237",
       "title": "Enviar borradores y confirmación: solo falta el salto de Status 7 a 8",
-      "desc": "- El botón:",
+      "desc": "",
       "owner": "Hammad",
       "status": "done",
       "size": "S",
@@ -765,7 +762,7 @@
     {
       "id": "WP-238",
       "title": "Fix de Decidir_Status: el Status final depende de motivo_cierre",
-      "desc": "Decidir_Status hacía else if (fields.AplicaBeckham === true) propuesto…",
+      "desc": "",
       "owner": "Hammad",
       "status": "done",
       "size": "S",
@@ -776,8 +773,8 @@
     },
     {
       "id": "WP-239",
-      "title": "ResumenBot = ficha + prosa (el formato ya existe, la tool pedía lo contrario)",
-      "desc": "Que ResumenBot lleve primero la ficha con etiquetas…",
+      "title": "ResumenBot = ficha + prosa (el formato ya existe, la tool pedía lo con",
+      "desc": "",
       "owner": "Hammad",
       "status": "done",
       "size": "S",
@@ -787,8 +784,7 @@
       "critical": false
     }
   ]
-}
-/*END PRD-KIT:DATA*/;
+}/*END PRD-KIT:DATA*/;
 
   const STATUS = {
     skeleton:  { label: "skeleton"  },
