@@ -5,7 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const RUTA = path.join(__dirname, 'nodo-decidir-status-2026-08-21.js');
+const RUTA = path.join(__dirname, 'nodo-decidir-status-2026-08-26.js');
 const CODIGO = fs.readFileSync(RUTA, 'utf8');
 
 // Corre el nodo con $ y $input simulados, igual que haria n8n.
@@ -41,31 +41,40 @@ const filaObj = (status) => ({ id: 'recX', fields: { Status: { id: 's', name: st
 
 const CASOS = [
   ['expediente completo desde el 2 -> escribe el 3',
-   { enviado: COMPLETO, filas: [fila('2. Pendiente llamada TD')] }, '3. Pte hacer informe'],
+   { enviado: COMPLETO, filas: [fila('3. Pendiente llamada TD')] }, '4. Pte hacer informe'],
 
   ['expediente completo con el singleSelect como OBJETO -> escribe el 3',
-   { enviado: COMPLETO, filas: [filaObj('2. Pendiente llamada TD')] }, '3. Pte hacer informe'],
+   { enviado: COMPLETO, filas: [filaObj('3. Pendiente llamada TD')] }, '4. Pte hacer informe'],
 
   ['cliente nuevo (0 filas) y expediente completo -> escribe el 3',
-   { enviado: COMPLETO, filas: [{}] }, '3. Pte hacer informe'],
+   { enviado: COMPLETO, filas: [{}] }, '4. Pte hacer informe'],
 
   ['llamada agendada desde el 1 -> escribe el 2',
-   { enviado: LLAMADA, filas: [fila('1. Interesado')] }, '2. Pendiente llamada TD'],
+   { enviado: LLAMADA, filas: [fila('1. Interesado')] }, '3. Pendiente llamada TD'],
 
   ['NO REGRESION: ya en el 3 y vuelve a cerrar -> no escribe',
-   { enviado: COMPLETO, filas: [fila('3. Pte hacer informe')] }, null],
+   { enviado: COMPLETO, filas: [fila('4. Pte hacer informe')] }, null],
 
   ['NO REGRESION: el informe ya se hizo (4) -> no baja al 3',
-   { enviado: COMPLETO, filas: [fila('4. Informe enviado')] }, null],
+   { enviado: COMPLETO, filas: [fila('5. Informe enviado')] }, null],
 
-  ['NO REGRESION: ya en el 7 (borradores enviados) -> no baja al 3',
-   { enviado: COMPLETO, filas: [fila('7. Pte confirmación usuario')] }, null],
+  ['NO REGRESION: ya en el 8 (borradores enviados) -> no baja al 4',
+   { enviado: COMPLETO, filas: [fila('8. Pte confirmación usuario')] }, null],
+
+  // 26/08 · EL PELDANO NUEVO DE ICIAR. Una fila que el flujo de partners dejo en
+  // '2. Pte agendar llamada' tiene que poder seguir subiendo: si el mapa ORDEN no
+  // lo conociera, nActual saldria 0 y la escalera dejaria de proteger esa fila.
+  ['el peldano 2 NUEVO (Pte agendar llamada) sube al 4 al cerrar completo',
+   { enviado: COMPLETO, filas: [fila('2. Pte agendar llamada')] }, '4. Pte hacer informe'],
+
+  ['el peldano 2 NUEVO sube al 3 si solo hay senal de complejidad',
+   { enviado: SENAL, filas: [fila('2. Pte agendar llamada')] }, '3. Pendiente llamada TD'],
 
   ['descarte al principio -> escribe el 12',
-   { enviado: DESCARTE, filas: [fila('1. Interesado')] }, '12. Descartado'],
+   { enviado: DESCARTE, filas: [fila('1. Interesado')] }, '13. Descartado'],
 
   ['descarte con el equipo ya trabajando el caso (3) -> NO escribe',
-   { enviado: DESCARTE, filas: [fila('3. Pte hacer informe')] }, null],
+   { enviado: DESCARTE, filas: [fila('4. Pte hacer informe')] }, null],
 
   ['sin motivo de cierre y sin AplicaBeckham -> se queda en el 1',
    { enviado: SUELTO, filas: [{}] }, '1. Interesado'],
@@ -75,13 +84,13 @@ const CASOS = [
 
   // ── 21/08 · el 2 al OFRECER la llamada, no al confirmarla ────────────────────
   ['SENALES sin motivo de cierre desde el 1 -> escribe el 2 (el fallo de la conv 3)',
-   { enviado: SENAL, filas: [fila('1. Interesado')] }, '2. Pendiente llamada TD'],
+   { enviado: SENAL, filas: [fila('1. Interesado')] }, '3. Pendiente llamada TD'],
 
   ['SENALES con el cliente nuevo (0 filas) -> escribe el 2',
-   { enviado: SENAL, filas: [{}] }, '2. Pendiente llamada TD'],
+   { enviado: SENAL, filas: [{}] }, '3. Pendiente llamada TD'],
 
   ['DOS senales -> el 2 igual, no hace falta que sean del salario',
-   { enviado: SENAL_2, filas: [fila('1. Interesado')] }, '2. Pendiente llamada TD'],
+   { enviado: SENAL_2, filas: [fila('1. Interesado')] }, '3. Pendiente llamada TD'],
 
   ['senales VACIAS con el cliente nuevo -> el 1, no basta con que exista la clave',
    { enviado: SENAL_0, filas: [{}] }, '1. Interesado'],
@@ -91,21 +100,21 @@ const CASOS = [
 
   ['las senales ya estaban en la FILA y este turno no las manda -> el 2 igual',
    { enviado: { fields: { UserId: 'u1', NumeroTelefono: '+34600' } },
-     filas: [filaSenal('1. Interesado', ['Salario no definido o en el límite'])] }, '2. Pendiente llamada TD'],
+     filas: [filaSenal('1. Interesado', ['Salario no definido o en el límite'])] }, '3. Pendiente llamada TD'],
 
   ['NO REGRESION: senales con la fila ya en el 3 -> NO baja al 2',
-   { enviado: SENAL, filas: [fila('3. Pte hacer informe')] }, null],
+   { enviado: SENAL, filas: [fila('4. Pte hacer informe')] }, null],
 
   ['NO REGRESION: senales con la fila ya en el 4 -> NO baja al 2',
-   { enviado: SENAL, filas: [fila('4. Informe enviado')] }, null],
+   { enviado: SENAL, filas: [fila('5. Informe enviado')] }, null],
 
   ['NO REGRESION: senales Y expediente completo -> manda el 3, no el 2',
    { enviado: { fields: { UserId: 'u1', MotivoCierre: 'Expediente completo', SenalesComplejidad: ['Salario no definido o en el límite'] } },
-     filas: [fila('2. Pendiente llamada TD')] }, '3. Pte hacer informe'],
+     filas: [fila('3. Pendiente llamada TD')] }, '4. Pte hacer informe'],
 
   ['NO REGRESION: senales Y descarte -> manda el descarte',
    { enviado: { fields: { UserId: 'u1', Descarte: true, SenalesComplejidad: ['Salario no definido o en el límite'] } },
-     filas: [fila('1. Interesado')] }, '12. Descartado'],
+     filas: [fila('1. Interesado')] }, '13. Descartado'],
 
   ['SENALES con la lectura fallida -> no se toca el Status',
    { enviado: SENAL, filas: [{ error: 'timeout' }] }, null],
@@ -118,9 +127,9 @@ const CASOS = [
 // Se comprueba aparte para no exigirle al nodo algo que no es su trabajo.
 const MULTI = [
   ['UserId duplicado (2 filas) -> levanta _multi_match y NO llega al Upser',
-   { enviado: COMPLETO, filas: [fila('2. Pendiente llamada TD'), fila('2. Pendiente llamada TD')] }],
+   { enviado: COMPLETO, filas: [fila('3. Pendiente llamada TD'), fila('3. Pendiente llamada TD')] }],
   ['una sola fila -> _multi_match en false',
-   { enviado: COMPLETO, filas: [fila('2. Pendiente llamada TD')] }],
+   { enviado: COMPLETO, filas: [fila('3. Pendiente llamada TD')] }],
 ];
 
 let ok = 0, mal = 0;
@@ -152,8 +161,11 @@ for (const [nombre, entrada] of MULTI) {
 }
 
 // El 4 no lo puede escribir este nodo por ningun camino: lo escribe el generador.
-if (/propuesto\s*=\s*'4\./.test(CODIGO)) { console.log("ROJO  el nodo sigue asignando el peldano 4 a propuesto"); mal++; }
-else { console.log("verde el nodo NO asigna nunca el peldano 4 (lo escribe Marcar InformeListo)"); ok++; }
+// 26/08 · RENUMERADO: 'Informe enviado' paso del 4 al 5. Lo que este nodo no
+// debe asignar NUNCA es ese peldano, porque lo escribe Marcar InformeListo; el
+// 4 de ahora es 'Pte hacer informe' y SI lo asigna a proposito.
+if (/propuesto\s*=\s*'5\./.test(CODIGO)) { console.log("ROJO  el nodo asigna el peldano 5 (Informe enviado), y eso lo escribe Marcar InformeListo"); mal++; }
+else { console.log("verde el nodo NO asigna nunca el peldano 5 (Informe enviado)"); ok++; }
 
 // 21/08 · la traza tiene que poder explicar POR QUE subio al 2: sin estos dos
 // campos, un 2 inesperado no se puede depurar sin releer el codigo.
