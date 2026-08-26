@@ -896,8 +896,28 @@
       "status": "planned",
       "note": "26/08 NO SE ARREGLA HASTA QUE ROMPA, decision del usuario. En 1. Envio mensaje agendar llamada (wflt5fYbezBibUnpk) las dos ramas exigen Empresa != selMR00Bv3hFL4O2q (TaxDown). Eso protege bien a las filas del bot, que nacen con Empresa=TaxDown. Pero '!=' tambien es VERDADERO con la celda VACIA. --- SINTOMA POR EL QUE SE VA A DETECTAR: un cliente que ya iba avanzado (peldano 8, confirmando modelos) se queja de que ha recibido un correo de BIENVENIDA pidiendole que agende la llamada. O aparece una fila del formulario con Status='2. Pte agendar llamada' antes de que la borren. --- POR QUE HOY NO SE NOTA, y esto es lo peligroso: las filas del formulario de confirmacion nacen sin Empresa Y SIN EMAIL, asi que emailUser sale vacio y el envio no llega. Se salva POR ACCIDENTE. El dia que alguien anada prefill del email al formulario, o cree una fila a mano sin poner Empresa, el correo sale de verdad. --- ARREGLO, 2 clics: cambiar en las DOS ramas la condicion de 'Empresa no es TaxDown' a 'Empresa es cualquiera de' con las cuatro reales: Globant interno (selvPy4OQTrdu7w2d), Globant externo (selwh21qW11myQkAL), Factorial interno (selyyru93UP2xue08), Factorial externo (selvqYRYsoeXVbzCF). Con la celda vacia no entra.",
       "created_at": "2026-08-26T09:33:44Z"
+    },
+    "T077": {
+      "title": "Decidir el TRANSPORTE DEL MODO del canvas: atributo persistido o input del DC",
+      "milestone": "",
+      "verify": "WP-210 reescrito con la opcion elegida y sin dependencia de WP-209",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-26T10:34:52Z"
+    },
+    "T078": {
+      "title": "WP-216 · correcciones del canvas: el typo veredicto_f2, borrar M. Path y SAVE, Close solo en D y N",
+      "milestone": "",
+      "verify": "una conversacion con fecha no parseable repregunta en vez de cerrarse, y el hilo sigue abierto en G y en H",
+      "depends": [],
+      "effort": 3.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-08-26T10:34:52Z"
     }
   },
-  "next_task": 77,
-  "updated_at": "2026-08-26T10:08:46Z"
+  "next_task": 79,
+  "updated_at": "2026-08-26T10:34:52Z"
 }
