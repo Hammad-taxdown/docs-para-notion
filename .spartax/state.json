@@ -630,11 +630,12 @@
       "verify": "curl sin credencial devuelve 401/403 y con credencial sigue devolviendo ok:true; el Data Connector de Intercom actualizado con la credencial",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "Auth: el usuario decide dejarlo OFF y hacerlo lo ultimo, antes de T008. 11/08.",
+      "status": "done",
+      "note": "26/08 CERRADA POR DECISION DEL USUARIO, sin hacerla. Los webhooks del escritor (beckham-upsert-expediente) y del lector (beckham-get-expediente) SE QUEDAN SIN AUTENTICACION. Consecuencia asumida y medida hoy: cualquiera que sepa la URL puede escribir en el expediente de un cliente con un curl -- lo hice yo tres veces desde la terminal, sin credencial, y el escritor devolvio ok:true. Lo unico que hay delante es la guarda de forma del user_id (eu-west-1:<uuid>), que no es una credencial. Se planteo dos veces (11/08 y 26/08) y las dos veces la decision fue dejarlo: NO SE VUELVE A PROPONER.",
       "created_at": "2026-08-10T07:50:23Z",
       "in_progress_at": "2026-08-10T13:36:42Z",
-      "planned_at": "2026-08-11T11:26:34Z"
+      "planned_at": "2026-08-11T11:26:34Z",
+      "done_at": "2026-08-26T09:40:34Z"
     },
     "T054": {
       "title": "Bloque A · publicar T047+T037+T048+T046 en UNA sola publicacion y una sola auditoria MCP",
@@ -698,10 +699,11 @@
       "verify": "El PDF generado contiene solo nombre, apellido y fecha de alta; pendiente de que el usuario pase la especificacion de los PDF adicionales",
       "depends": [],
       "effort": 3.0,
-      "status": "in_progress",
-      "note": "19/08: PRIMERA MITAD HECHA, PEGADA Y VERIFICADA. El PDF ya lleva solo nombre, apellidos y fecha de alta (de fecha_alta_ss, y no aborta nunca); fuera pais de origen, fecha de desplazamiento, fecha de la reunion y la seccion de Notas con sus 6 vinetas. La tabla Resumen y los bloques A/B/C se quedan. COMPLETO de 241.272 caracteres, identico al nodo vivo, workflow publicado 74aa294c. Piezas nuevas informe-datos-2026-08-19.js e informe-cuerpo-2026-08-19.js, y las tres pruebas del informe actualizadas. FALTA LA SEGUNDA MITAD: los PDF adicionales, que el usuario pasara especificados.",
+      "status": "done",
+      "note": "26/08 CERRADA POR DECISION DEL USUARIO, absorbida por T065. La primera mitad estaba hecha y verificada el 19/08: el PDF lleva solo nombre, apellidos y fecha de alta (de fecha_alta_ss, sin abortar nunca) y salieron el pais de origen, la fecha de desplazamiento, la fecha de la reunion y la seccion de notas. La segunda mitad eran 'los PDF nuevos que pasara el usuario', y ya no tiene sentido: con el v2 el informe pasa a copiarse de OCHO PLANTILLAS DE GOOGLE DOCS y el texto se edita EN EL DOC, no en un nodo. Lo que quede de diseno del informe vive en T065.",
       "created_at": "2026-08-19T11:06:46Z",
-      "in_progress_at": "2026-08-19T13:15:00Z"
+      "in_progress_at": "2026-08-19T13:15:00Z",
+      "done_at": "2026-08-26T09:40:34Z"
     },
     "T060": {
       "title": "Pegar el prompt v11 en LangSmith y mover el tag prod",
@@ -832,10 +834,11 @@
       "verify": "las 93 columnas agrupadas por bloque en la vista principal, con el usuario mirando",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "21/08, lo pide el usuario. OJO AL LIMITE YA COMPROBADO: Airtable NO deja reordenar columnas por API -- el orden es propiedad DE LA VISTA y no hay endpoint. Se arrastra a mano, asi que mi parte es darle el orden propuesto por bloques (los mismos que ya estan en las descripciones: identidad, personales, domicilio, empleo y plazos, patrimonio, documentos, modelos 030/149, facturacion, tecnica) y el numero de arrastres, no hacerlo yo.",
+      "status": "done",
+      "note": "26/08 CERRADA POR DECISION DEL USUARIO. El orden de las columnas de Empleados se queda como esta. Recordatorio que sobrevive a la tarea y esta en CLAUDE.md: Airtable no deja reordenar por API (el orden es propiedad de la VISTA y no hay endpoint), y sobre todo MOVER es inofensivo pero RENOMBRAR no -- el script de borradores lee POR NOMBRE la tabla Empleados y los campos Borrador030, Borrador149 y Linkconfirmacionmodelos.",
       "created_at": "2026-08-21T10:37:01Z",
-      "planned_at": "2026-08-21T10:37:01Z"
+      "planned_at": "2026-08-21T10:37:01Z",
+      "done_at": "2026-08-26T09:40:34Z"
     },
     "T072": {
       "title": "Pedir a Claude Design que regenere las fotos del repo",
@@ -895,5 +898,5 @@
     }
   },
   "next_task": 77,
-  "updated_at": "2026-08-26T09:34:13Z"
+  "updated_at": "2026-08-26T09:40:34Z"
 }
