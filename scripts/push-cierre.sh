@@ -43,6 +43,22 @@ if [ -d "$TRABAJO/docs/prds" ]; then
 fi
 
 # El resto de docs/*  ->  raíz
+# ── GUARDA · 26/08 · docs/ es PLANA y este script solo copia su nivel 1 ────────
+# El `find -maxdepth 1` de abajo IGNORA cualquier subdirectorio de docs/. Paso hoy:
+# se creo docs/contratos/, el push salio en VERDE y el fichero no se subio. Un
+# `exit 0` no dice que el script haya hecho su trabajo. Si aparece un subdirectorio
+# nuevo, este script PARA en vez de subir a medias.
+HUERFANOS="$(find "$TRABAJO/docs" -mindepth 1 -maxdepth 1 -type d ! -name prds ! -name historico 2>/dev/null)"
+if [ -n "$HUERFANOS" ]; then
+  echo ""
+  echo "   ABORTA · docs/ tiene subdirectorios que este script NO copia:"
+  echo "$HUERFANOS" | sed 's|^|     |'
+  echo "   docs/ es PLANA a proposito (ver CLAUDE.md §7). Mueve esos ficheros al"
+  echo "   nivel 1 de docs/ con nombre-con-guiones, o anade su rsync explicito"
+  echo "   aqui como lo tiene docs/prds/. No se sube nada hasta que se resuelva."
+  exit 1
+fi
+
 find "$TRABAJO/docs" -maxdepth 1 -type f -print0 2>/dev/null | while IFS= read -r -d '' f; do
   cp "$f" "./$(basename "$f")"
 done

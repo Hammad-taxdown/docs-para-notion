@@ -241,6 +241,13 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   clave, esa clave **no dice cuál es**: hay que resolver el `fld` id antes de interpretar. El 21/08
   leí un `true` de `InformeListo` como si fuera `RegenerarInforme` y concluí que alguien había
   tocado dos casillas. No era verdad.
+- **`docs/` es plana, y desde el 26/08 el push lo IMPONE en vez de confiar.** `push-cierre.sh` copiaba
+  `docs/` con `find -maxdepth 1`, así que **cualquier subdirectorio se quedaba fuera en silencio y el
+  push salía en verde**. Pasó dos veces: `docs/contratos/` creado hoy, y `docs/backup-automatizaciones-20260812/`,
+  que llevaba **catorce días sin subirse** — y contenía el código de los `customScript` de Airtable,
+  **los únicos que no se pueden leer por API**, o sea el único backup del mundo, en un solo portátil.
+  Ahora el script **aborta** si aparece un subdirectorio nuevo. Corolario del corolario: `exit 0` no
+  dice que el script hiciera su trabajo, y **un push «correcto» tampoco dice que subiera lo que creías.**
 - **El recuento de un pegado va en CARACTERES, no en bytes.** `wc -c` da bytes; el editor de n8n
   cuenta caracteres. El `COMPLETO` lleva ~1.500 acentos y los dos números se separan casi 3.000.
 - **`typecast: true` en el Upser NO SE APAGA.** Se intentó y se revirtió dos veces (01/08 y 06/08).

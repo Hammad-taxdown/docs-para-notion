@@ -1,0 +1,256 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://taxdown.es/beckham/contratos/upsert_expediente.v1.json",
+  "title": "beckham · upsert_expediente v1 · contrato de ENTRADA del unico escritor de Empleados",
+  "description": "Extraido el 26/08/2026 del nodo VIVO 'Validar y Normalizar' (73.081 car., 1.478 lineas) leyendo sus 46 body.X, no escrito de memoria. WP-207. LO QUE ESTE CONTRATO NO PUEDE DECIR: si el campo acabo escrito en Airtable. Airtable OMITE las celdas vacias en la respuesta, asi que eso se verifica fila a fila por MCP. Y la regla que lo sostiene: el escritor IGNORA las claves que no conoce y devuelve ok:true -- lo que no esta aqui no se pierde por un bug, NO EXISTE EL CAMINO.",
+  "type": "object",
+  "required": [
+    "user_id",
+    "intercom_conversation_id"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "pattern": "^[a-z]{2}-[a-z]+-\\d+:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "UserId de Cognito. Se valida la FORMA antes que nada: si no casa, se rechaza con user_id_forma_invalida y NO se escribe."
+    },
+    "intercom_conversation_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Obligatorio junto a user_id. Si falta cualquiera de los dos: user_id_or_conversation_id_missing."
+    },
+    "punto": {
+      "type": "string",
+      "enum": [
+        "cualifica",
+        "lead",
+        "descarte_plazo",
+        "descarte_residencia",
+        "autodescarte_declarado",
+        "faq_entrada"
+      ],
+      "description": "OPCIONAL, pero si viene tiene que estar en la lista: un valor fuera de ella se rechaza con punto_desconocido. Cada punto DERIVA campos (p.ej. lead escribe alta_ss=false y lead_potencial=true), asi que el punto no es una etiqueta: escribe."
+    },
+    "Descarte": {
+      "type": "string",
+      "enum": [
+        "No residente ultimos 5 años",
+        "Menos de 55 salario",
+        "Alta en SS mas de 6 meses",
+        "Otro/Incompleto"
+      ],
+      "description": "Whitelist verificada contra el singleSelect fldcEq4ts2Vyqzg5b el 26/08/2026: las cuatro coinciden exactas. OJO: 'Menos de 55 salario' es residuo inerte -- ningun punto la escribe y la tool del agente NO declara este parametro, asi que NO HAY CAMINO para descartar por salario, que es la decision cerrada. Si alguien anade este parametro a la tool, el camino nace."
+    },
+    "adjuntos": {
+      "type": [
+        "array",
+        "string"
+      ],
+      "description": "Solo los ficheros POSTERIORES al ultimo visto. Las URLs de Intercom caducan; un adjunto que Airtable acepta pero no descarga queda sin size y lo caza beckham_adjuntos_huerfanos."
+    },
+    "alta_ss": {
+      "type": [
+        "boolean",
+        "string"
+      ],
+      "description": "toBool: acepta booleano o texto ('si'/'no'/'true'...). Lo que no reconoce NO se escribe y viaja en descartados."
+    },
+    "apellido_primero": {
+      "type": "string"
+    },
+    "apellido_segundo": {
+      "type": "string"
+    },
+    "apellidos": {
+      "type": "string"
+    },
+    "calle": {
+      "type": "string",
+      "description": "DOMICILIO ATOMICO: calle + numero + codigo_postal, los tres o ninguno. Medio domicilio es peor que ninguno, porque parece bueno y va a Hacienda."
+    },
+    "codigo_postal": {
+      "type": "string",
+      "description": "DOMICILIO ATOMICO: calle + numero + codigo_postal, los tres o ninguno. Medio domicilio es peor que ninguno, porque parece bueno y va a Hacienda."
+    },
+    "conyuge_quiere_acogerse": {
+      "type": [
+        "boolean",
+        "string"
+      ],
+      "description": "toBool: acepta booleano o texto ('si'/'no'/'true'...). Lo que no reconoce NO se escribe y viaja en descartados."
+    },
+    "discrepancia_fecha_alta": {
+      "type": "string",
+      "description": "Texto. NO cambia el motivo_cierre (decision cerrada 20/08): la discrepancia y el expediente completo son ortogonales."
+    },
+    "email": {
+      "type": "string"
+    },
+    "estado_civil": {
+      "type": "string",
+      "description": "singleSelect 'estadoCivil', whitelist cerrada en el nodo. Un valor fuera NO se escribe y va a descartados; se compara POR NOMBRE."
+    },
+    "fecha_alta_ss": {
+      "type": "string",
+      "description": "toIsoDate. Se escribe como ISO + 'T12:00:00.000Z' con typecast:true -- el unico de los cuatro cuadrantes que funciona (1/08). Si no parsea, va a descartados y enciende el aviso de Slack."
+    },
+    "fecha_desplazamiento": {
+      "type": "string",
+      "description": "toIsoDate. Se escribe como ISO + 'T12:00:00.000Z' con typecast:true -- el unico de los cuatro cuadrantes que funciona (1/08). Si no parsea, va a descartados y enciende el aviso de Slack."
+    },
+    "fecha_limite_plazo": {
+      "type": "string",
+      "description": "toIsoDate. Se escribe como ISO + 'T12:00:00.000Z' con typecast:true -- el unico de los cuatro cuadrantes que funciona (1/08). Si no parsea, va a descartados y enciende el aviso de Slack."
+    },
+    "fecha_nacimiento": {
+      "type": "string",
+      "description": "toIsoDate. Se escribe como ISO + 'T12:00:00.000Z' con typecast:true -- el unico de los cuatro cuadrantes que funciona (1/08). Si no parsea, va a descartados y enciende el aviso de Slack."
+    },
+    "fecha_prevista_alta": {
+      "type": "string",
+      "description": "toIsoDate. Se escribe como ISO + 'T12:00:00.000Z' con typecast:true -- el unico de los cuatro cuadrantes que funciona (1/08). Si no parsea, va a descartados y enciende el aviso de Slack."
+    },
+    "hijos": {
+      "type": "string",
+      "description": "singleSelect 'hijos', whitelist cerrada en el nodo. Un valor fuera NO se escribe y va a descartados; se compara POR NOMBRE."
+    },
+    "idioma": {
+      "type": "string",
+      "description": "singleSelect 'Idioma', whitelist cerrada en el nodo. Un valor fuera NO se escribe y va a descartados; se compara POR NOMBRE."
+    },
+    "inversiones": {
+      "type": "string",
+      "description": "singleSelect 'Inversiones', whitelist cerrada en el nodo. Un valor fuera NO se escribe y va a descartados; se compara POR NOMBRE."
+    },
+    "lead_potencial": {
+      "type": [
+        "boolean",
+        "string"
+      ],
+      "description": "toBool: acepta booleano o texto ('si'/'no'/'true'...). Lo que no reconoce NO se escribe y viaja en descartados."
+    },
+    "motivo_cierre": {
+      "type": "string",
+      "description": "singleSelect 'MotivoCierre', whitelist cerrada en el nodo. Un valor fuera NO se escribe y va a descartados; se compara POR NOMBRE."
+    },
+    "municipio_nacimiento": {
+      "type": "string"
+    },
+    "municipio_residencia": {
+      "type": "string"
+    },
+    "nacionalidad": {
+      "type": "string"
+    },
+    "nif": {
+      "type": "string"
+    },
+    "nombre": {
+      "type": "string"
+    },
+    "numero": {
+      "type": "string",
+      "description": "DOMICILIO ATOMICO: calle + numero + codigo_postal, los tres o ninguno. Medio domicilio es peor que ninguno, porque parece bueno y va a Hacienda."
+    },
+    "pais_nacimiento": {
+      "type": "string"
+    },
+    "planta": {
+      "type": "string"
+    },
+    "propiedades": {
+      "type": "string",
+      "description": "singleSelect 'Propiedades', whitelist cerrada en el nodo. Un valor fuera NO se escribe y va a descartados; se compara POR NOMBRE."
+    },
+    "provincia_nacimiento": {
+      "type": "string"
+    },
+    "puerta": {
+      "type": "string"
+    },
+    "quiere_acogerse": {
+      "type": [
+        "boolean",
+        "string"
+      ],
+      "description": "toBool: acepta booleano o texto ('si'/'no'/'true'...). Lo que no reconoce NO se escribe y viaja en descartados."
+    },
+    "resumen": {
+      "type": "string"
+    },
+    "salario": {
+      "type": [
+        "number",
+        "string"
+      ],
+      "description": "Acepta '62.000 €' o '70k'. EL SALARIO NUNCA DESCARTA (decision cerrada 19/08)."
+    },
+    "senales_complejidad": {
+      "type": [
+        "array",
+        "string"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "description": "multipleSelects 'SenalesComplejidad', whitelist cerrada. Y no es informativo: SenalesComplejidad no vacio es lo que hace que el bot escriba el peldano 3 (21/08)."
+    },
+    "sexo": {
+      "type": "string",
+      "description": "singleSelect 'Sexo', whitelist cerrada en el nodo. Un valor fuera NO se escribe y va a descartados; se compara POR NOMBRE."
+    },
+    "telefono": {
+      "type": "string"
+    },
+    "tipo_beckham": {
+      "type": "string",
+      "description": "singleSelect 'TipoBeckham', whitelist cerrada en el nodo. Un valor fuera NO se escribe y va a descartados; se compara POR NOMBRE."
+    },
+    "tipo_documento": {
+      "type": "string"
+    },
+    "tipo_via": {
+      "type": "string"
+    },
+    "ultimo_pais_residencia": {
+      "type": "string"
+    }
+  },
+  "x-rechazos": {
+    "descripcion": "Los CUATRO unicos rechazos del escritor. Devuelven _invalid:true y NO escriben nada.",
+    "enum": [
+      "user_id_forma_invalida",
+      "user_id_or_conversation_id_missing",
+      "punto_desconocido",
+      "descarte_desconocido"
+    ]
+  },
+  "x-deriva": {
+    "descripcion": "Lo que cada punto escribe ADEMAS de lo que venga en el body.",
+    "cualifica": {
+      "alta_ss": true
+    },
+    "lead": {
+      "alta_ss": false,
+      "lead_potencial": true
+    },
+    "descarte_plazo": {
+      "alta_ss": true,
+      "Descarte": "Alta en SS mas de 6 meses"
+    },
+    "descarte_residencia": {
+      "Descarte": "No residente ultimos 5 años"
+    },
+    "autodescarte_declarado": {
+      "Descarte": "Otro/Incompleto"
+    },
+    "faq_entrada": {}
+  },
+  "x-quien-manda-que": {
+    "descripcion": "Los dos caminos de entrada estan SEPARADOS, y se comprobo el 26/08 contando parametros.",
+    "tool guardar_datos_cliente": "declara 40 parametros. NO declara punto ni Descarte: el LLM no puede derivar campos ni descartar a nadie.",
+    "canvas via webhook": "manda punto y las 4 que la tool no declara -- alta_ss, lead_potencial, fecha_prevista_alta, fecha_limite_plazo -- porque salen del calculo F2 y de los filtros, no de la conversacion."
+  },
+  "x-pendiente-wp207": "El WP-207 pide ademas un enum de `resultado` y un `dropped[]` en la RESPUESTA. Hoy la respuesta usa `error` (los 4 de x-rechazos) y `descartados`. Renombrarlos toca `Respond OK`, `Respond Error`, `¿Fechas descartadas?` y `Avisar_Fecha_Invalida`, mas los dos contract-test. Es el cambio de nombres del contrato de SALIDA y va con el cableado del subworkflow, no antes."
+}

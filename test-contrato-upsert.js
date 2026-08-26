@@ -17,7 +17,7 @@ const V = s => { process.stdout.write('  OK   ' + s + '\n'); ok++; };
 const X = s => { process.stdout.write('  FALLA ' + s + '\n'); ko++; };
 const comprobar = (cond, s) => cond ? V(s) : X(s);
 
-const schema = JSON.parse(fs.readFileSync(path.join(D, 'contratos/upsert_expediente.v1.json'), 'utf8'));
+const schema = JSON.parse(fs.readFileSync(path.join(D, 'contrato-upsert-expediente-v1.json'), 'utf8'));
 const wf = JSON.parse(fs.readFileSync(path.join(D, '../proyecto-mobility/workflows-n8n/beckham_bot.json'), 'utf8'));
 const nodo = wf.nodes.find(n => n.name === 'Validar y Normalizar');
 comprobar(!!nodo, 'el nodo "Validar y Normalizar" sigue existiendo en el export');
