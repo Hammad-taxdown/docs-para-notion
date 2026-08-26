@@ -54,6 +54,20 @@ issue: ""
 > no se crea todavía a propósito:** sin quien la escriba sería una columna huérfana más, y este
 > proyecto ya arrastra `FechaLlamada` así.
 
+> **26/08 · ENTREGADO PARA PEGAR.** El `corr_id` y el `Log_Evento` ya están **dentro** del nodo del
+> escritor: `docs/nodo-validar-normalizar-COMPLETO.js`, paso 4 de `docs/pasos.sh`. Tres inserciones y
+> ninguna toca lo existente — la clave `corr_id` **se añade** a la salida, y los nodos de abajo leen
+> `_invalid`, `fields`, `_hay_fechas_descartadas`, `_fechas_descartadas` y `_formula_userid`, para los
+> que una clave de más es inerte.
+>
+> **`last_corr_id` va apagado a propósito** (`_ESCRIBIR_LAST_CORR_ID = false`): encenderlo exige la
+> columna en Airtable **y** refrescar la lista de campos del nodo `Airtable Upser Expediente`, que es
+> el **sexto sitio** de un campo nuevo y puede reactivar los 36 que se quitaron. Cuando la columna
+> exista, el cambio es ese `false` a `true` y nada más.
+>
+> Lo que sigue pendiente de este PRD: `Set_Corr` como primer nodo de **cada** rama (esto lo pone en
+> una), la cabecera `X-Beckham-Corr-Id`, la nota interna en Intercom y el atributo `corr_id_bot`.
+
 ## 1. Objetivo
 
 Que desde una fila de Airtable se llegue a la ejecución de n8n y a la conversación de Intercom **sin

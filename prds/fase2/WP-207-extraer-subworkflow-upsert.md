@@ -53,6 +53,15 @@ issue: ""
 > `description`. El 1 sin el 2 deja **dos escritores** sobre `Empleados`, que es exactamente el error
 > del informe v1/v2 documentado en `CLAUDE.md`. Van en el mismo movimiento o no van.
 
+> **26/08 · Y EL CABLEADO YA ESTÁ ESCRITO, para pegar con Cmd+A.** Reconsiderando lo de arriba: lo que
+> no se puede hacer por MCP es *que yo lo publique*, no *entregarlo listo*.
+> `docs/nodo-validar-normalizar-COMPLETO.js` — **76.156 car.** (el vivo: 73.081) — se monta con
+> `bash docs/montar-nodo-validar.sh` **desde el código vivo del export**, por anclas de texto: si un
+> ancla desaparece porque alguien tocó el nodo, **aborta** en vez de generar un COMPLETO mal montado.
+> Su puerta **ejecuta el nodo** con un `$input` de mentira — **35 comprobaciones**, mitad no-regresión
+> (los 4 rechazos, `DERIVA`, el `T12:00:00.000Z`, el domicilio atómico, `AplicaBeckham`) y mitad lo
+> nuevo. Es el paso 4 de `docs/pasos.sh`.
+
 ## 1. Objetivo
 
 Un único escritor de `Empleados`, invocable como subworkflow, con contrato versionado y sin pasar por

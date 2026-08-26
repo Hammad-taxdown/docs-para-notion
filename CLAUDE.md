@@ -93,6 +93,12 @@ python3 ~/.claude/skills/spartax/scripts/state.py task update T0NN --status done
 
 # Push de cierre (simulacro sin --push)
 ./scripts/push-cierre.sh --push -m "mensaje"
+
+# El TERCER montador (26/08): el nodo del escritor CON el corr_id y el Log_Evento.
+# Monta desde el codigo VIVO del export, por anclas de texto: si un ancla desaparece
+# ABORTA en vez de generar un COMPLETO mal montado. Su puerta EJECUTA el nodo con un
+# $input de mentira (35 comprobaciones), no compara su texto.
+bash docs/montar-nodo-validar.sh
 ```
 
 **NO HAY `npm test` NI `package.json`.** Node v26 instalado en la máquina; las pruebas son ficheros
@@ -184,6 +190,7 @@ No se editan en n8n. Se tocan las piezas fuente, se concatenan con su script, y 
 | `.030` (2700 bytes, **ISO-8859-1**) | `generador-030-*.js` · `tabla-municipios-ine-*.js` · `nodo-030-glue-*.js` | `nodo-montar-030-COMPLETO.js`, **198.509 car.** (el nodo vivo tiene 197.924: los 585 de diferencia son **solo comentarios**) | `beckham_generar_030` |
 | Informe PDF | `metrica-helvetica-*.js` · `pdf-motor-*.js` · `informe-datos-2026-08-19.js` · `informe-cuerpo-2026-08-19.js` · `nodo-informe-glue-*.js` | `nodo-montar-informe-COMPLETO.js`, **241.272 car.** (19/08: local y nodo vivo IDÉNTICOS) | `beckham_informe_mobility` |
 
+| Nodo `Validar y Normalizar` (el escritor) **con `corr_id`** | se monta del **código vivo del export**, por anclas | `nodo-validar-normalizar-COMPLETO.js`, **76.156 car.** (el vivo: 73.081, +3.075) | `beckham_bot` |
 El PDF **se monta a mano byte a byte**, no se rellena un `.docx`: de los 17 marcadores, **15 están
 partidos entre varios `<w:r>`** del XML de Word, así que un buscar-y-reemplazar sustituiría 2 de 19
 apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin fallar**.

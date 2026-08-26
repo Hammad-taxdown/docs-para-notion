@@ -4,7 +4,7 @@
 # NO SE TOCA: va por su cuenta.
 #   bash docs/pasos.sh        -> los pasos y el orden
 #   bash docs/pasos.sh 1      -> un paso suelto, Y lo copia al portapapeles
-#   bash docs/pasos.sh test   -> pasa las DOCE puertas
+#   bash docs/pasos.sh test   -> pasa las TRECE puertas
 cd "$(dirname "$0")/.." || exit 1
 B=$(printf '\033[1m'); D=$(printf '\033[2m'); V=$(printf '\033[32m'); A=$(printf '\033[33m')
 R=$(printf '\033[31m'); C=$(printf '\033[36m'); N=$(printf '\033[0m')
@@ -94,13 +94,41 @@ echo "${D}            y una conversacion de prueba: si Preparar_Prompt esta bien
 echo "${D}            repregunta el nombre. Eso lo compruebo yo.${N}"
 [ "$1" = copia ] && bash docs/copiar.sh 6; }
 
-puertas(){ echo "${B}${C}━━━ LAS DOCE PUERTAS ━━━${N}"
+p4(){ paso 4 "WP-207+208 · el nodo del escritor CON el corr_id, para pegar con Cmd+A" \
+  "N8N · beckham_bot (nhOwpiGxikeU5DLR)" "Validar y Normalizar" \
+  "Cmd+A y pegar el fichero ENTERO"
+echo "${A}fichero:${N} docs/nodo-validar-normalizar-COMPLETO.js"
+echo "${A}el contador tiene que decir:${N} ${V}76.156 caracteres${N} ${D}(el vivo: 73.081, +3.075)${N}"
+echo "${R}ENTERO, con Cmd+A.${N} ${D}El 21/08 entregue un parche por trozos y el pegado acabo con${N}"
+echo "${D}una linea de prosa DENTRO del codigo: SyntaxError. Un fichero completo no.${N}"
+echo
+echo "${D}que le entra de nuevo, y son solo tres inserciones:${N}"
+echo "   ${V}1${N} ${D}el corr_id = conversation_id:conversationPartId, que YA LLEGAN los dos${N}"
+echo "     ${D}(medido en el body de la ejecucion 8129120, no supuesto)${N}"
+echo "   ${V}2${N} ${D}Log_Evento de 6 campos, una linea por ejecucion prefijada con el corr_id${N}"
+echo "   ${V}3${N} ${D}la clave corr_id en la salida. Se ANADE: los nodos de abajo leen _invalid,${N}"
+echo "     ${D}fields, _hay_fechas_descartadas, _fechas_descartadas y _formula_userid, y una${N}"
+echo "     ${D}clave de mas les es inerte.${N}"
+echo
+echo "${A}last_corr_id va APAGADO a proposito${N} ${D}(_ESCRIBIR_LAST_CORR_ID = false).${N}"
+echo "${D}Encenderlo exige la columna en Airtable Y refrescar la lista de campos del nodo${N}"
+echo "${D}Airtable Upser Expediente, que es el SEXTO sitio y puede reactivar los 36 campos${N}"
+echo "${D}que se quitaron. Cuando exista la columna: cambiar ese false a true y nada mas.${N}"
+echo "${B}copiar:${N}     bash docs/copiar.sh 7"
+echo "${B}verificar:${N}  bash docs/montar-nodo-validar.sh   ${D}-> 35 verdes${N}"
+echo "${D}            y tras pegar, una conversacion real: en el log de la ejecucion sale${N}"
+echo "${D}            UNA linea [conv:part] con los 6 campos y CERO datos del cliente.${N}"
+[ "$1" = copia ] && bash docs/copiar.sh 7; }
+
+puertas(){ echo "${B}${C}━━━ LAS TRECE PUERTAS ━━━${N}"
 for t in test-decidir-status.js test-validador-2026-08-19.js test-prompt-v10.js test-prompt-v12.js test-prompt-v13.js test-prompt-v14.js test-lector-expediente.js test-v2-preparar-informe.js test-contrato-upsert.js test-log-evento.js; do
   r=$(node "docs/$t" 2>&1 | grep -oE "[0-9]+ verdes, [0-9]+ rojas|TODO PASA · [0-9]+ comprobaciones"); node "docs/$t" >/dev/null 2>&1 \
     && printf "  ${V}OK${N}   %-38s %s\n" "$t" "$r" || printf "  ${R}FALLA${N} %-38s %s\n" "$t" "$r"
 done
 bash docs/montar-nodo-030.sh    >/dev/null 2>&1 && printf "  ${V}OK${N}   %-38s\n" montar-nodo-030.sh    || printf "  ${R}FALLA${N} %-38s\n" montar-nodo-030.sh
 bash docs/montar-nodo-informe.sh >/dev/null 2>&1 && printf "  ${V}OK${N}   %-38s\n" montar-nodo-informe.sh || printf "  ${R}FALLA${N} %-38s\n" montar-nodo-informe.sh
+r=$(bash docs/montar-nodo-validar.sh 2>&1 | grep -oE "[0-9]+ verdes, [0-9]+ rojas"); bash docs/montar-nodo-validar.sh >/dev/null 2>&1 \
+  && printf "  ${V}OK${N}   %-38s %s\n" montar-nodo-validar.sh "$r" || printf "  ${R}FALLA${N} %-38s %s\n" montar-nodo-validar.sh "$r"
 }
 
 case "$1" in
@@ -111,14 +139,15 @@ case "$1" in
   19|viejo) bash docs/pasos-2026-08-19.sh ;;
   ''|todos) puertas
     echo; echo "${B}${C}════ ADAPTAR A LA ESCALERA NUEVA · 26/08 ════${N}"
-    for i in 1 2 3; do "p$i"; done
+    for i in 1 2 3 4; do "p$i"; done
     echo; echo "${B}${C}━━━ ORDEN ━━━${N}"
     echo "  ${R}el 2 va primero:${N} el typo del veredicto puede estar cerrando"
     echo "  conversaciones de clientes ahora mismo, y ese es el unico de los tres"
     echo "  que le pasa algo a un cliente real."
-    echo "  ${D}El 1 es pegar y mover el tag: dos minutos. El 3 es higiene y no corre prisa,${N}"
-    echo "  ${D}pero cierra WP-232 y deja escrito por que Webhook1 no se toca.${N}"
+    echo "  ${D}El 1 es pegar y mover el tag: dos minutos. El 3 es higiene y no corre prisa.${N}"
+    echo "  ${D}El 4 es un Cmd+A y desatasca WP-207 y WP-208 de una vez: 35 comprobaciones${N}"
+    echo "  ${D}en verde EJECUTANDO el nodo, no comparando su texto.${N}"
     echo; echo "${D}un paso suelto y copiado al portapapeles:${N}  bash docs/pasos.sh 1" ;;
-  [1-3]) "p$1" copia ;;
-  *) echo "uso: bash docs/pasos.sh [1-3|test|26|24|21|19]" ;;
+  [1-4]) "p$1" copia ;;
+  *) echo "uso: bash docs/pasos.sh [1-4|test|26|24|21|19]" ;;
 esac

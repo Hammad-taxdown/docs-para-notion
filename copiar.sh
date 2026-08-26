@@ -6,6 +6,7 @@
 #   bash docs/copiar.sh 4     el JSON Body de Marcar InformeListo del v2
 #   bash docs/copiar.sh 5     el prompt v14 entero, para LangSmith
 #   bash docs/copiar.sh 6     la description de beckham_bot
+#   bash docs/copiar.sh 7     el nodo Validar y Normalizar COMPLETO (Cmd+A)
 # Todo sin el '=' inicial y sin salto de linea final, como pide n8n.
 cd "$(dirname "$0")/.." || exit 1
 V=$(printf '\033[32m'); D=$(printf '\033[2m'); N=$(printf '\033[0m')
@@ -21,6 +22,10 @@ case "$1" in
      echo "${D}el contador de n8n tiene que decir: ${N}${V}$n caracteres${N}" ;;
   2) printf '%s' "$F030" | pbcopy; echo "${V}copiado el filtro del .030${N}"; echo "${D}$F030${N}" ;;
   3) printf '%s' "$FINF" | pbcopy; echo "${V}copiado el filtro del informe${N}"; echo "${D}$FINF${N}" ;;
+  7) pbcopy < docs/nodo-validar-normalizar-COMPLETO.js
+     n=$(python3 -c "import io;print(len(io.open('docs/nodo-validar-normalizar-COMPLETO.js',encoding='utf-8').read()))")
+     echo "${V}copiado el nodo Validar y Normalizar ENTERO${N}"
+     echo "${D}n8n tiene que decir: ${N}${V}$n caracteres${N}${D} · pegar con Cmd+A${N}" ;;
   6) printf '%s' "Bot conversacional que cualifica candidatos a la Ley Beckham y construye su expediente: cualifica en Intercom, escribe el expediente en Airtable (Empleados) y dispara los dos entregables por la columna Status. Dueno: Hammad. PRD: docs/prds/fase2/PRD-FASE2.md" | pbcopy
      echo "${V}copiada la description de beckham_bot${N}"
      echo "${D}va en: los tres puntos de arriba a la derecha -> Settings -> Description${N}" ;;
@@ -30,5 +35,5 @@ case "$1" in
      echo "${D}el contador de LangSmith tiene que decir: ${N}${V}$n caracteres${N}"
      echo "${D}y hay que MOVER EL TAG prod, o el bot sigue leyendo el v13.${N}" ;;
   4) printf '%s' "$BODY" | pbcopy; echo "${V}copiado el JSON Body de Marcar InformeListo del v2${N}"; echo "${D}$BODY${N}" ;;
-  *) echo "uso: bash docs/copiar.sh [1|2|3|4|5|6]" ;;
+  *) echo "uso: bash docs/copiar.sh [1|2|3|4|5|6|7]" ;;
 esac
