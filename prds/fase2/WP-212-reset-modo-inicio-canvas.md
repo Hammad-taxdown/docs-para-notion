@@ -3,7 +3,7 @@ id: WP-212
 title: "Reset de modo_bot al inicio del canvas, con centinela si Set no admite cadena vacía"
 status: specified
 size: S
-depends_on: [WP-209, WP-210]
+depends_on: [WP-210]
 milestone: "Fase 2 conversacional — Modo y menú"
 owner: "Hammad"
 external: ""
@@ -16,6 +16,21 @@ issue: ""
 > HECHO VERIFICADO: si el contacto tiene una conversación abierta, el Messenger **la reanuda** y el
 > usuario **no vuelve a ver el menú** → arrastraría el modo viejo (modo de fallo MF3). Sin reset, MF3
 > es certeza, no riesgo.
+
+> **26/08 · ESTE PAQUETE DEPENDE DE `T081` Y CON UNA DE LAS DOS RAMAS DESAPARECE ENTERO.**
+> Escrito para las dos, para que la decisión no arrastre reescritura:
+>
+> | Si `T081` sale… | Qué pasa con este WP |
+> |---|---|
+> | **B pura** *(recomendada)* | **Se cierra sin construir.** Si el modo no se persiste, **no hay nada que resetear**: ni `modo_bot`, ni el problema de si `Set` admite cadena vacía, ni el centinela. Lo único que sobrevive es la limpieza de `faq_turnos_bot` e `intentos_fecha_bot`, que **son contadores y siguen siendo atributos** — y eso son dos pasos `Set`, no un paquete |
+> | **B híbrida** | Se construye **solo para `modo_bot`**, y vuelve a necesitar saber si `Set` admite vacío… que es justo la incógnita que mató a `WP-209` |
+>
+> **Y su §3 está obsoleta:** dice depender de `WP-209`, que está **muerta desde el 14/08**. Con
+> transporte B esa dependencia no existe — el `depends_on` de la cabecera ya sólo lleva `WP-210`.
+>
+> **Lo que NO cambia en ninguna rama:** los `*_f2` no los resetea este paso, y los dos contadores hay
+> que limpiarlos igual. Si sale B pura, este PRD se cierra y **esos dos `Set` se mudan a `WP-216`**,
+> que ya está tocando el canvas.
 
 ## 1. Objetivo
 
@@ -36,7 +51,8 @@ Que ninguna sesión herede el modo de una sesión anterior.
 
 ## 3. Dependencias
 
-WP-209 (observación `RESET_OK`/`RESET_FALLA`), WP-210.
+**WP-210.** *(Antes también `WP-209`, que está muerta desde el 14/08: con transporte B esa
+dependencia desaparece.)*
 
 ## 4. Entregables
 

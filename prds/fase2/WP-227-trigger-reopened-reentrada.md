@@ -19,6 +19,20 @@ issue: ""
 > minutos** en triggers customer-facing, que hace que un reintento inmediato no dispare nada.
 > DECISIÓN APROBADA: hay tres caminos de reentrada y **ninguno es el menú por defecto**.
 
+> **26/08 · LA MITAD DE ESTE PAQUETE DEPENDE DE `T081`.** Escrito para las dos ramas:
+>
+> | Si `T081` sale… | Qué queda de este WP |
+> |---|---|
+> | **B pura** *(recomendada)* | **La reentrada cae SIEMPRE al menú.** Se van la lectura de `modo_bot`, las cuatro reglas de reencaminado y el TTL. Queda lo que **no** depende del modo, y sigue mereciendo un paquete: el trigger `Reopened`, que el enlace de recordatorio vaya **siempre al launcher** sin reabrir el hilo viejo ni tocar `ticket.state`, y la matriz de reentrada del e2e (hilo abierto · cerrado · dentro del cooldown de 2 min · vuelta a los 3 días). **Pasa de M a S** |
+> | **B híbrida** | Se construye tal cual está escrito |
+>
+> **El argumento a favor de B pura está dentro de este propio PRD:** su §2 ya dice *«`modo_bot` vacío o
+> caducado → menú»*. Con transporte B **estaría siempre vacío**, así que esa regla se convierte en la
+> única, y las otras tres son código para un caso que no ocurre.
+>
+> **Lo que no cambia:** el fail-closed **nunca se persiste**, y la reincorporación automática de leads
+> sigue dependiendo de `WP-07` (HECHO VERIFICADO: `active:false`, `triggerCount 0`).
+
 ## 1. Objetivo
 
 Que un usuario que vuelve — al rato, al día siguiente o desde un enlace — caiga en el modo correcto y
