@@ -4,7 +4,7 @@
 # NO SE TOCA: va por su cuenta.
 #   bash docs/pasos.sh        -> los pasos y el orden
 #   bash docs/pasos.sh 1      -> un paso suelto, Y lo copia al portapapeles
-#   bash docs/pasos.sh test   -> pasa las ONCE puertas
+#   bash docs/pasos.sh test   -> pasa las DOCE puertas
 cd "$(dirname "$0")/.." || exit 1
 B=$(printf '\033[1m'); D=$(printf '\033[2m'); V=$(printf '\033[32m'); A=$(printf '\033[33m')
 R=$(printf '\033[31m'); C=$(printf '\033[36m'); N=$(printf '\033[0m')
@@ -94,8 +94,8 @@ echo "${D}            y una conversacion de prueba: si Preparar_Prompt esta bien
 echo "${D}            repregunta el nombre. Eso lo compruebo yo.${N}"
 [ "$1" = copia ] && bash docs/copiar.sh 6; }
 
-puertas(){ echo "${B}${C}━━━ LAS ONCE PUERTAS ━━━${N}"
-for t in test-decidir-status.js test-validador-2026-08-19.js test-prompt-v10.js test-prompt-v12.js test-prompt-v13.js test-prompt-v14.js test-lector-expediente.js test-v2-preparar-informe.js test-contrato-upsert.js; do
+puertas(){ echo "${B}${C}━━━ LAS DOCE PUERTAS ━━━${N}"
+for t in test-decidir-status.js test-validador-2026-08-19.js test-prompt-v10.js test-prompt-v12.js test-prompt-v13.js test-prompt-v14.js test-lector-expediente.js test-v2-preparar-informe.js test-contrato-upsert.js test-log-evento.js; do
   r=$(node "docs/$t" 2>&1 | grep -oE "[0-9]+ verdes, [0-9]+ rojas|TODO PASA · [0-9]+ comprobaciones"); node "docs/$t" >/dev/null 2>&1 \
     && printf "  ${V}OK${N}   %-38s %s\n" "$t" "$r" || printf "  ${R}FALLA${N} %-38s %s\n" "$t" "$r"
 done

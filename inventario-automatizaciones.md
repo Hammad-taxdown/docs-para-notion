@@ -90,6 +90,14 @@ Base `app5K8OnSObqwWweS` (*Mobility_2026*), tabla `Empleados` (`tblTWCWu5nQXNOMR
 
 ## Capa 4 · Data Connectors de Intercom
 
+> **26/08 · el contrato REAL del DC del turno, leído de una ejecución y no del canvas.** La cabecera
+> `x-intercom-source-dataconnector-id: 461046` identifica el DC que llama a `Webhook1`, y su
+> `x-intercom-source-app-id` es `q3bhdtoi`. El body que manda son **7 claves**:
+> `conversation_id` · `user_id` · `conversationPartId` · `message` · `user_email` ·
+> `conversation_part_id_debounce` · `First Message ID`. Fuente: ejecución `8129120`, nodo `If2`.
+> Sirve para dos cosas: el `corr_id` de `WP-208` sale de ahí sin tocar el canvas, y **`message` y
+> `user_email` son PII** — de ahí que `Log_Evento` tenga 6 campos y no el body.
+
 *Tomado de la bitácora, no verificado por MCP en esta sesión.*
 
 | DC | Qué hace |

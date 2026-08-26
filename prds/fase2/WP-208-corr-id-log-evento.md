@@ -17,6 +17,43 @@ issue: ""
 > hace **a ojo por timestamps**. INFERENCIA declarada: con el número de ramas que añade la Fase 2, la
 > arquitectura nueva sería *más* difícil de depurar que la actual sin esto.
 
+> **26/08/2026 · EL BLOQUEO QUE ESTE PRD DABA POR SUPUESTO NO EXISTE.** El `corr_id` **se construye
+> hoy, sin pedirle nada nuevo a Intercom ni tocar el canvas.** Medido en el body real de la ejecución
+> `8129120` (entrada de `Webhook1`):
+>
+> ```json
+> { "conversation_id": "215475581167582", "conversationPartId": "52219039912",
+>   "conversation_part_id_debounce": "52219039912", "message": "Sí, confirmar",
+>   "user_id": "eu-west-1:…", "user_email": "…" }
+> ```
+>
+> Los dos trozos ya llegan → `corr_id = 215475581167582:52219039912`. **Y cuidado con los nombres, que
+> son tres claves para dos cosas:** `conversation_id` (el hilo), `conversationPartId` (**camelCase**, el
+> mensaje) y `conversation_part_id_debounce` (**mismo valor**, y la única que lee `If2`).
+>
+> **De paso se desmintió una sospecha mía, y conviene que quede escrito porque parecía sólida:** creí
+> que `conversation_part_id_debounce` no llegaba nunca y que el debounce estaba muerto cayendo siempre
+> al `else`. **Llega**, y `Wait2` espera sus 3 s. La pista que me había convencido —`waitTill: null` en
+> **200** ejecuciones— **no vale**: n8n no persiste una espera de 3 s, la mantiene en memoria. Un `null`
+> ahí no dice que nadie esperara.
+>
+> **Entregado hoy:** `docs/nodo-log-evento-2026-08-26.js` (pieza fuente, **sin pegar**) con
+> `construirCorrId` y `Log_Evento` de 6 campos, y su puerta `docs/test-log-evento.js` — **25
+> comprobaciones, la duodécima puerta**, que prueba el `corr_id` **contra ese body real, no contra uno
+> inventado**.
+>
+> **Y una razón para los 6 campos que este PRD no daba:** ese mismo body lleva `message` y
+> `user_email`. Volcar el body a un log mete **la frase del cliente y su correo** en las ejecuciones de
+> n8n, que se guardan y las ve cualquiera con acceso a la instancia. Así que los 6 campos son
+> **mínimo privilegio, no formato**: `dropped` guarda **nombres** de campo y tira los valores, y la
+> puerta lo comprueba con una fecha inválida, un «no sé» y un correo — ninguno de los tres aparece en
+> el evento.
+>
+> **Lo que NO se hace hoy y por qué:** `Set_Corr` en cada rama y `last_corr_id` en la fila tocan
+> `beckham_bot` y el escritor, o sea el reenvío de 55 nodos de `WP-207`. **Y la columna `last_corr_id`
+> no se crea todavía a propósito:** sin quien la escriba sería una columna huérfana más, y este
+> proyecto ya arrastra `FechaLlamada` así.
+
 ## 1. Objetivo
 
 Que desde una fila de Airtable se llegue a la ejecución de n8n y a la conversación de Intercom **sin
