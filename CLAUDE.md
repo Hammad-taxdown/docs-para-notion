@@ -476,3 +476,15 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   lo ya decidido.
 - **Si plantea una objeción de alcance y él la rechaza, es su decisión: no se vuelve a plantear.**
 - Nivel alto: pide **código entero y verificación real**, no explicaciones de concepto.
+- **LOS PASOS SE ENTREGAN SIEMPRE ASÍ** (26/08, pedido explícito). No es estilo, es el formato:
+  1. **Un comando shell copiable por cada valor que haya que pegar**, listo para su terminal, con
+     `pbcopy` — nunca «copia esto de aquí arriba». Si el valor va a un campo de n8n, **sin el `=`
+     inicial y sin salto de línea final**.
+  2. **Detalle clic a clic**: workflow → nodo → campo exacto → qué dice hoy → qué tiene que decir.
+     Decir también **si el campo es un desplegable o un texto**, porque no se tocan igual.
+  3. **Un comando de verificación** al final de cada paso, y cuál es el número que tiene que salir
+     (contador de caracteres, verdes de la puerta). Lo que no se puede comprobar desde bash —n8n y
+     Airtable, porque no hay `N8N_API_KEY` en el entorno— **lo verifico yo por MCP**, y se dice.
+  4. **El orden y qué desatasca qué**, separando lo que rompe producción de lo que es cosmético.
+  5. Y todo eso **también** en `docs/pasos.sh`, que es donde los busca: `bash docs/pasos.sh N`
+     imprime el paso y le deja el valor en el portapapeles.

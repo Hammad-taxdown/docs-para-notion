@@ -40,7 +40,11 @@ echo "${D}descarte pasa de nActual>2 a nActual>3 porque el peldano de la llamada
 echo "${D}ahora es el 3.${N}"
 echo "${A}la puerta ya lo mide:${N} test-decidir-status.js, ${V}30 verdes${N} ${D}(antes 28; las dos${N}"
 echo "${D}nuevas son el peldano 2 de Iciar subiendo al 4 y al 3).${N}"
-[ "$1" = copia ] && pbcopy < docs/nodo-decidir-status-2026-08-26.js && echo "${B}-> copiado (11.975 car)${N}"; }
+echo "${B}copiar:${N}     bash docs/copiar.sh 1"
+echo "${B}verificar:${N}  node docs/test-decidir-status.js   ${D}-> tiene que decir 30 verdes, 0 rojas${N}"
+echo "${D}            y en n8n, que el contador diga 11.975. Que quede PUBLICADO lo${N}"
+echo "${D}            compruebo yo por MCP: activeVersionId tiene que moverse.${N}"
+[ "$1" = copia ] && bash docs/copiar.sh 1; }
 
 p2(){ paso 2 "el filtro del .030" "beckham_generar_030 · OoJ2l7PmxSHLxXA4" \
   "Buscar filas pendientes (Airtable, search)" "campo Filter By Formula, y PUBLICAR"
@@ -48,7 +52,9 @@ echo "${R}hoy busca dos nombres que YA NO EXISTEN, asi que devuelve 0 filas SIEM
 echo "${A}pegar esto tal cual:${N}"
 echo "${V}AND(OR({Status}=\"4. Pte hacer informe\",{Status}=\"5. Informe enviado\"), OR({Regenerar030}=1, {Fichero030}=BLANK()))${N}"
 echo "${D}sin el = inicial y sin salto de linea final.${N}"
-[ "$1" = copia ] && printf 'AND(OR({Status}="4. Pte hacer informe",{Status}="5. Informe enviado"), OR({Regenerar030}=1, {Fichero030}=BLANK()))' | pbcopy && echo "${B}-> copiado${N}"; }
+echo "${B}copiar:${N}     bash docs/copiar.sh 2"
+echo "${B}verificar:${N}  lo compruebo yo por MCP; desde bash no hay N8N_API_KEY.${N}"
+[ "$1" = copia ] && bash docs/copiar.sh 2; }
 
 p3(){ paso 3 "el informe v1: el filtro Y el Status que escribe" \
   "beckham_informe_mobility · Us5sFgXD9qVxJvxO" "Buscar filas pendientes + Marcar InformeListo" \
@@ -60,7 +66,9 @@ echo "${D}   en la lista de campos, el campo ${N}${V}Status${N}${D} es un DESPLE
 echo "${R}   '4. Informe enviado'${N}${D} y hay que reelegir ${N}${V}'5. Informe enviado'${N}"
 echo "${R}   si no se cambia, el PATCH falla DESPUES de subir el PDF: la fila se queda${N}"
 echo "${R}   sin InformeListo y sin Status, y REENTRA EN CADA TICK para siempre.${N}"
-[ "$1" = copia ] && printf 'AND(OR({Status}="4. Pte hacer informe",{Status}="5. Informe enviado"), OR({RegenerarInforme}=1, {InformePdf}=BLANK()))' | pbcopy && echo "${B}-> copiado el filtro de 3a${N}"; }
+echo "${B}copiar 3a:${N}  bash docs/copiar.sh 3"
+echo "${B}3b no se copia:${N} ${D}es un desplegable, hay que reelegir la opcion a mano.${N}"
+[ "$1" = copia ] && bash docs/copiar.sh 3; }
 
 p4(){ paso 4 "el informe v2, lo mismo, para que no nazca roto" \
   "beckham_informe_mobility_v2 · snoDqB063jMSgzUq" "Buscar filas pendientes + Marcar InformeListo" \
@@ -70,6 +78,8 @@ echo "${A}4b · Marcar InformeListo${N} ${D}aqui SI es un httpRequest: en su JSO
 echo "${R}   Status: '4. Informe enviado'${N}${D} por ${N}${V}Status: '5. Informe enviado'${N}"
 echo "${R}A MANO EN LA UI, nunca por MCP: reescribir el v2 por API borra las${N}"
 echo "${R}credenciales de sus 14 nodos.${N}"
+echo "${B}copiar 4a:${N}  bash docs/copiar.sh 3   ${D}(el filtro es el mismo que el del v1)${N}"
+echo "${B}copiar 4b:${N}  bash docs/copiar.sh 4   ${D}(el JSON Body entero, ya con el 5)${N}"
 echo "${D}se hace ahora porque si no, el dia que Alina conecte la credencial el v2${N}"
 echo "${D}arranca ya roto y nadie se acuerda de por que.${N}"; }
 
