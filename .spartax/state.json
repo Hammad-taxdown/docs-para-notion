@@ -374,9 +374,10 @@
       "verify": "pendiente de definir",
       "depends": [],
       "effort": 0.5,
-      "status": "planned",
+      "status": "done",
       "created_at": "2026-08-06T11:35:00Z",
-      "note": "13/08: WP-238 verificada. Nota para T031: un caso complejo NUNCA marca AplicaBeckham, la confirmacion solo se pide en la rama de caso claro."
+      "note": "26/08 CERRADA POR DECISION DEL USUARIO: se queda como esta. Hoy Estado030149 lo escriben las automatizaciones de Airtable (1. Envio borradores y 2. Usuario completa el formulario) y el bot NO lo toca, y asi se queda. La tarea era de cuando se penso que el bot tendria tools para mover esos estados; el reparto real quedo del otro lado y funciona.",
+      "done_at": "2026-08-26T10:08:46Z"
     },
     "T032": {
       "title": "Conectar beckham_analizar_documento como tool de beckham_bot",
@@ -898,5 +899,5 @@
     }
   },
   "next_task": 77,
-  "updated_at": "2026-08-26T09:40:34Z"
+  "updated_at": "2026-08-26T10:08:46Z"
 }
