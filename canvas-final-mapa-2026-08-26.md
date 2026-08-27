@@ -1,5 +1,17 @@
 # El canvas final · mapa consolidado y orden de construcción · 26/08/2026
 
+> **SUPERADO EL 27/08/2026.** Este mapa se conserva como historia del análisis; lo vigente está en
+> `docs/canvas-desde-cero-2026-08-27.md`. Tres cosas quedaron superadas el 26–27/08:
+>
+> 1. **El «bloqueo» de la §2 ya no existe.** El 26/08 el usuario cerró `T077` con la **opción B**
+>    (el modo viaja como **input del Data Connector**) y `WP-210` está reescrito. La columna del
+>    menú (17 PRDs) quedó desbloqueada; la decisión está cerrada y no se reabre.
+> 2. **La §3 (aplicar `WP-216` sobre el canvas actual) quedó superada el 27/08.** El canvas se
+>    reconstruye **desde cero en una copia** según `docs/canvas-desde-cero-2026-08-27.md`, y las
+>    correcciones de `WP-216` van **dentro** de ese rebuild, no como parche del canvas viejo.
+> 3. **M6 (§7) quedó decidida el 26/08**: SLA de **24–48 h**, y viaja además en el prompt v14. Ya
+>    no bloquea el texto publicable de `WP-223`.
+
 Este documento existe porque **el diseño del canvas definitivo está repartido en veinticuatro PRDs y
 eso no se puede clicar**. Aquí está junto, con el grafo de dependencias real, el punto exacto donde
 está bloqueado, y lo que se puede construir hoy sin decidir nada.

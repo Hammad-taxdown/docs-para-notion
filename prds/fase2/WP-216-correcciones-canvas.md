@@ -13,8 +13,16 @@ issue: ""
 
 # PRD · WP-216 — Correcciones del canvas heredado
 
-> Agrupa las correcciones B1, B2, B7, B8 y B9 del Council. Todas son sobre el canvas actual y ninguna
-> depende de la Fase 2: se pueden hacer antes.
+> **Nota (27/08/2026):** ese día se decidió construir el canvas **desde cero en una copia del Custom
+> Bot** (`docs/canvas-desde-cero-2026-08-27.md`). Las correcciones B1–B9 de este WP se aplican
+> **dentro del rebuild**, como requisitos del canvas nuevo — ya **no** se parchea el canvas viejo (la
+> única capa sin curl, donde ya fallaron 3 fixes publicados), y el disparador se cambia al final. El
+> §6 y el §7 (backup antes de cada publicación sobre el canvas actual) quedan superados por el mismo
+> motivo: el canvas viejo pasa a ser el rollback. B1 (typo `veredicto_f2`) ya está HECHO VERIFICADO.
+
+> Agrupa las correcciones B1, B2, B7, B8 y B9 del Council. Todas eran sobre el canvas actual y ninguna
+> depende de la Fase 2 (escrito antes del 27/08: desde entonces van dentro del rebuild — ver la nota
+> de arriba).
 
 ## 1. Objetivo
 

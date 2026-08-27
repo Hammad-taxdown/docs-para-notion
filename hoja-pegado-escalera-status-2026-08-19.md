@@ -1,5 +1,25 @@
 # Hoja de pegado · la escalera de Status · 19/08/2026
 
+> **SUPERADA · 27/08/2026. NO PEGUES NADA DE ESTA HOJA.** Se ejecutó entera el 19/08 y quedó
+> superada por la **renumeración de la escalera del 26/08**: los valores vigentes están en
+> **`docs/pasos-2026-08-26-renumeracion.sh`**. En concreto:
+> - **Los filtros de las §§1-2 llevan nombres de Status que ya no existen** («3. Pte hacer
+>   informe», «4. Informe enviado»; hoy son el **4** y el **5**). Pegarlos deja el generador
+>   casando 0 filas para siempre, en verde — la rotura clase 17/08.
+> - **`Marcar InformeListo` (§3) escribe hoy `5. Informe enviado`** (medido en vivo el 26/08),
+>   no `4. Informe enviado`. Y la advertencia del typecast de esta hoja quedó **desmentida el
+>   26/08**: el nodo valida contra su schema cacheado y falla **RUIDOSO** antes de llegar a
+>   Airtable — no crea opciones fantasma en silencio.
+> - **La §4 (automatización `3b`) no se toca ni se publica**: decisión cerrada del 24/08, la 3b
+>   queda `undeployed` PARA SIEMPRE (publicarla mandaría dos correos por el mismo hito). El envío
+>   vigente es «1. Envio borradores 030 y 149».
+> - **El `Decidir_Status` de la §5 es el viejo**: pegar `nodo-decidir-status-2026-08-19.js`
+>   revertiría la renumeración (el Upser rechazaría con `persistencia_fallida`). El vigente es
+>   **`docs/nodo-decidir-status-2026-08-26.js`** (11.975 car., 13 peldaños, puerta con 30 verdes,
+>   no los 15 que dice esta hoja).
+>
+> El contenido de abajo queda **intacto** como registro de lo que se hizo el 19/08.
+
 La escalera pasa a significar lo que dice el nombre de cada peldaño:
 
 | Peldaño | Quién lo escribe | Cuándo |

@@ -29,15 +29,17 @@ bus de eventos).
 **No hay código fuente versionado. El sistema *es* su configuración.**
 
 La lógica vive dentro de nodos de n8n, de expresiones de n8n, de automatizaciones de Airtable y de
-un prompt de ~47.000 caracteres alojado en LangSmith. Los `.json` de `referencia/exports-n8n/` son
+un prompt de ~66.000 caracteres alojado en LangSmith (`bot_mobility_prompt`, tag `prod`; la cifra exacta cambia con cada versión). Los `.json` de `referencia/exports-n8n/` son
 **exportaciones, no fuente**: se generan después de publicar.
 
 De ahí tres consecuencias que se notan a diario:
 
 - No hay CI ni entorno local. Se publica y se audita después, por MCP, con diff.
 - La verificación es **manual y por evidencia**: conversación real, `curl`, bytes del fichero.
-- Un cambio mal hecho **falla en silencio**. La regla de casa es *campo nuevo = cuatro sitios*
-  (la tool del agente, el validador, el mapeo de Airtable y el prompt), y olvidar uno **no da error**.
+- Un cambio mal hecho **falla en silencio**. La regla de casa es *campo nuevo = cinco sitios*
+  (la tool del agente, el validador, el mapeo de Airtable, el prompt **y el lector**), recorridos
+  **en los dos sentidos**, y olvidar uno **no da error**: o el bot vuelve a preguntar el dato, o el
+  `.030` aborta por un campo que nadie preguntaba.
 
 ---
 
@@ -47,8 +49,8 @@ De ahí tres consecuencias que se notan a diario:
 ├── README.md              ← estás aquí
 ├── .spartax/              ← LA BITÁCORA VIVA. log.md, state.json, context.md. No se toca a mano
 ├── docs/                  ← toda la documentación técnica viva y el código de los generadores
-│   ├── prds/              ← las fichas de trabajo (WP-xx) y el mapa de dependencias
-│   └── backup-automatizaciones-20260812/
+│   └── prds/              ← las fichas de trabajo (WP-xx) y el mapa de dependencias
+│                            (el backup de automatizaciones vive aplanado: docs/backup-automatizacion-airtable-*-20260812.js)
 ├── plan/                  ← el plan maestro y el arranque del día
 │   └── historico/         ← planes, reanudaciones y narrativas de sesión ya pasados
 ├── informes/              ← entregables de presentación y la auditoría externa
@@ -87,11 +89,14 @@ la de integración.
 **El recuento SIEMPRE en caracteres, no en bytes.** `wc -c` da bytes; el editor de n8n cuenta
 caracteres, y con ~1.500 acentos los dos números se separan casi 3.000.
 
-Las 14 pruebas se pasan de golpe con:
+Las **catorce puertas** se pasan de golpe con:
 
 ```bash
-for t in docs/test-*.js docs/verificar-nodo-030.js; do node "$t" >/dev/null && echo "OK $t" || echo "FALLA $t"; done
+bash docs/pasos.sh test
 ```
+
+(Los únicos rojos tolerados están documentados en `CLAUDE.md` §3: el offset 1415/1406 del `.030` y
+la muestra `Z2900111T`; 12 de 14 muestras reales salen byte a byte.)
 
 ---
 
@@ -120,7 +125,7 @@ y no puede subir.
 - Bitácora: cada cambio con su prueba. **Un cambio, una prueba**: dos cambios y una sola prueba ⇒
   la prueba no cuenta.
 - **«Diagnosticado» no es «resuelto».** Nada se cierra sin verificarlo.
-- Workspace de Intercom **TEST**. Preview y Simulation no validan nada; **nunca escribir desde el Inbox**.
+- Workspace de Intercom: **TaxDown producción** (27/08; antes era TEST). Preview y Simulation no validan nada; **nunca escribir desde el Inbox**.
 
 ---
 

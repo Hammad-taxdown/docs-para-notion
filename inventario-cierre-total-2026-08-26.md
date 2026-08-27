@@ -1,5 +1,22 @@
 # Todo lo que falta para cerrar el proyecto · 26/08/2026
 
+> **SUPERADO.** Este inventario se escribió la mañana del 26/08, **antes** de las decisiones de esa
+> misma tarde y del 27/08; se conserva intacto como foto de aquel momento. El plan vigente es
+> `docs/canvas-desde-cero-2026-08-27.md`. Lo superado, punto por punto (anotado el 27/08/2026):
+>
+> - **`T077` está CERRADA** (26/08, opción **B**: el modo viaja como input del Data Connector;
+>   `WP-210` reescrito). Las filas y pasos que la presentan como «decisión tuya pendiente»
+>   (§1.2, §1.3, Nivel 0 y el nº 1 de «Lo que necesito de ti») ya no aplican.
+> - **`WP-216` ya no se aplica sobre el canvas actual** (27/08): las correcciones van **dentro**
+>   del rebuild del canvas **en una copia**, según canvas-desde-cero. Afecta a la fila `T078` de
+>   §1.2 y al paso 2 de «Lo que necesito de ti».
+> - **M6 está decidida** (tarde del 26/08): SLA de **24–48 h**, metida además en el prompt v14.
+>   Ya no bloquea el texto publicable de `WP-223`.
+> - **Los recordatorios NO se hacen** por ahora (26/08): cae `WP-230` entero y queda revisar qué
+>   queda de `WP-225`. La fila «¿se hacen los recordatorios?» y el paso 5 ya no son decisiones
+>   abiertas.
+> - **U3** quedó también decidida el 26/08: **sin identidad de reserva** cuando no hay `user_id`.
+
 Inventario completo, leído del tracker y de los 39 PRDs de la Fase 2. Nada filtrado.
 **Fecha de entrega: 31/08/2026 — quedan 5 días.**
 

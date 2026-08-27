@@ -1,5 +1,17 @@
 # Arreglos de las automatizaciones de Airtable · 12/08/2026
 
+> **⚰️ SUPERADO — 27/08/2026.** Los arreglos se hicieron **el 24/08/2026 en la parte NATIVA** de las
+> automatizaciones, **sin tocar los scripts** (el `customScript` es intocable salvo para los
+> colaboradores del secreto `n8nApi`), y con una estructura de **TRES ramas** distinta de la
+> propuesta aquí en A.1 (no hay rama `Else` como la que pide este doc: la rama inglesa se partió en
+> dos al nivel de arriba). **No pegar ninguno de estos scripts**: seguir este documento hoy
+> desmontaría la estructura publicada, y A.4 («quita `Status` del Update record») eliminaría la
+> subida a «Pte confirmación usuario». Además, la tabla ORDEN de abajo usa la **numeración vieja**
+> de la escalera (renumerada el 26/08: equivalencias en `docs/pasos-2026-08-26-renumeracion.sh`).
+> Lo vigente y el porqué de cada decisión está en
+> `docs/correcciones-automatizaciones-airtable-2026-08-21.md` y en `CLAUDE.md` §6
+> («SE QUEDAN LAS AUTOMATIZACIONES DE ICIAR»).
+
 Auditoría de las cuatro automatizaciones desplegadas de `Mobility_2026`. **Seis fallos**, dos de
 ellos serios. Aquí van los scripts corregidos, listos para pegar.
 

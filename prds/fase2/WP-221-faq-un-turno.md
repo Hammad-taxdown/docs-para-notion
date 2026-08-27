@@ -35,7 +35,11 @@ ninguna tool de escritura de expediente, y elegir explícitamente qué hacer des
 ## 2. Alcance
 
 **In:**
-- `Set modo_bot=faq_regimen` (ya escrito por `AOPT`, WP-213).
+- El modo `faq_regimen` viaja como **input del DC `punto=faq_entrada`** (transporte B, WP-210
+  reescrito el 26/08): ya **no** se persiste el atributo `modo_bot` (corregido el 27/08; antes decía
+  `Set modo_bot=faq_regimen` escrito por `AOPT`, WP-213). Escrito para las dos ramas de `T081`, como
+  en WP-227: con **B pura** *(recomendada)* el atributo no existe; con **B híbrida** volvería solo
+  para la reentrada, nunca como fuente de verdad del turno.
 - `Collect data` con la pregunta libre.
 - DC con `punto=faq_entrada` y `wait_for_callback`.
 - Respuesta del nodo FAQ del agente **con el conocimiento fiscal inline en su propio prompt**

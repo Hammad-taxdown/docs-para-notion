@@ -26,7 +26,10 @@ No perder al usuario que se autodescarta, y dejar traza distinguible de un desca
 
 **In:**
 - Rama accesible **desde el FAQ**, no desde el menú (la opción se retiró de `AOPT`).
-- Llamada al escritor único con `punto=autodescarte_declarado`.
+- Llamada al escritor único con `modo=faq_regimen` y `punto=autodescarte_declarado` (tabla §2.2 de
+  WP-210; el `modo` se añadió el 27/08/2026 — con la invariante 2 de WP-210 una llamada sin `modo`
+  cae en fail-closed: `Resolver_Modo` corta el turno y la traza no se escribiría, justo lo contrario
+  del objetivo de este WP; vale igual para las dos ramas de T081, B pura y B híbrida).
 - Mensaje + reply buttons: FAQ, calculadora, volver al menú. Hilo abierto, **sin `Close`**.
 
 **Out:**

@@ -164,7 +164,9 @@ que exige el formulario oficial.
 > ⚠️ **Sin verificar, y hay que cerrarlo antes de construir T036:** esta tabla dice qué datos
 > **tenemos**, no qué campos **exige** cada formulario. La lista real de casillas de los Modelos 030
 > y 149 hay que contrastarla contra los formularios oficiales de la AEAT. Si falta alguna casilla que
-> el expediente no recoge, es **campo nuevo = tres sitios** y toca antes de escribir una línea del
+> el expediente no recoge, es **campo nuevo = cinco sitios** (corregido el 27/08/2026; aquí decía
+> «tres»: la regla probada de `CLAUDE.md` §5 es tool + validador + mapeo del Upser + prompt +
+> **lector**, más el caché del `singleSelect` si toca opciones) y toca antes de escribir una línea del
 > subworkflow.
 
 ## 6 · Pendiente de tu aprobación

@@ -3,7 +3,7 @@ id: WP-229
 title: "FAQ → solicitud: iniciar_solicitud con relanzamiento del reusable (V1) o intake por el agente (V2)"
 status: skeleton
 size: M
-depends_on: [WP-209, WP-221, WP-222]
+depends_on: [WP-221, WP-222]
 milestone: "Fase 2 conversacional — Pospuesto"
 owner: "Hammad"
 external: ""
@@ -31,8 +31,11 @@ el contexto del FAQ.
 
 **In (una de las dos, según evidencia):**
 - **V1 (preferida):** extraer `B…` a un **reusable** y hacer `Pass to` desde `WDONE=ya está` — salto
-  hacia delante. Tool `iniciar_solicitud()`: escribe `modo_bot=solicitud`, fija `corte_contexto_bot` y
-  `faq_resumen_bot`, y relanza el reusable.
+  hacia delante. Tool `iniciar_solicitud()`: fija `corte_contexto_bot` y `faq_resumen_bot`, y
+  relanza el reusable; el modo `solicitud` entra como **input del DC del reusable** (transporte B,
+  WP-210 del 26/08), **sin persistir `modo_bot`** (corregido el 27/08). Las dos ramas de `T081`,
+  como en WP-227: con **B pura** *(recomendada)* el atributo no existe; con **B híbrida** volvería
+  solo para la reentrada, nunca como fuente de verdad del turno.
 - **V2 (si `Pass to` no es viable):** el agente conduce el intake por mensajes en `modo=solicitud`,
   llamando a `beckham_f2_plazo` como tool. Coste aceptado y escrito: las **preguntas** quedan en dos
   sitios; el **cálculo** sigue en uno.
@@ -44,7 +47,9 @@ el contexto del FAQ.
 
 ## 3. Dependencias
 
-WP-209 y una prueba dedicada con dos reusables encadenados (cierra la incógnita 6), WP-221, WP-222.
+Una prueba dedicada con dos reusables encadenados (cierra la incógnita 6), WP-221, WP-222.
+(WP-209, la sonda, está **muerta** desde el 14/08 con sus incógnitas sin cerrar: salió del
+`depends_on` el 27/08 — la incógnita 6 la cierra la prueba dedicada, no la sonda.)
 
 ## 4. Entregables
 
@@ -54,7 +59,8 @@ justifica, y la otra registrada como descartada.
 ## 5. Verificación
 
 - Recorrido no-Preview: pulsar `WDONE=ya está` lleva a la primera pregunta de `B` **en la misma
-  conversación**, con `modo_bot=solicitud` y `corte_contexto_bot` fijado.
+  conversación**, con el input `modo=solicitud` en la llamada del DC (transporte B) y
+  `corte_contexto_bot` fijado.
 - El prompt del primer turno de solicitud **no contiene** las parts anteriores al corte.
 - Si se elige V2: el `beckham_f2_plazo` se llama **una sola vez** por fecha aportada.
 

@@ -1,5 +1,13 @@
 # Especificación de montaje · Informe Mobility (memoria fiscal) · 13/08/2026
 
+> **SUPERADO — 27/08/2026.** Este es el contrato del informe **v1** al 13/08, con sus 17 marcadores
+> (`{{fechaLlamada}}`, `{{paisOrigen}}`, `{{estadoCivil}}`, la sección de notas…). Quedó superado dos
+> veces: el **19/08** el informe pasó a imprimir **solo nombre, apellidos y fecha de alta** (y la fecha
+> de la llamada dejó de preguntarse), y el **20/08** se decidió que el motor pasa a
+> `beckham_informe_mobility_v2` (8 plantillas de Google Docs, 14 marcadores, lo construye Iciar).
+> Lo vigente está en `CLAUDE.md` §6 y en las piezas `informe-datos-2026-08-19.js` /
+> `informe-cuerpo-2026-08-19.js`. Este documento vale solo como historia de `WP-236`.
+
 > **Qué es esto.** El contrato de montaje del informe de memoria fiscal que se genera al cerrar el
 > expediente: de dónde sale cada uno de los 17 marcadores, con qué formato se imprime, y cómo se
 > elige el bloque de texto. Es el paso de `WP-236` de *spec* a *construible*.

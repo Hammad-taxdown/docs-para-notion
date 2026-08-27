@@ -28,7 +28,7 @@ proyecto. Verificado por MCP el 12/08.
 
 | Workflow | id | Activo | Para qué |
 |---|---|---|---|
-| **`beckham_bot`** | `nhOwpiGxikeU5DLR` | ✅ | **El motor.** 51 nodos: webhooks del DC, el AI Agent, el escritor y el lector del expediente, y el cierre de Intercom |
+| **`beckham_bot`** | `nhOwpiGxikeU5DLR` | ✅ | **El motor.** 55 nodos — 48 de lógica + 7 sticky (eran 51 el 12/08; actualizado 27/08): webhooks del DC, el AI Agent, el escritor y el lector del expediente, y el cierre de Intercom |
 | `beckham_analizar_documento` | `ONhveViBeiI6GXWd` | ✅ | Tool del agente: lee el adjunto y dice **qué documento es** y qué datos trae |
 | `beckham_f2_plazo.` | `wdOOF0ecCkgFOUjt` | ✅ | Filtro F2: plazo de 6 meses desde el alta en la Seguridad Social |
 | `beckham_alertas` | `BJfExmwu1fI1aPpY` | ✅ | Avisos a Slack. **Dos entradas**: Error Trigger y Execute Workflow Trigger. Seis campos, **todos declarados string** |
@@ -62,8 +62,8 @@ Base `app5K8OnSObqwWweS` (*Mobility_2026*), tabla `Empleados` (`tblTWCWu5nQXNOMR
 | Automatización | id | Estado | Dispara con | Qué hace |
 |---|---|---|---|---|
 | **2. Usuario completa el formulario de confirmación M030** | `wflo1oMmSWlcYsO3V` | desplegada | `formSubmitted` sobre `viwjxT8e1uLg7K4OC` | El formulario crea una fila nueva; el script la **fusiona en la original** por `recordId` y **borra el duplicado**. **No toca `Status`** |
-| **3. Envio borradores 030 y 149** | `wflx5iCN4pXuwPAvO` | desplegada | `EnviarBorradores` = true | Dos ramas **por idioma**. Adjunta los dos borradores, manda el correo por webhook de n8n, y escribe `Status = 7` y `Estado030149 = 3` |
-| **4. El cliente confirma los modelos → Status a 8** | `wflYrTfhxYtRaLZkU` | **nueva 12/08** | `Status = 7` **Y** `Estado030149` en 4.1 / 4.3 | `Status = 8. Confirmado`. Es `WP-237` |
+| **1. Envio borradores 030 y 149** (renombrada en la base — los docs viejos la llaman «la 3», y buscarla por ese número no la encuentra; anotado el 27/08) | `wflx5iCN4pXuwPAvO` | desplegada | `EnviarBorradores` = true | Dos ramas **por idioma**. Adjunta los dos borradores, manda el correo por webhook de n8n, y escribe `Estado030149 = 3`; el `Status` **ya no retrocede** (24/08): solo lo sube la rama con guarda, al peldaño de confirmación — viejo `7`, hoy `8. Pte confirmación usuario` tras la renumeración del 26/08. Va por ids de opción |
+| **4. El cliente confirma los modelos → Status a 8** | `wflYrTfhxYtRaLZkU` | **nueva 12/08** | `Status = 7` (hoy `8. Pte confirmación usuario`, renumeración del 26/08) **Y** `Estado030149` en 4.1 / 4.3 | `Status = 8. Confirmado` (hoy `9. Confirmado`). Va por ids de opción, así que la renumeración no la rompe (anotado el 27/08). Es `WP-237` |
 | **Crear Check out** | `wflfiMbXabZqYnAzr` | desplegada | `CrearCheckout` = true | Crea el checkout de pago. **De otro proceso** |
 
 > **Trampa del filtro, aprendida el 12/08:** `filtersObj` **no admite un `or` anidado** dentro del
@@ -80,7 +80,7 @@ Base `app5K8OnSObqwWweS` (*Mobility_2026*), tabla `Empleados` (`tblTWCWu5nQXNOMR
 |---|---|
 | **Custom Bot `OnClick Mobility`** | El canvas visual. Filtros **F1** (fecha de llegada), **F2** (plazo de 6 meses, delegado a n8n) y **F3** (fecha límite) |
 | **Puntos de disparo D, H, G y N** | Los cuatro sitios desde los que el canvas llama a n8n |
-| **`A. Bienvenida`** | Arranque. Aquí irá el reset de `modo_bot` y el menú `AOPT` |
+| **`A. Bienvenida`** | Arranque. El plan del reset quedó superado (anotado el 27/08): el modo viaja como **input del Data Connector** (transporte B, `T077` cerrada el 26/08; `WP-210` reescrito), así que no hay `modo_bot` que resetear (`T081` abierta para la variante B híbrida); el menú entra en el **rebuild del canvas en copia** según `docs/canvas-desde-cero-2026-08-27.md` |
 
 > **Invariante que rompió el D0 del idioma el 07/08:** el Messenger **reanuda la conversación abierta**,
 > así que el menú **no es un punto de entrada garantizado** y el agente puede entrar con cinco turnos
@@ -104,7 +104,7 @@ Base `app5K8OnSObqwWweS` (*Mobility_2026*), tabla `Empleados` (`tblTWCWu5nQXNOMR
 |---|---|
 | El de la conversación | Llama a `Webhook1` de `beckham_bot` con `wait_for_callback`. **Es el que trae al agente** |
 | Escritor | `POST /webhook/beckham-upsert-expediente` |
-| Lector | `GET /webhook/beckham-get-expediente`, devuelve 21 claves |
+| Lector | `GET /webhook/beckham-get-expediente`, devuelve **47 claves** más los 9 documentos como **booleanos** (arreglado el 19/08; las 21 claves de antes eran el bug que hacía repreguntar) |
 
 > **`Callback_Intercom` y `Validar y Normalizar` son ejecuciones DISTINTAS** — conversación contra
 > escritor. **No se pueden referenciar entre sí.**
@@ -121,7 +121,7 @@ Base `app5K8OnSObqwWweS` (*Mobility_2026*), tabla `Empleados` (`tblTWCWu5nQXNOMR
 **Auth: apagado a propósito** desde el 10/08. La credencial `beckham_webhook_auth`
 (`chTgEmF0KkSvcivT`) existe y funciona (403 sin cabecera, 200 con ella), pero mientras está puesta
 **la identidad del MCP no puede leer el workflow** y se pierde el diff estático — que en tres días ha
-cazado cuatro fallos silenciosos. Se reactiva **al final**, y con **token nuevo**.
+cazado cuatro fallos silenciosos. La reactivación «al final» con token nuevo quedó **descartada por decisión del usuario el 26/08** (`WP-203` cerrado sin construirse, `T053`): el auth se queda apagado (anotado el 27/08).
 
 ---
 

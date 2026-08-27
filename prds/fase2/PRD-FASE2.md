@@ -54,12 +54,25 @@ expone ningún parámetro de selección de tools** (HECHO VERIFICADO): las tools
 grafo, así que el requisito duro del manager se cumple **técnicamente**, no por prompt, y se verifica
 **contando aristas**.
 
-**Fuente de verdad del modo:** `modo_bot`, Conversation attribute de tipo Text, con **un dueño único por
-transición** — el canvas escribe mientras posee el slot, n8n escribe las transiciones intra-conversación,
-nunca los dos a la vez. El fail-closed **nunca se persiste**.
+**Fuente de verdad del modo (reescrito 27/08/2026 — WP-210 §2.2):** el modo viaja como **input
+obligatorio de cada llamada al Data Connector**, con valores
+`menu · solicitud · faq_regimen · calculadora · lead_potencial · humano`; `modo_bot` desaparece del
+contrato salvo la variante B híbrida (T081 abierta, B pura recomendada). El fail-closed **nunca se
+persiste**.
+
+> **REESCRITO 27/08/2026 — transporte B (WP-210 §2.2, 26/08).** El texto original de este párrafo
+> decía: fuente de verdad `modo_bot`, Conversation attribute de tipo Text, con un dueño único por
+> transición — el canvas escribe mientras posee el slot, n8n las transiciones intra-conversación,
+> nunca los dos a la vez. Eso era el **transporte A**. Vigente: el modo es input de cada llamada al
+> DC, `menu` es un valor explícito y **no hay reset**; los cinco atributos que sobreviven son los de
+> WP-210 §2.3. T081 (abierta): con **B pura** (recomendada) no queda atributo de modo; con **B
+> híbrida**, `modo_bot` cubriría solo la reentrada, nunca la fuente de verdad del turno. Quedan
+> superados donde contradigan esto: la §9 (máquina de estados con `Set modo_bot`), la §10, la §11, el
+> criterio de aceptación 8 y el diagrama 2 («ÚNICA FUENTE DE VERDAD»).
 
 **Orden no negociable:** parseo del body → red de errores y auth → prompt a expresión y purga de tools
-fantasma → guarda de unicidad de `UserId` → conversación sonda → Fase 2.
+fantasma → guarda de unicidad de `UserId` → conversación sonda (superada 27/08/2026: WP-209 muerta el
+14/08, no se ejecuta) → Fase 2.
 
 **33 Work Packages**, de los cuales 9 son prerrequisitos que forman parte del MVP (no "trabajo previo":
 sin ellos nada de lo demás es verificable), y 6 quedan bloqueados por decisiones del manager o por WP-10.
@@ -223,8 +236,10 @@ garantizado**, y ningún recorrido puede asumir que empieza en él.
 ## 9. Máquina de estados
 
 **Estados:** `menu` · `calculadora` · `faq_regimen` · `solicitud` · `lead_potencial` · `humano` ·
-`cerrado`. `menu` es el estado **implícito** (atributo vacío o ausente) y **no se persiste nunca**, para
-que un reset fallido no atrape a nadie.
+`cerrado`. `menu` es un **valor explícito** del input `modo`, igual que los demás: no existe el estado
+vacío ni el reset (WP-210 §2.1 y §2.4 invariante 4). (Corregido 27/08/2026; antes decía que `menu` era
+el estado implícito — atributo vacío o ausente, nunca persistido — para que un reset fallido no
+atrapara a nadie: transporte A. El transporte B elimina el reset de raíz, y con él ese riesgo.)
 
 ```mermaid
 stateDiagram-v2
@@ -611,7 +626,7 @@ instancia: **DESCONOCIDO**.
 | PII en respuestas del webhook | `Respond OK` **ya está recortado** a `{ok, action, record_id}` (corrección de bitácora) | La PII está *movida*, no resuelta: activar trazabilidad la devolvería |
 | Taxonomía contaminada por `typecast:true` | HECHO VERIFICADO | Whitelist + `typecast:false` (WP-206) |
 | Correo automático al cliente al pasar a `Submitted` | HECHO VERIFICADO | **Ninguna rama toca `ticket.state`**; acordar con Adri/Fer quitar el email de la plantilla mientras dure; pruebas **solo** con `beckham-e2e@taxdown.es`, fuera de la audiencia de Fin |
-| Asesoramiento fiscal sin base normativa | El corpus **no existe** | Corpus aprobado y versionado, `no_cubierto` → humano, disclaimer fijo (WP-220, decisión M4) |
+| Asesoramiento fiscal sin base normativa | El corpus **existe y está aprobado** desde el 13/08 (`docs/corpus-fiscal-beckham-2026-08-13.md`), inline en el prompt desde el v9 (corregido 27/08/2026; antes: «no existe») | Corpus aprobado y versionado, `no_cubierto` → humano, disclaimer fijo (WP-220 en `building`; M4 resuelta) |
 | Comunicación comercial sin base legal | No existe ningún campo de consentimiento (HECHO VERIFICADO) | Opt-in explícito trazable, opt-out en cada envío, tope 3, retención PROPUESTA de 12 meses (WP-225, decisión M3) |
 
 **Revisión humana obligatoria:** toda tool marcada "requiere aprobación" queda desactivada hasta revisión
@@ -663,9 +678,9 @@ hasta que el usuario la apruebe — **U1**). **Un cambio y su prueba cada vez.**
 | 0 | Dos `curl` al webhook (json y urlencoded). Si el segundo falla, todo lo demás está bloqueado. **30 segundos, no cuenta como cambio** | — | Sí (no toca nada) |
 | 1 | La cañería y la red: parseo del body → red de errores → auth → guarda de unicidad → whitelist y `typecast:false` | WP-201…WP-206 | Sí |
 | 2 | El agente: prompt a expresión y purga de tools fantasma → extraer el escritor → `corr_id` y `Log_Evento` | WP-204, WP-207, WP-208 | Sí |
-| 3 | **Conversación sonda.** Punto de decisión: **hasta aquí no se construye nada de Fase 2** | WP-209 | Sí (duplicado desechable) |
+| 3 | ~~**Conversación sonda.** Punto de decisión: **hasta aquí no se construye nada de Fase 2**~~ **SUPERADO 27/08/2026:** WP-209 está **muerta desde el 14/08** con sus 9 incógnitas sin cerrar y no se ejecuta; el contrato del modo ya no depende de la sonda — el transporte B (WP-210 §2.2, 26/08) eliminó las incógnitas de `Set`, y **la cadena del modo empieza en WP-210** | WP-209 | — (no se ejecuta) |
 | 4 | **WP-10**, con el método de **uno en uno** hasta nombrar el causante. En paralelo, acordar con Adri/Fer quitar el email de la plantilla de `Submitted` | WP-10 | No (workspace ajeno) |
-| 5 | Canvas: correcciones heredadas, handoff en frío, reset, menú, calculadora, autodescarte | WP-212…WP-217 | No — **backup obligatorio** |
+| 5 | Canvas (reescrito 27/08/2026 al **rebuild**, decisión del 27/08): construir una **copia del Custom Bot desde cero**, con las correcciones de WP-216 dentro del rebuild, más menú, calculadora y autodescarte según el transporte B (WP-210 §2.2) y lo que salga de T081, y **cambiar el disparador al final**; el canvas viejo queda como **rollback**, no como base de parcheo (antes decía: parchear el canvas heredado — correcciones, handoff en frío, reset, menú, calculadora, autodescarte) | WP-212…WP-217 | Sí mientras no se cambie el disparador — el canvas viejo es el rollback; **backup obligatorio** igualmente |
 | 6 | Modo: contrato, resolver, dos nodos de agente, guardas | WP-210, WP-211, WP-218, WP-219 | Parcialmente |
 | 7 | FAQ de un turno + corte de contexto + escalado y opt-out | WP-220…WP-223 | Parcialmente |
 | 8 | Registro del lead, vista, opt-in, semántica de reset, reentrada, observabilidad, e2e y publicación | WP-224…WP-227, WP-231…WP-233 | Parcialmente |
@@ -754,7 +769,7 @@ estado actual, no hipótesis**.
 | **M1** | **Alcance de los recordatorios** | WP-03 los declara fuera de alcance de todo el proyecto y hechos por otra persona (HECHO VERIFICADO); la Fase 2 pide construirlos. Contradicción de alcance, no de arquitectura | **WP-230** (bloqueado), alcance final de **WP-225** |
 | **M2** | **Dueño nombrado del seguimiento de leads** | Sin dueño es una automatización huérfana por diseño, y ya hay precedente en la base | **WP-225** no cierra sin él · **WP-230** |
 | **M3** | **Base legal, opt-in y retención** | Un recordatorio diferido a quien dijo "todavía no estoy de alta" es comunicación comercial, no interés legítimo automático. Es decisión legal | **WP-225**, **WP-230** |
-| **M4** | **Corpus fiscal aprobado para el modo FAQ** | **No existe todavía como corpus.** Sin él el modo FAQ **no es publicable con ninguna arquitectura**, y ninguna decisión técnica lo sustituye. Debe aprobarlo alguien con criterio fiscal | **WP-220** (bloqueado) → arrastra **WP-221**, **WP-222**, **WP-233** |
+| **M4** | **Corpus fiscal aprobado para el modo FAQ** | **RESUELTA (corregido 27/08/2026):** el corpus existe y está aprobado desde el 13/08 (`docs/corpus-fiscal-beckham-2026-08-13.md`) y va **inline en el systemMessage desde el prompt v9**. (El texto original decía: «No existe todavía como corpus», sin él el FAQ no era publicable con ninguna arquitectura, y debía aprobarlo alguien con criterio fiscal — así se hizo el 13/08) | **WP-220** en `building`; la cadena **WP-221**, **WP-222**, **WP-233** ya no está bloqueada por contenido |
 | **M5** | **Lectura literal o funcional de "el mismo agente"** | Es un requisito del manager y solo él puede interpretarlo. Recomendación: la funcional (dos nodos, misma identidad, mismo prompt base, mismo modelo). Si exige un solo nodo, se degrada a gateway central y hay que **aceptar por escrito la fuga de intención** | **WP-218** (su patrón), **WP-219** |
 | **M6** | **SLA, horario y capacidad de `Ops_Mobility`** | Sin ellos "escalar a humano" es "abandonar", y **todas** las ramas de error terminan ahí | **WP-223** (el mecanismo se construye; el **texto** que promete un plazo no se publica) |
 
@@ -797,6 +812,13 @@ el plan (sin él **no hay reincorporación de leads**).
 
 33 WPs. Detalle en `docs/prds/fase2/WP-2NN-*.md`; estado y dependencias en
 [`ROADMAP-FASE2.md`](./ROADMAP-FASE2.md).
+
+> **OJO — la columna Estado de esta tabla está DESFASADA (nota del 27/08/2026).** La fuente de estados
+> es el frontmatter de cada WP y [`ROADMAP-FASE2.md`](./ROADMAP-FASE2.md), no esta tabla. A 27/08:
+> **WP-201…WP-206 están `done`** (WP-203 `done` sin construir, cerrado el 26/08), **WP-209 está
+> `done` y MUERTA desde el 14/08**, y **WP-220 está en `building`** — el corpus va inline en el
+> prompt desde el v9, ya no está bloqueado por M4. La tabla se conserva tal cual como relato del plan
+> original.
 
 | WP | Título | Tam. | Estado | Grupo |
 |---|---|---|---|---|
@@ -869,11 +891,15 @@ WP-201 (1) → WP-205 (2) → WP-207 (2) → WP-208 (2) → WP-211 (2)
         → WP-219 (2) → WP-221 (3) → WP-233 (2)
 ```
 
-**Primer WP no terminado de la cadena: WP-201.** Es decir: lo que hoy retrasa toda la Fase 2 es el
-**parseo del body urlencoded**, un cambio de un nodo. INFERENCIA declarada: es el arreglo más barato y el
-que más desbloquea.
+**Primer WP no terminado de la cadena: WP-207/WP-208** (recalculado 27/08/2026: WP-201 está `done`
+desde el 05/08 y WP-205 y WP-206 también cerrados; el paso inmediato es pegar el
+`nodo-validar-normalizar-COMPLETO.js` — 76.156 caracteres, con `corr_id` y `Log_Evento`). El texto
+original decía: primer no terminado WP-201, «lo que hoy retrasa toda la Fase 2 es el **parseo del
+body urlencoded**, un cambio de un nodo. INFERENCIA declarada: es el arreglo más barato y el que más
+desbloquea» — cierto el día en que se escribió, superado hoy.
 
-**Cadena del modo (peso 12), que converge en WP-221:**
+**Cadena del modo (peso 12), que converge en WP-221** (nota 27/08/2026: hoy la cadena empieza en
+WP-210 — WP-209 está muerta desde el 14/08 y no se ejecuta):
 
 ```
 WP-209 (2) → WP-210 (1) → WP-211 (2) → WP-218 (2) → WP-219 (2) → WP-221 (3)

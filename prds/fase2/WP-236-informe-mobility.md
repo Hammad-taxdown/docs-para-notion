@@ -6,12 +6,22 @@ size: L
 depends_on: [WP-235]
 milestone: "Fase 2 conversacional — Expediente y documentos"
 owner: "Hammad"
-external: "Fiscal (ambigüedad de paisOrigen)"
+external: ""
 critical: true
 issue: ""
 ---
 
 # PRD · WP-236 — Informe Mobility: memoria fiscal montada por bloques
+
+> **SUPERADO (27/08/2026), por dos decisiones cerradas.** El **19/08** el informe v1 pasó a imprimir
+> **solo nombre, apellidos y fecha de alta**: fuera `estadoCivil` (§3), el país de origen y la fecha
+> de la reunión — que además ya **no se pregunta** y dejó `FechaLlamada` huérfana a propósito. Y el
+> **20/08** el motor futuro pasó a ser **`beckham_informe_mobility_v2`** (`snoDqB063jMSgzUq`): 8
+> plantillas de Google Docs, **14 marcadores** con `replaceAll`, no los 17 de abajo. El `external`
+> del frontmatter («ambigüedad de paisOrigen», resuelta por el usuario el 11/08 según el propio §3)
+> se vació el 27/08 — hay que regenerar el mapa. Lo vigente: `CLAUDE.md` §6 y
+> `docs/nodo-montar-informe-COMPLETO.js` (el v1 vivo). El contenido de abajo queda intacto como
+> historia del diseño por bloques.
 
 > **LA PLANTILLA YA EXISTE desde el 11/08.** Este WP decía «conseguir la plantilla, que hoy no
 > existe»; el usuario entregó `[MOB] Bloques informe Mobility.docx`. Deja de ser un WP sin contrato y

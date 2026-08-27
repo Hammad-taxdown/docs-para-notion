@@ -1,4 +1,16 @@
 #!/bin/bash
+# ============================================================================
+# SUPERADO · 27/08/2026. NO PEGUES NADA DE LO QUE ESTE SCRIPT COPIE AL
+# PORTAPAPELES. Los 13 pasos se ejecutaron el 19/08; queda como registro.
+# - Todos los valores de Status de aqui son de la numeracion VIEJA. La escalera
+#   se renumero el 26/08 (el 3 es hoy el 4, el 4 es hoy el 5; los generadores
+#   filtran OR(Status=4, Status=5)). Los valores vigentes estan en
+#   docs/pasos-2026-08-26-renumeracion.sh. Pegar los filtros de aqui deja los
+#   dos generadores casando 0 filas para siempre, en verde.
+# - El paso 11 manda publicar la automatizacion 3b: NO se publica. Decision
+#   cerrada del 24/08 — la 3b queda undeployed PARA SIEMPRE (sendEmail de
+#   Airtable es otro canal; publicarla mandaria dos correos por el mismo hito).
+# ============================================================================
 # Los pasos del 19/08 en la terminal. Sin abrir ningun fichero.
 #   bash docs/pasos.sh        -> los 13 pasos
 #   bash docs/pasos.sh 6      -> solo el paso 6, Y te lo copia al portapapeles

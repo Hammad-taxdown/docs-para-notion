@@ -1,5 +1,20 @@
 # Paso a paso · TODOS los cambios del 19/08/2026
 
+> **SUPERADO · 27/08/2026. NO EJECUTES NINGÚN PASO DE ESTE DOCUMENTO.** Los 13 pasos se
+> ejecutaron el 19/08 y esto queda como registro. Lo que ha cambiado desde entonces:
+> - **Toda la numeración de Status de este documento es la VIEJA.** La escalera se renumeró el
+>   26/08 («3. Pte hacer informe» → **4**, «4. Informe enviado» → **5**); los valores vigentes
+>   están en **`docs/pasos-2026-08-26-renumeracion.sh`**. Pegar hoy los filtros o el Status de
+>   `Marcar InformeListo` de aquí deja los dos generadores corriendo en vacío (la rotura clase
+>   17/08).
+> - **NO publicar la `3b`** (paso 11): decisión cerrada del **24/08**, la 3b queda `undeployed`
+>   PARA SIEMPRE — usa `sendEmail` de Airtable y el canal de la casa es el transaccional;
+>   publicarla mandaría DOS correos por el mismo hito. El envío vigente es
+>   «1. Envio borradores 030 y 149».
+> - **El cierre NO se fuerza** (la pregunta «sin decidir» del final): decidido el **20/08** con
+>   datos — `DiscrepanciaFechaAlta` no cambia el `motivo_cierre`; el aviso viaja en su columna y
+>   el cierre sigue siendo `Expediente completo`.
+
 **13 pasos.** Airtable (2 de los 4) ya está hecho y verificado. Cada paso dice **workflow · nodo ·
 casilla · valor**.
 

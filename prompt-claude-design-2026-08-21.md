@@ -1,5 +1,13 @@
 # Prompt para Claude Design · regenerar los diagramas del repo Beckham · 21/08/2026
 
+> **SUPERADO — 27/08/2026.** Prompt del 21/08, **ya ejecutado**. No volver a pegarlo tal cual:
+> contiene dos datos hoy falsos — el correo del informe **no** lo manda Airtable (desde el 24/08
+> sale por el canal transaccional de TaxDown, vía el webhook de synapse), y la escalera de Status ya
+> no es «del 1 al 12» (renumerada el **26/08** a 13 peldaños; los generadores filtran
+> `OR(Status=4, Status=5)`). Para regenerar diagramas, usar los datos vigentes de `CLAUDE.md`;
+> el diagrama 07 (la escalera) ya tiene su propio prompt del 26/08 en
+> `docs/prompt-claude-design-escalera-2026-08-26.md`.
+
 > Pégalo entero. Está escrito para que se pueda ejecutar sin hacerte más preguntas.
 
 ---

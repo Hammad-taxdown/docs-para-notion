@@ -1,5 +1,61 @@
 # Arquitectura del sistema Beckham · Mobility TaxDown
 
+> **⚰️ SUPERADO EN PARTE — 27/08/2026.** Este documento es la **foto del 16/08/2026** y se conserva
+> tal cual como relato de aquel día: **no editar inline**. La verdad vigente está en los sistemas
+> vivos (auditar por MCP), en `CLAUDE.md` y en `.spartax/log.md` (entradas del 19/08, 20/08, 21/08,
+> 24/08, 26/08 y 27/08). Puntos de este documento que quedaron superados, con su valor vigente:
+>
+> - **Campo nuevo = CINCO sitios, no cuatro** (§1.5 y glosario): tool + validador + mapeo del Upser +
+>   prompt + **el lector** (19/08). Y desde el 26/08 existe **el sexto** para un cambio de Status:
+>   refrescar el **schema cacheado del `singleSelect`** en los nodos de Airtable que ESCRIBEN
+>   (`Airtable Upser Expediente` valida contra su propia copia, no contra Airtable).
+> - **Filtro de los generadores** (§1.9 y diagramas): ya no es `Status = "4. Informe enviado"`. Desde
+>   el 19/08 es un **OR de dos peldaños**, y con la renumeración del 26/08 queda
+>   `OR({Status}="4. Pte hacer informe", {Status}="5. Informe enviado")` + banderas `Regenerar*`.
+> - **La escalera es de 13 peldaños desde el 26/08** (stateDiagram §4 y glosario «1 → 12»): nuevo
+>   `2. Pte agendar llamada`, todo lo demás +1 hasta `13. Descartado`. Mapeo completo en
+>   `docs/pasos-2026-08-26-renumeracion.sh`.
+> - **Quién escribe cada peldaño** (§4): el bot escribe `4. Pte hacer informe` con
+>   `MotivoCierre='Expediente completo'`; `5. Informe enviado` lo escribe **`Marcar InformeListo`**
+>   del workflow del informe, no el bot (19/08). Y el peldaño de la llamada
+>   (`3. Pendiente llamada TD`) se escribe **AL OFRECER** la llamada — `SenalesComplejidad` no vacío,
+>   `MotivoCierre='Llamada agendada'` o `AplicaBeckham` — no al confirmarla (21/08). La nota de que
+>   «Pte hacer informe dejó de aplicar el 13/08» quedó al revés: es exactamente el peldaño que
+>   escribe el bot al cerrar.
+> - **El correo NO lo manda Airtable** (§1.10 y glosario): desde el 24/08 el correo al cliente sale
+>   por el **canal transaccional de TaxDown** (POST al webhook synapse con `x-make-apikey` del
+>   secreto `n8nApi`). La automatización **`3b` queda `undeployed` PARA SIEMPRE** y la `5` aparcada:
+>   publicarlas mandaría dos correos por el mismo hito. El envío vigente de borradores es
+>   **`1. Envio borradores 030 y 149`** (`wflx5iCN4pXuwPAvO`, la antigua «3» renombrada).
+> - **La `2` y la `2b` conviven ENCENDIDAS** (24/08, decisión del usuario): la `2` devuelve el
+>   borrado automático de huérfanas y la `2b` queda de red. No apagar la `2` siguiendo la tabla §5.
+> - **El lector devuelve 47 claves + 9 documentos como booleanos**, no 21 (arreglado el 19/08;
+>   fuente `docs/nodo-lector-expediente-2026-08-19.js`). Las 21 claves eran el bug del repreguntado.
+> - **Prompt vigente: v13 @ `prod`, 65.848 caracteres** (no v8/46.878), con su puerta
+>   `test-prompt-v13.js` de 103 comprobaciones. El v14 (66.020) está local pendiente de pegar.
+> - **`FechaLlamada` quedó huérfana A PROPÓSITO** (19/08): la fecha de la llamada NO se pregunta;
+>   salió del prompt, la tool, el validador, el lector y el PDF. No hay nada que probar ni webhook
+>   de Calendly pendiente. Y el **corpus fiscal va inline en el prompt desde el v9** (WP-220 en
+>   building; la paternidad TRIBUTA, cerrado el 17/08).
+> - **La auth de los webhooks está CERRADA por decisión del usuario** (T053 / WP-203 done sin
+>   construirse): el auth sigue apagado y no hay activación pendiente.
+> - **La zona gris del `.030` está RESUELTA y no se reintenta**: `787` bloque, `793-794` planta y
+>   `796-797` puerta (dos caracteres alineados a la izquierda). El mapa alternativo se probó el
+>   17/08 y es falso.
+> - **`beckham_bot` tiene 55 nodos** (48 de lógica + 7 sticky) y versión `e74a7ba1` al 27/08, no 54
+>   ni `d15a8da8`.
+> - **La tool `guardar_datos_cliente` tiene 40 parámetros**, no 41 (salió la fecha de la llamada,
+>   19/08).
+> - **El `customScript` de Airtable SÍ es editable — por los colaboradores del secreto** (24/08): el
+>   muro real es el secreto `n8nApi`, no el tipo de nodo. La parte NATIVA de una automatización con
+>   script se edita a mano en la UI (así se arregló la `1. Envio borradores`); la API no vale para
+>   nada ahí (reemplazo completo, `readOnlyNodeType`).
+> - **Piezas del informe**: las vigentes son `informe-datos-2026-08-19.js` e
+>   `informe-cuerpo-2026-08-19.js` (no las `-08-14`), y la puerta son **9 pruebas + 8 comprobaciones
+>   de presencia** en `montar-nodo-informe.sh`, no 11. La lista vigente está en `CLAUDE.md`.
+>   Además, desde el 20/08 el informe **pasa a `beckham_informe_mobility_v2`** (plantillas de Google
+>   Docs, aún `active=false`).
+
 > Estado del documento: **arquitectura objetivo = arquitectura vigente el 16/08/2026.**
 > Todo lo que hay aquí está leído por MCP de los sistemas vivos ese mismo día (n8n `es.synapse.rentax.es`
 > y Airtable `app5K8OnSObqwWweS`), no de memoria. Lo que todavía no existe va marcado

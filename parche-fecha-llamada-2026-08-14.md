@@ -1,5 +1,15 @@
 # Parche · `FechaLlamada`, el marcador 17 del informe · 14/08/2026
 
+> **⚰️ SUPERADO — 27/08/2026.** Este parche quedó anulado por la decisión del **19/08/2026**: la
+> fecha de la llamada **NO se pregunta** (al reservar en Calendly el cliente ya recibe la cita con su
+> fecha). `fecha_llamada` se **eliminó de los cinco sitios** — el prompt (incluido el recordatorio
+> `11b`), el parámetro de la tool (41 → 40), el validador, el lector y el PDF — y la columna
+> `FechaLlamada` quedó **huérfana a propósito** (no se borra: se llevaría el dato de las filas que ya
+> lo tienen). **No reponer nada de este documento**: los pasos marcados «pendiente» ya no son
+> pendientes, son cosas que se decidió no hacer. Además, la regla vigente de un campo nuevo son
+> **CINCO sitios** (el quinto es el lector), no los cuatro que cuenta este doc. Lo vigente está en
+> `CLAUDE.md` §6 («La fecha de la llamada NO SE PREGUNTA») y en `.spartax/log.md` del 19/08.
+
 > **Qué cierra.** `{{fechaLlamada}}` era el único de los 17 marcadores del informe Mobility **sin
 > origen**: la plantilla lo llama «Fecha de la reunión» y se imprimía `Por confirmar`. Comprobado el
 > 14/08 campo por campo contra el esquema vivo: **no existía ninguna columna de fecha de reunión** en

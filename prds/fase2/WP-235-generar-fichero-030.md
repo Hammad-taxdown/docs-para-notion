@@ -6,12 +6,21 @@ size: M
 depends_on: [WP-234]
 milestone: "Fase 2 conversacional — Expediente y documentos"
 owner: "Hammad"
-external: "Fiscal (segunda muestra .030)"
+external: ""
 critical: true
 issue: ""
 ---
 
 # PRD · WP-235 — Generar el fichero .030 desde plantilla (NO es un PDF, es texto posicional)
+
+> **SUPERADO (27/08/2026).** El §8 «Bloqueo» está resuelto hace semanas: **las muestras llegaron**
+> (el generador está medido contra **16 muestras reales**, 12 de 14 nuevas byte a byte), el `.030`
+> **se genera en producción** desde `beckham_generar_030` (camino automático probado punta a punta
+> el 20/08), la **zona gris quedó resuelta como decisión cerrada** (no se reintenta) y
+> `MunicipioResidencia` (§6) ya existe como columna y en los cinco sitios. El `external` del
+> frontmatter («Fiscal, segunda muestra .030») se vació el 27/08 por lo mismo — hay que regenerar el
+> mapa. Lo vigente: `docs/montar-nodo-030.sh` con sus piezas y `CLAUDE.md` §3/§6. El contenido de
+> abajo queda intacto como historia del diseño.
 
 > **REESCRITO ENTERO EL 11/08, dos veces el mismo día.** Nació como «rellenar los modelos 030 y 149»,
 > se recortó al 030 por la mañana y por la tarde **cambió de naturaleza**: el entregable no era un PDF.

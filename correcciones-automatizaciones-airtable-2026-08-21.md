@@ -86,6 +86,15 @@ alguien marcó `EnviarBorradores`, esto la subió al `7` **antes del tick de 15 
 **no se generó nunca** — los dos generadores solo miran las filas en `3` o en `4`. Con el `4` sí es
 seguro, porque a esa altura el informe y el `.030` ya están subidos: `4 → 7` es el paso normal.
 
+> **⚠️ RENUMERACIÓN — 27/08/2026.** Todos los números de peldaño de esta sección (la lista
+> `{1, 2, 4, 5, 6}`, «va el `4` y NO va el `3`», «baja al `7`») son de la escalera **anterior al
+> 26/08**, que ese día se renumeró (+1 desde «Pendiente llamada TD»; equivalencias en
+> `docs/pasos-2026-08-26-renumeracion.sh`). En la numeración de hoy: los generadores filtran
+> `OR(Status=4, Status=5)`, en la lista de la guarda **va el `5` («Informe enviado») y NO va el `4`
+> («Pte hacer informe»)**, y el destino es el `8` («Pte confirmación usuario»). Quien reconstruya la
+> guarda con los números viejos mete el `4` nuevo en la lista y reproduce exactamente el bug del
+> 18/08.
+
 Y la guarda va **duplicada dentro de cada rama de idioma**, porque Airtable no deja poner ningún nodo
 después de un grupo condicional.
 
@@ -119,7 +128,10 @@ const comentarios = inputConfig.comentarios030 ? inputConfig.comentarios030 + "<
 O sea que si un fiscal escribe una observación en `comentarios149`, **el cliente no la ve nunca** y
 nada avisa. Como el script no se toca, hay dos salidas y son las dos de producto, no técnicas:
 escribir siempre en `comentarios030`, o **ocultar o renombrar la columna `comentarios149`** para que
-nadie escriba ahí creyendo que viaja. Decisión pendiente.
+nadie escriba ahí creyendo que viaja. ~~Decisión pendiente.~~ **DECIDIDO Y HECHO el 24/08/2026:
+mitigado renombrando las dos columnas** — `fldRb66vq77ugTYUo` → «Comentarios al cliente (SÍ se
+envía)» y `fldQ3T7KtPYTZeYcK` → «Notas internas 149 (NO se envía)», las dos con descripción. Es
+seguro porque sus consumidores las reciben por ID de campo (anotado el 27/08/2026).
 
 ### Y una corrección a lo que yo mismo escribí el 21/08
 
@@ -131,6 +143,15 @@ que la foto del trigger y la lectura fresca dan lo mismo. **No hay nada que arre
 tocando un script que no se puede tocar.** Queda como diferencia de estilo entre las dos ramas.
 
 ### La `2` y la `2b` sí siguen chocando, y esto necesita tu decisión
+
+> **✅ DECIDIDO — 24/08/2026 (anotado el 27/08/2026). NO SE REABRE.** El usuario decidió que **la
+> `2` y la `2b` se quedan LAS DOS en `deployed`**, y no hay conflicto real: leído el script de la
+> `2`, las dos escriben **los mismos valores en los mismos campos de la misma fila** (el formulario
+> son tres respuestas más nombre, apellidos y NIF, prefijados), así que el orden da igual. A cambio
+> vuelve el borrado automático de la fila huérfana (la `2`) y la `2b` queda de red. El precio
+> asumido: la whitelist deja de proteger, y un campo nuevo en el formulario se copiará al expediente
+> sin que nadie lo decida. **No apagar ninguna.** El análisis de abajo queda como registro de por
+> qué se planteó la decisión.
 
 `2. Usuario completa el formulario de confirmación M030` (`wflo1oMmSWlcYsO3V`, `customScript`) y
 `2b` (`wflvsvULr5SUHcgPN`, nativa) están **las dos en `deployed` sobre el mismo formulario**

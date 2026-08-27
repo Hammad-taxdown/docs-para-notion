@@ -76,8 +76,11 @@ Ninguna, técnica ni de negocio. `depends_on: []` y ya no hay `external`.
 
 ## 6. Cómo se publica, y el error que no se repite
 
-Se construye **sobre el prompt vivo y validado**, nunca sobre un borrador. Vigente: **v7**,
-46.319 caracteres, verificado el 11/08 leyendo la traza de una ejecución real.
+Se construye **sobre el prompt vivo y validado**, nunca sobre un borrador. La fuente es LangSmith,
+`bot_mobility_prompt` **tag `prod`** — no un número de versión fijado aquí. Vigente al 27/08: **v13**,
+65.848 caracteres (v14 local pendiente de pegar), y **el corpus fiscal va inline en el prompt desde
+el v9**: este WP está a medio hacer, no por empezar. (Cuando se escribió esto el vigente era el v7,
+46.319 caracteres, verificado el 11/08 leyendo la traza de una ejecución real; actualizado el 27/08.)
 
 **Regla nacida de un fallo real:** no arrastrar a una publicación parches que el log marque como no
 verificados. El v5 estaba escrito y sin probar, entró dentro del v6 y metió un bucle infinito en la
@@ -93,7 +96,8 @@ de conversaciones con `modo_bot=faq_regimen`. Contingencia: retirar el modo FAQ 
 es el interruptor.
 
 **Riesgo nuevo de esta arquitectura, y hay que declararlo:** al ir inline, **el conocimiento fiscal
-engorda el prompt de todos los modos**, no solo el del FAQ, y el prompt ya va por 46.319 caracteres.
+engorda el prompt de todos los modos**, no solo el del FAQ, y el prompt ya va por 65.848 caracteres
+(v13; eran 46.319 cuando se escribió esto — actualizado el 27/08).
 Si crece de más, se parte en dos nodos de agente con `prompt_base` compartido — que es exactamente
 lo que hace **WP-218**.
 

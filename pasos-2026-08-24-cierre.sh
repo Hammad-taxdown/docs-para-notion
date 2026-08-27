@@ -1,4 +1,15 @@
 #!/bin/bash
+# ⚰️ SUPERADO — 27/08/2026. NADA de este script queda pendiente. Las "DOS decisiones" de p2
+# se tomaron el 24/08 EN CONTRA de la recomendacion de aqui:
+#   · La 2 y la 2b se quedan LAS DOS deployed. NO apagar ninguna: no hay conflicto real (las
+#     dos escriben los mismos valores en los mismos campos de la misma fila) y la 2 recupera
+#     el borrado automatico de la fila huerfana. Decision del usuario, NO SE REABRE.
+#   · comentarios149 se mitigo RENOMBRANDO las dos columnas: fldRb66vq77ugTYUo -> "Comentarios
+#     al cliente (SI se envia)" y fldQ3T7KtPYTZeYcK -> "Notas internas 149 (NO se envia)".
+# Y la verificacion T068 de p1 usa la numeracion VIEJA de la escalera (renumerada el 26/08):
+# hoy es "4. Pte hacer informe" y "5. Informe enviado", y los generadores filtran
+# OR(Status=4, Status=5). Equivalencias: docs/pasos-2026-08-26-renumeracion.sh.
+# Lo vigente: CLAUDE.md seccion 6 y docs/correcciones-automatizaciones-airtable-2026-08-21.md.
 # Lo que queda del 24/08. T073 y T074 YA ESTAN HECHOS Y PUBLICADOS.
 #   bash docs/pasos.sh        -> lo que queda y el orden
 #   bash docs/pasos.sh 1      -> solo el paso 1, Y te copia al portapapeles lo que haya que pegar

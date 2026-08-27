@@ -67,9 +67,9 @@ bash docs/montar-nodo-informe.sh
 node docs/test-generador-030.js
 node docs/test-informe-integracion.js
 
-# LAS NUEVE PUERTAS: siete de node plano mas los dos montadores. `bash docs/pasos.sh test`
-# las pasa las nueve de una vez. Todas exit 1 si algo esta rojo.
-node docs/test-decidir-status.js        # la escalera de Status: 28 comprobaciones
+# LAS CATORCE PUERTAS: once de node plano mas los tres montadores. `bash docs/pasos.sh test`
+# las pasa las catorce de una vez. Todas exit 1 si algo esta rojo.
+node docs/test-decidir-status.js        # la escalera de Status: 30 comprobaciones
 node docs/test-validador-2026-08-19.js  # gentilicios, umbral, estado civil: 31
 node docs/test-prompt-v10.js           # los 17 cambios del prompt v10: 35
 node docs/test-prompt-v12.js           # el prompt v12, 77 (hereda las 60 del v11)
@@ -77,6 +77,9 @@ node docs/test-prompt-v13.js           # el v13 VIVO con el tag prod, 103 (hered
 node docs/test-lector-expediente.js    # el lector de 47 claves: 14
 node docs/test-v2-preparar-informe.js  # el nodo del informe v2: 74
 node docs/test-contrato-upsert.js      # el contrato del escritor contra el nodo vivo: 25
+node docs/test-prompt-v14.js           # el v14 local (66.020 car., PENDIENTE de pegar): 110
+node docs/test-log-evento.js           # el corr_id y el Log_Evento de 6 campos: 25
+node docs/test-diagramas-mermaid.js    # los .mmd.md del repo publico: 28
 
 # Los pasos de un cambio, EN LA TERMINAL (no en un .md que hay que abrir)
 bash docs/pasos.sh          # las puertas + los pasos con workflow, nodo y casilla
@@ -129,8 +132,8 @@ beckham_bot (n8n, 55 nodos: 48 de logica + 7 sticky)  ── AI Agent + ESCRITOR
         ▼
 Airtable «Empleados» (93 columnas)  ── expediente Y bus de eventos: la columna Status dispara todo
         │
-        ├─► beckham_informe_mobility (cada 15 min, Status 3 o 4)  → PDF → Status 4 + InformeListo → automatización 5 → correo
-        └─► beckham_generar_030      (cada 15 min, Status 3 o 4)  → fichero .030 → un fiscal lo sube a la AEAT
+        ├─► beckham_informe_mobility (cada 15 min, Status 4 o 5)  → PDF → Status 5 + InformeListo → canal transaccional (webhook synapse) → correo
+        └─► beckham_generar_030      (cada 15 min, Status 4 o 5)  → fichero .030 → un fiscal lo sube a la AEAT
 ```
 
 **El acoplamiento clave: `Status` no es un campo informativo, es el disparador.** Cambiar quién
@@ -142,31 +145,34 @@ escribe un peldaño enciende o apaga media entrega, y ya ha pasado **dos veces**
   automatización `3b` de Airtable metía el `4` en su rama «Status del 1 al 6 o vacío» y subía la fila
   al `7` **antes de que llegara el tick de 15 minutos**. La ventana era más corta que el tick.
 
-**EL REPARTO VIGENTE, desde el 19/08 (son CINCO sitios, no uno):**
+**EL REPARTO VIGENTE — renumerado el 26/08: la escalera pasa a 13 peldaños (todo lo que iba del 2
+para arriba sube +1, y entra el `2. Pte agendar llamada` de Iciar, que el bot NO escribe):**
 
 | Peldaño | Quién lo escribe | Cuándo |
 |---|---|---|
-| **2. Pendiente llamada TD** | el bot, en `Decidir_Status` | **`SenalesComplejidad` no vacío** (21/08), o `MotivoCierre='Llamada agendada'`, o `AplicaBeckham` |
-| **3. Pte hacer informe** | el bot, en `Decidir_Status` | `MotivoCierre='Expediente completo'` |
-| **4. Informe enviado** | `beckham_informe_mobility`, en `Marcar InformeListo` | cuando el PDF ya está subido |
+| **3. Pendiente llamada TD** | el bot, en `Decidir_Status` | **`SenalesComplejidad` no vacío** (21/08), o `MotivoCierre='Llamada agendada'`, o `AplicaBeckham` |
+| **4. Pte hacer informe** | el bot, en `Decidir_Status` | `MotivoCierre='Expediente completo'` |
+| **5. Informe enviado** | `beckham_informe_mobility`, en `Marcar InformeListo` | cuando el PDF ya está subido |
 
-**El 2 se escribe AL OFRECER la llamada, no al confirmarla** (21/08, decisión del usuario con datos).
+**El peldaño de llamada (hoy `3`) se escribe AL OFRECER la llamada, no al confirmarla** (21/08, decisión del usuario con datos).
 Antes exigía `motivo_cierre='Llamada agendada'`, y el prompt solo manda ese motivo si el cliente
 confirma **dos cosas más**: que reservó en Calendly y que no tiene dudas. La cola del fiscal
 dependía de que el cliente contestase dos veces más — y medido en la conversación `215475580835251`
 (52.000 €), no contestó: la fila se quedó en el `1` y **el fiscal no la veía**. `AplicaBeckham` no
 salva esto: un caso complejo no lo marca nunca, a propósito. Se resolvió con `SenalesComplejidad`,
-que ya llega en la misma llamada, así que **cero campos nuevos**. A cambio, el 2 aparece a mitad de
+que ya llega en la misma llamada, así que **cero campos nuevos**. A cambio, el peldaño de llamada aparece a mitad de
 conversación y el fiscal ve casos incompletos: es deliberado.
 
-Y los dos generadores filtran **`OR(Status=3, Status=4)`**, no solo uno: los dos schedule van con 18
-segundos de diferencia, y si filtrasen solo el `3` un `.030` que hubiera fallado **no reintentaría
-jamás**. `Marcar InformeListo` no puede hacer retroceder el peldaño **porque ese filtro no deja
-entrar una fila en el 7**: si alguien amplía el filtro, el nodo empieza a poder bajarlo. Van atados.
-De la rama del `3b` **se quitó el `3`** (el `4` se queda: 4 → 7 es el paso normal).
+Y los dos generadores filtran **`OR(Status=4, Status=5)`** (nombres del 26/08), no solo uno: los dos
+schedule van con 18 segundos de diferencia, y si filtrasen solo el `4` un `.030` que hubiera fallado
+**no reintentaría jamás**. `Marcar InformeListo` no puede hacer retroceder el peldaño **porque ese
+filtro no deja entrar una fila en el 8**: si alguien amplía el filtro, el nodo empieza a poder
+bajarlo. Van atados. De la rama del `3b` **se quitó el peldaño de hacer-informe** (el de
+informe-enviado se queda: 5 → 8 es el paso normal) — y la `3b` está `undeployed` para siempre (24/08).
 
 **La escalera de Status solo sube.** El bot escribe únicamente si el peldaño propuesto es mayor que
-el actual. Los peldaños **5 y 6 no los escribe nadie** y el 10 no existe.
+el actual. Los peldaños **6 y 7 no los escribe nadie** (`Pte formulario usuario` y `Pte hacer TD`);
+con la escalera de 13 (26/08) ya no hay número sin opción.
 
 ### Los dos caminos por los que el bot conoce al cliente
 1. **`Preparar_Prompt`** arma el bloque «DATOS QUE YA CONOCEMOS» que va al `systemMessage`. Lee el
@@ -291,12 +297,16 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   `[object Object]` **sin fallar**. Y una celda de IA o fórmula en error llega como
   `{state:'error'}`. Hay que guardar los dos casos.
 - **Para un aviso de Slack no vale el `status`: vale el `ok:true` y verlo en pantalla.**
-- **Workspace TEST. Preview nunca y Simulation tampoco. Nunca escribir desde el Inbox** — desde el
-  Inbox es un mensaje de admin y no dispara nada.
+- **Workspace: TaxDown PRODUCCION** (27/08, decisión del usuario: la norma del workspace TEST queda
+  derogada). **Preview nunca y Simulation tampoco. Nunca escribir desde el Inbox** — desde el
+  Inbox es un mensaje de admin y no dispara nada. Y en prod, el backup antes de publicar deja de ser
+  higiene: es la única vuelta atrás.
 - **El Messenger REANUDA el hilo abierto.** Para probar desde cero hace falta incógnito o cerrar los
   hilos: es el mecanismo que rompió el D0 del idioma.
 - **Valores para pegar en n8n: sin el `=` inicial y sin salto de línea final.**
-- **EL CAMINO AUTOMÁTICO ESTÁ PROBADO PUNTA A PUNTA (20/08), y es la primera vez.** Cerrar con
+- **EL CAMINO AUTOMÁTICO ESTÁ PROBADO PUNTA A PUNTA (20/08), y es la primera vez.** (Los números
+  de este bullet son pre-renumeración del 26/08: hoy el bot escribe el `4. Pte hacer informe` y el
+  informe deja el `5. Informe enviado`.) Cerrar con
   `MotivoCierre='Expediente completo'` → el bot escribe el `3` → **sin tocar nada** → en el tick
   siguiente salen los dos: `8125154` (`.030`) y `8125157` (informe), **las dos `mode=trigger`**, con
   los 18 segundos de separación de los dos schedule. Resultado medido: `.030` de 2.700 bytes con el
@@ -304,9 +314,12 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   `4`. Las 289 ejecuciones `trigger` anteriores habían corrido **siempre en vacío**. Si algún día
   vuelve a no salir, esto es la referencia de que el mecanismo funciona: el fallo estará en el dato
   o en el Status, no en el reloj.
-- **Un cambio de Status son CINCO sitios** (19/08): `Decidir_Status`, el filtro del `.030`, el filtro
-  del informe, `Marcar InformeListo` y la automatización **`3b` de Airtable**. Si falta el quinto, una
-  fila marcada con `EnviarBorradores` se escapa de la ventana antes del tick. Ya pasó el 18/08.
+- **Un cambio de Status son SEIS sitios** (19/08, el sexto encontrado el 26/08): `Decidir_Status`,
+  el filtro del `.030`, el filtro del informe, `Marcar InformeListo`, la automatización **`3b` de
+  Airtable** y **el schema cacheado del nodo `Airtable Upser Expediente`** (se refresca en la UI,
+  vigilando que no reactive los 36 campos quitados — §5). Si falta el quinto, una fila marcada con
+  `EnviarBorradores` se escapa de la ventana antes del tick (pasó el 18/08); si falta el sexto, el
+  bot devuelve `persistencia_fallida` en cada escritura (pasó el 26/08).
 - **`montar-nodo-informe.sh` REVIERTE el `COMPLETO` si falla la de integración**, y la de integración
   lee **el `COMPLETO` del disco**, no las piezas. Así que si cambias una pieza *y* su prueba a la vez,
   la primera pasada revierte y la prueba sigue midiendo el nodo viejo: parece que tu cambio no ha
@@ -378,8 +391,8 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   Docs**, que es justo lo que el motor a mano evitaba, y por eso sigue `active=false`.
   **CORREGIDO EL 24/08 CONTRA EL WORKFLOW VIVO: su `Marcar InformeListo` SÍ escribe el `Status`.**
   Aquí se dio por hecho lo contrario desde el 20/08 y era falso: el nodo manda
-  `{Status:'4. Informe enviado', InformeListo:true, RegenerarInforme:false, ErrorInforme:'',
-  InformeEnviadoEl:$now.toISO()}`. La escalera **no** se rompe por ahí; el quinto sitio de un cambio
+  `{Status:'5. Informe enviado', InformeListo:true, RegenerarInforme:false, ErrorInforme:'',
+  InformeEnviadoEl:$now.toISO()}` (nombre del peldaño ya renumerado el 26/08). La escalera **no** se rompe por ahí; el quinto sitio de un cambio
   de Status sigue siendo el mismo, pero en el v2 ya está cubierto.
   **Y OJO CON DOS COSAS DE ESTE WORKFLOW:**
   - **Cada reescritura por API BORRA las credenciales de sus 14 nodos.** Lo dice su propio sticky.
@@ -388,8 +401,10 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
     (`1DgRGflmdr7_…`, que no es ninguna de las ocho plantillas) en lugar de la expresión
     `{{ $json.plantilla }}`, y se perdió el `sameFolder:true`. Tal cual está, en cuanto la credencial
     de Google funcione **los ocho casos saldrían del mismo documento**, con el régimen y el idioma
-    equivocados en siete de cada ocho — y el PDF saldría bien formado, se subiría y se mandaría. Es
-    el fallo silencioso más caro que tiene el sistema ahora mismo. `T073`.
+    equivocados en siete de cada ocho — y el PDF saldría bien formado, se subiría y se mandaría.
+    **RESUELTO EL 24/08 (`T073` cerrado y verificado por MCP): el nodo vivo vuelve a llevar la
+    expresión `{{ $json.plantilla }}`.** Queda como historia del fallo silencioso más caro que tuvo
+    el sistema; el `sameFolder:true` no se repuso (cosmético: el Doc temporal se borra al final).
 - **DOS DEUDAS ACEPTADAS EL 26/08. NO SE ARREGLAN HASTA QUE ROMPAN**, decisión del usuario, y no
   se vuelve a proponer. Están apuntadas **por el síntoma**, que es lo que se verá cuando pase:
   - **`T075` · el fiscal manda los borradores a un cliente ESPAÑOL y `Estado030149` se queda

@@ -1,5 +1,13 @@
 # Texto literal de la plantilla del informe Mobility · extraido el 14/08/2026
 
+> **SUPERADO — 27/08/2026.** Extracción histórica de la plantilla `.docx`. Este texto **ya no es** el
+> cuerpo que hay que reproducir: la cabecera extendida («Fecha de la reunión: {{fechaLlamada}}», el
+> país de origen) y la sección «Notas e información proporcionada» **salieron del informe el 19/08**
+> (queda solo nombre, apellidos y fecha de alta), y el **20/08** el motor pasa al v2 de 8 plantillas
+> de Google Docs. Lo vigente: `CLAUDE.md` §6. **El AVISO DE MÉTODO de abajo sigue siendo válido**
+> (15 de 17 marcadores partidos entre `<w:r>`): es la razón por la que el v1 no rellena el `.docx`,
+> y hay que conservarlo.
+
 > Fuente: `[MOB] Bloques informe Mobility (1).docx`, `word/document.xml` (71.729 caracteres).
 > Extraido con python+zipfile, sin reescribir nada. Es el cuerpo que hay que reproducir en el
 > documento que se le manda al cliente. **Las tablas van celda a celda y en orden.**

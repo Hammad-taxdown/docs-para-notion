@@ -1,5 +1,12 @@
 # Contrato de montaje del informe Mobility · 14/08/2026
 
+> **SUPERADO — 27/08/2026.** Contrato del informe **v1** tal y como estaba el 14/08. Remite a
+> `informe-datos-2026-08-14.js` e `informe-cuerpo-2026-08-14.js`, y las piezas vigentes son las
+> **`-2026-08-19`**: el 19/08 el informe se recortó a nombre, apellidos y fecha de alta, así que el
+> juego de 17 marcadores de aquí ya no es el vigente; y el 20/08 se decidió que el motor pasa a
+> `beckham_informe_mobility_v2` (8 plantillas de Google Docs). Lo vigente: `CLAUDE.md` §4 y §6.
+> **El IR y la regla de fronteras entre las cuatro piezas siguen valiendo como diseño.**
+
 > **Qué es esto.** El contrato que fija las fronteras entre las cuatro piezas de código del informe,
 > para que cada una se pueda escribir y probar por separado y encajen sin tocarse. Continúa
 > `docs/spec-informe-mobility-2026-08-13.md` (los 17 marcadores) y

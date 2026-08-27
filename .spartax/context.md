@@ -13,7 +13,7 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
   (`wdOOF0ecCkgFOUjt`), `beckham_hypatia`, `Sync status_renta - Beckham`.
 - **Airtable** (MCP). Tabla `Empleados` = el expediente del cliente. El escritor único acepta
   **57 columnas** y ninguna más (20 hasta el 6/08, 45 hasta el 7/08, 56 hasta el 14/08; la tool
-  `guardar_datos_cliente` va por **41 parámetros**): lo que no está en el contrato no se pierde por
+  `guardar_datos_cliente` va por **40 parámetros** desde el 19/08, al salir `fecha_llamada`): lo que no está en el contrato no se pierde por
   un bug, NO EXISTE EL CAMINO (el escritor ignora claves desconocidas y devuelve `ok:true`).
   El nodo `Airtable Upser Expediente` va con **`typecast: true`, y eso NO se apaga**: `ponerFecha`
   produce un datetime y las columnas son de solo fecha, así que typecast es lo que hace que Airtable
@@ -121,6 +121,10 @@ propósito: el 2 se escribe a mitad de conversación y el fiscal verá casos inc
 sigue subiendo sola, así que un caso que luego se complete pasa al 3 sin que nadie lo baje.
 
 ### El reparto de Status queda así
+
+> **SUPERADO EL 26/08 · la escalera se renumeró en Airtable (13 peldaños):** hoy son
+> `3. Pendiente llamada TD` / `4. Pte hacer informe` / `5. Informe enviado` — el mapeo completo está
+> en `docs/pasos-2026-08-26-renumeracion.sh`. La tabla de abajo queda con la numeración vieja como historia.
 | Peldaño | Quién lo escribe | Cuándo |
 |---|---|---|
 | **2. Pendiente llamada TD** | el bot, en `Decidir_Status` | `SenalesComplejidad` no vacío, o `MotivoCierre='Llamada agendada'`, o `AplicaBeckham` |
@@ -225,8 +229,12 @@ Iciar; 13 nodos; hoy `active=false` y sin publicar. Copia una de **ocho plantill
 byte. Usa `.item` en todo, vacía `InformePdf` antes de subir, para y explica el motivo si falta un
 dato, y saca el id de `r.id` porque la columna `recordId` viene vacía en las filas creadas por API.
 
-**Cuatro cosas que hay que resolver al cablearlo** (T065): su `Marcar InformeListo` **no escribe el
-`Status`** y sin eso nadie pone el peldaño `4`; su filtro es idéntico al del v1, así que el viejo se
+> **CORREGIDO EL 24/08 contra el workflow vivo:** su `Marcar InformeListo` **SÍ escribe el `Status`**
+> (hoy `5. Informe enviado`, renumerado el 26/08); esa parte de T065 estaba mal aquí. Y T073 (la
+> plantilla fija) se cerró el 24/08: el nodo vive con `{{ $json.plantilla }}`.
+
+**Cuatro cosas que hay que resolver al cablearlo** (T065): ~~su `Marcar InformeListo` no escribe el
+`Status`~~ (falso, ver arriba); su filtro es idéntico al del v1, así que el viejo se
 despublica en el mismo movimiento; no tiene `errorWorkflow`; y el informe pasa a depender de
 credenciales de Google.
 
@@ -491,8 +499,9 @@ otra vez entero en el nodo `Montar el .030`. No se edita en n8n.
 
 ### Las once decisiones del 14/08 — cerradas, no se reabren
 
-Umbral: **NO SE TOCA**, los tramos de 55.000 y 60.000 del prompt son correctos (rectifica lo del
-13/08). Errata de `Propiedades`: no se toca, mapa de presentacion. `paisOrigen` capitalizado.
+Umbral: ~~NO SE TOCA, los tramos de 55.000 y 60.000 del prompt son correctos~~ **SUPERADO EL 19/08:
+el usuario lo fijó con Fiscal en <50.000 → llamada · 50.000-60.000 → al límite · >60.000 →
+favorable; cero apariciones de 55.000 desde el prompt v10** (rectifica lo del 13/08 y lo del 14/08). Errata de `Propiedades`: no se toca, mapa de presentacion. `paisOrigen` capitalizado.
 `estadoCivil` concuerda genero con `Sexo`. `WP-209` muerta. Cabecera del informe = **año de
 desplazamiento**. `residenciaFiscal5Anios` = **'Si' constante, sin columna nueva**. Sumas de
 propiedades e inversiones = la frase del select. **Numero de hijos: fuera del informe.**
@@ -551,6 +560,9 @@ El `.030` se genera después, disparado por ese `Status`, más una casilla `Rege
 - **Spec del informe Mobility escrita**, con 13 de 17 marcadores resueltos.
 
 ## El lío de las cifras del umbral — CUATRO valores distintos
+
+> **RESUELTO EL 19/08:** umbral fijado en 50.000/60.000 por el usuario, ya hablado con Fiscal. Esta
+> sección queda como historia de cómo se detectó el lío.
 
 | Dónde | Dice |
 |---|---|
@@ -624,7 +636,7 @@ cualifica, descarta, lead potencial. Cliente interno: equipo Mobility (Paula, Al
 
 ## Glosario
 - **Escritor** = `/webhook/beckham-upsert-expediente` (`Validar y Normalizar` → `Airtable Upser Expediente`).
-- **Lector** = `/webhook/beckham-get-expediente`, devuelve 21 claves.
+- **Lector** = `/webhook/beckham-get-expediente`, devuelve **47 claves** + 9 documentos como booleanos (19/08).
 - **DC** = Data Connector de Intercom. **WP-2NN** = work package de Fase 2 (`docs/prds/fase2/`).
 - **Descartados** = `_fechas_descartadas`, el bucle por el que el agente vuelve a pedir un dato inválido.
 - **M1–M6** = las 6 decisiones de negocio bloqueantes del roadmap de Fase 2.

@@ -13,6 +13,14 @@ issue: ""
 
 # PRD · WP-234 — AplicaBeckham y complejidad del caso, escritos por el agente
 
+> **SUPERADO (27/08/2026) — cerrado del todo, no «medio hecho».** La señal de complejidad **sí se
+> persiste** desde el **12/08** en la columna **`SenalesComplejidad`** (`fldosgrMoor8q8PiK`,
+> `multipleSelects` con las 7 señales del Bloque 6): la escribe el validador, y desde el **21/08** es
+> la que dispara el peldaño «Pendiente llamada TD» al **ofrecer** la llamada. Las frases de abajo
+> («la parte de complejidad NO está hecha», «no se persiste en ninguna columna») describen el estado
+> anterior al 12/08 y quedan como historia. Lo vigente: el reparto de Status de `CLAUDE.md` §4 y la
+> bitácora `.spartax/log.md`.
+
 > **MEDIO HECHO.** `AplicaBeckham` se cerró el 06/08 y funciona: lo escribe el validador solo con un
 > **sí expreso** del cliente (`quiere_acogerse`), nunca por suposición del agente. **La parte de
 > complejidad del caso NO está hecha.**

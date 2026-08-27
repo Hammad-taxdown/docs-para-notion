@@ -19,6 +19,15 @@ issue: ""
 > re-oferta del menú al usuario, más un evento estructurado `modo_ausente`. **El fail-closed nunca se
 > escribe en el atributo.**
 
+> **CORREGIDO 27/08/2026 — transporte B (WP-210 §2.2, reescrito el 26/08).** El mecanismo original de
+> este PRD era el transporte A: derivar el modo del atributo persistido `modo_bot` leído por API.
+> Vigente: el modo viaja como **input obligatorio de cada llamada al Data Connector** (valores
+> `menu·solicitud·faq_regimen·calculadora·lead_potencial·humano`) y `Resolver_Modo` **valida ese
+> input** contra la whitelist de WP-210 §2.1 — el fail-closed en memoria y el evento `modo_ausente`
+> siguen igual, y siguen sin escribirse nunca. T081 (abierta, B pura recomendada): con **B pura** no
+> se lee ningún atributo persistido; con **B híbrida** el atributo cubriría solo la reentrada, nunca
+> la fuente de verdad del turno. Corregidos abajo §2 y §5.
+
 ## 1. Objetivo
 
 Un único punto en n8n que determine el modo de cada turno, de forma determinista, auditable y sin
@@ -27,13 +36,17 @@ poder ser falsificado desde fuera.
 ## 2. Alcance
 
 **In:**
-- Nodo/subworkflow `Resolver_Modo`: lee `custom_attributes` por API (mecanismo ya verificado con
-  `veredicto_f2`), devuelve `{modo, origen, corr_id, part_id}`.
+- Nodo/subworkflow `Resolver_Modo`: valida el input `modo` que llega en la llamada del Data
+  Connector contra la whitelist de WP-210 §2.1 y devuelve `{modo, origen, corr_id, part_id}`, **sin
+  leer ningún atributo persistido** (corregido 27/08/2026; antes: leía `custom_attributes` por API,
+  mecanismo verificado con `veredicto_f2` — transporte A. Solo si T081 sale B híbrida se leería el
+  atributo, y únicamente para la reentrada).
 - Fail-closed **en memoria** + evento `modo_ausente` al `errorWorkflow`, con contador diario.
 - **Dedupe** por `conversation_part_id` (hoy `If2` es un *debounce*, no un dedupe: HECHO VERIFICADO) y
   descarte de toda part con id ≤ el último procesado.
-- `cold_start` deja de calcularse como `!last_message_content` y pasa a derivarse de `modo_bot` +
-  `punto`.
+- `cold_start` deja de calcularse como `!last_message_content` y pasa a derivarse del input `modo` +
+  `punto` de la llamada del DC (corregido 27/08/2026; antes decía derivarse de `modo_bot` — WP-210
+  §2.2).
 
 **Out:**
 - Escritura del modo por el canvas → WP-212, WP-213.
@@ -51,12 +64,16 @@ WP-210 (contrato), WP-208 (`corr_id` para el log del evento).
 
 ## 5. Verificación
 
-- Conversación con `modo_bot` **ausente**: el log muestra `modo=faq_regimen`, `origen=fail_closed`,
-  aparece el evento `modo_ausente`, y el atributo **sigue vacío** después (comprobado por
-  `get_conversation`).
-- Conversación con `modo_bot=solicitud`: el log muestra `origen=atributo`.
-- Body del webhook con `modo=solicitud` falsificado y atributo `faq_regimen`: el resolver devuelve
-  **`faq_regimen`**.
+- Llamada del DC **sin `modo`** o con valor fuera de la lista: el log muestra `modo=faq_regimen`,
+  `origen=fail_closed`, aparece el evento `modo_ausente`, y **no se escribe nada** (corregido
+  27/08/2026; antes medía el atributo `modo_bot` ausente y su vacío por `get_conversation` —
+  transporte A).
+- Llamada del DC con `modo=solicitud`: el log muestra `origen=input_dc` (corregido 27/08/2026; antes:
+  `origen=atributo`).
+- Llamada **sin procedencia de DC** con `modo=solicitud` falsificado: cae en fail-closed y el resolver
+  devuelve **`faq_regimen`** más el evento `modo_ausente` (corregido 27/08/2026; la prueba original
+  medía que el atributo ganaba al body falsificado — con el transporte B, las pruebas negativa y de
+  falsificación son las ya escritas en WP-210 §5).
 - Reenviar el mismo `conversation_part_id` dos veces: la segunda no produce respuesta al usuario.
 
 ## 6. Riesgo

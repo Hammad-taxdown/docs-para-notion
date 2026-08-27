@@ -1,5 +1,14 @@
 # PEGAR · el peldano 2 al OFRECER la llamada · 21/08/2026
 
+> **HECHO EL 21/08 Y SUPERADO · 27/08/2026. NO PEGUES NADA DE ESTE FICHERO.** El pegado se hizo
+> y se verifico en su dia, y quedo superado por la **renumeracion de la escalera del 26/08**:
+> `nodo-decidir-status-2026-08-21.js` lleva los nombres VIEJOS de Status («2. Pendiente llamada
+> TD», «3. Pte hacer informe», «4. Informe enviado», «12. Descartado»), que ya no existen en
+> Airtable — pegarlo hoy hace que el Upser rechace la escritura con `persistencia_fallida`.
+> **El nodo vigente es `docs/nodo-decidir-status-2026-08-26.js`**, y los valores vigentes de la
+> escalera estan en `docs/pasos-2026-08-26-renumeracion.sh`. El contenido de abajo queda intacto
+> como registro del que y del porque.
+
 **Workflow:** `beckham_bot` (`nhOwpiGxikeU5DLR`) · **Nodo:** `Decidir_Status`
 
 ## Como se pega

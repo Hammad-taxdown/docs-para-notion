@@ -1,5 +1,13 @@
 # PEGAR · arreglo del `.first()` del informe · 20/08/2026
 
+> **HECHO Y VERIFICADO EL 20/08 · lápida del 27/08/2026. NO PEGUES NADA DE ESTE FICHERO.** El
+> arreglo se aplicó y se verificó el 20/08: el nodo vivo ya lleva `.item` en las dos casillas.
+> Queda como registro del qué y del porqué. Ojo además con la comprobación 3 de abajo: «DOS
+> filas en Status 3» era la numeración VIEJA — tras la renumeración del 26/08 el «3» es
+> «Pendiente llamada TD» y NO dispara el generador; hoy los generadores filtran
+> `OR(Status=4, Status=5)`. Los valores vigentes están en
+> `docs/pasos-2026-08-26-renumeracion.sh`.
+
 **Workflow:** `beckham_informe_mobility` (`Us5sFgXD9qVxJvxO`) · **Nodo:** `Subir el PDF a Airtable`
 
 El nodo sube el PDF a `$('Montar el informe').first()`, o sea SIEMPRE a la primera fila del lote.

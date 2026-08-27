@@ -1,5 +1,15 @@
 # Parches para el nodo `Validar y Normalizar` de `beckham_bot`
 
+> **⚰️ SUPERADO — 27/08/2026.** Los dos parches (WP-206 y WP-205a) **se aplicaron el 31/07/2026**
+> y este documento quedó como registro. **No pegar nada de aquí hoy**, por tres motivos: (1) el
+> nodo `Validar y Normalizar` actual es otro — 73.081 caracteres vivos, y el `COMPLETO` con
+> `corr_id` (76.156 car.) se monta desde el código vivo con `bash docs/montar-nodo-validar.sh`;
+> (2) el proyecto **prohibió los parches por trozos** tras el `SyntaxError` del 21/08 — el nodo se
+> entrega **ENTERO**, montado por anclas, para pegar con Cmd+A (`CLAUDE.md` §5); y (3) la opción
+> `Menos de 55 salario` que cita el PARCHE 1 es de un umbral **superado**: desde el 19/08 rige
+> 50.000/60.000 y la opción se renombró a 50.000 (conserva su `id`). El contenido original queda
+> intacto como historia de cómo se aplicó cada parche.
+
 Nodo: `beckham_bot` (`nhOwpiGxikeU5DLR`) → **`Validar y Normalizar`** (nodo Code).
 Rollback: versión actual antes de tocar = la que tengas tras WP-204 (`Publish` crea versión nueva;
 apunta el `versionId` antes de cada parche).

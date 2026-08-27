@@ -42,13 +42,15 @@ echo "${B}copiar:${N}     bash docs/copiar.sh 5"
 echo "${B}verificar:${N}  node docs/test-prompt-v14.js   ${D}-> 110 verdes, 0 rojas${N}"
 [ "$1" = copia ] && bash docs/copiar.sh 5; }
 
-p2(){ paso 2 "WP-216 · las correcciones del canvas, y una CIERRA CONVERSACIONES" \
-  "INTERCOM · Custom Bot OnClick Mobility" "varios pasos del canvas" \
+p2(){ paso 2 "WP-216 · SUPERADO EL 27/08: el canvas se construye DESDE CERO" \
+  "INTERCOM · Custom Bot OnClick Mobility" "el canvas ENTERO, en una COPIA" \
   "a mano en la UI. El canvas NO se toca por API"
-echo "${R}1 · EL TYPO. El atributo es ${N}${V}veredicto_f2${N}${R} con E.${N} Si en algun branch esta"
-echo "${D}   escrito con I, ese atributo NO EXISTE, el branch cae SIEMPRE al else, y el else${N}"
-echo "${R}   CIERRA LA CONVERSACION.${N} ${D}Marcado como hecho verificado en el PRD. Buscalo en${N}"
-echo "${D}   TODOS los branches del path I.${N}"
+echo "${R}SUPERADO EL 27/08.${N} ${D}Decision del usuario: el canvas nuevo se construye desde cero${N}"
+echo "${D}en una COPIA del Custom Bot (el disparador se cambia AL FINAL). Las 6 correcciones de${N}"
+echo "${D}WP-216 van DENTRO del rebuild como invariantes, no como parches al canvas viejo.${N}"
+echo "${B}plan completo:${N} docs/canvas-desde-cero-2026-08-27.md"
+echo "${D}El typo B1 (veredicto_f2 con E) ya estaba corregido y verificado. Las otras cinco,${N}"
+echo "${D}como referencia de lo que el canvas nuevo NO reconstruye:${N}"
 echo "${R}2 · BORRAR 'M. Path'.${N} ${D}Los outputs de un Data Connector son LOCALES A SU PATH, y su${N}"
 echo "${D}   Object mapping PISA el resultado del primero. El veredicto ya esta en el${N}"
 echo "${D}   atributo despues de F. La rama fuera_plazo pasa a ir a ${N}${V}N${N}${D} directo.${N}"
@@ -141,12 +143,11 @@ case "$1" in
     echo; echo "${B}${C}════ ADAPTAR A LA ESCALERA NUEVA · 26/08 ════${N}"
     for i in 1 2 3 4; do "p$i"; done
     echo; echo "${B}${C}━━━ ORDEN ━━━${N}"
-    echo "  ${R}el 2 va primero:${N} el typo del veredicto puede estar cerrando"
-    echo "  conversaciones de clientes ahora mismo, y ese es el unico de los tres"
-    echo "  que le pasa algo a un cliente real."
+    echo "  ${R}el 4 va primero (27/08):${N} un Cmd+A que desatasca WP-207 y WP-208 y todo el"
+    echo "  lado n8n del rebuild del canvas. 35 comprobaciones EJECUTANDO el nodo."
     echo "  ${D}El 1 es pegar y mover el tag: dos minutos. El 3 es higiene y no corre prisa.${N}"
-    echo "  ${D}El 4 es un Cmd+A y desatasca WP-207 y WP-208 de una vez: 35 comprobaciones${N}"
-    echo "  ${D}en verde EJECUTANDO el nodo, no comparando su texto.${N}"
+    echo "  ${D}El 2 esta SUPERADO: el canvas se construye desde cero en una copia${N}"
+    echo "  ${D}(docs/canvas-desde-cero-2026-08-27.md); sus correcciones van dentro del rebuild.${N}"
     echo; echo "${D}un paso suelto y copiado al portapapeles:${N}  bash docs/pasos.sh 1" ;;
   [1-4]) "p$1" copia ;;
   *) echo "uso: bash docs/pasos.sh [1-4|test|26|24|21|19]" ;;

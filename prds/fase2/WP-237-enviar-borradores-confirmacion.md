@@ -13,6 +13,22 @@ issue: ""
 
 # PRD · WP-237 — Enviar borradores y confirmación: solo falta el salto de Status 7 a 8
 
+> **SUPERADO (27/08/2026) — lápida común de la renumeración del 26/08 y de lo ya construido.**
+> Tres puntos de abajo quedaron atrás:
+> 1. **§1 · el nombre y el peldaño.** La automatización aquí llamada «3. Envio borradores 030 y 149»
+>    está **renombrada en la base** como **`1. Envio borradores 030 y 149`** (mismo id
+>    `wflx5iCN4pXuwPAvO`): buscarla por «la 3» no la encuentra. Y con la escalera renumerada el
+>    26/08, el Status que escribe es **`8. Pte confirmación usuario`** (antes 7).
+> 2. **§2 · el «único hueco» ya no existe.** El salto lo hace la automatización
+>    **`3. El cliente confirma los modelos`** (antes «4.»), por IDs de campo, y con la numeración
+>    nueva es **8 → 9. Confirmado**, no 7 → 8.
+> 3. **§5 · falso hoy en las dos mitades.** `Informe enviado` (hoy **5**) **sí lo escribe**
+>    `beckham_informe_mobility` en `Marcar InformeListo` desde el 19/08 (y el v2 también); el
+>    informe ya se genera, no espera a WP-236. Los peldaños sin escritor hoy son **6, 7, 10, 11
+>    y 12**.
+> El mapeo completo de la renumeración: `docs/pasos-2026-08-26-renumeracion.sh`. El contenido de
+> abajo queda intacto como historia del 11/08.
+
 > **AUDITADO POR MCP EL 11/08 ANTES DE ESCRIBIR NADA, Y CASI TODO ESTABA HECHO.** Nació como `M` de
 > construcción y bajó a `S`. Es la **quinta** vez en este proyecto que pasa lo mismo: *el camino existe
 > y nadie lo usa.*

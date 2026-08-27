@@ -46,7 +46,11 @@ ningún log contenga PII.
   *movida*, no resuelta.
 
 **Out:**
-- Tracing tipo LangSmith: DESCONOCIDO si está disponible en esta instancia (incógnita 17).
+- Tracing tipo LangSmith: **ya no es desconocido** (corregido el 27/08) — LangSmith está
+  disponible e **integrado en producción**: el prompt vigente (`bot_mobility_prompt`, tag `prod`)
+  vive allí y el bot lo lee por un **nodo custom de LangSmith** en `beckham_bot`. Lo que queda por
+  decidir es si se usa su **tracing**, no si existe (incógnita 17 resuelta en esa mitad). Sigue
+  fuera del alcance de este WP.
 
 ## 3. Dependencias
 

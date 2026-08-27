@@ -1,4 +1,12 @@
 #!/bin/bash
+# ⚰️ SUPERADO — 27/08/2026. T073 y T074 estan HECHOS Y PUBLICADOS desde el 24/08, y las dos
+# decisiones que p2 deja como "TU DECISION" se tomaron ese mismo dia: la 2 y la 2b se quedan
+# LAS DOS deployed (NO apagar ninguna; no se reabre) y comentarios149 se mitigo renombrando
+# las dos columnas ("Comentarios al cliente (SI se envia)" / "Notas internas 149 (NO se
+# envia)"). Ojo ademas con p3/T068: cita la numeracion VIEJA de la escalera (renumerada el
+# 26/08: hoy "4. Pte hacer informe" / "5. Informe enviado"; equivalencias en
+# docs/pasos-2026-08-26-renumeracion.sh). Lo vigente: CLAUDE.md seccion 6 y
+# docs/correcciones-automatizaciones-airtable-2026-08-21.md.
 # Los pasos del 24/08 en la terminal. Sin abrir ningun fichero.
 #   bash docs/pasos.sh        -> los 3 pasos y el orden
 #   bash docs/pasos.sh 1      -> solo el paso 1, Y te copia al portapapeles lo que haya que pegar
