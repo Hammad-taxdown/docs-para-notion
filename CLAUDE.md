@@ -40,8 +40,11 @@ Consecuencias prácticas:
 2. **Leer `.spartax/log.md`** (las entradas del último día) y `.spartax/context.md`.
 3. **Tras cerrar cada bloque, dar la tabla de pendientes sin que la pida.**
 4. **Logs al día sobre la marcha**, no al final: `python3 ~/.claude/skills/spartax/scripts/state.py log "..."`.
-5. **Al cerrar: push a GitHub** (`./scripts/push-cierre.sh --push`). Se dice **UNA sola vez**. Si ya
-   lo ha hecho o dice que lo hace él, no se vuelve a mencionar en esa sesión.
+5. **Al cerrar: DOS PUSHES, no uno** (27/08, olvidado una vez y cazado por él):
+   - `./scripts/push-cierre.sh --push` → **solo** `docs-para-notion` (docs/ aplanado).
+   - `cd proyecto-mobility && git add -A && git commit && git push` → **`proyecto-mobility-2026`**,
+     el público. **`push-cierre.sh` NO lo toca**, así que su verde no dice nada de este.
+   Se dice **UNA sola vez**. Si ya lo ha hecho o dice que lo hace él, no se vuelve a mencionar.
 6. **Al cerrar: recordarle que tiene una pregunta importante que hacerme.** No sé cuál es; él quiere
    que se lo recuerde.
 
