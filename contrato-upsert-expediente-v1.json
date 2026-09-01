@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://taxdown.es/beckham/contratos/upsert_expediente.v1.json",
   "title": "beckham · upsert_expediente v1 · contrato de ENTRADA del unico escritor de Empleados",
-  "description": "Extraido el 26/08/2026 del nodo VIVO 'Validar y Normalizar' (73.081 car., 1.478 lineas) leyendo sus 46 body.X, no escrito de memoria. WP-207. LO QUE ESTE CONTRATO NO PUEDE DECIR: si el campo acabo escrito en Airtable. Airtable OMITE las celdas vacias en la respuesta, asi que eso se verifica fila a fila por MCP. Y la regla que lo sostiene: el escritor IGNORA las claves que no conoce y devuelve ok:true -- lo que no esta aqui no se pierde por un bug, NO EXISTE EL CAMINO.",
+  "description": "Extraido el 26/08/2026 del nodo VIVO 'Validar y Normalizar' (73.081 car., 1.478 lineas) leyendo sus 46 body.X, no escrito de memoria. WP-207. LO QUE ESTE CONTRATO NO PUEDE DECIR: si el campo acabo escrito en Airtable. Airtable OMITE las celdas vacias en la respuesta, asi que eso se verifica fila a fila por MCP. Y la regla que lo sostiene: el escritor IGNORA las claves que no conoce y devuelve ok:true -- lo que no esta aqui no se pierde por un bug, NO EXISTE EL CAMINO. 01/09: pasa de 46 a 51 claves de entrada al reexportar el nodo vivo; las 5 nuevas son las del corr_id (ver x-corr-id).",
   "type": "object",
   "required": [
     "user_id",
@@ -215,6 +215,29 @@
     },
     "ultimo_pais_residencia": {
       "type": "string"
+    },
+    "conversation_id": {
+      "type": "string",
+      "description": "Mitad del corr_id. La manda el transporte de Intercom (el Data Connector), no la tool. Se guarda en Log_Evento, no en una columna del expediente."
+    },
+    "conversationPartId": {
+      "type": "string",
+      "description": "La otra mitad del corr_id: identifica el mensaje. camelCase a proposito, es como lo manda el Data Connector."
+    },
+    "conversation_part_id_debounce": {
+      "type": "string",
+      "description": "Mismo valor que conversationPartId. Existe porque es la unica clave que lee el If2 del debounce; el escritor la acepta y la ignora."
+    },
+    "intento": {
+      "type": [
+        "string",
+        "number"
+      ],
+      "description": "Numero de intento de escritura. Solo para el Log_Evento y la idempotencia: no se guarda en el expediente."
+    },
+    "modo": {
+      "type": "string",
+      "description": "El modo del turno que declara quien llama. Se acepta para el Log_Evento; la guarda de punto x modo vive en el subworkflow WP-207, todavia sin cablear."
     }
   },
   "x-rechazos": {
@@ -252,5 +275,17 @@
     "tool guardar_datos_cliente": "declara 40 parametros. NO declara punto ni Descarte: el LLM no puede derivar campos ni descartar a nadie.",
     "canvas via webhook": "manda punto y las 4 que la tool no declara -- alta_ss, lead_potencial, fecha_prevista_alta, fecha_limite_plazo -- porque salen del calculo F2 y de los filtros, no de la conversacion."
   },
-  "x-pendiente-wp207": "El WP-207 pide ademas un enum de `resultado` y un `dropped[]` en la RESPUESTA. Hoy la respuesta usa `error` (los 4 de x-rechazos) y `descartados`. Renombrarlos toca `Respond OK`, `Respond Error`, `¿Fechas descartadas?` y `Avisar_Fecha_Invalida`, mas los dos contract-test. Es el cambio de nombres del contrato de SALIDA y va con el cableado del subworkflow, no antes."
+  "x-pendiente-wp207": "El WP-207 pide ademas un enum de `resultado` y un `dropped[]` en la RESPUESTA. Hoy la respuesta usa `error` (los 4 de x-rechazos) y `descartados`. Renombrarlos toca `Respond OK`, `Respond Error`, `¿Fechas descartadas?` y `Avisar_Fecha_Invalida`, mas los dos contract-test. Es el cambio de nombres del contrato de SALIDA y va con el cableado del subworkflow, no antes.",
+  "x-corr-id": {
+    "que_es": "31/08/2026 · las cinco claves que el escritor gano al pegarse el nodo con el corr_id y el Log_Evento (76.156 car).",
+    "cuales": [
+      "conversation_id",
+      "conversationPartId",
+      "conversation_part_id_debounce",
+      "intento",
+      "modo"
+    ],
+    "por_que_no_estaban": "El export de proyecto-mobility contra el que mide la puerta llevaba RANCIO desde el 26/08, con 46 claves. Al reexportarlo el 01/09 desde el nodo vivo salieron 51 y la puerta lo cazo. La deriva no estaba en el codigo: estaba en el espejo.",
+    "leccion": "Un contrato que se mide contra un export solo vale si el export se reexporta. Un export rancio hace que la puerta valide el pasado y de verde."
+  }
 }

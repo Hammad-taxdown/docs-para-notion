@@ -35,7 +35,18 @@ comprobar(soloCodigo.length === 0,
   'toda clave que el codigo lee esta en el contrato' + (soloCodigo.length ? ' · SOBRAN EN EL CODIGO: ' + soloCodigo.join(', ') : ''));
 comprobar(soloContrato.length === 0,
   'toda clave del contrato la sigue leyendo el codigo' + (soloContrato.length ? ' · MUERTAS EN EL CONTRATO: ' + soloContrato.join(', ') : ''));
-comprobar(enCodigo.length === 46, 'siguen siendo 46 claves de entrada (hoy: ' + enCodigo.length + ')');
+// 01/09 · EL CANARIO SUBE DE 46 A 51, Y COMO SE ENTERO IMPORTA MAS QUE EL NUMERO.
+// Esta comprobacion es un canario: si el numero cambia, alguien ha tocado el contrato de
+// entrada del escritor. Salto hoy al reexportar `proyecto-mobility/workflows-n8n/beckham_bot.json`
+// desde el nodo vivo -- el export llevaba RANCIO desde el 26/08, con 46 claves, mientras el
+// nodo vivo tenia 51 desde el pegado del corr_id del 31/08.
+// O sea que la deriva no estaba en el codigo: estaba en el ESPEJO contra el que mide la
+// puerta. Un contrato que se compara con un export solo vale si el export se reexporta; un
+// export rancio hace que la puerta valide el pasado y de verde.
+// Las cinco nuevas son del corr_id y del Log_Evento: conversation_id, conversationPartId,
+// conversation_part_id_debounce, intento y modo. Ninguna se guarda en una columna del
+// expediente. Estan en el contrato bajo `x-corr-id`.
+comprobar(enCodigo.length === 51, 'siguen siendo 51 claves de entrada (hoy: ' + enCodigo.length + ')');
 
 // ── 2 · los cuatro rechazos, ni uno mas ni uno menos ─────────────────────────
 const rech = [...new Set((code.match(/rechazar\('([a-z_0-9]+)'/g) || [])

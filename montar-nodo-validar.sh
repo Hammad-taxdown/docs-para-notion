@@ -14,6 +14,50 @@ V=$(printf '\033[32m'); R=$(printf '\033[31m'); D=$(printf '\033[2m'); N=$(print
 DEST=docs/nodo-validar-normalizar-COMPLETO.js
 TMP=docs/.nodo-validar-en-curso.js
 
+# 01/09 · YA APLICADO NO ES UN FALLO, Y ANTES LO ERA.
+# Este script inserta el corr_id sobre el codigo VIVO del export por anclas de texto.
+# El 31/08 el COMPLETO se pego en produccion, y el 01/09 se reexporto beckham_bot.json
+# desde el nodo vivo -- asi que el export YA TRAE el corr_id dentro y el ancla que el
+# montaje busca ha desaparecido. El script abortaba, la puerta salia roja, y el arreglo
+# aparente era revertir el export: justo lo contrario de lo que hay que hacer.
+# Asi que antes de montar se comprueba si el codigo vivo ya lo lleva. Si lo lleva, se
+# salta el montaje y se VERIFICA el COMPLETO que hay en disco, que es lo que de verdad
+# importa: que siga coincidiendo byte a byte con el nodo vivo.
+YA=$(python3 - <<'FIN'
+import json, io, sys
+try:
+    wf = json.load(io.open('proyecto-mobility/workflows-n8n/beckham_bot.json', encoding='utf-8'))
+    cod = next(n['parameters']['jsCode'] for n in wf['nodes'] if n['name'] == 'Validar y Normalizar')
+    sys.stdout.write('si' if ('corr_id' in cod and 'Log_Evento' in cod) else 'no')
+except Exception:
+    sys.stdout.write('no')
+FIN
+)
+
+if [ "$YA" = "si" ]; then
+  printf "  ${D}el codigo vivo del export YA lleva el corr_id y el Log_Evento: no hay nada que montar.${N}\n"
+  printf "  ${D}se verifica el COMPLETO del disco contra el nodo vivo, que es lo que importa.${N}\n"
+  node --check "$DEST" 2>/dev/null || { printf "  ${R}FALLA${N} el COMPLETO no parsea como JS\n"; exit 1; }
+  printf "  ${V}OK${N}   parsea como JavaScript\n"
+  python3 - <<'FIN' || exit 1
+import json, io, sys, hashlib
+wf = json.load(io.open('proyecto-mobility/workflows-n8n/beckham_bot.json', encoding='utf-8'))
+vivo = next(n['parameters']['jsCode'] for n in wf['nodes'] if n['name'] == 'Validar y Normalizar')
+disco = io.open('docs/nodo-validar-normalizar-COMPLETO.js', encoding='utf-8').read()
+h = lambda t: hashlib.sha256(t.encode('utf-8')).hexdigest()[:12]
+if vivo == disco:
+    sys.stdout.write('  \033[32mOK\033[0m   el COMPLETO es BYTE A BYTE el nodo vivo (%d car, sha256 %s)\n' % (len(disco), h(disco)))
+else:
+    sys.stdout.write('  \033[31mFALLA\033[0m el COMPLETO y el nodo vivo se han separado: disco %d car (%s) vs vivo %d car (%s)\n'
+                     % (len(disco), h(disco), len(vivo), h(vivo)))
+    sys.exit(1)
+FIN
+  node docs/test-nodo-validar-completo.js || { printf "  ${R}FALLA la puerta del COMPLETO${N}\n"; exit 1; }
+  CAR=$(python3 -c "import io,sys;sys.stdout.write(str(len(io.open('$DEST',encoding='utf-8').read())))")
+  printf "\n  ${V}%s caracteres${N} ${D}· ya pegado en produccion, nada que hacer${N}\n" "$CAR"
+  exit 0
+fi
+
 python3 docs/montar-nodo-validar.py "$TMP" || { rm -f "$TMP"; printf "  ${R}FALLA el montaje${N}\n"; exit 1; }
 
 # sintaxis antes de nada: un COMPLETO que no parsea no se guarda

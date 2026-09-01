@@ -1044,8 +1044,18 @@
       "status": "planned",
       "note": "",
       "created_at": "2026-09-01T20:10:31Z"
+    },
+    "T091": {
+      "title": "Quitar el NIE y el apellido reales del comentario del nodo Montar el .030 (y de la pieza fuente), para que el export publico vuelva a ser byte a byte",
+      "milestone": "",
+      "verify": "grep de Z0589116E y del apellido en docs/ y en el nodo vivo da cero, y el export reexportado coincide",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-09-01T20:22:28Z"
     }
   },
-  "next_task": 91,
-  "updated_at": "2026-09-01T20:10:31Z"
+  "next_task": 92,
+  "updated_at": "2026-09-01T20:22:28Z"
 }
