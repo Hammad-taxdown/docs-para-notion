@@ -11,16 +11,23 @@
 > (B pura vs B híbrida) lleva el aviso ⚖️.
 >
 > **ADAPTADA AL CANVAS REAL (27/08, tarde).** El canvas del usuario está leído abriéndolo en el
-> navegador: **`docs/auditoria-canvas-nuevo-2026-08-27.md`**, y trae dos hechos que reescriben esta
-> guía de arriba abajo:
+> navegador: **`docs/auditoria-canvas-nuevo-2026-08-27.md`**, y trae **tres** hechos que reescriben
+> esta guía de arriba abajo:
 >
 > 1. **Son 32 paths (`A`…`AF`) con 11 END, y el flujo está DUPLICADO POR IDIOMA**: `A. Selección
 >    Idioma` bifurca en `B. Introducción ESP` y `C. Introducción ENG`, y de ahí bajan **dos cadenas
 >    paralelas completas**. El §4 de esta guía es un catálogo de **puntos**, no de paths: **cada punto
 >    se construye DOS VECES**. Lo que se duplica y lo que no está en **§4.0**; el mapeo entre los 32
 >    paths reales y los puntos del diseño, en **§8**.
-> 2. **Se trabaja en `s1hap599` = TaxDown PRODUCCIÓN** (decisión del usuario del 27/08). No hay
->    workspace de pruebas: **el backup del canvas antes de publicar es la única vuelta atrás**.
+> 2. **Se trabaja en `s1hap599` = TaxDown PRODUCCIÓN** (decisión del usuario del 27/08). **No hay
+>    workspace de pruebas y la norma del workspace TEST queda derogada**: en producción, **el duplicado
+>    del Custom Bot antes de publicar es la única vuelta atrás**, y lo que hoy protege producción es el
+>    estado **`Draft`** del bot nuevo. Sigue prohibido `Preview` y sigue prohibido escribir desde el
+>    Inbox: en producción mienten igual.
+> 3. **EL IDIOMA YA NO SE PREGUNTA: sale de la rama.** Se fija con un `Set idioma_bot` al empezar cada
+>    cadena y viaja como **input `idioma`** de cada DC que escriba — que **ya está en el contrato del
+>    escritor**, así que no es campo nuevo. De él depende que el informe del v2 salga en el idioma del
+>    cliente. Ficha completa en **§3.2.6**.
 >
 > Solo cuatro paths están nombrados (`A. Selección Idioma`, `B. Introducción ESP`, `C. Introducción
 > ENG`, `Z. FAQ`). De los otros 28 la auditoría **no pudo leer el contenido**, así que aquí salen como
@@ -31,13 +38,15 @@
 ## 0 · ÍNDICE
 
 1. Estado de hoy: qué está hecho y qué falta (**y los CUATRO bloqueos que hay que resolver antes del primer clic**)
-2. Los atributos
+2. Los atributos — y por qué **no se duplican** por idioma
 3. Los Data Connectors, uno por uno — incluido **§3.2.6, el `idioma` que ahora sale de la rama**
-4. El canvas paso a paso — **§4.0 es lo que se duplica y lo que no**
+4. El canvas paso a paso. **§4.0 = lo que se duplica y lo que no**; y las cuatro secciones que salen
+   directas de la auditoría: **§4.A0** (la errata), **§4.I/W** (los dos ⚠️), **§4.Z** (el FAQ que va a
+   un `END`) y **§4.END** (los once finales sin auditar)
 5. Los workflows de Intercom
 6. Checklist de verificación (con **dos casillas por punto**: ESP y ENG)
 7. Las trampas, con su evidencia
-8. **TABLA DE MAPEO: los 32 paths reales ↔ los puntos del diseño**
+8. **TABLA DE MAPEO: los 32 paths reales ↔ los puntos del diseño** — y el recuento que no cuadra
 
 ---
 
@@ -49,7 +58,7 @@
 |---|---|---|
 | **Nodo `Validar y Normalizar` (el escritor)** con `corr_id` y `Log_Evento` | **PEGADO Y PUBLICADO**, 76.156 car., `versionId == activeVersionId == 5b31d761` | el usuario, 27/08 |
 | **Prompt v14 en LangSmith**, tag `prod` movido | **HECHO** | el usuario, 27/08. No comprobable por MCP: solo consta que el fichero local pasa su puerta de 110 comprobaciones |
-| **Custom Bot nuevo creado**: id **68617004**, app **`s1hap599` = TaxDown PRODUCCIÓN**, estado **Draft** | **CREADO con el TEXTO y los CAMINOS**: **32 paths** (`A`…`AF`), **11 END**, **duplicado por idioma** (dos cadenas paralelas ESP/ENG). Trigger `When customer clicks a website element`, audiencia `Users` + 2 más | `docs/auditoria-canvas-nuevo-2026-08-27.md`, leído en el navegador el 27/08 |
+| **Custom Bot nuevo creado**: id **«Mobility Bot (OnClick)» (68617004)**, app **`s1hap599` = TaxDown PRODUCCIÓN**, estado **Draft** | **CREADO con el TEXTO y los CAMINOS**: **32 paths** (`A`…`AF`), **11 END**, **duplicado por idioma** (dos cadenas paralelas ESP/ENG). Trigger `When customer clicks a website element`, audiencia `Users` + 2 más | `docs/auditoria-canvas-nuevo-2026-08-27.md`, leído en el navegador el 27/08 |
 | Whitelist de `punto` cerrada en el escritor | HECHO (WP-206, 11/08) | `descarte_residencia｜lead｜cualifica｜descarte_plazo｜faq_entrada｜autodescarte_declarado` |
 | ~~`veredicto_f2` · `fecha_limite_f2` · `dias_pasados_f2`~~ | **YA NO CUENTA COMO HECHO.** Están creados en `q3bhdtoi`, y el bot nuevo vive en `s1hap599` ⇒ **hay que crearlos** (§2.1, y auditoría §3 punto 1) | INTERCOMDOC Parte D + B1 |
 
@@ -77,7 +86,7 @@ El **B1 ya está resuelto** — y la respuesta es la mala. El **B4 es nuevo** y 
 
 ### 🚨 B1 · CONFIRMADO: el canvas nuevo vive en OTRO workspace, y es el de PRODUCCIÓN
 
-**Ya no es una incógnita, y la respuesta es la mala.** El bot `68617004` está en **`app s1hap599` =
+**Ya no es una incógnita, y la respuesta es la mala.** El bot `«Mobility Bot (OnClick)» (68617004)` está en **`app s1hap599` =
 TaxDown, PRODUCCIÓN**, leído abriéndolo en el navegador (`docs/auditoria-canvas-nuevo-2026-08-27.md`,
 encabezado). Y **todo** lo construido hasta el 26/08 vive en **`q3bhdtoi`**
 (`docs/arquitectura-completa-2026-08-16.md` líneas 233 y 810; y la cabecera
@@ -132,7 +141,43 @@ MCP reenvía los 55 nodos y **borra las credenciales** (trampa 27).
 `2af9679b-…` también cambia por ser un **paso** nuevo. Se cierra en la misma pantalla: copiar la URL
 de callback que muestre el paso `Wait for webhook` del canvas nuevo y compararla con la de arriba.
 
+### 🚨🚨 CORRECCIÓN DEL 28/08 QUE TUMBA B2 Y B3 · **el Data Connector tiene un campo `Body` JSON**
+
+**Visto en pantalla por el usuario el 28/08, con capturas del DC vivo del workspace de TEST.** La UI
+actual del Data Connector tiene, además de los «Data inputs», un campo **`Body`** donde se escribe el
+JSON de la petición a mano:
+
+```json
+{
+  "fecha_alta_ss": "{{fecha de alta en la Seguridad Social}}"
+}
+```
+
+Y su «Add data» ofrece **todos** los atributos, no solo los data inputs de ese conector (medido por el
+usuario). Eso cambia dos cosas que B2 y B3 daban por ciertas, y las dos venían de `INTERCOMDOC`, que
+describe una UI **anterior a este campo**:
+
+| Lo que decía | Lo que es verdad desde el 28/08 |
+|---|---|
+| **B3:** «el `Name` del input es la clave del body», así que había que llamarlo `intercom_conversation_id` a mano | **FALSO con la UI actual.** El `Name` es solo la etiqueta del input; **la clave la pone el `Body`**. El usuario tiene el suyo como «fecha de alta en la Seguridad Social» y el DC del TEST **funciona**: test en vivo `Pass · 200 ok`, `fuera_plazo`, `dias_pasados: 219` |
+| **B2:** «Map action inputs no acepta literales» → hacían falta `Custom value` y 6 DC | **La medición del 28/07 sigue siendo cierta para «Map action inputs»**, pero es irrelevante: **el `Body` sí acepta literales**. Los 6 DC se mantienen, pero por otro motivo (abajo), y `Custom value` ya no hace falta: el `punto` y el `modo` van **escritos literales en el `Body`** de cada conector |
+
+**POR QUÉ SE MANTIENEN LOS SEIS DC AUNQUE AHORA CABRÍA UNO SOLO.** Con el `Body` se podría hacer
+`"punto": "{{punto_bot}}"` y fijar `punto_bot` con un `Set` en cada rama — **un** conector en vez de
+seis. Se descarta, y el motivo está en la lápida de este mismo proyecto: `SAVE` se borró en `WP-216`
+B9 porque *«escribir un atributo en un paso para leerlo en otro es el patrón que costó cinco días»*.
+Con un `punto_bot` mutable hay **12 sitios** donde olvidar el `Set` (6 puntos × 2 cadenas), y el fallo
+es **silencioso y caro**: el DC mandaría el punto de la rama anterior y escribiría el expediente mal.
+Con el literal en el `Body`, **el punto va soldado al conector y es imposible equivocarlo.**
+
+**El `idioma` sí va por atributo (`{{idioma_bot}}`) y no es contradicción:** se fija **una vez** al
+principio de cada cadena y no cambia en toda la conversación. `punto_bot` habría que refijarlo en cada
+punto. Uno es constante de sesión, el otro sería estado mutable — y es el mutable el que muerde.
+
 ### 🚨 B2 · «Map action inputs» **NO acepta valores literales** — y de ahí sale el diseño de los DC
+
+> ⚠️ **PARCIALMENTE SUPERADO EL 28/08 · ver la corrección de arriba.** La medición sigue siendo
+> cierta, pero el `Body` del conector sí acepta literales, así que la conclusión práctica cambia.
 
 **Medido en pantalla el 28/07 por el usuario** (`.spartax/log.md` línea 21, punto 2):
 
@@ -220,7 +265,8 @@ Data Connectors, n8n, Airtable, el prompt y los reusables **son uno solo**.
 | `intentos_fecha_bot` | **Text** | WP-216 B7 · reintentos de fecha, `<2` repregunta · `==2` escala | **CREAR** |
 | `corr_id_bot` | **Text** | WP-208 · traza | **CREAR** |
 | `fecha_alta_ss_bot` | **Text** | el `Collect data` del paso `F`, **en las dos cadenas** | **CREAR** (nombre **propuesto**: el del atributo que usa el canvas viejo es **DESCONOCIDO**). Text obligatorio: los `Date & Time` **no se pueden usar en workflows** (INTERCOMDOC C.9) |
-| **`idioma_bot`** | **Text** | los **6** DC del escritor y el del FAQ. Lo fija un paso `Set` al empezar cada cadena | **CREAR**. Valores exactos: **`es`** en la cadena ESP y **`en`** en la ENG (§3.2.6). Es el único atributo cuyo valor depende de la cadena — y no hace falta uno por idioma: **el atributo es de la conversación, y una conversación recorre una sola cadena** |
+| **`idioma_bot`** | **Text** | los **6** DC del escritor y el del FAQ. Lo fija un paso `Set` al empezar cada cadena | **CREAR**. Valores exactos: **`es`** en la cadena ESP y **`en`** en la ENG (§3.2.6). Es el único atributo cuyo valor depende de la cadena — y no hace falta uno por idioma: **el atributo es de la conversación, y una conversación recorre una sola cadena**. **De él depende que el informe salga en el idioma del cliente**: §3.2.6 |
+| **`fecha_alta_norm_f2`** | **Text** | el input `fecha_alta_ss` de los **6** DC del escritor | **CREAR (28/08, hallazgo del usuario).** Lo rellena el Object mapping del DC1 con `fecha_alta_ddmmaaaa`. **Sin él el bot vuelve a preguntar la fecha que el cliente ya dio**: ver §3.1.1 |
 | `modo_bot` | — | — | **NO SE CREA.** ⚖️ Solo nacería si T081 sale **B híbrida**, y entonces **solo** para la reentrada, nunca como fuente de verdad del turno |
 | `Texto_descarte_f2` | Text | nadie | Existe en `q3bhdtoi` desde el 24/07, **sin uso aparente** (visto en pantalla el 28/07). En `s1hap599` **DESCONOCIDO si existe, y da igual**: no se toca ni se usa, y **no se crea** |
 
@@ -288,6 +334,39 @@ empezar la ENG. Detalle completo en §3.2.6.
 ---
 
 # 3 · LOS DATA CONNECTORS
+
+> ## 🚨🚨🚨 CORRECCIÓN DE FONDO · 28/08/2026 · **EL CANVAS NO ESCRIBE EL EXPEDIENTE**
+>
+> **Lo cazó el usuario** («¿pero por qué cojones 6 DC? antes del upsert lo hacía el agente») y se
+> comprobó **abriendo el workspace de TEST en el navegador**, no leyendo:
+>
+> **En `q3bhdtoi` (TEST) hay DOS Data Connectors, no seis ni siete:**
+> 1. `beckham_plazo_f2` — el cálculo del plazo
+> 2. `n8n_bot_mobility` (461046) — **11 data inputs**: Name · User ID · Email · Phone ·
+>    Conversation Part ID · Last Message Body · … Todos con `Data source` = atributo de Intercom
+>
+> **NO EXISTE ningún Data Connector del escritor.** El expediente lo escribe **el agente**, con su
+> tool `guardar_datos_cliente` → `Webhook_Upsert_Expediente` → `Validar y Normalizar` → Airtable.
+> El canvas solo hace dos cosas: calcular el plazo, y **traer al agente**.
+>
+> **De dónde salió el error, para no repetirlo:** los «4 puntos de persistencia `D`/`H`/`G`/`N` que
+> llaman al escritor con su `punto`» son el **diseño de `WP-206`/`WP-224`**, no lo construido. Se
+> leyeron como estado actual y se diseñaron encima **seis conectores que no existen ni hacen falta**.
+> Y estaba escrito en el propio backlog: **`WP-224` dice literalmente que `H` NO persiste nada hoy**,
+> y que por eso quien abandona desaparece sin traza. Esa frase era la prueba, y no se relacionó.
+>
+> **Regla que queda:** antes de diseñar sobre una pieza, **mirar la pieza**. Un PRD describe lo que
+> se quiere; solo el sistema vivo dice lo que hay. Es la §8 de `CLAUDE.md` otra vez, aplicada esta
+> vez a documentos que no escribí yo.
+>
+> **QUÉ HAY QUE HACER DE VERDAD EN PROD, y es mucho menos:** replicar **esos dos** DC. El `punto`,
+> el `modo` y el `idioma` como inputs del escritor son **Fase 2** — entran cuando el escritor se
+> extraiga a subworkflow (`WP-207`, ya creado como `1BaSgHfQzuzC9sw1`), **no ahora**.
+>
+> **Todo el §3.2 de abajo (los seis DC del escritor) queda como DISEÑO DE FASE 2, no como trabajo
+> de hoy.** Se conserva porque el contrato de sus inputs sigue siendo válido para cuando llegue.
+
+
 
 ## 3.0 · Cómo se crea un Data Connector, clic a clic (vale para los cinco)
 
@@ -387,6 +466,53 @@ ficha. No necesita el input `modo`: no escribe en Airtable, solo calcula.
 
 ---
 
+### 3.1.1 · 🚨 HAY QUE MAPEAR LA FECHA NORMALIZADA, y sin ella el bot repregunta
+
+**Lo preguntó el usuario el 28/08 («¿y no hay que mapear la normalizada?») y la respuesta es SÍ.**
+Medido llamando al webhook del `f2` de verdad y ejecutando `toIsoDate` del validador vivo, los dos el
+28/08 — no leído:
+
+| El cliente escribe | `f2` (4 formatos) | `toIsoDate` del escritor (2 formatos) |
+|---|---|---|
+| `01/06/2026` | ✅ | ✅ |
+| **`1/6/2026`** | ✅ → devuelve `01/06/2026` | ❌ **RECHAZA** |
+| **`1/6/26`** | ✅ → devuelve `01/06/2026` | ❌ **RECHAZA** |
+| **`1 de junio de 2026`** | ✅ → devuelve `01/06/2026` | ❌ **RECHAZA** |
+| `01-06-2026` | ✅ | ❌ **RECHAZA** |
+
+`toIsoDate` exige **exactamente** `^(\d{2})\/(\d{2})\/(\d{4})$` o `AAAA-MM-DD`. El `f2` acepta además
+timestamp, un dígito en día y mes, año de dos cifras y el mes escrito en castellano.
+
+**Qué pasaría mandando al escritor la fecha CRUDA del `Collect data`:** el canvas calcula el plazo
+bien y enruta bien (el `f2` sí la entendió), pero el escritor **descarta la fecha en silencio** — la
+manda a `_fechas_descartadas` y devuelve **`ok:true`**, no falla — y el bot **vuelve a preguntar la
+fecha que el cliente ya dio y el sistema ya había entendido.** Es el peor síntoma que tiene este
+proyecto, y por esta vía no lo cazaría ninguna prueba: las dos piezas funcionan, lo que no encaja es
+la frontera.
+
+**Por tanto el Object mapping del DC1 lleva CUATRO filas, no tres:**
+
+```
+veredicto_f2         ←  veredicto
+fecha_limite_f2      ←  fecha_limite
+dias_pasados_f2      ←  dias_pasados
+fecha_alta_norm_f2   ←  fecha_alta_ddmmaaaa      ← el que faltaba
+```
+
+Y en los **6** DC del escritor, el input `fecha_alta_ss` se rellena con el chip de
+**`fecha_alta_norm_f2`**, **nunca** con el del `Collect data` crudo. El `f2` pasa a ser también el
+normalizador de fechas del sistema, que es lo que ya era de hecho.
+
+**Los otros dos campos siguen sin mapearse a propósito:** `fecha_alta_norm` (ISO, redundante con el
+`ddmmaaaa` que ya sirve) y `fecha_limite_iso` (nadie lo lee en el canvas).
+
+⚠️ **LA MISMA GRIETA SIGUE ABIERTA EN OTRO SITIO, y se queda anotada:** la rama `H` (lead potencial)
+recoge `fecha_prevista_alta` con un `Collect data` y **no pasa por el `f2`**, así que esa fecha llega
+cruda al escritor y `1/6/2026` la descarta igual. Aquí no hay normalizador que interponer. Las dos
+salidas son: ampliar `toIsoDate` en el escritor (toca el nodo de 76 KB), o pedir la fecha con el
+formato en el propio texto del `Collect data`. **No se arregla en este paso**; queda escrito para no
+descubrirlo con un lead perdido.
+
 ## 3.2 · El escritor — `beckham_upsert_expediente` · SE REUTILIZA, Y HAY QUE PARTIRLO EN SEIS
 
 | | |
@@ -399,7 +525,8 @@ ficha. No necesita el input `modo`: no escribe en Airtable, solo calcula.
 
 ### 3.2.1 · La tabla COMPLETA de inputs del escritor
 
-Las 9 originales (WP-05 §28) + `punto` + `modo` + las **dos del `corr_id`** que hoy faltan:
+Las 9 originales (WP-05 §28) + `punto` + `modo` + las **dos del `corr_id`** que hoy faltan + **el
+`idioma` que sale de la rama** (§3.2.6):
 
 | # | Name (= clave del body) | Tipo | Required | Modo de relleno | Fallback | De dónde sale el valor |
 |:--:|---|---|:--:|---|---|---|
@@ -416,6 +543,7 @@ Las 9 originales (WP-05 §28) + `punto` + `modo` + las **dos del `corr_id`** que
 | 11 | `alta_ss` | Text | OFF | **SIN MAPEAR** | vacío | **lo deriva el `punto`** — ver 3.2.2 |
 | 12 | `lead_potencial` | Text | OFF | **SIN MAPEAR** | vacío | **lo deriva el `punto`** |
 | 13 | `Descarte` (**D mayúscula**, igual que la columna de Airtable) | Text | OFF | **SIN MAPEAR** | vacío | **lo deriva el `punto`** |
+| 14 | **`idioma`** | Text | **OFF a propósito** | `Let Fin collect`, chip **`idioma_bot`** en el paso | vacío | **la cadena**: `es` en la ESP, `en` en la ENG · ver **§3.2.6**. Ya está en el contrato (46 claves), **no es campo nuevo** |
 
 Todos **Text**: el body de un DC manda todo entre comillas y el validador ya convierte booleanos de
 texto (`"si"`, `"no"`, `"true"`) y fechas.
@@ -452,6 +580,10 @@ línea 462 («un solo DC por punto»).
 | `beckham_upsert_descarte_plazo` | `descarte_plazo` | `solicitud` | `N` |
 | `beckham_upsert_faq_entrada` | `faq_entrada` | `faq_regimen` | la rama FAQ |
 | `beckham_upsert_autodescarte` | `autodescarte_declarado` | `faq_regimen` | el autodescarte, dentro del FAQ |
+
+**Y los seis llevan además el input `idioma`** — ese **no** va como `Custom value`, porque su valor
+depende de la cadena y no del punto: va como chip `idioma_bot` en cada «Map action inputs» (§3.2.6).
+Por eso siguen siendo **6 DC y no 12**.
 
 Los valores válidos de `modo` son **seis** y `menu` **es un valor explícito, no una ausencia**:
 `menu` · `solicitud` · `faq_regimen` · `calculadora` · `lead_potencial` · `humano`.
@@ -501,6 +633,102 @@ No hay whitelist de `modo` ni rechazo por `modo` ausente. Eso es la **capa 3 de 
 pendiente**. Consecuencia práctica, y hay que saberla antes de probar: **una llamada sin `modo` HOY
 escribe igual** — la «prueba negativa» de WP-210 §5 («sin `modo` no se escribe nada») fallaría hoy, y
 no porque el canvas esté mal.
+
+---
+
+### 3.2.6 · EL `idioma`: ya no se pregunta, SALE DE LA RAMA — y no cuesta ningún campo nuevo
+
+**Lo que cambia con el canvas real.** El diseño anterior trataba el idioma como un dato que había que
+averiguar dentro del flujo (y el D0 del idioma se rompió el 7/08 justamente por eso: el Messenger
+reanudaba el hilo abierto y nadie volvía a preguntarlo). En el canvas del usuario **el idioma es la
+primera bifurcación**: `A. Selección Idioma` → `B. Introducción ESP` ｜ `C. Introducción ENG`
+(auditoría §1). A partir de ahí **la rama YA ES el idioma**: no hay nada que preguntar y nada que
+inferir.
+
+**Y la mejor parte: `idioma` YA ESTÁ en el contrato del escritor**, así que **no dispara la regla de
+los cinco sitios**. Está medido en dos ficheros:
+
+- `docs/contrato-upsert-expediente-v1.json` → `properties.idioma`, **1 de las 46 claves**:
+  *«singleSelect 'Idioma', whitelist cerrada en el nodo. Un valor fuera NO se escribe y va a
+  descartados; se compara POR NOMBRE.»*
+- `docs/nodo-validar-normalizar-COMPLETO.js` línea **373**, el nodo vivo que se pegó hoy:
+
+```js
+ponerSelect('Idioma', body.idioma, [
+  ['Español', ['espanol', 'espanola', 'castellano', 'spanish', 'es', 'esp']],
+  ['Ingles',  ['ingles', 'inglesa', 'english', 'en', 'eng']]
+], { rechazarSiNiega: true });
+```
+
+O sea: **`es` y `en` son valores válidos y escriben la columna `Idioma`** sin tocar nada de n8n. Y un
+detalle medido que hay que respetar: las claves de **3 letras o menos se comparan por igualdad
+exacta**, no por palabra suelta — lo dice el comentario del propio nodo (líneas 346-347): si no,
+*«mi idioma es ingles»* casaría con `es` y guardaría Español. **Manda exactamente `es` o `en`, solos,
+sin frase alrededor.**
+
+#### Por qué esto importa aunque «solo» sea una columna: el informe v2 elige la plantilla con ella
+
+Medido en `docs/nodo-v2-preparar-informe-2026-08-21.js`:
+
+- línea **69**: `const idioma = (sinTildes(txt(r.Idioma)).trim().toLowerCase() === "ingles") ? "EN" : "ES";`
+- líneas **70-72**: `clave = <régimen0> + "+" + <régimen1> + "|" + idioma` y esa clave se busca en el
+  mapa `PLANTILLAS`, que tiene **8 entradas** (4 combinaciones de régimen × 2 idiomas).
+
+**Solo el valor `Ingles` da `EN`. Todo lo demás — incluida la celda VACÍA — cae en `ES`**, y no hay
+error: hay PDF. Consecuencia exacta si el canvas no manda `idioma`: **un cliente que eligió English
+recibe el informe fiscal en español**, bien formado, subido y enviado por el canal transaccional. Es
+el mismo patrón que el ID fijo del nodo `Copiar la plantilla` (`T073`): fallo silencioso con
+entregable de aspecto correcto. **El input `idioma` del DC es lo que tapa ese agujero desde arriba.**
+
+#### Cómo se pasa: el valor es fijo por rama, y llega a «Map action inputs» como CHIP
+
+Aquí choca con **B2**: «Map action inputs» **no acepta literales** (trampa 3, medido el 28/07), así
+que *«pon `es` a mano en el mapeo del paso»* **no se puede hacer**. Lo que sí acepta son **chips**. El
+camino, en dos piezas:
+
+1. **Un paso `Set idioma_bot` al principio de cada cadena** — el `Set` es el único sitio del canvas
+   que acepta texto literal (trampa 4): `Set idioma_bot = es` como **primer paso de
+   `B. Introducción ESP`** y `Set idioma_bot = en` como **primer paso de `C. Introducción ENG`**. Son
+   **dos pasos en todo el canvas**, y se ponen una sola vez aunque haya once puntos que lo usen.
+2. **Un input `idioma` en cada DC que escriba**, con `Data source = Let Fin collect`, `Name` escrito
+   a mano `idioma` (así no se bloquea, B3), `Required` **OFF**, `Fallback` **vacío** — y en cada «Map
+   action inputs» el **chip `idioma_bot`** insertado desde el encabezado **`Conversation`**.
+
+**`Required` va OFF a propósito:** `Required ON` es condición de ejecución (trampa 5), así que si un
+día el `Set` no llegó a correr, con ON **el conector entero no se ejecuta** y se pierde la fila; con
+OFF se pierde el idioma y se escribe todo lo demás. Perder el idioma es un PDF en el idioma
+equivocado; perder la fila es perder el lead.
+
+**La alternativa, y su precio:** partir cada DC del escritor **también por idioma** y poner `idioma`
+como `Custom value` (`es`/`en`), igual que `punto` y `modo`. Eso se lleva el atributo y los dos pasos
+`Set`… y **convierte los 6 DC del escritor en 12**. No se recomienda: son doce fichas que mantener y
+seis oportunidades más de que una quede desparejada, y la asimetría entre idiomas es justo el fallo
+que este canvas ya arriesga por diseño (**B4**).
+
+| Vía | Piezas | Coste | Veredicto |
+|---|---|---|---|
+| **`Set idioma_bot` + chip** | 1 atributo · 2 pasos `Set` · 1 input por DC | 1 chip más en cada «Map action inputs» | **RECOMENDADA** |
+| `idioma` como `Custom value` | 0 atributos · 0 pasos | **6 DC → 12 DC** | descartada |
+
+**Los DC que llevan el input `idioma`:** los **6** del escritor (§3.2.3) y **`beckham_faq`** (§3.4) —
+el FAQ contesta con un LLM y el idioma de la respuesta no se adivina. **No lo lleva**
+`beckham_plazo_f2`: solo calcula fechas.
+
+**Tres cosas que NO hay que hacer con el idioma:**
+
+- **No preguntarlo dentro del flujo.** Ya está elegido en `A`. Un `Collect data` de idioma sería un
+  segundo origen de verdad para el mismo dato, y cuando hay dos, uno miente.
+- **No crear `idioma_bot_es` / `idioma_bot_en`.** Un Conversation attribute es del workspace y su
+  valor es de la conversación, y **una conversación baja por una sola cadena** (§2.1): uno basta para
+  las dos.
+- **No mandar `Español` / `Ingles`.** Se manda `es`/`en` y **el nodo normaliza**. Mandar el nombre de
+  la opción de Airtable desde Intercom es meter una constante de negocio en el único sitio no
+  testeable, que es lo que el Council descartó el 28/07 (§3.2.2).
+
+**Verificación (dos recorridos, uno por cadena):** tras pasar por `G` en cada idioma, la columna
+`Idioma` de la fila dice **`Español`** en el recorrido ESP y **`Ingles`** en el ENG. Si sale **vacía**,
+lo que falta es el **chip del paso**, no el DC: `ponerSelect` hace `if (!bruto) return;` antes de
+tocar nada, así que un input vacío **no deja rastro** ni en `descartadas`.
 
 ---
 
@@ -566,6 +794,7 @@ del turno lo decide quien llama, no el atributo.
 | `message` | Text | ON | `Let Fin collect` + chip del `Collect data` | vacío | **la pregunta del cliente** |
 | `modo` | Text | ON | **`Custom value` = `faq_regimen`** | vacío | fijo |
 | `punto` | Text | ON | **`Custom value` = `faq_entrada`** | vacío | fijo |
+| **`idioma`** | Text | **OFF** | `Let Fin collect` + chip **`idioma_bot`** | vacío | la cadena (§3.2.6). **El FAQ contesta con un LLM: sin esto la respuesta puede salir en el idioma equivocado** |
 
 **Object mapping:** **ninguno**. La respuesta no vuelve por el cuerpo del DC: vuelve por el
 **callback** que reanuda el paso. Mapear algo aquí sería pisar atributos sin necesidad.
@@ -600,8 +829,12 @@ apaño**.
 
 **Invariantes que valen para todo el canvas, y se comprueban al final una por una:**
 
-- **`Close conversation` SOLO en `D` y `N`.** Todo lo demás termina el workflow con el hilo **abierto**.
-- **Ninguna rama toca `ticket.state`.** Ni una.
+> 🔁 **CADA PUNTO DE ESTE §4 SE CONSTRUYE DOS VECES**, una en la cadena ESP y otra en la ENG. Lo que se
+> duplica y lo que no está en **§4.0**; qué path real es cada punto, en **§8**.
+
+- **`Close conversation` exactamente CUATRO veces**: `D` y `N` **de cada cadena** (§4.0.2). Todo lo
+  demás termina el workflow con el hilo **abierto**.
+- **Ninguna rama de ninguna cadena toca `ticket.state`.** Ni una.
 - **NO existen** `M. Path`, `SAVE`, `FLAG`, `RESUME → B`, `K → FRETRY → M`. No se reconstruyen.
 - **Cada llamada a un DC que escriba lleva `punto` y `modo`** como `Custom value` del DC (B2).
 - **El modo nunca viaja en el body del webhook público**: un tercero que golpee el webhook no puede
@@ -610,24 +843,111 @@ apaño**.
   resuelve a **`null`** (Pill Conversion Error).
 - **El menú no es un punto de entrada garantizado**: el Messenger **reanuda el hilo abierto**.
 
-## 4.A · `A · Bienvenida`
+## 4.0 · EL CANVAS ESTÁ DUPLICADO POR IDIOMA: qué se duplica y qué no
 
-- **Tipo de paso:** mensaje del bot (+ **añadir el tag `jarry_ignore`** a la conversación).
-- **Texto:** el que ya tiene el bot 68617004 — explica la Ley Beckham. **No se toca.**
+**Este §4 es un catálogo de PUNTOS del diseño, no de paths del canvas.** El canvas real tiene 32 paths
+porque cada punto existe **dos veces**: una en la cadena ESP (`B. Introducción ESP` y lo que baja de
+ella) y otra en la ENG (`C. Introducción ENG` y lo suyo), medido en la auditoría §1. Cuando una ficha
+de abajo dice «el paso `D`», quiere decir **el punto de descarte por residencia, en las dos cadenas**.
+Qué path real es cada punto, en **§8** — y hoy **28 de los 32 están sin identificar**.
+
+### 4.0.1 · La tabla del doble trabajo
+
+| Pieza | ¿Se duplica? | Por qué |
+|---|:--:|---|
+| **Conversation attributes** (los 10 de §2.1) | **NO** | Son del **workspace** y su valor es de la **conversación**. Una conversación baja por una sola cadena ⇒ cero colisión. No existe ni hace falta `veredicto_f2_en` |
+| **Data Connectors** (los 9 de §3) | **NO** | Un DC es un objeto del workspace. El mismo `beckham_upsert_cualifica` se llama desde las dos cadenas |
+| **El `Object mapping` de un DC** | **NO** | Vive dentro del DC (pestaña `2 Data`), no en el paso |
+| **`punto` y `modo` (`Custom value`)** | **NO** | Viven dentro del DC (§3.2.3). Por eso hay 6 DC de escritor y no 12 |
+| **n8n, Airtable, el prompt, los dos reusables** | **NO** | No se enteran de la cadena. Lo único que les llega del idioma es el input `idioma` (§3.2.6) |
+| **El CABLEADO: el paso que llama al DC** | **SÍ, ×2** | Un paso de Data Connector por cadena |
+| **«Map action inputs» de cada llamada** | **SÍ, ×2** | Es del **paso**, no del conector. **Aquí se va el tiempo**: los chips se insertan uno a uno con el Attribute Inserter, en cada punto de cada cadena |
+| **Las condiciones de los branches** | **SÍ, ×2** | `I. Path` (ESP) y `W. Path` (ENG) son el mismo branch escrito dos veces (§4.I/W) |
+| **Los pasos `Set`** (`intentos_fecha_bot`, `faq_turnos_bot`) | **SÍ, ×2** | Y ya venían desenrollados: §2.3. Es donde más se disparan los clics |
+| **`Close conversation`** | **SÍ, ×2 ⇒ CUATRO** | `D` y `N` en cada cadena. La invariante «solo dos `Close`» pasa a **«exactamente cuatro, dos por cadena»** |
+| **El path `L`** | **SÍ, ×2** | La invariante «un solo `L`» de WP-223 es **imposible** en un canvas duplicado. Se reescribe en 4.0.2 |
+| **Los textos de cliente** | **SÍ, ×2 y en dos idiomas** | Es el propósito del duplicado: cada mensaje existe en ES y en EN |
+| **El tag `jarry_ignore`** | **NO, si se pone en `A`** | `A. Selección Idioma` es el único paso por el que pasan las dos cadenas: es el único sitio que no hay que duplicar (§4.A0) |
+
+### 4.0.2 · Las invariantes, reescritas para dos cadenas
+
+- **`Close conversation` exactamente CUATRO veces**: `D`+`N` de la cadena ESP y `D`+`N` de la ENG.
+  Cinco es un `Close` de más; cuatro repartidos 3-1 es una asimetría.
+- **El path `L` son DOS**, con la **misma redacción traducida** y el **mismo team destino**. Lo que se
+  conserva de WP-223 no es «un solo path» — que ya no se puede — sino **una sola redacción por idioma
+  y un solo destino de asignación**. Si en una cadena `L` asigna y en la otra no, el fallo es
+  invisible en español.
+- **Ninguna rama de ninguna cadena toca `ticket.state`.** Ni una.
+- **NO existen** `M. Path`, `SAVE`, `FLAG`, `RESUME → B`, `K → FRETRY → M`. No se reconstruyen **en
+  ninguna de las dos cadenas**.
+- **Cada punto que escribe lleva `punto` + `modo` (fijos en el DC) + el chip `idioma_bot` (del paso).**
+- **Los chips se insertan con el Attribute Inserter**, y los de atributo de conversación **desde el
+  encabezado `Conversation`**. Un token escrito a mano se pinta como pill y resuelve a **`null`**.
+
+### 4.0.3 · Cómo se trabaja para que la asimetría no se cuele
+
+Es un método, no una recomendación, y viene de que **el proyecto ya paga esta factura dos veces**: el
+script del correo inglés de Airtable existe duplicado (`wacPpABiplv5tO7OM` y `wac2hg1IZkE0yOxMF`) y
+hay que cambiar el texto en los dos; y `T075` está apuntado literalmente como *«la firma es la
+asimetría: en inglés sí se marca»*.
+
+1. **Punto por punto, no cadena por cadena.** Se abre el punto en ESP, se cablea, y **acto seguido** el
+   mismo punto en ENG. Terminar la cadena española entera y luego empezar la inglesa es la forma
+   segura de que a la inglesa le falten tres chips.
+2. **Ninguna casilla del §6.4 se marca hasta que las DOS lo están.** Por eso el §6.4 lleva **dos
+   casillas por punto**, `ESP` y `ENG`.
+3. **Al renombrar los 28 «Path» (§8), el nombre lleva el idioma dentro**: `D · descarte residencia
+   ESP` / `D · descarte residencia ENG`. Renombrar un path **es gratis y no rompe nada** (auditoría
+   §1), y es la única defensa contra abrir el canvas dentro de una semana y no saber cuál es cuál.
+4. **Cada arreglo posterior se apunta en la bitácora con «×2 hecho»**, o no está hecho.
+5. **El e2e se recorre en los dos idiomas** (§6.5). Un e2e verde solo en español no dice nada del 50%
+   del canvas.
+
+---
+
+## 4.A0 · `A. Selección Idioma` — el primer paso real, y su errata
+
+- **Nombre en el canvas:** **`A. Selección Idioma`** (uno de los cuatro paths con nombre). Es el
+  destino del trigger `When customer clicks a website element`.
+- **Tipo de paso:** **reply buttons**, dos: `🇪🇸 Español` y `🇬🇧/🇺🇸 English` (auditoría §1).
+- **Salidas:** `Español` → **`B. Introducción ESP`** · `English` → **`C. Introducción ENG`**.
+- **Es el único paso que NO se duplica**, porque por él pasan las dos cadenas (§4.0.1).
+- 🔴 **ERRATA QUE HAY QUE ARREGLAR, y es el primer texto que ve el cliente:** hoy dice
+  **«¿Quieres que te atendamos en españo?»** — falta la `l` de «español» (auditoría §5). Se corrige en
+  el cuerpo del mensaje de este paso, es un campo de **texto** libre y no rompe nada.
+- **DC:** ninguno. **Cierra:** no.
+- **Atributos:** ninguno **aquí**. El `Set idioma_bot` va en el primer paso de cada cadena, no en este,
+  porque en este todavía no se sabe la respuesta (§3.2.6).
+- **El tag `jarry_ignore`:** si el paso admite añadir un tag, **ponerlo aquí**. Es el único sitio del
+  canvas que no hay que duplicar, y así no puede quedar puesto en una cadena y no en la otra.
+
+## 4.A · `B. Introducción ESP` y `C. Introducción ENG` — la bienvenida, ×2
+
+- **Tipo de paso:** mensaje del bot. **Uno por cadena**, el mismo contenido en su idioma.
+- **Texto:** el que ya tiene el bot «Mobility Bot (OnClick)» (68617004) — explica la Ley Beckham. **No se toca** (la errata que
+  sí se toca está en `A`).
+- 🆕 **PRIMER PASO DE CADA UNO:** `Set idioma_bot = es` en `B` y `Set idioma_bot = en` en `C`
+  (§3.2.6). Son los dos únicos `Set` del canvas que no van desenrollados, y de ellos depende que el
+  informe salga en el idioma del cliente.
 - **DC:** ninguno.
 - **`modo` / `punto`:** ninguno (no hay llamada). El `menu` se declara en la llamada del paso que la
-  haga, si la hay.
-- **Cierra:** no.
-- **Atributos:** ninguno.
-- **Por qué el tag:** es la marca con la que se excluye la conversación de un distribuidor ajeno.
-  En `q3bhdtoi` el `Distribuidor - Usuario envia mensaje` está **desactivado a mano desde el 1/08**;
-  si en el workspace nuevo hay uno equivalente **repartiendo clientes reales**, la colisión vuelve y
-  el arreglo previsto es **una regla de audiencia que excluya `jarry_ignore`**, no apagarlo.
+  haga, si la hace.
+- **Cierra:** no. De cada uno bajan **dos** salidas medidas (auditoría §1): de `B` salen `D` y
+  `Z. FAQ`; de `C` salen `AA` y `Q`. **Qué punto del diseño es cada una está DESCONOCIDO** (§8).
+- **Por qué el tag `jarry_ignore`:** es la marca con la que se excluye la conversación de un
+  distribuidor ajeno. En `q3bhdtoi` el `Distribuidor - Usuario envia mensaje` está **desactivado a
+  mano desde el 1/08**; si en `s1hap599` hay uno equivalente **repartiendo clientes reales**, la
+  colisión vuelve y el arreglo previsto es **una regla de audiencia que excluya `jarry_ignore`**, no
+  apagarlo. Y aquí es producción: **no se apaga nada de otro equipo sin avisar** (trampa 22).
 - ❌ **Fuera:** la pregunta «¿quieres acogerte?» y la salida `ANO` del canvas viejo. El menú las
   sustituye.
+- ❌ **Fuera también: preguntar el idioma.** Ya está elegido en `A`, y dos orígenes para el mismo dato
+  significa que uno miente.
 
 ## 4.AOPT · `AOPT · el menú` (WP-213)
 
+- 🔁 **×2**: un menú por cadena, con los cuatro botones traducidos. Path real: **DESCONOCIDO en las dos
+  cadenas** (§8.3 fila 3) — y es uno de los cuatro candidatos a **no existir todavía** (§8.3.1).
 - **Tipo de paso:** **reply buttons**.
 - **Los cuatro botones, en este orden de prioridad:**
   1. `Comprobar si cumplo` → rama **solicitud**
@@ -648,6 +968,8 @@ apaño**.
 
 ## 4.B · `B · FILTRO F1 · ¿residente fiscal en España los últimos 5 años?`
 
+- 🔁 **×2**. Path real: **DESCONOCIDO** (§8.3 fila 4). **No confundir con el path `B. Introducción
+  ESP`**: el `B` del diseño es este filtro, el `B` del canvas es la bienvenida española (§8.2).
 - **Tipo:** reply buttons (`Sí` / `No`).
 - **DC:** ninguno.
 - **Salidas:** `Sí` → `D` (descarte) · `No` → `E`.
@@ -656,6 +978,9 @@ apaño**.
 
 ## 4.D · `D · descarte por residencia` 🔴
 
+- 🔁 **×2, y son 2 de los 4 `Close` del canvas.** Path real: **DESCONOCIDO** (§8.3 fila 5). Hay un path
+  llamado `D` colgando de `B. Introducción ESP`, pero **coincidencia de letra ≠ coincidencia de punto**
+  (§8.2).
 - **Tipo:** mensaje + **`Close conversation`**.
 - **DC:** `beckham_upsert_descarte_residencia` (`punto=descarte_residencia`, `modo=solicitud`).
 - **Mapeo en «Map action inputs»:** solo chips — `user_id`, `intercom_conversation_id`,
@@ -668,6 +993,7 @@ apaño**.
 
 ## 4.E · `E · FILTRO F3 · ¿estás ya de alta en la Seguridad Social?`
 
+- 🔁 **×2**. Path real: **DESCONOCIDO** (§8.3 fila 6).
 - **Tipo:** reply buttons (`Sí` / `No`).
 - **DC:** ninguno.
 - **Salidas:** `No` → `H` (lead potencial) · `Sí` → `F`.
@@ -675,6 +1001,7 @@ apaño**.
 
 ## 4.H · `H · lead potencial` 🟡 (WP-224)
 
+- 🔁 **×2**. Path real: **DESCONOCIDO** (§8.3 fila 7).
 - **Tipo:** llamada al DC **ANTES de preguntar nada**, y después el `Collect data` de la fecha
   prevista.
 - **DC:** `beckham_upsert_lead` (`punto=lead`, `modo=lead_potencial`).
@@ -698,6 +1025,9 @@ apaño**.
 
 ## 4.F · `F · Collect data · fecha de alta en la SS`
 
+- 🔁 **×2**, y el `Collect data` de las dos cadenas escribe **el mismo** atributo `fecha_alta_ss_bot`
+  (§2.1: los atributos no se duplican). Path real: **DESCONOCIDO** (§8.3 fila 8) — hay un path llamado
+  `F` en el canvas, pero cuelga de la rama de `Z. FAQ` (§8.2).
 - **Tipo:** **`Collect data`**, guardando en **`fecha_alta_ss_bot`**, tipo **Text**, formato
   `DD/MM/AAAA`.
 - **Nunca un atributo `Date & Time`:** no se pueden usar en workflows (no se puede validar la zona
@@ -709,6 +1039,8 @@ apaño**.
 
 ## 4.DC1 · la llamada a `beckham_plazo_f2`
 
+- 🔁 **El DC es UNO; el paso que lo llama, DOS** (§4.0.1). Y su «Map action inputs» se rellena dos
+  veces: es el paso donde se ve mejor la diferencia entre conector y cableado.
 - **Tipo:** paso de Data Connector, **en el mismo path que `F`**.
 - **DC:** `beckham_plazo_f2` (§3.1). **Una sola vez en toda la conversación.**
 - **Mapeo:** `fecha_alta_ss` ← chip `fecha_alta_ss_bot`.
@@ -717,28 +1049,63 @@ apaño**.
   `dias_pasados_f2`.
 - **Cierra:** no.
 
-## 4.I · `I · branch sobre `veredicto_f2`` — **cuatro** salidas
+## 4.I/W · el branch del veredicto: `I. Path` (ESP) y `W. Path` (ENG) — **cuatro** salidas cada uno
 
-- **Tipo:** **Branch**.
-- **La condición lee `veredicto_f2` bajo el encabezado `Conversation`.** No bajo
-  `beckham_plazo_f2`. (Si el desplegable te ofrece los dos, es que has insertado el chip del
-  conector: bórralo y vuelve a insertarlo desde el encabezado `Conversation`.)
-- **El atributo se llama `veredicto_f2`, con E.** `veridicto_f2` **no existe**, y un branch sobre él
-  cae siempre al `else` — que en el canvas viejo **cerraba la conversación**.
+🚨 **LOS DOS ESTÁN HOY EN ROJO, y no es un descuido: es el ORDEN.** Intercom marca `I. Path` y
+`W. Path` con ⚠️ y el tooltip literal *«Branches don't have a value, make sure you add at least one
+condition»*. Abierto `I. Path`: un paso **Branches** con **dos ramas, las dos con «Missing
+condition»**, más el `else` — o sea que **todo cae al `else`** (auditoría §2).
 
-| Salida | Condición | Va a | Cierra |
-|---|---|---|:--:|
-| 1 | `contains en_plazo` | `G` | no |
-| 2 | `contains fuera_plazo` | **`N` directo** (sin `M. Path`) | **sí** |
-| 3 | `contains no_valida` | repregunta de fecha (4.I3) | no |
-| 4 | `else` / `has no value` | **`L` directo**, sin repreguntar | no |
+**Las condiciones NO SE PUEDEN ESCRIBIR TODAVÍA, y por eso los ⚠️ no son un error de quien lo montó.**
+La condición es `veredicto_f2 contains en_plazo`, y **el atributo `veredicto_f2` no existe en
+`s1hap599`**. Y no basta con crearlo: el chip que hay que insertar es el del encabezado
+`Conversation`, y quien puebla ese atributo es el **`Object mapping`** del DC (§3.1). El orden es
+obligatorio y saltárselo obliga a reescribir las condiciones:
+
+| # | Paso | Sección |
+|:--:|---|---|
+| 1 | Crear los **3 atributos** del cálculo, tipo Text | §2.1 |
+| 2 | Crear el DC **`beckham_plazo_f2`** con su **`Object mapping` de 3 filas** (`Intercom object = Conversation`, `API object = Root`) | §3.1 |
+| 3 | Cablear el paso del DC en el punto `F` **de las dos cadenas** | §4.DC1 |
+| 4 | **Y AHORA SÍ**: volver a `I. Path` y a `W. Path` y escribir las cuatro salidas de cada uno | esta sección |
+| 5 | Comprobar que el ⚠️ ha desaparecido **en los dos**. Si desaparece en uno solo, falta el otro | §6.4 |
+
+**Cómo se escribe la condición, y aquí está la trampa nº1 del proyecto:**
+
+- Se inserta el chip **`veredicto_f2` desde el encabezado `Conversation`** del selector de atributos.
+- ⛔ **NUNCA desde el encabezado con el nombre del DC (`beckham_plazo_f2`).** Si el desplegable te
+  ofrece los dos, el del conector es el output **local al path**: el branch lee vacío y cae al `else`.
+  Es el bug que costó cinco días y mató cinco hipótesis (trampas 1 y 2).
+- **El atributo se llama `veredicto_f2`, con E.** `veridicto_f2` no existe, y un branch sobre un
+  atributo inexistente **no da error**: cae siempre al `else`.
+- El operador es **`contains`**, no `is`. Los cuatro valores llegan como texto.
+
+| Salida | Condición | Va a, en la cadena ESP | Va a, en la cadena ENG | Cierra |
+|---|---|---|---|:--:|
+| 1 | `contains en_plazo` | el punto `G` **de la ESP** | el punto `G` **de la ENG** | no |
+| 2 | `contains fuera_plazo` | el punto `N` **de la ESP**, directo (sin `M. Path`) | el punto `N` **de la ENG** | **sí** |
+| 3 | `contains no_valida` | la repregunta de fecha de la ESP (4.I3) | la de la ENG | no |
+| 4 | `else` / `has no value` | el `L` **de la ESP**, directo y sin repreguntar | el `L` **de la ENG** | no |
+
+🔴 **LOS DESTINOS DE LA ENG SON LOS DE LA ENG.** Un branch de la cadena inglesa que apunte a un paso
+español manda al cliente al mensaje en el idioma equivocado y **no da ningún error, ni de validación
+ni en ejecución**. Al cablear `W`, comprobar el destino de las cuatro salidas **una por una** contra la
+tabla de §8.
 
 **La diferencia entre la 3 y la 4 es de diseño, no cosmética** (WP-216 B7): la 3 es **culpa del dato**
 (el cliente escribió algo que no es una fecha) y se repregunta; la 4 es **fallo de sistema** (el DC no
 respondió) y repreguntarle al cliente por un fallo nuestro es maltratarle.
 
+⚠️ **Y lo primero que hay que mirar al abrir `I` y `W` hoy:** mientras las condiciones estén vacías,
+**el 100% de las conversaciones sale por el `else`**. Si esa salida está cableada a un paso con
+`Close conversation`, el canvas **cierra todas las conversaciones** — que es exactamente el modo de
+fallo de julio, con otra causa (entonces el atributo venía vacío; ahora la condición no está
+escrita). Comprobarlo forma parte de la auditoría de los 11 `END` (§4.END).
+
 ### 4.I3 · la repregunta de fecha
 
+- 🔁 **×2, y ya venía desenrollada ⇒ CUATRO pasos `Set` en el canvas** (§2.3). Path real:
+  **DESCONOCIDO** (§8.3 fila 11), y es otro de los candidatos a no existir todavía (§8.3.1).
 - **Tipo:** `Set intentos_fecha_bot` + mensaje + vuelta al `Collect data`. **Desenrollado**, porque un
   `Set` solo escribe literales:
   - primera vez: `Set intentos_fecha_bot = 1` → mensaje con **un ejemplo literal** de fecha → `F`.
@@ -747,6 +1114,8 @@ respondió) y repreguntarle al cliente por un fallo nuestro es maltratarle.
 
 ## 4.G · `G · cualifica` 🟢 (WP-217)
 
+- 🔁 **×2**, y **las dos cadenas asignan al MISMO team y pasan al MISMO reusable**: el agente es uno,
+  el idioma se lo dice el prompt a partir de la conversación. Path real: **DESCONOCIDO** (§8.3 fila 12).
 - **Tipo:** DC del escritor + **`Assign team`** + **`Pass to n8n_BOT_mobility`**.
 - **DC:** `beckham_upsert_cualifica` (`punto=cualifica`, `modo=solicitud`).
 - **Mapeo:** los chips de identidad + `fecha_alta_ss` ← `fecha_alta_ss_bot` + `fecha_limite_plazo` ←
@@ -761,6 +1130,8 @@ respondió) y repreguntarle al cliente por un fallo nuestro es maltratarle.
 
 ## 4.N · `N · descarte por plazo` 🔴
 
+- 🔁 **×2, y son los otros 2 `Close`.** Path real: **DESCONOCIDO** (§8.3 fila 13) — hay un path `N` en
+  el canvas, colgando de la rama de `Z. FAQ` (§8.2).
 - **Tipo:** mensaje + **`Close conversation`**.
 - **Se llega DIRECTO desde `I`.** `M. Path` **no se reconstruye**: los outputs de un DC son locales al
   path y su `Object mapping` **pisaba** el resultado del primero con otro `hoy`. El veredicto ya está
@@ -774,6 +1145,9 @@ respondió) y repreguntarle al cliente por un fallo nuestro es maltratarle.
 
 ## 4.CALC · la rama calculadora (WP-214)
 
+- 🔁 **×2**, y **la URL puede ser distinta por idioma**: si la calculadora tiene versión inglesa, son
+  dos enlaces; si no, el mismo en las dos. **DESCONOCIDO** (la URL ya lo era: entregable 2 de WP-214).
+  Path real: **DESCONOCIDO** (§8.3 fila 14).
 - **Tipo:** mensaje con **ENLACE** (o botón-link) + reply buttons de vuelta al menú.
 - **Intercom NO redirige el navegador.** No existe el paso «redirigir»: se manda un enlace.
 - **DC:** ninguno hoy — **no escribe expediente** (decisión: no se crea fila salvo decisión expresa).
@@ -790,6 +1164,9 @@ respondió) y repreguntarle al cliente por un fallo nuestro es maltratarle.
   Messenger**.
 
 ## 4.FAQ · la rama FAQ, etapa 1: **UN turno** (WP-221)
+
+> 🔁 **×2.** Esta es la ficha de **diseño**; el path real de la cadena ESP es **`Z. FAQ`** y lo que le
+> falta dentro está aterrizado en **§4.Z**. El de la cadena ENG **está DESCONOCIDO y puede no existir**.
 
 1. **`Collect data`** con la pregunta libre (Text).
 2. **DC `beckham_faq`** (§3.4) con `wait_for_callback`, `modo=faq_regimen`, `punto=faq_entrada`.
@@ -811,8 +1188,43 @@ respondió) y repreguntarle al cliente por un fallo nuestro es maltratarle.
 - **Riesgo técnico medido:** la cadena Intercom→n8n→API Intercom→LLM→callback contra el **timeout de
   15 s**, con un `Wait2 3s` ya dentro. Responder 200 al webhook de inmediato y publicar por callback.
 
+## 4.Z · `Z. FAQ`, el path REAL: hoy va DIRECTO a un `END`
+
+**Lo medido** (auditoría §1 y §4): `Z. FAQ` existe, está **nombrado** (uno de los cuatro con nombre),
+cuelga de **`B. Introducción ESP`** y **acaba en un `END` justo después**. Tal cual está, un cliente
+que pulse «tengo preguntas» **se queda sin respuesta**, y con el hilo cerrado si ese `END` lleva
+`Close conversation` — que es lo que hay que comprobar (§4.END).
+
+**Lo que le falta DENTRO, en orden.** Es exactamente el §4.FAQ de arriba, aterrizado en este path:
+
+| # | Paso que falta | Tipo de paso | Ficha |
+|:--:|---|---|---|
+| 1 | **La pregunta libre** | **`Collect data`**, tipo **Text** | §4.FAQ punto 1 |
+| 2 | **La llamada al DC `beckham_faq`** con `wait_for_callback`. Su «Map action inputs»: chips `conversation_id`, `user_id`, `conversationPartId`, `message` (el del `Collect data`) y **`idioma_bot`**. `punto=faq_entrada` y `modo=faq_regimen` van **fijos en el conector**, no aquí | Data Connector | §3.4 · §3.2.6 |
+| 3 | **La respuesta del agente NO es un paso**: la publica el **callback** (`Callback_Intercom` de `beckham_bot`) reanudando el paso que espera. No hay que dibujar nada | — | trampa 21 |
+| 4 | **`Set faq_turnos_bot`** al número de turno, **desenrollado** a `1`, `2`, `3` | `Set` (texto literal) | §2.3 |
+| 5 | **`WDONE` · reply buttons**: `otra pregunta` · `ya está, quiero empezar` · `hablar con una persona` | reply buttons | §4.FAQ punto 5 |
+| 6 | **La salida del autodescarte** («no creo que cumpla»), que vive **dentro del FAQ** y no en el menú | mensaje + DC | §4.AUTO · WP-215 |
+| 7 | **Quitar el `END` de detrás**, o dejarlo como fin de workflow **sin `Close`** | — | §4.END |
+| 8 | **Al tercer turno** (`faq_turnos_bot >= 3`): la respuesta es la **oferta de humano o de solicitud**, y no se responde nada más | branch + mensaje | §4.FAQ punto 6 |
+
+**Y `Z. FAQ` HAY QUE HACERLO DOS VECES.** El path nombrado cuelga de la cadena **ESP**. La auditoría
+**no leyó** su equivalente inglés, así que **está DESCONOCIDO** si hay un `Z` en la cadena ENG o si el
+FAQ inglés es uno de los 28 paths sin nombre. Se cierra abriendo `C. Introducción ENG` y siguiendo sus
+salidas (`AA` y `Q`): **si no hay rama de FAQ en inglés, hay que crearla entera**, y son los 8 pasos
+de arriba otra vez.
+
+**Lo que más clics cuesta de todo el proyecto está aquí:** el tope de 3 turnos son **3 pasos `Set` por
+cadena ⇒ 6 en el canvas** (§2.3), más los dos `WDONE`, más los dos `Collect data`. Presupuéstalo antes
+de empezar, porque es el punto donde la cuenta se dispara.
+
+**Y no se cierra ningún paso de la rama FAQ.** `Close conversation` solo en `D` y `N` de cada cadena
+(§4.0.2).
+
 ## 4.AUTO · el autodescarte declarado (WP-215)
 
+- 🔁 **×2**, dentro del FAQ de cada cadena. Path real: **DESCONOCIDO** (§8.3 fila 16), y es el cuarto
+  candidato a no existir todavía (§8.3.1).
 - **Se llega DESDE EL FAQ**, no desde el menú.
 - **Tipo:** DC del escritor + mensaje + reply buttons (FAQ · calculadora · volver al menú).
 - **DC:** `beckham_upsert_autodescarte` (`punto=autodescarte_declarado`, `modo=faq_regimen`).
@@ -830,9 +1242,18 @@ respondió) y repreguntarle al cliente por un fallo nuestro es maltratarle.
 
 ## 4.L · el path `L` · hablar con una persona (WP-223)
 
+- 🔁 **AQUÍ LA INVARIANTE DE WP-223 CAMBIA, y hay que decirlo claro: «un solo path `L`» es IMPOSIBLE en
+  un canvas duplicado.** Son **dos**, uno por cadena. Lo que se conserva del paquete es **una sola
+  redacción por idioma** (la inglesa es la traducción de la española, no otro mensaje) y **un solo team
+  destino**. Path real: **DESCONOCIDO** en las dos — ⚠️ **hay un path llamado `L` en la cadena ENG**
+  (§8.2), que puede ser este punto o no.
 - **Tipo:** mensaje + **`Assign` REAL**.
-- **UN solo path `L`, con UNA sola redacción**, alcanzable desde: el menú, el FAQ, la calculadora,
-  la salida 4 de `I`, el segundo intento de fecha, y cualquier rama de error.
+- **DOS paths `L`, uno por cadena**, cada uno alcanzable desde **su** menú, **su** FAQ, **su**
+  calculadora, la salida 4 de **su** branch (`I` para la ESP, `W` para la ENG), el segundo intento de
+  fecha y cualquier rama de error **de su cadena**.
+- 🔴 **El fallo a vigilar:** que el `L` de una cadena asigne y el de la otra no. **En español no se
+  nota**, y el cliente inglés se queda esperando a una persona que nunca recibe el aviso. Es
+  literalmente la firma de `T075`.
 - **Asigna de verdad a `Ops_Mobility`.** El id del team `Ops_Mobility` es **DESCONOCIDO** (el
   `11098265` es `Ops_BOT_Mobility`, el team del bot, y **no** es el mismo destino).
 - **SLA en el texto: 24 a 48 horas** (M6, decidido por el usuario el 26/08). Va **en dos sitios**: aquí
@@ -843,19 +1264,63 @@ respondió) y repreguntarle al cliente por un fallo nuestro es maltratarle.
   revisará y te escribirá en breve»* y **solo llama a `Callback_Intercom`** — **nadie asigna a nadie**.
   O asigna, o se le cambia el texto. Es una promesa falsa en producción.
 
+## 4.END · los ONCE `END`: hay que auditar cuál lleva `Close conversation` de verdad
+
+**Medido:** el canvas tiene **11 END** (auditoría §1 y §4). El diseño admite `Close conversation` en
+**cuatro** sitios y solo cuatro: `D` y `N` de cada cadena (§4.0.2).
+
+**Un `END` de path NO es necesariamente un `Close`.** Un workflow puede terminar dejando el hilo
+**abierto** — que es lo que tiene que pasar en `G`, en la calculadora, en el FAQ, en `L`, en `H` y en
+el autodescarte. Así que los once hay que **abrirlos uno por uno** y anotar qué hay dentro: fin de
+workflow, `Close conversation`, o las dos cosas.
+
+**Por qué no vale asumirlo, con las dos consecuencias concretas:**
+
+- Cerrar el hilo en una rama que no sea un descarte **rompe la reentrada**: el Messenger reanuda el
+  hilo **abierto** (trampa 12), y un hilo cerrado obliga al cliente a reabrir para seguir.
+- En `G` un `Close` **mata el handoff al agente**: los turnos 2..n los sirve `reuse_mobility` sobre una
+  conversación **abierta y asignada** al team del bot. Un `Close` ahí y el bot contesta una vez y se
+  calla, sin ningún error visible.
+
+**La tabla que hay que rellenar. La auditoría NO pudo leerla: los once están DESCONOCIDOS.**
+
+| END nº | Cuelga del path | Cadena | ¿`Close conversation`? | ¿Debería? |
+|:--:|---|---|:--:|---|
+| 1 | DESCONOCIDO | DESCONOCIDO | DESCONOCIDO | `sí` **solo** si el path es `D` o `N` |
+| 2 | DESCONOCIDO | DESCONOCIDO | DESCONOCIDO | ídem |
+| 3 | DESCONOCIDO | DESCONOCIDO | DESCONOCIDO | ídem |
+| 4 | DESCONOCIDO | DESCONOCIDO | DESCONOCIDO | ídem |
+| 5 | DESCONOCIDO | DESCONOCIDO | DESCONOCIDO | ídem |
+| 6 | DESCONOCIDO | DESCONOCIDO | DESCONOCIDO | ídem |
+| 7 | DESCONOCIDO | DESCONOCIDO | DESCONOCIDO | ídem |
+| 8 | DESCONOCIDO | DESCONOCIDO | DESCONOCIDO | ídem |
+| 9 | DESCONOCIDO | DESCONOCIDO | DESCONOCIDO | ídem |
+| 10 | DESCONOCIDO | DESCONOCIDO | DESCONOCIDO | ídem |
+| 11 | DESCONOCIDO | DESCONOCIDO | DESCONOCIDO | ídem |
+
+**Tres `END` están además situados en un sitio que ya sabemos que es sospechoso** (auditoría §1): el
+que va detrás de `Z. FAQ`, y los de las cadenas donde el diagrama medido los pone en medio de la
+secuencia (`E ──[END]──► G`, `AA ─[END]──► R`, `R ─[END]──► T`). **Un `END` en medio de una secuencia
+es la primera cosa que hay que entender**: o es el fin de una rama que se dibuja seguida, o es un
+camino que se corta antes de tiempo. **No se decide desde aquí: se abre el path.**
+
+**Criterio de cierre del §6.4:** exactamente **cuatro** `Close` en todo el canvas, y **dos por
+cadena**. Cuatro repartidos 3-1 es una asimetría, y la asimetría entre idiomas es el fallo que este
+canvas arriesga por diseño (§4.0.3).
+
 ---
 
 # 5 · LOS WORKFLOWS DE INTERCOM
 
 | # | Nombre | Tipo | Trigger | Estado |
 |:--:|---|---|---|---|
-| 1 | **OnClick Mobility v2** (id **68617004**, app **s1hap599**) | **Custom Bot** · customer-facing | el punto de entrada del actual — **se cambia AL FINAL** | **EN CONSTRUCCIÓN**: texto y caminos hechos; faltan DC y atributos |
+| 1 | **OnClick Mobility v2** (id **«Mobility Bot (OnClick)» (68617004)**, app **s1hap599**) | **Custom Bot** · customer-facing | el punto de entrada del actual — **se cambia AL FINAL** | **EN CONSTRUCCIÓN**, estado `Draft`: **32 paths** con el texto y los caminos hechos, **duplicados por idioma**; faltan los DC y los atributos **en las dos cadenas**, las condiciones de `I`/`W`, y los pasos de dentro de `Z. FAQ` |
 | 2 | `n8n_BOT_mobility` (**66246057**) | **Reusable** | invocado con `Pass to` | YA EXISTE en `q3bhdtoi` · se reutiliza · contiene el DC 461046 |
 | 3 | `reuse_mobility` (**66250478**) | Workflow · customer-facing | `customer sends any message` | YA EXISTE en `q3bhdtoi` · turnos 2..n · audiencia `Users AND Team assigned is Ops_BOT_Mobility`, canales Web + iOS + Android + **EMAIL** |
 | 4 | **BECKHAM_reentrada** | ver 5.2 | **`Reopened`** | **CREAR** — hoy **no existe ninguno** con ese trigger |
 | 5 | **BECKHAM_faq_reusable** *(opcional)* | Reusable | `Pass to` desde la rama FAQ | **CREAR solo si** se quiere aislar el FAQ. **Con reservas**: `Pass to` **no vuelve**, así que el FAQ dejaría de poder continuar en el canvas |
 | — | `OnClick Mobility` (**66243731**, Live) | Custom Bot | el disparador actual | **NO SE TOCA.** Es el rollback, y hoy entran leads reales por él |
-| — | `OnClick Mobility — BACKUP AAAAMMDD` | Custom Bot | ninguno | **Duplicado de seguridad** antes de publicar (WP-233) |
+| — | `OnClick Mobility — BACKUP AAAAMMDD` | Custom Bot | ninguno | **Duplicado de seguridad** antes de publicar (WP-233). **En producción es la ÚNICA vuelta atrás** (trampa 31): un canvas publicado mal no se «revierte», se restaura de aquí a mano. **Y se anota en la bitácora** |
 | — | `Distribuidor - Usuario envia mensaje` | Workflow · background | `customer sends any message` | **DESACTIVADO a mano en `q3bhdtoi` desde el 1/08**, decisión del usuario. Si en `s1hap599` hay uno equivalente **con clientes reales**, no se apaga: se le excluye por audiencia con `jarry_ignore` |
 
 **Reglas de convivencia, y las tres muerden:**
@@ -921,29 +1386,45 @@ las dos: el trigger, que el enlace de recordatorio vaya **siempre al launcher**,
 
 Marcable. Si algo queda sin marcar, **el canvas no está entero** — y el disparador no se cambia.
 
-### 6.1 · Antes del primer clic
-- [ ] **B1** · comprobado el app id real del bot 68617004. Si **no** es `q3bhdtoi`: apuntada la lista
-      de lo que hay que recrear y los **tres pegados** de `beckham_bot`.
-- [ ] **B1b** · copiada la URL de callback del paso `Wait for webhook` del canvas nuevo y comparada
-      con `q3bhdtoi_2af9679b-84e9-4911-8466-fd10cf269015`.
-- [ ] **B2** · en un DC de prueba: con `Custom value`, el campo `Name` **es editable**.
-- [ ] **B3** · el input de la conversación se llama `intercom_conversation_id`, **no** `conversation.id`.
-- [ ] Duplicado `OnClick Mobility — BACKUP AAAAMMDD` creado **antes** de publicar nada.
+> **DOS CASILLAS POR PUNTO en el §6.4**, `ESP` y `ENG`: el canvas está duplicado por idioma (§4.0) y
+> una casilla marcada a medias es la asimetría que este proyecto ya ha pagado dos veces (§4.0.3).
 
-### 6.2 · Atributos
+### 6.1 · Antes del primer clic
+- [ ] **§8.3 relleno**: los **28 paths sin nombre** abiertos, identificados y **renombrados con `ESP` /
+      `ENG` dentro**. Cero paths llamados «Path»
+- [ ] **§8.3.1 resuelto**: sabido si faltan puntos en el canvas (menú, autodescarte, repregunta de
+      fecha, FAQ inglés) o si hay paths que agrupan pasos
+- [ ] **§4.END relleno**: los **11 `END`** abiertos uno por uno, anotado cuál lleva `Close conversation`
+- [ ] **B1b** · copiada la URL de callback del paso `Wait for webhook` del canvas nuevo y comparada con
+      `q3bhdtoi_2af9679b-84e9-4911-8466-fd10cf269015`. **El app id cambia seguro**; lo que se comprueba
+      es si el `2af9679b-…` también
+- [ ] **B2** · en un DC de prueba: con `Custom value`, el campo `Name` **es editable**. Comprobado en el
+      **PRIMER** DC, antes de crear los otros cinco
+- [ ] **B3** · el input de la conversación se llama `intercom_conversation_id`, **no** `conversation.id`
+- [ ] **PRODUCCIÓN** · duplicado **`OnClick Mobility — BACKUP AAAAMMDD`** creado **y anotado en la
+      bitácora** antes de publicar nada. **Es la única vuelta atrás que hay**
+- [ ] El bot vivo **`66243731`** sigue `Live` y **sin tocar**; el nuevo **`«Mobility Bot (OnClick)» (68617004)`** sigue en `Draft`
+
+### 6.2 · Atributos (no se duplican por idioma)
 - [ ] `corte_contexto_bot` · Text
 - [ ] `faq_resumen_bot` · Text
 - [ ] `faq_turnos_bot` · Text
 - [ ] `intentos_fecha_bot` · Text
 - [ ] `corr_id_bot` · Text
 - [ ] `fecha_alta_ss_bot` · Text
-- [ ] `veredicto_f2` · `fecha_limite_f2` · `dias_pasados_f2` existen **en este workspace**
+- [ ] **`idioma_bot`** · Text
+- [ ] `veredicto_f2` · `fecha_limite_f2` · `dias_pasados_f2` creados **en `s1hap599`** y con el nombre
+      exacto (`veredicto`, con **E**)
 - [ ] **`modo_bot` NO existe** ⚖️
-- [ ] Ninguno de los seis nuevos es de tipo `Number` ni `Date & Time`
+- [ ] Ninguno de los diez es de tipo `Number` ni `Date & Time`
+- [ ] **Cero atributos con sufijo de idioma** (`_es` / `_en`): no hacen falta y son un error de diseño
 
-### 6.3 · Data Connectors
-- [ ] `beckham_plazo_f2` con su `Object mapping` de **3 filas** (`Conversation` / `Root`)
+### 6.3 · Data Connectors (no se duplican por idioma)
+- [ ] `beckham_plazo_f2` con su `Object mapping` de **3 filas** (`Conversation` / `Root`), **creado
+      ANTES de escribir las condiciones de `I` y `W`** (§4.I/W)
 - [ ] Los **6** DC del escritor creados, cada uno con su `punto` y su `modo` como `Custom value`
+- [ ] **El input `idioma`** presente en los **6** DC del escritor **y en `beckham_faq`**: `Let Fin
+      collect`, `Name` = `idioma`, `Required` **OFF**, `Fallback` vacío (§3.2.6)
 - [ ] `Fallback value` **vacío** en **todos** los inputs de **todos** los DC
 - [ ] `Required` **ON** solo donde dice la tabla; `conversationPartId` **OFF** en todos
 - [ ] `Content-Type: application/json` en todos
@@ -953,31 +1434,60 @@ Marcable. Si algo queda sin marcar, **el canvas no está entero** — y el dispa
 - [ ] `beckham_faq` creado con `wait_for_callback` y **sin** `Object mapping`
 - [ ] `beckham_arranque_frio` creado **solo si** `Optional` no valió
 
-### 6.4 · Canvas
-- [ ] `Close conversation` aparece **exactamente dos veces**: `D` y `N`
-- [ ] **Cero** pasos que toquen `ticket.state`
-- [ ] No existen `M. Path`, `SAVE`, `FLAG`, `RESUME → B`, `K → FRETRY → M`
-- [ ] `I` tiene **cuatro** salidas y la condición lee `veredicto_f2` bajo `Conversation`
+### 6.4 · Canvas · **DOS casillas por punto**
+
+**Lo que es único en todo el canvas:**
+- [ ] `A. Selección Idioma` con la **errata «españo» corregida**
+- [ ] El tag `jarry_ignore` puesto **una sola vez**, en `A` (o, si no cabe, en `B` **y** en `C`)
+- [ ] `Close conversation` aparece **exactamente CUATRO** veces: `D`+`N` de la ESP y `D`+`N` de la ENG
+- [ ] **Cero** pasos que toquen `ticket.state` en ninguna de las dos cadenas
+- [ ] No existen `M. Path`, `SAVE`, `FLAG`, `RESUME → B`, `K → FRETRY → M` en ninguna cadena
 - [ ] `grep` del canvas y de los PRD: **cero** apariciones de `veridicto_f2`
-- [ ] `G` asigna al team `11098265` (`Ops_BOT_Mobility`) **antes** del `Pass to`
-- [ ] `A` pone el tag `jarry_ignore`
-- [ ] `AOPT` tiene los 4 botones (o, si no caben, la captura que lo demuestra)
-- [ ] El path `L` es **uno solo**, con **una sola redacción**, y asigna de verdad
+
+**Punto por punto, y la casilla no se marca hasta que las dos lo están:**
+
+| Punto | ESP | ENG | Qué se comprueba |
+|---|:--:|:--:|---|
+| Bienvenida (`B`/`C`) | [ ] | [ ] | `Set idioma_bot` = `es` / `en` como **primer** paso |
+| `AOPT` · menú | [ ] | [ ] | los 4 botones (o la captura que demuestre que no caben) |
+| `B` · F1 residencia | [ ] | [ ] | `Sí` **descarta**; salidas a `D` y a `E` de **su** cadena |
+| `D` · descarte residencia | [ ] | [ ] | DC `descarte_residencia` **antes** del `Close` |
+| `E` · F3 alta en SS | [ ] | [ ] | `No` → `H`, `Sí` → `F`, de **su** cadena |
+| `H` · lead potencial | [ ] | [ ] | el DC va **antes** de preguntar nada; no cierra |
+| `F` · `Collect data` fecha | [ ] | [ ] | guarda en `fecha_alta_ss_bot`, Text `DD/MM/AAAA` |
+| `DC1` · `beckham_plazo_f2` | [ ] | [ ] | en el **mismo path** que `F`; una sola llamada por conversación |
+| `I`/`W` · branch veredicto | [ ] | [ ] | **⚠️ desaparecido**, 4 salidas, chip desde `Conversation`, destinos de **su** cadena |
+| `I3` · repregunta de fecha | [ ] | [ ] | desenrollada: `Set … = 1` → repregunta · `= 2` → `L` |
+| `G` · cualifica + handoff | [ ] | [ ] | `Assign team` del bot **antes** del `Pass to`; **no** cierra |
+| `N` · descarte plazo | [ ] | [ ] | chips `fecha_limite_f2` y `dias_pasados_f2`; `Close` |
+| Calculadora | [ ] | [ ] | enlace (Intercom no redirige); **no** cierra; vuelta al menú |
+| FAQ (`Z` y su gemelo) | [ ] | [ ] | los **8 pasos** de §4.Z dentro; el `END` de detrás **sin `Close`** |
+| Autodescarte | [ ] | [ ] | se llega **desde el FAQ**; **cero** `Descarte` escrito por el canvas |
+| `L` · humano | [ ] | [ ] | `Assign` **REAL**; SLA 24-48 h en el texto; **misma** redacción traducida |
+| El chip `idioma_bot` en el mapeo | [ ] | [ ] | presente en **cada** «Map action inputs» de un DC que escriba |
 
 ### 6.5 · e2e (WP-233) — **y solo entonces se cambia el disparador**
-- [ ] **4 recorridos del menú**: comprobar requisitos · calculadora · preguntas · humano
+
+**Todo recorrido se hace DOS VECES, una por idioma.** Un e2e verde solo en español no dice nada del
+50% del canvas.
+
+- [ ] **4 recorridos del menú × 2 idiomas = 8**: comprobar requisitos · calculadora · preguntas · humano
 - [ ] **4 escenarios de reentrada**: hilo abierto · cerrado · dentro del cooldown de 2 min · a los 3 días
-- [ ] **Recorridos de dato**: `en_plazo` · `fuera_plazo` · fecha no parseable ×2 intentos · `H` con
-      abandono · `H` con «en marzo»
-- [ ] Los 8 escenarios con su par (`conversation_id` **no-Preview**, `execution_id`) y con
+- [ ] **Recorridos de dato × 2 idiomas**: `en_plazo` · `fuera_plazo` · fecha no parseable ×2 intentos ·
+      `H` con abandono · `H` con «en marzo»
+- [ ] Cada escenario con su par (`conversation_id` **no-Preview**, `execution_id`) y con
       `x-intercom-source-dataconnector-id` **no vacía** donde aplique
+- [ ] **La columna `Idioma` de Airtable**: `Español` en los recorridos ESP y `Ingles` en los ENG
+      (§3.2.6). **Ninguna fila con `Idioma` vacío**
 - [ ] `bash scripts/contract-test.sh` **verde**
 - [ ] En **ningún** escenario cambia `ticket.state`
-- [ ] El contacto de e2e (`beckham-e2e@taxdown.es`) **no recibe ningún correo** — bandeja revisada
-      tras **cada** recorrido
+- [ ] El contacto de e2e (`beckham-e2e@taxdown.es`) **no recibe ningún correo** — bandeja revisada tras
+      **cada** recorrido. **Es producción: un correo de más le llega a un cliente de verdad**
 - [ ] Todo recorrido por `H` deja fila con `lead_potencial=true` y `precision_fecha_prevista` no vacía
 - [ ] `corr_id` presente en Intercom, n8n **y** Airtable para el mismo caso
 - [ ] El backup del canvas **listado en la bitácora antes** de publicar
+- [ ] **Y al terminar:** `versionId` de `beckham_bot` **sin cambiar** (`5b31d761-…`). Si cambió, alguien
+      tocó el workflow por API y **hay que comprobar las credenciales de los 55 nodos**
 
 ---
 
@@ -1012,6 +1522,123 @@ Marcable. Si algo queda sin marcar, **el canvas no está entero** — y el dispa
 | 25 | **`Respond OK` llegó a devolver el registro completo de Airtable** (68 campos, PII y URLs de formularios prefilled) y eso queda en los **logs del DC 7-14 días** | Council 28/07, hallazgo bloqueante 2 |
 | 26 | **El canvas no se toca por API.** El MCP de Intercom solo lee conversaciones, contactos, compañías y artículos | Verificado en esta sesión y en la del 26/08 |
 | 27 | **`update_workflow` del MCP sobre `beckham_bot` BORRA las credenciales** y exige reenviar los 55 nodos ⇒ los cambios en n8n se entregan como **fichero para Cmd+A** | Regla del proyecto, y la razón de que WP-207 entregue el nodo montado por anclas |
+| 28 | **EL CANVAS ESTÁ DUPLICADO POR IDIOMA: cada arreglo se hace DOS VECES, y la firma del fallo es la ASIMETRÍA** — un bot que funciona en español y falla en inglés. Nadie lo nota probando en español | `docs/auditoria-canvas-nuevo-2026-08-27.md` §1: dos cadenas paralelas desde `A`. Y el proyecto ya lo paga dos veces: el script del correo inglés de Airtable existe duplicado (`wacPpABiplv5tO7OM` y `wac2hg1IZkE0yOxMF`), y `T075` está apuntado como *«la firma es la asimetría: en inglés sí se marca»* |
+| 29 | **COINCIDENCIA DE LETRA ≠ COINCIDENCIA DE PUNTO.** En el canvas hay paths llamados `D`, `E`, `F`, `G`, `N` y `L` que **no son** los puntos `D`/`E`/`F`/`G`/`N`/`L` del diseño: `F` y `N` cuelgan de la rama del FAQ y `L` cuelga de la cadena **inglesa** | Topología medida en la auditoría §1, reproducida en §8.2. Las dos únicas identificaciones fiables son `I. Path` y `W. Path`, **por su ⚠️** y no por su letra |
+| 30 | **Un `Idioma` vacío en Airtable NO da error: da el informe en ESPAÑOL.** `docs/nodo-v2-preparar-informe-2026-08-21.js` línea 69 solo compara con `"ingles"`; todo lo demás cae en `ES` y el PDF sale bien formado, se sube y se manda | Leído del fichero. Mismo patrón que el ID fijo de `Copiar la plantilla` (`T073`): fallo silencioso con entregable de aspecto correcto. Lo tapa el input `idioma` (§3.2.6) |
+| 31 | **SE TRABAJA EN PRODUCCIÓN (`s1hap599` = TaxDown): el duplicado del Custom Bot antes de publicar es la ÚNICA vuelta atrás.** No hay workspace donde equivocarse gratis, y lo que hoy protege producción es el estado **`Draft`** del bot nuevo, no un entorno aparte | Decisión del usuario del 27/08 (auditoría, encabezado). Un canvas publicado mal no se «revierte»: se restaura del duplicado, a mano |
+
+---
+
+# 8 · TABLA DE MAPEO · los 32 paths reales ↔ los puntos del diseño
+
+**Para qué es.** El canvas tiene **32 paths** y **28 se llaman «Path»** (auditoría §1). Sin esta tabla
+rellena **no se puede empezar a cablear**, porque cada punto del §4 hay que encontrarlo **dos veces** y
+hoy no hay forma de saber cuál es cuál. Renombrar un path **es gratis y no rompe nada** (auditoría §1),
+así que la tabla se rellena renombrando: la columna «Nombre a poner» es el entregable.
+
+> **REGLA DE ESTA TABLA:** lo que la auditoría leyó abriendo el canvas en el navegador va como hecho;
+> **todo lo demás dice `DESCONOCIDO`**. Aquí **no se infiere** qué hay dentro de un path a partir de su
+> letra ni de su posición.
+
+## 8.1 · Lo que SÍ está leído (4 paths de 32)
+
+| Path real | Nombre en el canvas | Punto del diseño | Qué se sabe, medido |
+|---|---|---|---|
+| `A` | **`A. Selección Idioma`** | **`A`** (§4.A0) | Reply buttons `🇪🇸 Español` / `🇬🇧/🇺🇸 English`. Es el destino del trigger. **Errata: «españo»** |
+| `B` | **`B. Introducción ESP`** | **bienvenida**, cadena ESP (§4.A) | Cuelga de `A`. De él bajan **`D`** y **`Z. FAQ`** |
+| `C` | **`C. Introducción ENG`** | **bienvenida**, cadena ENG (§4.A) | Cuelga de `A`. De él bajan **`AA`** y **`Q`** |
+| `Z` | **`Z. FAQ`** | **FAQ**, cadena ESP (§4.Z) | Cuelga de `B`. **Va directo a un `END`**: le faltan los 8 pasos de §4.Z |
+
+Y los dos que Intercom identifica **por su error**:
+
+| Path real | Punto del diseño | Evidencia |
+|---|---|---|
+| **`I. Path`** | **el branch del veredicto**, cadena **ESP** (§4.I/W) | ⚠️ *«Branches don't have a value»*: abierto, es un paso **Branches** con 2 ramas + `else` |
+| **`W. Path`** | **el branch del veredicto**, cadena **ENG** (§4.I/W) | el **mismo** ⚠️, en la posición simétrica de la cadena ENG |
+
+**Total identificado: 6 de 32.** Los otros 26 (11 de ellos `END`) están **DESCONOCIDOS**.
+
+## 8.2 · La topología leída
+
+Esto **sí** está medido — el **orden** de los paths, no su contenido (auditoría §1):
+
+```
+A. Selección Idioma
+├─► B. Introducción ESP ─┬─► D ──► E ──[END]──► G ──► I ⚠️ ──► J …
+│                        └─► Z. FAQ ──[END]──► F ──► H ──► N ──► K …
+└─► C. Introducción ENG ─┬─► AA ─[END]──► R ─[END]──► T ──► W ⚠️ ─► L …
+                         └─► Q ─────────► S ────────► V ──► AC ─► O …
+```
+
+🚨 **CUIDADO CON LAS LETRAS: las del canvas NO son las del diseño.** El diseño llama `D` al descarte
+por residencia, `E` al filtro F3, `F` al `Collect data` de la fecha, `G` a cualifica, `I` al branch,
+`N` al descarte por plazo y `L` a hablar con una persona. En el canvas real **existen** paths llamados
+`D`, `E`, `F`, `G`, `N` y `L` — y **no hay ninguna evidencia de que sean esos puntos**: `F` y `N`
+cuelgan de la rama de `Z. FAQ`, y `L` cuelga de la cadena **inglesa**. **Coincidencia de letra ≠
+coincidencia de punto.** Es la trampa más fácil de este documento, y la única excepción son `I` y `W`,
+que se identifican por su ⚠️ y no por su letra.
+
+## 8.3 · Los puntos del diseño ↔ el path real: la tabla a rellenar
+
+Dos columnas de path porque **cada punto existe dos veces** (§4.0). `DESCONOCIDO` = la auditoría no
+pudo leerlo, y se cierra abriendo el path en el editor (§8.4).
+
+| # | Punto del diseño | Ficha | Path real ESP | Path real ENG | Nombre a poner al renombrar |
+|:--:|---|---|---|---|---|
+| 1 | Selección de idioma | §4.A0 | **`A`** ✅ (**único, no se duplica**) | — | `A. Selección Idioma` *(ya está)* |
+| 2 | Bienvenida (`A` del diseño) | §4.A | **`B`** ✅ | **`C`** ✅ | *(ya están nombrados)* |
+| 3 | `AOPT` · el menú de 4 salidas | §4.AOPT | **DESCONOCIDO** | **DESCONOCIDO** | `AOPT · menú ESP` / `AOPT · menú ENG` |
+| 4 | `B` · **FILTRO F1**, ¿residente 5 años? | §4.B | **DESCONOCIDO** | **DESCONOCIDO** | `F1 · residencia 5 años ESP` / `… ENG` |
+| 5 | `D` · descarte por residencia 🔴 **CLOSE** | §4.D | **DESCONOCIDO** | **DESCONOCIDO** | `D · descarte residencia ESP` / `… ENG` |
+| 6 | `E` · **FILTRO F3**, ¿alta en la SS? | §4.E | **DESCONOCIDO** | **DESCONOCIDO** | `F3 · alta en SS ESP` / `… ENG` |
+| 7 | `H` · lead potencial 🟡 | §4.H | **DESCONOCIDO** | **DESCONOCIDO** | `H · lead potencial ESP` / `… ENG` |
+| 8 | `F` · `Collect data` de la fecha de alta | §4.F | **DESCONOCIDO** | **DESCONOCIDO** | `F · fecha alta SS ESP` / `… ENG` |
+| 9 | `DC1` · la llamada a `beckham_plazo_f2` | §4.DC1 | **el MISMO path que el 8** | ídem | *(no es un path aparte: el DC va dentro del path de `F`)* |
+| 10 | `I` · branch sobre `veredicto_f2` | §4.I/W | **`I. Path`** ✅ | **`W. Path`** ✅ | `I · branch veredicto ESP` / `W · branch veredicto ENG` |
+| 11 | `I3` · la repregunta de fecha | §4.I3 | **DESCONOCIDO** | **DESCONOCIDO** | `I3 · repregunta fecha ESP` / `… ENG` |
+| 12 | `G` · cualifica 🟢 + handoff al agente | §4.G | **DESCONOCIDO** | **DESCONOCIDO** | `G · cualifica ESP` / `… ENG` |
+| 13 | `N` · descarte por plazo 🔴 **CLOSE** | §4.N | **DESCONOCIDO** | **DESCONOCIDO** | `N · descarte plazo ESP` / `… ENG` |
+| 14 | La rama **calculadora** | §4.CALC | **DESCONOCIDO** | **DESCONOCIDO** | `CALC · calculadora ESP` / `… ENG` |
+| 15 | La rama **FAQ** | §4.FAQ · §4.Z | **`Z. FAQ`** ✅ (incompleto) | **DESCONOCIDO** — **puede no existir** | `Z · FAQ ESP` *(ya)* / `Z · FAQ ENG` |
+| 16 | El **autodescarte declarado** (dentro del FAQ) | §4.AUTO | **DESCONOCIDO** | **DESCONOCIDO** | `AUTO · autodescarte ESP` / `… ENG` |
+| 17 | `L` · hablar con una persona | §4.L | **DESCONOCIDO** | **DESCONOCIDO** ⚠️ hay un path llamado **`L`** en la cadena **ENG**: comprobar si es este punto | `L · humano ESP` / `L · humano ENG` |
+| — | Los **11 `END`** | §4.END | **DESCONOCIDO** ×11 | ídem | `END · <de qué path viene>` |
+
+### 8.3.1 · El recuento que NO cuadra, y es un hallazgo, no un error de la tabla
+
+- **32 paths** = 1 (`A`) + 2 (`B`, `C`) + **11 `END`** + **18 paths de lógica**.
+- Los puntos 3 a 17 son **15 filas**, pero la 9 (`DC1`) **no es un path**: quedan **14 conceptos** que
+  necesitan path propio. Duplicados por idioma serían **28**.
+- **28 necesarios contra 18 disponibles ⇒ faltan hasta 10 paths.**
+
+Eso significa una de dos, y hay que averiguar cuál **antes** de cablear el primer DC:
+
+1. **Hay puntos del diseño que todavía no existen en el canvas.** Candidatos declarados, por lo que la
+   auditoría **no** vio: el **menú `AOPT`**, el **autodescarte**, la **repregunta de fecha** y el **FAQ
+   inglés**.
+2. **Un path agrupa varios pasos** (un path de Intercom puede llevar dentro mensaje + `Collect data` +
+   DC + branch), y entonces 18 pueden dar de sí para los 14 conceptos ×2.
+
+**No se resuelve desde aquí: se resuelve abriendo los 28 paths.** Es el **entregable nº1** de la sesión
+de construcción, antes del primer atributo y del primer DC — porque si falta el menú, falta un punto de
+entrada entero y eso cambia el orden de todo lo demás.
+
+## 8.4 · Cómo se rellena, clic a clic
+
+1. Abrir el Custom Bot **«Mobility Bot (OnClick)» (68617004)** (app `s1hap599`), estado **Draft**. **No** se publica nada en este
+   paso: renombrar y leer no cambia el comportamiento del bot vivo `66243731`.
+2. Clic en un path sin nombre → el panel de la derecha muestra sus pasos en orden.
+3. Anotar en la tabla de §8.3: **qué tipo es el primer paso** (mensaje ｜ reply buttons ｜ `Collect
+   data` ｜ Data Connector ｜ Branches), **a qué paths sale**, y **si lleva `Close conversation`**
+   (esto último va también a la tabla de §4.END).
+4. **Renombrar el path** con el nombre de la columna «Nombre a poner», **con el idioma dentro**. El
+   nombre es un campo de **texto** libre.
+5. Pasar al siguiente. **Los 28, sin saltarse ninguno:** un path sin identificar es un punto que se
+   cablea dos veces mal, o cero veces.
+6. **Verificación:** al terminar, recorrer la lista de paths y comprobar dos cosas — **cero paths
+   llamados «Path»**, y **cada nombre acaba en `ESP` o en `ENG`** salvo `A. Selección Idioma`. Si
+   sobra o falta un nombre por cadena, hay una asimetría **antes** de haber cableado nada, que es el
+   mejor momento posible para encontrarla.
 
 ---
 
@@ -1026,7 +1653,7 @@ Marcable. Si algo queda sin marcar, **el canvas no está entero** — y el dispa
 | Callback a Intercom | `POST https://api.intercom.io/hooks/workflows/trigger_step/q3bhdtoi_2af9679b-84e9-4911-8466-fd10cf269015/<conversation_id>` |
 | `beckham_bot` | `nhOwpiGxikeU5DLR` · 55 nodos (48 lógica + 7 sticky) · **ACTIVO EN PRODUCCIÓN** |
 | `beckham_f2_plazo.` | `wdOOF0ecCkgFOUjt` · 3 nodos |
-| Custom Bot nuevo | **68617004** · app **s1hap599** |
+| Custom Bot nuevo | **«Mobility Bot (OnClick)» (68617004)** · app **s1hap599** |
 | Custom Bot vivo | **66243731** · Live |
 | Reusable del turno | **66246057** |
 | Relanzador de turnos 2..n | **66250478** |
@@ -1037,4 +1664,10 @@ Marcable. Si algo queda sin marcar, **el canvas no está entero** — y el dispa
 | Team `Ops_Mobility` | **DESCONOCIDO** |
 | `admin_id` del cierre | **4418209** (fijo en `Cerrar_Conversacion`) |
 | Contacto de e2e | `beckham-e2e@taxdown.es` |
-| Contrato del escritor | `docs/contrato-upsert-expediente-v1.json` · 46 claves · puerta `docs/test-contrato-upsert.js` (25 comprobaciones) |
+| Contrato del escritor | `docs/contrato-upsert-expediente-v1.json` · 46 claves (`idioma` incluida) · puerta `docs/test-contrato-upsert.js` (25 comprobaciones) |
+| Workspace donde se construye | **`s1hap599` = TaxDown, PRODUCCIÓN**. El anterior era `q3bhdtoi` |
+| Forma del canvas nuevo | **32 paths** (`A`…`AF`) · **11 `END`** · **duplicado por idioma** · 4 paths con nombre · 2 con ⚠️ |
+| Los dos branches del veredicto | **`I. Path`** (cadena ESP) y **`W. Path`** (cadena ENG) |
+| El FAQ real | **`Z. FAQ`**, cadena ESP, hoy **directo a un `END`** |
+| Normalización del idioma | `docs/nodo-validar-normalizar-COMPLETO.js` línea **373**: `es｜esp｜espanol…` → `Español` · `en｜eng｜english…` → `Ingles` |
+| Plantillas del informe v2 | **8** = 4 combinaciones de régimen × 2 idiomas · `docs/nodo-v2-preparar-informe-2026-08-21.js` líneas 17-26 |

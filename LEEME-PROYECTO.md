@@ -22,6 +22,12 @@ bus de eventos).
 | 4 | **[`docs/prds/fase2/map.html`](docs/prds/fase2/map.html)** | El mapa del backlog: fichas con estado y dependencias. Ábrelo en el navegador |
 | 5 | **[`.spartax/log.md`](.spartax/log.md)** | La bitácora. **Aquí está el 80% del conocimiento real**, incluidos los fallos y por qué se decidió cada cosa |
 
+**31/08 · SI ENTRAS HOY, EMPIEZA POR AQUÍ:**
+[`docs/conversacional-2026-08-31.md`](docs/conversacional-2026-08-31.md) — el pivote a **un solo
+agente conversacional en n8n**. La lógica sale de Intercom, y ese documento tiene el diff nodo a nodo,
+lo que se gana, lo que se paga y **el bloqueante del transporte**. Los pasos:
+`bash docs/pasos-conversacional.sh`.
+
 ---
 
 ## El hecho que hay que entender antes de tocar nada
@@ -29,7 +35,7 @@ bus de eventos).
 **No hay código fuente versionado. El sistema *es* su configuración.**
 
 La lógica vive dentro de nodos de n8n, de expresiones de n8n, de automatizaciones de Airtable y de
-un prompt de ~66.000 caracteres alojado en LangSmith (`bot_mobility_prompt`, tag `prod`; la cifra exacta cambia con cada versión). Los `.json` de `referencia/exports-n8n/` son
+un prompt de ~66.000 caracteres alojado en LangSmith (`bot_mobility_prompt`, tag `prod`; el del bot conversacional es el **v15**, de 86.548 car., y va en un prompt aparte). Los `.json` de `referencia/exports-n8n/` son
 **exportaciones, no fuente**: se generan después de publicar.
 
 De ahí tres consecuencias que se notan a diario:
@@ -89,11 +95,14 @@ la de integración.
 **El recuento SIEMPRE en caracteres, no en bytes.** `wc -c` da bytes; el editor de n8n cuenta
 caracteres, y con ~1.500 acentos los dos números se separan casi 3.000.
 
-Las **catorce puertas** se pasan de golpe con:
+Las **veintidós puertas** se pasan de golpe con:
 
 ```bash
 bash docs/pasos.sh test
 ```
+
+**Desde el 31/08 sale con `exit 1` si alguna está roja.** Hasta ese día imprimía `FALLA` en rojo y
+devolvía `0` igual: la puerta de las puertas mentía.
 
 (Los únicos rojos tolerados están documentados en `CLAUDE.md` §3: el offset 1415/1406 del `.030` y
 la muestra `Z2900111T`; 12 de 14 muestras reales salen byte a byte.)

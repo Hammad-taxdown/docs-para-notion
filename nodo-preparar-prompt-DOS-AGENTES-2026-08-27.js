@@ -167,8 +167,19 @@ const PATRONES_PII = [
   ['email',    /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+/g,               '[EMAIL]'],
   ['iban',     /\b[A-Za-z]{2}[0-9]{2}(?:[ -]?[A-Za-z0-9]{4}){3,6}(?:[ -]?[A-Za-z0-9]{1,4})?\b/g, '[IBAN]'],
   ['nif',      /\b(?:[XYZxyz][ -]?[0-9]{7}[ -]?[A-Za-z]|[0-9]{8}[ -]?[A-Za-z])\b/g,   '[NIF]'],
+  // 31/08 · EL PREFIJO 00, QUE FALTABA Y SE COLABA ENTERO. Medido: '0034612345678'
+  // atravesaba los dos patrones de abajo INTACTO. El de '+' exige el signo, y el
+  // nacional lleva (?<![0-9]) -- que es justo lo que lo bloquea, porque el 6 va
+  // precedido del 4 del '0034'. Este va ANTES para comerse el prefijo completo y
+  // no dejar '00 34' de resto. Falsos positivos: ningun importe, año ni CP español
+  // empieza por 00 seguido de 9 o mas digitos.
+  ['telefono', /(?<![0-9])00[ .\-]?[0-9]{1,3}[ .\-]?[0-9](?:[ .\-]?[0-9]){7,13}/g,   '[TELEFONO]'],
   ['telefono', /\+[0-9]{1,3}[ .\-]?[0-9](?:[ .\-]?[0-9]){7,13}/g,                    '[TELEFONO]'],
-  ['telefono', /(?<![0-9])[6-9][0-9]{2}[ .\-]?[0-9]{3}[ .\-]?[0-9]{3}(?![0-9])/g,     '[TELEFONO]']
+  ['telefono', /(?<![0-9])[6-9][0-9]{2}[ .\-]?[0-9]{3}[ .\-]?[0-9]{3}(?![0-9])/g,     '[TELEFONO]'],
+  // 31/08 · EL AGRUPADO 3-2-2-2 ('600 12 34 56'), que es como lo dicta la gente por
+  // telefono. El patron de arriba exige grupos de 3+3 y este no encaja. Exige los
+  // separadores (sin ellos son 9 digitos seguidos y ya los coge el de arriba).
+  ['telefono', /(?<![0-9])[6-9][0-9]{2}[ .\-][0-9]{2}[ .\-][0-9]{2}[ .\-][0-9]{2}(?![0-9])/g, '[TELEFONO]']
 ];
 
 // Contadores. Guardan CUANTOS, nunca QUE: el valor enmascarado no puede volver a

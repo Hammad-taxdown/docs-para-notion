@@ -4,7 +4,8 @@
 # NO SE TOCA: va por su cuenta.
 #   bash docs/pasos.sh        -> los pasos y el orden
 #   bash docs/pasos.sh 1      -> un paso suelto, Y lo copia al portapapeles
-#   bash docs/pasos.sh test   -> pasa las CATORCE puertas
+#   bash docs/pasos.sh 5      -> 31/08 · el prompt v15, el agente conversacional unico
+#   bash docs/pasos.sh test   -> pasa las VEINTIDOS puertas
 cd "$(dirname "$0")/.." || exit 1
 B=$(printf '\033[1m'); D=$(printf '\033[2m'); V=$(printf '\033[32m'); A=$(printf '\033[33m')
 R=$(printf '\033[31m'); C=$(printf '\033[36m'); N=$(printf '\033[0m')
@@ -122,33 +123,85 @@ echo "${D}            y tras pegar, una conversacion real: en el log de la ejecu
 echo "${D}            UNA linea [conv:part] con los 6 campos y CERO datos del cliente.${N}"
 [ "$1" = copia ] && bash docs/copiar.sh 7; }
 
-puertas(){ echo "${B}${C}━━━ LAS CATORCE PUERTAS ━━━${N}"
-for t in test-decidir-status.js test-validador-2026-08-19.js test-prompt-v10.js test-prompt-v12.js test-prompt-v13.js test-prompt-v14.js test-lector-expediente.js test-v2-preparar-informe.js test-contrato-upsert.js test-log-evento.js test-diagramas-mermaid.js; do
+p5(){ paso 5 "el prompt v15 · TODO el recorrido en un solo agente conversacional" \
+  "LANGSMITH (prompt o tag NUEVO, no el prod)" "bot_mobility_prompt" \
+  "pegar con Cmd+A · y NO mover el tag prod"
+echo "${A}fichero:${N} docs/prompt-final-2026-08-31-v15.txt"
+echo "${A}el contador tiene que decir:${N} ${V}86.548 caracteres${N} ${D}(v14: 66.020, +20.528)${N}"
+echo "${R}ESTE PASO NO SE DA HASTA QUE EXISTA EL WORKFLOW NUEVO.${N} ${D}Dos razones, las dos duras:${N}"
+echo "${D}  1. el v15 nombra la tool ${N}${V}calcular_plazo${N}${D}, y una tool nombrada y no cableada es el${N}"
+echo "${D}     gate de WP-220: el prompt entra A LA VEZ que el workflow que la tiene.${N}"
+echo "${D}  2. el tag ${N}${V}prod${N}${D} de bot_mobility_prompt lo lee ${N}${V}beckham_bot${N}${D}, que esta ACTIVO en${N}"
+echo "${D}     produccion CON el canvas de Intercom delante. El v15 dice que nada viene${N}"
+echo "${D}     pre-filtrado y que el agente hace los tres filtros hablando: si le mueves el tag${N}"
+echo "${D}     prod, el bot vivo empieza a repreguntar lo que el canvas ya preguntó.${N}"
+echo "${D}que cambia respecto al v14, y cada cosa con su comprobacion en la puerta:${N}"
+echo "${D}  · BLOQUE 0 · APERTURA: la bienvenida REAL del canvas (leida de conversaciones${N}"
+echo "${D}    de Intercom, no inventada), la guarda de no repetirla si ya esta en el historial,${N}"
+echo "${D}    las cuatro opciones de arranque literales y el modo preguntas sin tope.${N}"
+echo "${D}  · los tres filtros pasan a llamarse ${N}${V}A${N}${D} (residencia) ${N}${V}B${N}${D} (alta SS) y ${N}${V}C${N}${D} (fecha+plazo).${N}"
+echo "${D}    La numeracion F1/F2/F3/F4 se RETIRA: significaba cosas opuestas en el prompt y${N}"
+echo "${D}    en el canvas. Cero apariciones de \\bF[1-4]\\b en el fichero, y la puerta lo mide.${N}"
+echo "${D}  · la tool ${N}${V}calcular_plazo${N}${D} con sus CUATRO veredictos: en_plazo, fuera_plazo,${N}"
+echo "${D}    no_valida (culpa del dato -> se repregunta, 2 intentos) y SIN VEREDICTO (fallo${N}"
+echo "${D}    nuestro -> NO se repregunta y NO se descarta).${N}"
+echo "${R}  · LA ROTURA MAS CARA, TAPADA:${N} ${D}el parametro fecha_alta_ss de la tool leia el custom${N}"
+echo "${D}    attribute fecha_alta_ss_f2, que el canvas nuevo YA NO ESCRIBE. El v15 manda${N}"
+echo "${D}    guardarla con guardar_datos_cliente en cuanto el veredicto sea en_plazo. Sin eso,${N}"
+echo "${D}    el escritor responde ok:true y la fecha de alta NO SE GUARDA NUNCA -- y de ella${N}"
+echo "${D}    salen el plazo de la siguiente sesion y la fecha de alta impresa en el informe.${N}"
+echo "${D}  · regla 10: de TRES herramientas a CUATRO, y CUANDO NO SE GUARDA. Un cliente que${N}"
+echo "${D}    solo pregunta no debe acabar con expediente: antes lo garantizaba la topologia${N}"
+echo "${D}    (el sidecar FAQ no tenia la tool de escritura), ahora lo garantiza el prompt.${N}"
+echo "${D}  · seccion nueva EL ORDEN, Y LO QUE PASA CUANDO EL CLIENTE SE LO SALTA, con el${N}"
+echo "${D}    tablero de las tres casillas y los cuatro saltos reales.${N}"
+echo "${A}intacto y comprobado byte a byte:${N} ${D}el bloque de CONOCIMIENTO FISCAL (12.831 car.,${N}"
+echo "${D}aprobado por Fiscal el 11/08). La puerta lo compara CARACTER A CARACTER con el v14.${N}"
+echo "${B}copiar:${N}     bash docs/copiar.sh 8"
+echo "${B}verificar:${N}  node docs/test-prompt-v15.js   ${D}-> 198 verdes, 0 rojas${N}"
+echo "${D}            (110 heredadas del v14 MIDIENDO EL v15 + 88 nuevas)${N}"
+[ "$1" = copia ] && bash docs/copiar.sh 8; }
+
+# 31/08 · ESTA FUNCION SALIA CON exit 0 AUNQUE LAS VEINTIDOS ESTUVIERAN ROJAS.
+# Imprimia FALLA en rojo y devolvia el codigo del ultimo printf, que siempre es 0.
+# O sea que la puerta de las puertas mentia, que es exactamente el corolario que el
+# proyecto ya tenia escrito: un exit 0 no dice que el script haya hecho su trabajo,
+# solo que no aborto. Ahora `fallos` cuenta y la funcion devuelve 1 si hay alguno.
+puertas(){ echo "${B}${C}━━━ LAS VEINTIDOS PUERTAS ━━━${N}"
+  fallos=0
+for t in test-decidir-status.js test-validador-2026-08-19.js test-prompt-v10.js test-prompt-v12.js test-prompt-v13.js test-prompt-v14.js test-prompt-v15.js test-lector-expediente.js test-v2-preparar-informe.js test-contrato-upsert.js test-log-evento.js test-diagramas-mermaid.js test-guarda-punto-modo.js test-nodo-validar-subworkflow.js test-resolver-modo.js test-preparar-prompt-faq.js test-preparar-prompt-dos-agentes.js test-preparar-prompt-conversacional.js test-registrar-optout.js; do
   r=$(node "docs/$t" 2>&1 | grep -oE "[0-9]+ verdes, [0-9]+ rojas|TODO PASA · [0-9]+ comprobaciones"); node "docs/$t" >/dev/null 2>&1 \
-    && printf "  ${V}OK${N}   %-38s %s\n" "$t" "$r" || printf "  ${R}FALLA${N} %-38s %s\n" "$t" "$r"
+    && printf "  ${V}OK${N}   %-38s %s\n" "$t" "$r" || { printf "  ${R}FALLA${N} %-38s %s\n" "$t" "$r"; fallos=$((fallos+1)); }
 done
-bash docs/montar-nodo-030.sh    >/dev/null 2>&1 && printf "  ${V}OK${N}   %-38s\n" montar-nodo-030.sh    || printf "  ${R}FALLA${N} %-38s\n" montar-nodo-030.sh
-bash docs/montar-nodo-informe.sh >/dev/null 2>&1 && printf "  ${V}OK${N}   %-38s\n" montar-nodo-informe.sh || printf "  ${R}FALLA${N} %-38s\n" montar-nodo-informe.sh
+bash docs/montar-nodo-030.sh    >/dev/null 2>&1 && printf "  ${V}OK${N}   %-38s\n" montar-nodo-030.sh    || { printf "  ${R}FALLA${N} %-38s\n" montar-nodo-030.sh; fallos=$((fallos+1)); }
+bash docs/montar-nodo-informe.sh >/dev/null 2>&1 && printf "  ${V}OK${N}   %-38s\n" montar-nodo-informe.sh || { printf "  ${R}FALLA${N} %-38s\n" montar-nodo-informe.sh; fallos=$((fallos+1)); }
 r=$(bash docs/montar-nodo-validar.sh 2>&1 | grep -oE "[0-9]+ verdes, [0-9]+ rojas"); bash docs/montar-nodo-validar.sh >/dev/null 2>&1 \
-  && printf "  ${V}OK${N}   %-38s %s\n" montar-nodo-validar.sh "$r" || printf "  ${R}FALLA${N} %-38s %s\n" montar-nodo-validar.sh "$r"
+  && printf "  ${V}OK${N}   %-38s %s\n" montar-nodo-validar.sh "$r" || { printf "  ${R}FALLA${N} %-38s %s\n" montar-nodo-validar.sh "$r"; fallos=$((fallos+1)); }
+  if [ "$fallos" -gt 0 ]; then echo "  ${R}${B}$fallos PUERTA(S) ROJA(S). No se publica nada.${N}"; return 1; fi
+  echo "  ${V}las veintidos verdes.${N}"; return 0
 }
 
 case "$1" in
-  test|puertas) puertas ;;
+  test|puertas) puertas; exit $? ;;
   26) bash docs/pasos-2026-08-26-renumeracion.sh ;;
   24) bash docs/pasos-2026-08-24.sh ;;
   21) bash docs/pasos-2026-08-21.sh ;;
   19|viejo) bash docs/pasos-2026-08-19.sh ;;
   ''|todos) puertas
+    echo; echo "${B}${C}════ EL AGENTE CONVERSACIONAL UNICO · 31/08 ════${N}"
+    p5
     echo; echo "${B}${C}════ ADAPTAR A LA ESCALERA NUEVA · 26/08 ════${N}"
     for i in 1 2 3 4; do "p$i"; done
     echo; echo "${B}${C}━━━ ORDEN ━━━${N}"
+    echo "  ${R}el 5 es lo de hoy, y va DETRAS del workflow nuevo:${N} el prompt v15 se pega cuando"
+    echo "  la tool calcular_plazo existe, y en un prompt/tag que NO sea el prod del bot vivo."
+    echo "  ${D}El 1 (v14) sigue siendo el prompt del bot EN PRODUCCION: no se retira todavia.${N}"
     echo "  ${R}el 4 va primero (27/08):${N} un Cmd+A que desatasca WP-207 y WP-208 y todo el"
     echo "  lado n8n del rebuild del canvas. 35 comprobaciones EJECUTANDO el nodo."
     echo "  ${D}El 1 es pegar y mover el tag: dos minutos. El 3 es higiene y no corre prisa.${N}"
     echo "  ${D}El 2 esta SUPERADO: el canvas se construye desde cero en una copia${N}"
     echo "  ${D}(docs/canvas-desde-cero-2026-08-27.md); sus correcciones van dentro del rebuild.${N}"
     echo; echo "${D}un paso suelto y copiado al portapapeles:${N}  bash docs/pasos.sh 1" ;;
-  [1-4]) "p$1" copia ;;
-  *) echo "uso: bash docs/pasos.sh [1-4|test|26|24|21|19]" ;;
+  [1-5]) "p$1" copia ;;
+  *) echo "uso: bash docs/pasos.sh [1-5|test|26|24|21|19]" ;;
 esac

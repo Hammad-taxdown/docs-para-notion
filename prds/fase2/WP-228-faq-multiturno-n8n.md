@@ -13,6 +13,30 @@ issue: ""
 
 # PRD · WP-228 — FAQ multi-turno en n8n
 
+> ## 🔄 SUPERADO EN SU PREMISA · 31/08/2026 · EL MULTI-TURNO NO NECESITA WP-10
+>
+> Este PRD daba por hecho que el multi-turno del FAQ tenía que salir del canvas y vivir detrás del
+> trigger de mensaje, y que por eso estaba **bloqueado por `WP-10`** (sobre un `Customer ticket` no se
+> disparan los triggers «customer sends any message»).
+>
+> **El diseño del 31/08 lo resuelve sin salir del canvas** y por tanto sin `WP-10`:
+> `docs/faq-multiturno-2026-08-31.md`. El botón `[Otra pregunta]` de `Z5` vuelve al `Collect data` de
+> `Z2` — **preguntas ilimitadas con una sola arista**. El turno 2 entra por el **mismo paso** que el
+> turno 1, así que:
+>
+> - no hace falta enrutar por modo (la posición del canvas ES el router)
+> - el `callback_token` es **el mismo** en todas las pasadas, así que el literal soldado vale
+> - el turno 2 **nunca** pasa por el agente del intake, que es el que tiene las 3 tools
+>
+> **Lo que este PRD rechazaba con razón sigue rechazado:** el bucle `W → WDONE → W` como diseño
+> primario **con contención por botones**. La diferencia es que ahora la contención no depende de los
+> botones: el paso que espera **dentro** del turno es un `Collect data` (que sí espera una respuesta),
+> y el que espera **al final** es un botón. Ese es el reparto que lo hace viable.
+>
+> **Queda pendiente UNA medición antes de construir** (`T-ARISTA`, 2 minutos): que un reply button
+> pueda apuntar a un paso **anterior** del canvas. Si no puede, el Plan B del diseño nuevo sí vuelve a
+> necesitar el trigger de mensaje, y entonces `WP-10` vuelve a bloquear.
+
 > **NOTA DEL 11/08/2026 · **BLOQUEADO**, no `skeleton`: depende de `WP-10`, `WP-221`, `WP-222` y `WP-227`. No es que falte escribirlo, es que no se puede empezar. Frontmatter sincronizado el 11/08.**
 
 > **BLOQUEADO por WP-10.** HECHO VERIFICADO: sobre un `Customer ticket` **no se disparan los triggers

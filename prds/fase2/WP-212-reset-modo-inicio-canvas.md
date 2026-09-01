@@ -1,8 +1,8 @@
 ---
 id: WP-212
 title: "Reset de modo_bot al inicio del canvas, con centinela si Set no admite cadena vacía"
-status: specified
-size: S
+status: done
+size: XS
 depends_on: [WP-210]
 milestone: "Fase 2 conversacional — Modo y menú"
 owner: "Hammad"
@@ -12,6 +12,23 @@ issue: ""
 ---
 
 # PRD · WP-212 — Reset de `modo_bot`
+
+> ## ⛔ CERRADO SIN CONSTRUIR · 31/08/2026
+>
+> **`T081` quedó en B PURA** (decidido el 28/08, reconfirmado el 31/08 con el diseño del FAQ
+> multi-turno delante). **El modo no se persiste, así que no hay nada que resetear**: ni `modo_bot`,
+> ni el problema de si `Set` admite cadena vacía, ni el centinela, ni el TTL.
+>
+> Y el multi-turno del FAQ, que era lo único que podía obligar a persistir el modo, **se resuelve sin
+> él**: el bucle vive en el canvas y quien recuerda el estado es la posición en la que Intercom tiene
+> aparcada la instancia (`docs/faq-multiturno-2026-08-31.md`).
+>
+> **Lo único que sobrevivía de este paquete** —limpiar `faq_turnos_bot` y `corte_contexto_bot`—
+> **también desaparece**: esos dos atributos **ya no se crean**, porque el estado del FAQ vive en la
+> Data Table `beckham_faq_estado` (`Rnn7SUQ8RxFdK7Xp`). Ver `WP-210` §2.6.
+>
+> **Sigue en pie, y no es de este paquete:** limpiar `intentos_fecha_bot`, que es un contador de la
+> repregunta de fecha y se pone a cero en la rama que lo usa.
 
 > HECHO VERIFICADO: si el contacto tiene una conversación abierta, el Messenger **la reanuda** y el
 > usuario **no vuelve a ver el menú** → arrastraría el modo viejo (modo de fallo MF3). Sin reset, MF3

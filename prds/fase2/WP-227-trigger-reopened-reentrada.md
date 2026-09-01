@@ -2,7 +2,7 @@
 id: WP-227
 title: "Trigger Reopened y matriz de reentrada: hilo abierto, cerrado, cooldown y vuelta a los 3 días"
 status: specified
-size: M
+size: XS
 depends_on: [WP-211, WP-212]
 milestone: "Fase 2 conversacional — Modo y menú"
 owner: "Hammad"
@@ -12,6 +12,44 @@ issue: ""
 ---
 
 # PRD · WP-227 — Reentrada y trigger `Reopened`
+
+> ## 🚨 CORRECCION DEL 31/08/2026 · **EL TRIGGER `Reopened` NO EXISTE EN INTERCOM**
+>
+> **Visto en pantalla por el usuario**, recorriendo las CINCO categorias completas del dialogo
+> «Create from scratch using the following triggers». Lo que hay es esto y nada mas:
+>
+> | Categoria | Triggers |
+> |---|---|
+> | Start of conversation | visits a page · clicks a website element · opens a new conversation in the Messenger · sends their first message · Reusable Workflow |
+> | During conversation | customer sends any message · teammate sends any message · **if teammate changes the conversation state** · CX Score rating · teammate changes team assignment · customer unresponsive · before/when SLA breach · teammate unresponsive |
+> | Internal process | los de teammate · adds a note · when a ticket is created · **when Fin closes a conversation** · Reusable Workflow |
+>
+> **Ningun «Reopened».** Este PRD decia «hoy **no existe ningun workflow** con ese trigger», y de ahi
+> se leyo que el trigger existia y faltaba usarlo. **La frase era ambigua y la lectura fue la mala.**
+>
+> ### Lo que esto cambia: NO HAY WORKFLOW QUE CONSTRUIR
+>
+> La reentrada **ya esta cubierta** por el trigger `When customer sends any message`, que es el de
+> `reuse_mobility`. Los dos caminos acaban en el mismo sitio:
+>
+> · hilo **ABIERTO** → el Messenger lo reanuda → el cliente escribe → dispara `sends any message`
+> · hilo **CERRADO** → el cliente escribe → **reabre** el hilo → dispara `sends any message`
+>
+> Asi que este paquete deja de ser «crear un workflow» y pasa a ser **«probar dos escenarios»**:
+> 1. Hilo abierto: el cliente escribe → hay ejecucion en n8n y el bot contesta.
+> 2. Hilo cerrado a mano desde el Inbox: el cliente escribe → **reabre Y hay ejecucion**.
+>
+> **El 2 es el que puede fallar, y por una causa ya medida:** si la conversacion es un
+> `Customer ticket`, «sends any message» **NO dispara** (bloqueo `WP-10`, verificado el 28/07 en la
+> conv `215475262949230`). Ese es el riesgo real de la reentrada, no la ausencia de un trigger.
+>
+> **Y con `T081` en B pura la parte de modo desaparece:** no hay `modo_bot` que leer ni reencaminar.
+> Lo que sobrevive de este PRD: que el enlace de recordatorio vaya **siempre al launcher** sin
+> reabrir el hilo viejo ni tocar `ticket.state`, y **la matriz de 4 escenarios como prueba del e2e**
+> (hilo abierto · cerrado · dentro del cooldown de 2 min · vuelta a los 3 dias).
+>
+> **`size` pasa de M a XS: es una prueba, no una construccion.**
+
 
 > HECHOS VERIFICADOS: (1) si el contacto tiene una conversación abierta, el Messenger **la reanuda** y
 > el usuario **no vuelve a ver el menú**; (2) "Reopened" **no es** el mismo trigger que "customer sends

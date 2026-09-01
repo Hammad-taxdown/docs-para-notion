@@ -5,7 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const RUTA = path.join(__dirname, 'nodo-decidir-status-2026-08-26.js');
+const RUTA = path.join(__dirname, 'nodo-decidir-status-2026-08-28.js');
 const CODIGO = fs.readFileSync(RUTA, 'utf8');
 
 // Corre el nodo con $ y $input simulados, igual que haria n8n.
@@ -70,11 +70,17 @@ const CASOS = [
   ['el peldano 2 NUEVO sube al 3 si solo hay senal de complejidad',
    { enviado: SENAL, filas: [fila('2. Pte agendar llamada')] }, '3. Pendiente llamada TD'],
 
-  ['descarte al principio -> escribe el 12',
-   { enviado: DESCARTE, filas: [fila('1. Interesado')] }, '13. Descartado'],
+  // 28/08 · el descarte pasa a '14. Descartado': el '13' es hoy '13. Concedido'
+  ['descarte al principio -> escribe el 14',
+   { enviado: DESCARTE, filas: [fila('1. Interesado')] }, '14. Descartado'],
 
-  ['descarte con el equipo ya trabajando el caso (3) -> NO escribe',
-   { enviado: DESCARTE, filas: [fila('4. Pte hacer informe')] }, null],
+  // La frontera se traslada con la renumeracion: el peldano que bloqueaba el
+  // descarte era el 4 viejo ('Informe enviado'), que hoy es el 5.
+  ['descarte con el informe ya enviado (5) -> NO escribe',
+   { enviado: DESCARTE, filas: [fila('5. Informe enviado')] }, null],
+
+  ['descarte con el informe PENDIENTE (4) -> SI escribe, la frontera es el 5',
+   { enviado: DESCARTE, filas: [fila('4. Pte hacer informe')] }, '14. Descartado'],
 
   ['sin motivo de cierre y sin AplicaBeckham -> se queda en el 1',
    { enviado: SUELTO, filas: [{}] }, '1. Interesado'],
@@ -112,9 +118,9 @@ const CASOS = [
    { enviado: { fields: { UserId: 'u1', MotivoCierre: 'Expediente completo', SenalesComplejidad: ['Salario no definido o en el límite'] } },
      filas: [fila('3. Pendiente llamada TD')] }, '4. Pte hacer informe'],
 
-  ['NO REGRESION: senales Y descarte -> manda el descarte',
+  ['NO REGRESION: senales Y descarte -> manda el descarte (hoy el 14)',
    { enviado: { fields: { UserId: 'u1', Descarte: true, SenalesComplejidad: ['Salario no definido o en el límite'] } },
-     filas: [fila('1. Interesado')] }, '13. Descartado'],
+     filas: [fila('1. Interesado')] }, '14. Descartado'],
 
   ['SENALES con la lectura fallida -> no se toca el Status',
    { enviado: SENAL, filas: [{ error: 'timeout' }] }, null],
@@ -184,6 +190,55 @@ else { console.log("verde el nodo NO asigna nunca el peldano 5 (Informe enviado)
 // La regla del proyecto: en nodos de codigo, jamas .item
 if (/\)\s*\.item\b/.test(CODIGO)) { console.log("ROJO  hay $(...).item en un nodo de codigo"); mal++; }
 else { console.log("verde cero $(...).item"); ok++; }
+
+// ── 28/08 · EL COTEJO QUE FALTABA, Y ES EL QUE HABRIA CAZADO EL FALLO ──────────
+// Esta puerta daba 30 verdes con el retroceso dentro, porque comprobaba el nodo
+// contra SU PROPIA tabla ORDEN: se validaba a si misma. Del 1 al 8 los nombres
+// coincidian con Airtable y del 9 al 14 NO, y nadie lo veia.
+// Ahora ORDEN se cotea contra las opciones VIVAS del singleSelect, leidas por MCP
+// y congeladas en docs/opciones-status-airtable-2026-08-28.txt. Node plano no
+// puede llamar a Airtable, asi que la cadena es: MCP -> fichero -> puerta. Si
+// alguien renumera, se regenera el fichero y esta comprobacion muerde.
+{
+  const REF = path.join(__dirname, 'opciones-status-airtable-2026-08-28.txt');
+  const vivas = fs.readFileSync(REF, 'utf8').split('\n')
+    .filter(l => l && !l.startsWith('#'))
+    .map(l => l.split('\t')[1]).filter(Boolean);
+
+  const bloque = CODIGO.match(/const ORDEN = \{([\s\S]*?)\n\};/);
+  if (!bloque) { console.log("ROJO  no encuentro la tabla ORDEN en el nodo"); mal++; }
+  else {
+    const enOrden = [...bloque[1].matchAll(/'([^']+)':\s*(\d+)/g)].map(m => [m[1], Number(m[2])]);
+    const nombres = enOrden.map(x => x[0]);
+
+    // 1 · cada nombre de ORDEN existe LITERAL entre las opciones vivas
+    const fantasmas = nombres.filter(n => !vivas.includes(n));
+    if (fantasmas.length === 0) { console.log("verde los " + nombres.length + " nombres de ORDEN existen en el singleSelect vivo"); ok++; }
+    else { console.log("ROJO  ORDEN tiene nombres que NO existen en Airtable: " + JSON.stringify(fantasmas)); mal++; }
+
+    // 2 · ninguna opcion viva se queda fuera de ORDEN (si falta, su peldano no protege)
+    const huerfanas = vivas.filter(v => !nombres.includes(v));
+    if (huerfanas.length === 0) { console.log("verde las " + vivas.length + " opciones vivas estan en ORDEN"); ok++; }
+    else { console.log("ROJO  opciones vivas que ORDEN no conoce (su peldano no protege): " + JSON.stringify(huerfanas)); mal++; }
+
+    // 3 · el numero de ORDEN coincide con el prefijo del nombre: '9. X' -> 9
+    const desalineados = enOrden.filter(([n, v]) => Number(String(n).match(/^(\d+)/)?.[1]) !== v);
+    if (desalineados.length === 0) { console.log("verde el peldano de cada fila coincide con su prefijo"); ok++; }
+    else { console.log("ROJO  filas con el numero desalineado: " + JSON.stringify(desalineados)); mal++; }
+
+    // 4 · el orden de ORDEN es el mismo que el de Airtable (una permutacion silenciosa
+    //     no la caza ninguna de las tres de arriba)
+    const mismoOrden = nombres.length === vivas.length && nombres.every((n, i) => n === vivas[i]);
+    if (mismoOrden) { console.log("verde ORDEN va en la MISMA secuencia que el singleSelect"); ok++; }
+    else { console.log("ROJO  ORDEN y Airtable no van en la misma secuencia"); mal++; }
+
+    // 5 · el valor que el nodo ESCRIBE al descartar existe entre las opciones vivas
+    const escritos = [...CODIGO.matchAll(/propuesto = '([^']+)'/g)].map(m => m[1]);
+    const inventados = escritos.filter(v => !vivas.includes(v));
+    if (inventados.length === 0) { console.log("verde los " + escritos.length + " valores que escribe existen en el singleSelect"); ok++; }
+    else { console.log("ROJO  el nodo escribe valores que Airtable no tiene (persistencia_fallida): " + JSON.stringify(inventados)); mal++; }
+  }
+}
 
 console.log(`\n${ok} verdes, ${mal} rojas`);
 process.exit(mal ? 1 : 0);

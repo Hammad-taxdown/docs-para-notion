@@ -44,7 +44,7 @@ VIVO_CAR = 10945
 # El montado. Si cambias un bloque, este numero cambia: actualizalo aqui a mano,
 # porque es lo unico que permite comprobar un pegado de Cmd+A en n8n contando
 # caracteres (el editor cuenta CARACTERES, no bytes).
-ESPERADO = 26362
+ESPERADO = 27280
 
 
 def aborta(msg):

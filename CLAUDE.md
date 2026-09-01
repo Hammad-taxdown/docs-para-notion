@@ -70,9 +70,12 @@ bash docs/montar-nodo-informe.sh
 node docs/test-generador-030.js
 node docs/test-informe-integracion.js
 
-# LAS CATORCE PUERTAS: once de node plano mas los tres montadores. `bash docs/pasos.sh test`
-# las pasa las catorce de una vez. Todas exit 1 si algo esta rojo.
-node docs/test-decidir-status.js        # la escalera de Status: 30 comprobaciones
+# LAS VEINTIDOS PUERTAS: diecinueve de node plano mas los tres montadores. `bash docs/pasos.sh test`
+# las pasa las veintidos de una vez. Todas exit 1 si algo esta rojo.
+# 31/08 · Y `pasos.sh test` TAMBIEN sale con exit 1 ahora. Hasta hoy imprimia FALLA en
+# rojo y devolvia 0 SIEMPRE, o sea que la puerta de las puertas mentia. Medido en los
+# dos sentidos: verde -> 0, una puerta mutada a proposito -> 1.
+node docs/test-decidir-status.js        # la escalera de Status: 36 comprobaciones
 node docs/test-validador-2026-08-19.js  # gentilicios, umbral, estado civil: 31
 node docs/test-prompt-v10.js           # los 17 cambios del prompt v10: 35
 node docs/test-prompt-v12.js           # el prompt v12, 77 (hereda las 60 del v11)
@@ -83,11 +86,20 @@ node docs/test-contrato-upsert.js      # el contrato del escritor contra el nodo
 node docs/test-prompt-v14.js           # el v14 local (66.020 car., PENDIENTE de pegar): 110
 node docs/test-log-evento.js           # el corr_id y el Log_Evento de 6 campos: 25
 node docs/test-diagramas-mermaid.js    # los .mmd.md del repo publico: 28
+node docs/test-prompt-v15.js           # el v15 CONVERSACIONAL (86.548 car.): 206, hereda las 107 comp() del v14
+node docs/test-preparar-prompt-conversacional.js  # el UNICO codigo nuevo del cambio: 58
 
 # Los pasos de un cambio, EN LA TERMINAL (no en un .md que hay que abrir)
 bash docs/pasos.sh          # las puertas + los pasos con workflow, nodo y casilla
 bash docs/pasos.sh 6        # un paso suelto, Y lo copia al portapapeles
-bash docs/pasos.sh test     # solo las puertas
+bash docs/pasos.sh test     # solo las puertas (exit 1 si alguna esta roja)
+
+# 31/08 · CABLEAR beckham_bot_conversacional. Los cuatro nodos de codigo del workflow
+# nuevo estan puestos como STUB con un `throw` a proposito, y cada uno remite a un paso
+# de aqui. Son 114.622 caracteres para pegar con Cmd+A.
+bash docs/pasos-conversacional.sh        # los 9 pasos y el orden
+bash docs/pasos-conversacional.sh 3      # un paso suelto, Y lo copia al portapapeles
+bash docs/pasos-conversacional.sh test   # las puertas de las piezas de ese cambio
 
 # Contratos del escritor y del lector contra los webhooks vivos
 bash scripts/contract-test.sh
@@ -199,7 +211,7 @@ No se editan en n8n. Se tocan las piezas fuente, se concatenan con su script, y 
 | `.030` (2700 bytes, **ISO-8859-1**) | `generador-030-*.js` · `tabla-municipios-ine-*.js` · `nodo-030-glue-*.js` | `nodo-montar-030-COMPLETO.js`, **198.509 car.** (el nodo vivo tiene 197.924: los 585 de diferencia son **solo comentarios**) | `beckham_generar_030` |
 | Informe PDF | `metrica-helvetica-*.js` · `pdf-motor-*.js` · `informe-datos-2026-08-19.js` · `informe-cuerpo-2026-08-19.js` · `nodo-informe-glue-*.js` | `nodo-montar-informe-COMPLETO.js`, **241.272 car.** (19/08: local y nodo vivo IDÉNTICOS) | `beckham_informe_mobility` |
 
-| Nodo `Validar y Normalizar` (el escritor) **con `corr_id`** | se monta del **código vivo del export**, por anclas | `nodo-validar-normalizar-COMPLETO.js`, **76.156 car.** (el vivo: 73.081, +3.075) | `beckham_bot` |
+| Nodo `Validar y Normalizar` (el escritor) **con `corr_id`** | se monta del **código vivo del export**, por anclas | `nodo-validar-normalizar-COMPLETO.js`, **76.156 car.** (**31/08: PEGADO. El vivo mide 76.156 y su sha256 coincide byte a byte, salto de línea final incluido. Los 73.081 de antes eran el estado previo al pegado**) | `beckham_bot` |
 El PDF **se monta a mano byte a byte**, no se rellena un `.docx`: de los 17 marcadores, **15 están
 partidos entre varios `<w:r>`** del XML de Word, así que un buscar-y-reemplazar sustituiría 2 de 19
 apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin fallar**.
@@ -264,6 +276,16 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   **los únicos que no se pueden leer por API**, o sea el único backup del mundo, en un solo portátil.
   Ahora el script **aborta** si aparece un subdirectorio nuevo. Corolario del corolario: `exit 0` no
   dice que el script hiciera su trabajo, y **un push «correcto» tampoco dice que subiera lo que creías.**
+- **UNA PUERTA SE ANCLA EN LA LÍNEA OPERATIVA, NUNCA EN LA PROSA DE AVISO.** Es la clase de fallo
+  más caro que tienen mis pruebas, y el 31/08 el ataque adversarial encontró **tres del mismo tipo**
+  en la puerta del v15, que salía con 198 verdes y `exit 0`: se podía **invertir la polaridad del
+  FILTRO A** (`Si SÍ (fue residente) → DESCARTE` → `Si NO`, o sea descartar a todo el que cumple)
+  porque la comprobación anclaba en el `⚠️ OJO AL SENTIDO` de dos líneas antes; se podía **voltear la
+  cabecera del FILTRO B** a «ESTE DESCARTA» dejando el prompt contradiciéndose consigo mismo, porque
+  la comprobación miraba el cuerpo; y `dos intentos` → `tres intentos` pasaba porque se anclaba en
+  «no intentes una tercera vez» y no en el número. **El aviso es lo que el modelo puede ignorar; la
+  rama es lo que obedece.** Al escribir una comprobación, anclar la rama, la cabecera y el número
+  literales — y **contar las apariciones**, que es lo que caza el volteo.
 - **El recuento de un pegado va en CARACTERES, no en bytes.** `wc -c` da bytes; el editor de n8n
   cuenta caracteres. El `COMPLETO` lleva ~1.500 acentos y los dos números se separan casi 3.000.
 - **`typecast: true` en el Upser NO SE APAGA.** Se intentó y se revirtió dos veces (01/08 y 06/08).
@@ -317,12 +339,25 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   `4`. Las 289 ejecuciones `trigger` anteriores habían corrido **siempre en vacío**. Si algún día
   vuelve a no salir, esto es la referencia de que el mecanismo funciona: el fallo estará en el dato
   o en el Status, no en el reloj.
-- **Un cambio de Status son SEIS sitios** (19/08, el sexto encontrado el 26/08): `Decidir_Status`,
-  el filtro del `.030`, el filtro del informe, `Marcar InformeListo`, la automatización **`3b` de
-  Airtable** y **el schema cacheado del nodo `Airtable Upser Expediente`** (se refresca en la UI,
+- **Un cambio de Status son SIETE sitios** (19/08 · el sexto el 26/08 · **el séptimo el 28/08, y es
+  el que falló**): `Decidir_Status` —**y dentro de él, DOS cosas distintas: los valores que escribe
+  Y su tabla `ORDEN`**, que es el séptimo sitio—, el filtro del `.030`, el filtro del informe,
+  `Marcar InformeListo`, la automatización **`3b` de Airtable** y **el schema cacheado del nodo
+  `Airtable Upser Expediente`** (se refresca en la UI,
   vigilando que no reactive los 36 campos quitados — §5). Si falta el quinto, una fila marcada con
   `EnviarBorradores` se escapa de la ventana antes del tick (pasó el 18/08); si falta el sexto, el
-  bot devuelve `persistencia_fallida` en cada escritura (pasó el 26/08).
+  bot devuelve `persistencia_fallida` en cada escritura (pasó el 26/08); **si falta el séptimo, la escalera deja de
+  proteger y el descarte no se guarda** (pasó el 26/08 y se encontró el 28/08: se actualizaron los
+  valores que el nodo escribe y **no** su tabla `ORDEN`, que del 1 al 8 coincidía y del 9 al 14 no.
+  `ORDEN['9. Pte modificación']` daba `undefined` → `nActual = 0` → el bot podía **pisar un peldaño
+  alto**; y proponía `'13. Descartado'`, un nombre que ya no existe, así que el Upser lo rechazaba
+  contra su lista cacheada y **el descarte del bot no llegaba nunca a Airtable**. Los dos fallos se
+  tapaban entre sí).
+  **Y LA PUERTA DABA 30 VERDES CON EL FALLO DENTRO**, porque comparaba el nodo contra su propia tabla
+  `ORDEN`: se validaba a sí misma. Desde el 28/08 cotea contra las opciones **vivas**, congeladas por
+  MCP en `docs/opciones-status-airtable-2026-08-28.txt` — cinco comprobaciones que, apuntadas al nodo
+  viejo, dan **7 rojas** y nombran los cinco peldaños fantasma. **Una prueba que solo se compara con
+  su propio código no es una puerta.**
 - **`montar-nodo-informe.sh` REVIERTE el `COMPLETO` si falla la de integración**, y la de integración
   lee **el `COMPLETO` del disco**, no las piezas. Así que si cambias una pieza *y* su prueba a la vez,
   la primera pasada revierte y la prueba sigue midiendo el nodo viejo: parece que tu cambio no ha
@@ -425,6 +460,122 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   - Lo que **sí** funciona de ese filtro y conviene no romper: `Decidir_Status` escribe
     `Empresa = 'TaxDown'` cuando la celda está vacía, así que **toda fila del bot nace excluida** y
     los leads no reciben ese correo.
+- **LA DUPLICACION DEL CANVAS POR IDIOMA ES DELIBERADA** (28/08, decision del usuario). `A. Seleccion
+  Idioma` bifurca a `B. Introduccion ESP` y `C. Introduccion ENG`, y de ahi bajan **dos cadenas
+  paralelas completas** (32 paths). Dos motivos suyos: el equipo atiende en los dos idiomas, y el
+  agente tiene que **seguir en el idioma en que se hablaba**. Consecuencias, y no se reabren:
+  - **El idioma NO lo detecta el LLM: lo declara la rama.** Cada punto pasa `idioma` como **input
+    fijo del DC** (`es` / `en`) desde «Map action inputs». Es determinista, y encaja con lo que ya
+    existe: el escritor lo guarda en la columna `Idioma` y **el informe v2 elige con ella su
+    plantilla** de las ocho (4 regimenes x 2 idiomas). Cero campos nuevos.
+  - **El precio: cada arreglo del canvas se hace DOS VECES**, una por rama. Es la misma trampa que
+    ya se paga en el script del correo ingles de Airtable, que existe duplicado
+    (`wacPpABiplv5tO7OM` y `wac2hg1IZkE0yOxMF`). Al tocar el canvas, contar siempre los dos sitios.
+  - Lo que **no** se duplica: los atributos (son de conversacion, uno solo) y los Data Connectors
+    (son el mismo objeto). Lo que se duplica es el **cableado** y el `Map action inputs` de cada punto.
+- **T081 CERRADA EL 28/08: reentrada B PURA** (el usuario delego la decision). El modo **no se
+  persiste**: viaja como input obligatorio del DC en cada llamada, y una reentrada cae **siempre al
+  menu**. Consecuencias: **`WP-212` se cierra sin construir** (si no se persiste, no hay nada que
+  resetear: ni `modo_bot`, ni la incognita de si `Set` admite cadena vacia, ni el centinela) y
+  **`WP-227` pasa de M a S** (se van la lectura de `modo_bot`, las cuatro reglas de reencaminado y el
+  TTL; queda el trigger `Reopened`, el enlace al launcher y la matriz de reentrada del e2e). Los dos
+  contadores que **si** siguen siendo atributos (`faq_turnos_bot`, `intentos_fecha_bot`) se limpian
+  con dos pasos `Set` dentro del rebuild del canvas.
+  **El argumento que la cierra, y es del propio `WP-227`:** su §2 ya decia «`modo_bot` vacio o
+  caducado -> menu», y con transporte B estaria **siempre** vacio, asi que esa regla pasa a ser la
+  unica y las otras tres son codigo para un caso que no ocurre. **Y la decision del idioma la
+  refuerza:** lo unico que de verdad hay que recordar entre sesiones es el idioma, y **ya tiene su
+  sitio persistente en Airtable** (`Idioma`), no en un atributo de conversacion. El modo no necesita uno.
+- **EL ESCRITOR SE QUEDA DENTRO DE `beckham_bot`. `BECKHAM_upsert_expediente` NO SE CABLEA** (31/08,
+  decision del usuario tras comparar los dos en pantalla). El subworkflow `1BaSgHfQzuzC9sw1` se queda
+  **creado, inactivo y sin credencial**, como preparacion.
+  **El motivo es que NO hacen lo mismo, y el vivo hace CINCO cosas mas** (medido nodo a nodo):
+  `Leer_Status_Actual` + **`Decidir_Status`** (la escalera de Status entera) · **`¿UserId duplicado?`**
+  + `Avisar_Multi_Match` (la guarda de unicidad de WP-205) · **`¿Ya escrito?`** + `Respond Dedup` (la
+  idempotencia) · `¿Fechas descartadas?` + `Avisar_Fecha_Invalida` · `Avisar_Upsert_Rechazado`. El
+  subworkflow solo aporta la guarda de `punto x modo`.
+  **Cablearlo hoy romperia la escalera de Status**, que es exactamente el fallo del 17/08: 297
+  ejecuciones verdes y ni un informe en tres dias.
+  **Y la ventaja principal del cambio era para MI, no para el producto:** poder editar el escritor por
+  MCP (14 nodos en vez de 55) sin un pegado de 76 KB. Quitar el HTTP y cortar la reentrada son mejoras
+  reales, pero **no arreglan ningun problema vivo**. Se reabre solo si aparece uno: que el FAQ necesite
+  la guarda de modo, o que haya que tocar el escritor tan a menudo que el pegado duela.
+- **EL FAQ ES MULTI-TURNO Y SU BUCLE VIVE EN EL CANVAS** (31/08, decisión del usuario: «no tenemos
+  que hacer que pueda hacer muchas»). El botón `[Otra pregunta]` de `Z5` vuelve al `Collect data` de
+  `Z2`: preguntas ilimitadas **con una sola arista**. Diseño completo en
+  `docs/faq-multiturno-2026-08-31.md` (881 líneas), salido de tres candidatos y nueve veredictos
+  adversariales — **los tres candidatos murieron**.
+  **Por qué este y no los otros dos:** es el único que **no necesita saber el modo** para enrutar el
+  turno 2. Quien «recuerda» que la conversación está en el FAQ es **la posición en la que Intercom
+  tiene aparcada la instancia del canvas**, no un dato que pueda quedarse rancio. Y de paso mata dos
+  incógnitas: el `callback_token` es **el mismo** en todas las pasadas (misma posición del canvas),
+  así que el literal soldado en el Body vale; y no hay `Set`, ni centinela, ni la incógnita que mató a
+  `WP-209`.
+  - **`T081` NO CAMBIA: se queda en B pura.** No hay modo que persistir porque no hay modo. Las
+    cuatro invariantes de `WP-210` §2.4 se cumplen a la letra, `WP-212` sigue cerrado sin construir y
+    `WP-227` sigue en XS.
+  - **LO QUE SÍ SE AÑADE, y es una pregunta que `T081` nunca respondió: dónde vive el estado
+    conversacional del FAQ.** Respuesta: **una Data Table de n8n**, no un atributo de Intercom.
+    Creada el 31/08: **`beckham_faq_estado`** (`Rnn7SUQ8RxFdK7Xp`, proyecto `ADm8RL3z3EJcozih`), con
+    `conversation_id` como clave. El patrón ya estaba probado en casa: `beckham_bot` usa
+    `beckham_prompt_respaldo` (`mTN65aN389Z3KMbe`) en producción. De los cinco atributos `_bot` de
+    `WP-210` §2.3, **`faq_turnos_bot`, `faq_resumen_bot` y `corte_contexto_bot` NO se crean**.
+  - **El FAQ pasa a tener prompt propio** (`bot_faq_mobility` en LangSmith). Tres veredictos
+    independientes lo calificaron de crítico, y es la única bajada de coste real: de ~66.000 a
+    ~19.000 caracteres por turno, o sea de 17-20k a ~5k tokens. **12 preguntas costarían menos que 4
+    hoy**, así que no hace falta un tope de producto para acotar el gasto.
+  - **EL CORTE DE CONTEXTO SE CONSTRUYE EN EL LADO DEL INTAKE, NO EN EL DEL FAQ**, y esto corrige un
+    error de diseño mío: el enmascarado de PII se puso en el agente que **no puede escribir**
+    (`ai_tool = 0`) y dejó sin tocar al que tiene **tres** aristas `ai_tool`, produce el `.030` que
+    sube a la AEAT y el PDF que se manda al cliente. La defensa estaba en el lado equivocado.
+  - **UNA MEDICIÓN PENDIENTE ANTES DE CONSTRUIR** (2 minutos, `T-ARISTA`): que un reply button pueda
+    apuntar a un paso **anterior** del canvas. Si no puede, hay Plan B escrito, y ese sí cambia
+    `T081` — nace un «transporte D» con el estado de enrutado en la misma Data Table, con TTL de 6 h.
+- **`reuse_mobility` NO SE VA CON EL CANVAS: es el TRANSPORTE, y su audiencia es un bloqueante que
+  nadie tenía apuntado** (31/08). El pivote conversacional se lleva los 32 paths de `OnClick
+  Mobility`, pero **alguien tiene que seguir mandándole a n8n el body de cada mensaje**, y ese alguien
+  es un workflow con el trigger «When customer sends any message» más un DC: o sea
+  **`reuse_mobility` (`66250478`)**, cuyo único paso es `Pass to n8n_BOT_mobility`. Cambia de papel a
+  **más** importante: hoy relanza los turnos 2..n, mañana es la única entrada de **todos**, el primero
+  incluido.
+  - **⛔ LA AUDIENCIA ES `Custom = Users AND 'Team assigned is Ops_BOT_Mobility'`** (team `11098265`,
+    auditada el 1/08), **y quien asignaba ese team era el Custom Bot** — en el timeline del 28/07 la
+    asignación cae a las `17:43:47`, justo tras el turno 1 del canvas. **Comprobado el 31/08 por MCP:
+    ni `beckham_bot` ni `beckham_bot_conversacional` asignan team en ningún nodo** (cero apariciones
+    de `11098265`, `Ops_BOT_Mobility` y `team_assignee` en los dos). Si el canvas muere y nadie lo
+    asigna, **la condición no se cumple nunca y el bot no recibe un solo mensaje.** Salidas: cambiar
+    la audiencia a un atributo que ya exista en producción (el de full VIP), que n8n asigne el team en
+    el primer turno, o dejar un workflow mínimo de bienvenida que salude **y** asigne.
+  - **Hay que quitarle el `wait_for_callback`, y vive en el PASO del reusable `n8n_BOT_mobility`
+    (`66246057`), no en el Data Connector.** Con el diseño nuevo nadie manda ese callback: el paso se
+    queda esperando, **reteniendo el slot customer-facing** (solo corre uno por evento, y lo retiene
+    incluso esperando input), y el turno siguiente puede no disparar.
+  - **Y sigue vivo el riesgo de `WP-10`: sobre un `Customer ticket` ese trigger NO dispara.** Medido
+    el 28/07 en la conversación `215475262949230` — el cliente responde, dos segundos después un
+    `ticket_state_updated_by_admin`, y después **nada**: ni `custom_action_started` ni una ejecución.
+    `reuse_mobility` marcaba `Sent: 0`. Era del workspace **TEST**, así que **en producción hay que
+    volver a medirlo, y va ANTES de cablear nada**: toda la arquitectura nueva depende de ese trigger.
+  Diseño completo en `docs/conversacional-2026-08-31.md`; los pasos, en
+  `bash docs/pasos-conversacional.sh 10..13`.
+- **EN EL BOT CONVERSACIONAL SE ENMASCARA SOLO EL IBAN, y no es un olvido del resto** (31/08). El
+  sidecar del FAQ enmascaraba email, NIF y teléfono porque el FAQ es la puerta anónima del embudo y
+  no necesita ni un dato. **Aquí es al contrario: el NIF y el email SON el contrato** — están entre
+  los 40 parámetros de `guardar_datos_cliente` y el `.030` aborta sin NIF. Enmascararlos le manda al
+  agente `[NIF]`, y el agente guarda `[NIF]` o lo repregunta en bucle: **el síntoma peor del
+  proyecto provocado por una «mejora» de seguridad.** Se tapa solo lo que el contrato **nunca**
+  acepta, y de eso hay uno. Comprobado antes de decidirlo: `iban` sale **cero** veces como campo en
+  el validador de 76.156 car. y cero en el prompt v15 (los aciertos de `grep -i iban` son `LIBANO`,
+  `libanes` y `recibaN`). Un número de cuenta pegado en el chat **no tiene a dónde ir** y hoy se
+  queda en el log de la ejecución para siempre; ese sí. **Si algún día el contrato acepta un IBAN,
+  se quita el patrón en el mismo movimiento**, o el dato llegará enmascarado y nadie sabrá por qué.
+  Lo que **sí** se rescató del sidecar es el **freno de coste**, y ampliado a dos topes: el mensaje
+  del turno a 4.000 car. **por la cabeza** (el dato va al principio, la divagación después) y
+  `chat_history` a 24.000 **por la cola** (los turnos recientes; por la cabeza dejaría la
+  presentación del bot y se comería las tres últimas respuestas del cliente). Se recorta **antes** de
+  enmascarar, o un IBAN partido por el corte deja resto reconocible. Aquí el tope es **más**
+  necesario que en el FAQ, no menos: el diseño conversacional deja preguntar sin límite, así que el
+  historial crece sin techo y viaja entero en cada turno. Puerta: `test-preparar-prompt-conversacional.js`,
+  58 verdes, probada con 6 mutaciones y las 6 cazadas.
 - **El bot solo genera el `.030`, no el 149.** El 149 lo rehace un fiscal a mano.
 - **SUPERADO EL 24/08 — el correo del informe NO lo manda Airtable.** Aquí decía lo contrario
   («`sendEmail` adjunta desde un campo de adjunto y eso ya funciona»), y era verdad como mecanismo
@@ -522,6 +673,7 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
 | `docs/` | **PLANA a propósito.** Los scripts hacen `cd $(dirname $0)` y llaman a las piezas por nombre pelado; hay pruebas con rutas absolutas. **Subdividirla rompe la fabricación del PDF y del `.030`**, y el remoto la tiene aplanada |
 | `docs/prds/fase2/` | 39 PRDs `WP-2NN` + `map.html` + `ROADMAP-FASE2.md`. Estados válidos: `skeleton, specified, building, done` |
 | `docs/arquitectura-completa-2026-08-16.md` | Punta a punta, 5 diagramas Mermaid, 14 decisiones |
+| **`docs/conversacional-2026-08-31.md`** | **El pivote a un solo agente: el diff de 56→49 nodos, los dos cambios que no se ven en el recuento, el transporte de Intercom con su bloqueante, y lo que se paga** |
 | `docs/corpus-fiscal-beckham-2026-08-13.md` | El conocimiento fiscal aprobado, con su apéndice de desajustes |
 | `docs/prompt-final-*.txt` | Copias versionadas del prompt. **La fuente de verdad es LangSmith**, `bot_mobility_prompt` tag `prod`. Vigente: **v13** (21/08, 65.848 car., pegado y verificado en la conversación `215475581167582`), con su puerta `test-prompt-v13.js` de 103 comprobaciones — hereda las 77 del v12 **midiendo el v13**, no el fichero viejo. Sus cuatro cambios, los cuatro medidos turno a turno: D3 pide NIF o NIE sin nombrar el pasaporte · inversiones pegadas a inmuebles · hijos y observaciones en el orden en que se preguntan · el mensaje del Calendly termina preguntando, que es la mitad del arreglo del peldaño 2 |
 | `plan/` · `plan/historico/` | Plan maestro, arranques de sesión, reanudaciones |

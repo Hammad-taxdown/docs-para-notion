@@ -7,9 +7,10 @@
 #   bash docs/copiar.sh 5     el prompt v14 entero, para LangSmith
 #   bash docs/copiar.sh 6     la description de beckham_bot
 #   bash docs/copiar.sh 7     el nodo Validar y Normalizar COMPLETO (Cmd+A)
+#   bash docs/copiar.sh 8     el prompt v15 entero (un solo agente conversacional)
 # Todo sin el '=' inicial y sin salto de linea final, como pide n8n.
 cd "$(dirname "$0")/.." || exit 1
-V=$(printf '\033[32m'); D=$(printf '\033[2m'); N=$(printf '\033[0m')
+V=$(printf '\033[32m'); D=$(printf '\033[2m'); N=$(printf '\033[0m'); R=$(printf '\033[31m')
 
 F030='AND(OR({Status}="4. Pte hacer informe",{Status}="5. Informe enviado"), OR({Regenerar030}=1, {Fichero030}=BLANK()))'
 FINF='AND(OR({Status}="4. Pte hacer informe",{Status}="5. Informe enviado"), OR({RegenerarInforme}=1, {InformePdf}=BLANK()))'
@@ -35,5 +36,14 @@ case "$1" in
      echo "${D}el contador de LangSmith tiene que decir: ${N}${V}$n caracteres${N}"
      echo "${D}y hay que MOVER EL TAG prod, o el bot sigue leyendo el v13.${N}" ;;
   4) printf '%s' "$BODY" | pbcopy; echo "${V}copiado el JSON Body de Marcar InformeListo del v2${N}"; echo "${D}$BODY${N}" ;;
-  *) echo "uso: bash docs/copiar.sh [1|2|3|4|5|6|7]" ;;
+  8) pbcopy < docs/prompt-final-2026-08-31-v15.txt
+     n=$(python3 -c "import io;print(len(io.open('docs/prompt-final-2026-08-31-v15.txt',encoding='utf-8').read()))")
+     echo "${V}copiado el prompt v15 entero (un solo agente conversacional)${N}"
+     echo "${D}el contador de LangSmith tiene que decir: ${N}${V}$n caracteres${N}"
+     echo "${R}NO LO PEGUES EN bot_mobility_prompt CON EL TAG prod.${N}"
+     echo "${D}Ese tag lo lee beckham_bot, que esta EN PRODUCCION con el canvas de Intercom${N}"
+     echo "${D}delante. El v15 dice que NADA viene pre-filtrado y nombra calcular_plazo, que en${N}"
+     echo "${D}el bot vivo no existe: moverle el tag prod rompe el bot de verdad. El v15 va en${N}"
+     echo "${D}un prompt o un tag NUEVO, y lo lee el workflow NUEVO, no el vivo.${N}" ;;
+  *) echo "uso: bash docs/copiar.sh [1|2|3|4|5|6|7|8]" ;;
 esac

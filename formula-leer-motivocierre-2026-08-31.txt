@@ -1,0 +1,1 @@
+{{ ($('Webhook1').first().json.body.user_id || '').trim() ? "{UserId} = '" + $('Webhook1').first().json.body.user_id.replaceAll("'", "") + "'" : "FALSE()" }}

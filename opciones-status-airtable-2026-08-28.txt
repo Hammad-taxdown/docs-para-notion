@@ -1,0 +1,18 @@
+# Las 14 opciones VIVAS del singleSelect Status · fld90xlxu574rQT1M
+# Leidas por MCP de Airtable el 28/08/2026. Copiadas LITERAL, con su id.
+# Esta es la fuente contra la que cotejan test-decidir-status.js y la rutina de sesion.
+# Si alguien renumera otra vez, este fichero se REGENERA por MCP y la puerta muerde.
+sel8DiQPH9ZzaSueO	1. Interesado
+sels542U4KHLuZEsA	2. Pte agendar llamada
+sely8bsw13KtPCkgR	3. Pendiente llamada TD
+selc7DwpMePvALjtj	4. Pte hacer informe
+seloL0ipNAsEQ4i80	5. Informe enviado
+seljanPKqhwUObbwc	6. Pte formulario usuario
+selJZorqcDy6YgFiF	7. Pte hacer TD
+sel1oCLW0XPLZNZz7	8. Pte confirmación usuario
+selBG7S2PxTJ3TtfF	9. Pte modificación
+selI7WSnhZHL2s4x9	10. Confirmado
+sel3RxuVd29P3Hd76	11. Finalizado
+sel8OOnJCvVP2jaLG	12.Pendiente resolución
+selmf7ZOBSDInFLtr	13. Concedido
+selX85TeVMsHpeAzp	14. Descartado

@@ -30,6 +30,26 @@ issue: ""
 > La convención de nombres se mantiene: sufijo `_bot` para estado conversacional, `_f2` reservado al
 > cálculo.
 
+> ## 31/08/2026 · §2.6 · DÓNDE VIVE EL ESTADO CONVERSACIONAL DEL FAQ
+>
+> **`T081` se mantiene en B pura** — el modo sigue sin persistirse — pero el 28/08 esta decisión se
+> tomó con **dos** respuestas posibles sobre la mesa (un Conversation attribute de Intercom, o nada),
+> y con esa dicotomía B pura era correcta. **Hoy hay una tercera, verificada:** este n8n tiene Data
+> Tables, y `beckham_bot` ya usa una en producción (`beckham_prompt_respaldo`, `mTN65aN389Z3KMbe`,
+> nodos `Prompt_De_Respaldo` y `Refrescar_Respaldo`).
+>
+> **§2.6 · El estado conversacional del FAQ vive en la Data Table `beckham_faq_estado`**
+> (`Rnn7SUQ8RxFdK7Xp`, proyecto `ADm8RL3z3EJcozih`, creada el 31/08), con `conversation_id` como
+> clave. **Lo escribe y lo lee solo n8n, con credencial. Y NO ES EL MODO**: es el contador de turnos,
+> el resumen rodante, las ventanas de corte y la caducidad.
+>
+> **Consecuencia sobre §2.3:** de los cinco atributos `_bot`, **`faq_turnos_bot`, `faq_resumen_bot` y
+> `corte_contexto_bot` NO se crean**. Siguen en pie `intentos_fecha_bot` y `corr_id_bot`.
+>
+> **Esto no reabre nada:** cero PRD reescritos (`WP-221` y `WP-229` se escribieron para las dos ramas
+> de `T081` a propósito), cero atributos de Intercom, cero pasos `Set`, cero invariantes tocadas.
+> `WP-212` sigue cerrado y `WP-227` sigue en XS.
+
 ## 1. Objetivo
 
 Que cualquier rama del canvas sepa **qué modo tiene que declarar y cómo**, y que n8n pueda determinar

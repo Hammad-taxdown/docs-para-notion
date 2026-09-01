@@ -191,8 +191,43 @@ c(/^\/\/ Preparar_Prompt · v4 · 27\/08\/2026 · WP-218 \+ WP-222/.test(CODIGO_
   'la cabecera dice v4 · WP-218 + WP-222');
 c(!/\$\('[^']+'\)\.item\b/.test(CODIGO_V4),
   'CERO `$(...).item` en el codigo: en un nodo de codigo cuelga el task runner');
-c(CODIGO_V4.indexOf('bot_mobility_prompt') === -1,
-  'el nodo NO menciona bot_mobility_prompt: el prompt_base no se duplica aqui');
+// MF5 de WP-218: el `prompt_base` sale de UN SOLO SITIO (el nodo `Langsmith
+// Prompt`), asi que este nodo no puede leerlo ni copiarlo. Se mide sobre el
+// CODIGO EJECUTABLE, no sobre el fichero entero: el propio nodo explica en un
+// comentario por que no lo duplica, y una busqueda a pelo se caza a si misma
+// (paso el 28/08: 1 roja que no era un defecto del nodo, era del test).
+// ── 31/08 · EL HELPER QUE FALTABA, y por eso esta puerta no corria ────────────
+// El 28/08 se escribio la comprobacion de abajo usando sinComentarios() y NUNCA
+// se escribio la funcion: el fichero moria con ReferenceError en la comprobacion
+// 4 de 74, con exit 1. La puerta mordia -- pero mordia por estar rota, no por lo
+// que medía, y ademas no estaba cableada en pasos.sh, asi que nadie la lanzaba.
+//
+// Quita comentarios de bloque y de linea para poder medir el CODIGO EJECUTABLE.
+// LIMITE DECLARADO: no es un parser de JS. No distingue un `//` dentro de una
+// cadena de un comentario de verdad, salvo el caso de las URLs (`://`), que es
+// el unico que aparece en estos nodos. Si algun dia un nodo lleva un `//` dentro
+// de un string por otro motivo, esta funcion se lo come y la comprobacion miente
+// en la direccion segura: veria MENOS codigo, no mas.
+function sinComentarios(src) {
+  return String(src)
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')       // bloques /* ... */
+    .split('\n')
+    .map(function (linea) {
+      var i = 0;
+      while (true) {
+        i = linea.indexOf('//', i);
+        if (i === -1) return linea;
+        if (i > 0 && linea[i - 1] === ':') { i += 2; continue; }  // https://
+        return linea.slice(0, i);
+      }
+    })
+    .join('\n');
+}
+
+c(sinComentarios(CODIGO_V4).indexOf('bot_mobility_prompt') === -1,
+  'el CODIGO (sin comentarios) no menciona bot_mobility_prompt: el prompt_base no se duplica aqui');
+c(/bot_mobility_prompt/.test(CODIGO_V4),
+  'y el nodo SI lo explica en un comentario, para que nadie lo vuelva a duplicar');
 const mEsp = MONTADOR.match(/^ESPERADO = (\d+)$/m);
 c(!!mEsp && CODIGO_V4.length === Number(mEsp[1]),
   'el recuento del fichero (' + CODIGO_V4.length + ' car.) es el ESPERADO del montador' +
