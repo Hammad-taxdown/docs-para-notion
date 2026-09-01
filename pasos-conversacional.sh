@@ -73,7 +73,7 @@ echo "${D}reescribe las referencias que viven dentro de un nodo code.${N}"; }
 
 p2(){ paso 2 "Preparar_Prompt" "Preparar_Prompt" "JavaScript Code  (es un TEXTAREA de codigo)"
 echo "${D}hoy dice:${N} throw new Error('PASO 2 · ...')  ${D}(179 car)${N}"
-pegar docs/nodo-preparar-prompt-CONVERSACIONAL-2026-08-31.js Preparar_Prompt 19305
+pegar docs/nodo-preparar-prompt-CONVERSACIONAL-2026-08-31.js Preparar_Prompt 20569
 echo "${A}ES EL UNICO CODIGO NUEVO DE TODO EL CAMBIO.${N} ${D}Sustituye la fuente muerta${N}"
 echo "${D}(los custom attributes veredicto_f2 / fecha_limite_f2 / dias_pasados_f2 /${N}"
 echo "${D}fecha_alta_ss_f2, que los escribia el canvas de Intercom) por el bloque${N}"
@@ -86,7 +86,7 @@ echo "${A}OJO, EL PROPIO STUB DA UNA CIFRA VIEJA:${N} ${D}el throw del nodo dice
 echo "${D}caracteres, que es lo que medía antes de anadirle el freno de coste. La cifra${N}"
 echo "${D}buena es la de aqui arriba. Se corrige el dia que se toque el nodo por API.${N}"
 echo "${A}verificalo antes de pegar:${N} node docs/test-preparar-prompt-conversacional.js"
-echo "${D}tiene que decir ${N}${V}58 verdes, 0 rojas${N}"; }
+echo "${D}tiene que decir ${N}${V}62 verdes, 0 rojas${N}"; }
 
 p3(){ paso 3 "Validar y Normalizar" "Validar y Normalizar" "JavaScript Code  (es un TEXTAREA de codigo)"
 echo "${D}hoy dice:${N} throw new Error('PASO 3 · ...')  ${D}(177 car)${N}"
@@ -204,50 +204,53 @@ ${D}dataTable y los tres webhooks.${N}
 EOF
 }
 
-p10(){ pasoic 10 "reuse_mobility · EL TRANSPORTE" "Intercom · workflow 66250478" "Audience  ${R}(BLOQUEANTE)${N}"
+p10(){ pasoic 10 "LA PRIORIDAD DE LOS WORKFLOWS" "Intercom · Workflows, filtro Live" "arrastrar, o la salida A/B"
 cat <<EOF
-${R}${B}LA PRIMERA COSA DE INTERCOM, Y SI NO SE HACE EL BOT NO RECIBE UN SOLO MENSAJE.${N}
-${D}link:${N} https://app.intercom.com/a/apps/s1hap599/automation/workflows/66250478
+${R}${B}ES EL UNICO BLOQUEANTE QUE QUEDA (01/09).${N}
+${D}El trigger del mensaje ya dispara: hizo falta CREAR un workflow con «customer sends${N}
+${D}any message», no arreglar el que habia. Lo que queda es quien gana el evento.${N}
 
-${A}reuse_mobility NO SE VA.${N} ${D}Es lo unico de Intercom que importa: su trigger «When customer${N}
-${D}sends any message» es la UNICA via por la que un mensaje del cliente llega a n8n. Hoy${N}
-${D}relanza los turnos 2..n; manana es la entrada de TODOS los turnos, el primero incluido.${N}
+${A}LA REGLA:${N} ${D}solo UN workflow customer-facing corre por evento, y gana el de mas${N}
+${D}ARRIBA de la lista. Se ordena arrastrando. Tus dos NO compiten entre si (un clic no${N}
+${D}es un mensaje): la carrera es contra los otros workflows del workspace con ese mismo${N}
+${D}trigger.${N}
 
-${R}EL PROBLEMA:${N} ${D}su audiencia es${N} ${R}Custom = Users AND 'Team assigned is Ops_BOT_Mobility'${N}
-${D}(team 11098265), y ${N}${R}quien asignaba ese team era el Custom Bot${N}${D} — en el timeline del${N}
-${D}28/07 la asignacion cae a las 17:43:47, justo despues del turno 1 del canvas.${N}
-${A}Comprobado el 31/08 por MCP:${N} ${D}NI beckham_bot NI el nuevo asignan team en ningun nodo${N}
-${D}(cero apariciones de 11098265, Ops_BOT_Mobility y team_assignee en los dos).${N}
-${R}Si el canvas muere y nadie asigna el team, la condicion no se cumple NUNCA.${N}
+${B}Si se puede reordenar:${N}
+${D}  subir el tuyo al tope. ${N}${A}Es seguro SOLO porque tu audiencia es estrecha${N}${D} (lleva${N}
+${D}  «Team assigned is Ops_BOT_Mobility»): se evalua primero, no encaja para los demas${N}
+${D}  y CEDE el turno. ${N}${R}Si algun dia le quitas esa condicion, bajalo en el MISMO${N}
+${R}  movimiento${N}${D} o te quedas con todos los mensajes del workspace.${N}
+${R}  Y NO PAUSES el otro:${N} ${D}es el error del 28/07, se pauso el que repartia y dejo el${N}
+${D}  workspace entero sin reparto. Reordenar si, pausar no.${N}
 
-${B}TRES SALIDAS. La 1 es la que recomiendo:${N}
-${V} 1.${N} ${D}Cambiar la audiencia a algo que no dependa del canvas: el atributo de plan de los${N}
-    ${D}clientes full VIP que YA existe en produccion, o un tag. Cero codigo.${N}
-${V} 2.${N} ${D}Que n8n asigne el team en el primer turno (PUT /conversations/{id}). Una llamada${N}
-    ${D}mas a la API, y la audiencia se queda como esta.${N}
-${V} 3.${N} ${D}Dejar un workflow minimo de bienvenida en Intercom que salude Y asigne el team.${N}
-    ${D}Resuelve tambien el paso 12.${N}
-EOF
-}
+${B}${V}SALIDA A · sin tocar el orden: que tu workflow deje de ser customer-facing${N}
+${D}  Un workflow es customer-facing porque PUEDE mandar mensajes. Lo que solo enruta es${N}
+${D}  background y NO pide slot (medido el 1/08). Tu workflow no necesita mandar nada: el${N}
+${D}  bot contesta desde n8n por la API. El unico mensaje que sale de Intercom es el de${N}
+${D}  error del reusable («Estamos experimentando problemas... escalamos tu duda»).${N}
+${A}  -> quita ese paso de mensaje del reusable.${N} ${D}Que se quede solo con el Data${N}
+${D}  Connector. El precio: si n8n se cae el cliente no ve nada, y eso se cubre desde${N}
+${D}  n8n con Mensaje_fallback, que publica por la misma API.${N}
+${D}  Es la mas barata: un paso menos.${N}
 
-p11(){ pasoic 11 "reuse_mobility · quitar el wait_for_callback" "Intercom · paso 'Pass to n8n_BOT_mobility'" "el paso, NO el Data Connector"
-cat <<EOF
-${A}el wait_for_callback vive en el PASO del reusable n8n_BOT_mobility (66246057),${N}
-${A}no en el Data Connector.${N} ${D}Es una casilla del paso.${N}
+${B}${V}SALIDA B · saltarse los workflows: suscripcion de webhook${N}
+${D}  Un webhook de Intercom NO es un workflow: no compite por el slot, no tiene${N}
+${D}  audiencia y dispara en cada respuesta del cliente.${N}
+${D}  Developer Hub > tu app > Webhooks > topic ${N}${V}conversation.user.replied${N}
+${D}  -> https://es.synapse.rentax.es/webhook/179cb7ee-9db2-4700-a97b-52297a8d3de4${N}
+${A}  Dos avisos:${N} ${D}(1) dispara para TODO el workspace, asi que el filtro se hace en${N}
+${D}  n8n con un If al principio (team Mobility o el plan). (2) el payload NO es el body${N}
+${D}  plano de 12 claves, es el JSON de Intercom, y hay que mapearlo antes de${N}
+${D}  Formatear_conversacion1:${N}
+${D}     conversation_id  <- data.item.id${N}
+${D}     user_id          <- data.item.source.author.id${N}
+${D}     message          <- data.item.conversation_parts.conversation_parts[0].body${N}
+${D}     conversationPartId y _debounce <- ...conversation_parts[0].id${N}
+${D}     user_email       <- data.item.source.author.email${N}
+${D}  Se descarto el 1/08 «por innecesaria» porque entonces el reuse iba. Ahora vuelve.${N}
 
-${R}por que hay que quitarlo:${N} ${D}con el diseno nuevo NADIE va a mandar ese callback — el bot${N}
-${D}contesta por Responder_Intercom (POST /conversations/{id}/reply). El paso se quedaria${N}
-${D}esperando para siempre, ${N}${R}reteniendo el slot customer-facing${N}${D}, y el turno siguiente${N}
-${D}podria no disparar. Solo UN workflow customer-facing corre por evento, y retiene el${N}
-${D}slot incluso mientras espera input.${N}
-
-${B}dos formas, la segunda mas limpia:${N}
-${V} a.${N} ${D}dejar «Pass to n8n_BOT_mobility» y quitarle el wait_for_callback a ese paso${N}
-${V} b.${N} ${D}que reuse_mobility llame al Data Connector DIRECTAMENTE y fuera el reusable${N}
-
-${A}efecto secundario bueno:${N} ${D}sin wait_for_callback, Intercom libera el slot en cuanto${N}
-${D}dispara, en vez de retenerlo. Para un bot conversacional eso es mejor, no peor.${N}
-${D}El callback_token que el DC siga mandando en el body es inofensivo: n8n lo ignora.${N}
+${A}Probar la A primero:${N} ${D}es quitar un paso y no hay que mapear nada. Si Intercom sigue${N}
+${D}tratandolo como customer-facing, la B no falla porque se sale del sistema entero.${N}
 EOF
 }
 
@@ -307,6 +310,43 @@ ${D}El callback_token no iba en el body, asi que no hay nada que quitar de aqui.
 EOF
 }
 
+estado(){ cat <<EOF
+
+${B}${C}━━━ ESTADO AL CIERRE DEL 01/09 ━━━${N} ${D}(auditado por MCP)${N}
+
+${V}HECHO Y VERIFICADO${N}
+  ${V}✓${N} los 4 nodos de codigo PEGADOS con el contador exacto (11.288 · 20.569 · 76.156 · 13.206)
+  ${V}✓${N} settings completos: errorWorkflow, timeout 120, saveExecutionProgress, callerPolicy
+  ${V}✓${N} el workflow ACTIVO y publicado, activeVersionId == versionId
+  ${V}✓${N} credencial Intercom Spain PROD (fcMMohGbwXVY9sLk), vista en la ejecucion
+  ${V}✓${N} LangSmith devuelve el prompt: NO entra por Prompt_De_Respaldo
+  ${V}✓${N} Responder_Intercom publica: success en 611 ms
+  ${V}✓${N} el agente llama a sus tools (leer_expediente corre en su propia ejecucion)
+  ${V}✓${N} el DC 514525 con el body arreglado y el trigger del mensaje disparando
+  ${V}✓${N} el agente ya NO se presenta: la bienvenida la manda el canvas
+
+${R}BLOQUEANTE${N}
+  ${R}✗${N} ${B}la prioridad de los workflows customer-facing${N} -> ${A}paso 10${N}
+
+${A}ABIERTO, con arreglo escrito y sin hacer${N}
+  ${A}!${N} ${B}el DC manda en \`message\` EL SALUDO DEL PROPIO BOT.${N} \`{{last_conversation_part.body}}\`
+      coge la ultima parte del hilo, y en la entrada por clic esa parte es lo que acaba
+      de escribir el canvas. Medido en 8159910 y 8159914. Consecuencia: cold_start sale
+      FALSE y ${R}el agente contesta a su propio saludo${N} -- una vez con el pitch de la ley,
+      otra con la pregunta del idioma.
+      ${D}Arreglo, con el dato que YA llega: si conversationPartId == First Message ID es${N}
+      ${D}la primera parte del hilo, o sea arranque en frio. Va en Preparar_Prompt + puerta.${N}
+  ${A}!${N} el paso 8 (la data table del respaldo) sigue SIN COMPROBAR
+  ${A}!${N} el paso 12 (que la conversacion no nazca ticket) sigue SIN MEDIR en prod
+
+${D}DOS COSAS DESCARTADAS HOY, y no se vuelve sobre ellas:${N}
+  ${D}· ${N}${R}NO existe un paso «End» en Intercom${N}${D}: el END del canvas es una ETIQUETA que dice${N}
+  ${D}  donde acaba el camino, no una instruccion. No se puede «cerrar» un camino a mano.${N}
+  ${D}· el workflow «distribuidor - usuario envia mensaje» era del workspace ${N}${R}TEST${N}${D} y no${N}
+  ${D}  aplica en produccion.${N}
+EOF
+}
+
 orden(){ cat <<EOF
 
 ${B}${C}━━━ EL ORDEN, Y QUE DESATASCA QUE ━━━${N}
@@ -361,8 +401,9 @@ return $fallo; }
 
 case "$1" in
   1) p1;; 2) p2;; 3) p3;; 4) p4;; 5) p5;; 6) p6;; 7) p7;; 8) p8;; 9) p9;;
-  10) p10;; 11) p11;; 12) p12;; 13) p13;; 14) p14;;
+  10) p10;; 12) p12;; 13) p13;; 14) p14;;
+  estado) estado;;
   test) puertas; exit $?;;
-  *) orden; for i in 1 2 3 4 5 6 7 8 9 14 10 11 12 13; do "p$i"; done
+  *) estado; orden; for i in 1 2 3 4 5 6 7 8 9 14 10 12 13; do "p$i"; done
      echo; echo "${D}un paso suelto, con el valor al portapapeles:${N} bash docs/pasos-conversacional.sh 3";;
 esac

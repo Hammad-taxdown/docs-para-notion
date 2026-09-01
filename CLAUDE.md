@@ -531,33 +531,51 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   - **UNA MEDICIÓN PENDIENTE ANTES DE CONSTRUIR** (2 minutos, `T-ARISTA`): que un reply button pueda
     apuntar a un paso **anterior** del canvas. Si no puede, hay Plan B escrito, y ese sí cambia
     `T081` — nace un «transporte D» con el estado de enrutado en la misma Data Table, con TTL de 6 h.
-- **`reuse_mobility` NO SE VA CON EL CANVAS: es el TRANSPORTE, y su audiencia es un bloqueante que
-  nadie tenía apuntado** (31/08). El pivote conversacional se lleva los 32 paths de `OnClick
-  Mobility`, pero **alguien tiene que seguir mandándole a n8n el body de cada mensaje**, y ese alguien
-  es un workflow con el trigger «When customer sends any message» más un DC: o sea
-  **`reuse_mobility` (`66250478`)**, cuyo único paso es `Pass to n8n_BOT_mobility`. Cambia de papel a
-  **más** importante: hoy relanza los turnos 2..n, mañana es la única entrada de **todos**, el primero
-  incluido.
-  - **⛔ LA AUDIENCIA ES `Custom = Users AND 'Team assigned is Ops_BOT_Mobility'`** (team `11098265`,
-    auditada el 1/08), **y quien asignaba ese team era el Custom Bot** — en el timeline del 28/07 la
-    asignación cae a las `17:43:47`, justo tras el turno 1 del canvas. **Comprobado el 31/08 por MCP:
-    ni `beckham_bot` ni `beckham_bot_conversacional` asignan team en ningún nodo** (cero apariciones
-    de `11098265`, `Ops_BOT_Mobility` y `team_assignee` en los dos). Si el canvas muere y nadie lo
-    asigna, **la condición no se cumple nunca y el bot no recibe un solo mensaje.** Salidas: cambiar
-    la audiencia a un atributo que ya exista en producción (el de full VIP), que n8n asigne el team en
-    el primer turno, o dejar un workflow mínimo de bienvenida que salude **y** asigne.
-  - **Hay que quitarle el `wait_for_callback`, y vive en el PASO del reusable `n8n_BOT_mobility`
-    (`66246057`), no en el Data Connector.** Con el diseño nuevo nadie manda ese callback: el paso se
-    queda esperando, **reteniendo el slot customer-facing** (solo corre uno por evento, y lo retiene
-    incluso esperando input), y el turno siguiente puede no disparar.
-  - **Y sigue vivo el riesgo de `WP-10`: sobre un `Customer ticket` ese trigger NO dispara.** Medido
-    el 28/07 en la conversación `215475262949230` — el cliente responde, dos segundos después un
-    `ticket_state_updated_by_admin`, y después **nada**: ni `custom_action_started` ni una ejecución.
-    `reuse_mobility` marcaba `Sent: 0`. Era del workspace **TEST**, así que **en producción hay que
-    volver a medirlo, y va ANTES de cablear nada**: toda la arquitectura nueva depende de ese trigger.
-  Diseño completo en `docs/conversacional-2026-08-31.md`; los pasos, en
-  `bash docs/pasos-conversacional.sh 10..13`.
-- **EN EL BOT CONVERSACIONAL SE ENMASCARA SOLO EL IBAN, y no es un olvido del resto** (31/08). El
+- **EL TRANSPORTE DE INTERCOM: lo que gana el evento es LA PRIORIDAD, y tres cosas que creí eran
+  falsas** (reescrito el 01/09 contra la plataforma, corrigiendo lo que escribí el 31/08).
+  **Solo UN workflow customer-facing corre por evento, y gana el de más ARRIBA de la lista**, que se
+  ordena arrastrando. Los dos del proyecto —`clicks a website element` y `sends any message`— **no
+  compiten entre sí**: un clic no es un mensaje. La carrera es contra los demás workflows del
+  workspace con el trigger del mensaje.
+  - **EL CRITERIO DE SEGURIDAD, y es lo único que hay que recordar de esto:** un workflow **arriba**
+    con audiencia **estrecha** es inofensivo — se evalúa primero, no encaja y **cede el turno**. Uno
+    arriba con audiencia **amplia** secuestra el soporte entero. La audiencia del nuestro lleva
+    `Team assigned is Ops_BOT_Mobility`, así que subirlo al tope es seguro; **si algún día se le quita
+    esa condición, hay que bajarlo en el MISMO movimiento**. Y **no se pausa el otro**: es el error del
+    28/07, que dejó el workspace entero sin reparto.
+  - **DOS SALIDAS QUE NO TOCAN EL ORDEN.** (A) **Que el workflow deje de ser customer-facing**: lo es
+    porque **puede mandar mensajes**, y lo que solo enruta es *background* y no pide slot (medido el
+    1/08). El nuestro no necesita mandar nada —el bot contesta desde n8n por la API—, así que quitando
+    el paso de mensaje del reusable deja de competir; el hueco se cubre con `Mensaje_fallback`.
+    (B) **Suscripción de webhook** (`conversation.user.replied`): no es un workflow, no compite y no
+    tiene audiencia, pero dispara para **todo** el workspace y su payload es el JSON de Intercom, no
+    el body plano, así que hay que mapear cinco claves.
+  - **LAS TRES QUE ERAN FALSAS, y las tres las corrigió el usuario mirando la pantalla:**
+    **(1) no hay casilla `wait_for_callback` que quitar** — el paso del reusable no la tiene, el DC
+    dispara y vuelve; **(2) NO EXISTE un paso `End` en Intercom** — el `END` del canvas es una
+    **etiqueta** que dice dónde acaba el camino, no una instrucción, así que no se puede cerrar un
+    camino a mano; **(3) la audiencia no era el bloqueante** — el team sí se asigna, y lo que faltaba
+    era simplemente **crear el workflow con el trigger del mensaje**. Y queda derogado lo del
+    workflow `distribuidor - usuario envia mensaje`: **era del workspace TEST** y no se vuelve a
+    mencionar.
+  - **VAN TRES VECES ESTA SEMANA que doy pasos sobre una capacidad de la plataforma que no existe**
+    (el campo `Body` del DC, los seis DC del escritor, el trigger `Reopened`) **y ahora dos más**
+    (el `wait_for_callback` y el `End`). **Antes de dar pasos sobre Intercom, MIRAR Intercom** — o
+    pedirle una captura, que cuesta diez segundos y me ha ahorrado media sesión cada vez.
+- **EL DC MANDA EN `message` EL SALUDO DEL PROPIO BOT, y el agente se contesta a sí mismo**
+  (01/09, ABIERTO). `{{last_conversation_part.body}}` coge la **última parte del hilo**, y en la
+  entrada por clic esa parte es **lo que acaba de escribir el canvas**. Medido en las ejecuciones
+  `8159910` y `8159914`: `message` llega con «🇪🇸 Español ¡Hola! 👋 Soy el Mobility Bot…» y
+  `conversationPartId == conversation_part_id_debounce == First Message ID`. Consecuencia:
+  `Preparar_Prompt` ve texto no vacío, **`cold_start` sale `false`** y el agente responde a su propio
+  saludo — en una ejecución con el pitch entero del régimen, en otra con la pregunta del idioma.
+  **El arreglo usa un dato que YA llega en el body:** si `conversationPartId == First Message ID` es la
+  primera parte del hilo, o sea arranque en frío. Va en `Preparar_Prompt` y hay que ampliar su puerta.
+- **UNA EJECUCIÓN CORTA JUNTO A UNA LARGA NO ES UN DOBLE DISPARO: es una tool.** En
+  `beckham_bot_conversacional` los turnos salen en pares —15-22 s y 1,8-2,3 s— y la corta tiene
+  `triggerNode: Webhook_Get_Expediente` y acaba en `Responder Expediente`: es el agente llamando a
+  `leer_expediente`. Antes de diagnosticar un doble disparo, **mirar el `triggerNode`**.
+- **EN EL BOT CONVERSACIONAL SE ENMASCARA SOLO EL IBAN- **EN EL BOT CONVERSACIONAL SE ENMASCARA SOLO EL IBAN, y no es un olvido del resto** (31/08). El
   sidecar del FAQ enmascaraba email, NIF y teléfono porque el FAQ es la puerta anónima del embudo y
   no necesita ni un dato. **Aquí es al contrario: el NIF y el email SON el contrato** — están entre
   los 40 parámetros de `guardar_datos_cliente` y el `.030` aborta sin NIF. Enmascararlos le manda al
@@ -675,7 +693,7 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
 | `docs/arquitectura-completa-2026-08-16.md` | Punta a punta, 5 diagramas Mermaid, 14 decisiones |
 | **`docs/conversacional-2026-08-31.md`** | **El pivote a un solo agente: el diff de 56→49 nodos, los dos cambios que no se ven en el recuento, el transporte de Intercom con su bloqueante, y lo que se paga** |
 | `docs/corpus-fiscal-beckham-2026-08-13.md` | El conocimiento fiscal aprobado, con su apéndice de desajustes |
-| `docs/prompt-final-*.txt` | Copias versionadas del prompt. **La fuente de verdad es LangSmith**, `bot_mobility_prompt` tag `prod`. Vigente: **v13** (21/08, 65.848 car., pegado y verificado en la conversación `215475581167582`), con su puerta `test-prompt-v13.js` de 103 comprobaciones — hereda las 77 del v12 **midiendo el v13**, no el fichero viejo. Sus cuatro cambios, los cuatro medidos turno a turno: D3 pide NIF o NIE sin nombrar el pasaporte · inversiones pegadas a inmuebles · hijos y observaciones en el orden en que se preguntan · el mensaje del Calendly termina preguntando, que es la mitad del arreglo del peldaño 2 |
+| `docs/prompt-final-*.txt` | Copias versionadas del prompt. **La fuente de verdad es LangSmith**, `bot_mobility_prompt` tag `prod`. **01/09: el tag `prod` lleva el v15** (86.548 car., el conversacional), pegado por el usuario **con el mismo nombre**, no en un prompt aparte. Consecuencia medida: **`beckham_bot` lee el v15 y no tiene la tool `calcular_plazo`** que el v15 nombra 14 veces — hoy es riesgo latente porque ese workflow no recibe tráfico desde el 31/08 11:00, pero sigue `active=true`. Puerta vigente: `test-prompt-v15.js`, 206 comprobaciones. Las de v10-v14 miden ficheros históricos |
 | `plan/` · `plan/historico/` | Plan maestro, arranques de sesión, reanudaciones |
 | `proyecto-mobility/` | La carpeta lista para el repo público: README de 894 líneas y los **7 workflows exportados** |
 | `referencia/documentos-test/` | **PII real. Gitignored.** |

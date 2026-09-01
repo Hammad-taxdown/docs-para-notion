@@ -1,9 +1,19 @@
 # El pivote conversacional · 31/08/2026
 
-> **Estado: CONSTRUIDO, SIN CABLEAR.** El workflow existe (`beckham_bot_conversacional`,
-> `n1jx7z9NtXWCD4VC`), inactivo, en el proyecto personal, con los cuatro nodos de código puestos como
-> `throw` a propósito. Producción (`beckham_bot`, `nhOwpiGxikeU5DLR`) **no se ha tocado**: sigue
-> activa con el canvas de Intercom delante.
+> **Estado al 01/09: CABLEADO Y ACTIVO. Un bloqueante y un fallo abierto.**
+> `beckham_bot_conversacional` (`n1jx7z9NtXWCD4VC`) está **activo y publicado**
+> (`activeVersionId == versionId`), con los cuatro nodos de código pegados con su contador exacto
+> (**11.288 · 20.569 · 76.156 · 13.206**), los settings completos y la credencial `Intercom Spain PROD`
+> verificada en una ejecución real. LangSmith devuelve el prompt (no entra el respaldo) y
+> `Responder_Intercom` publica en 611 ms.
+>
+> **Bloqueante:** la **prioridad** entre workflows customer-facing de Intercom (§4.2).
+> **Abierto:** el DC manda en `message` **el saludo del propio bot**, así que el agente se contesta a
+> sí mismo (§4.3). Arreglo escrito, sin hacer.
+>
+> **Producción vieja:** `beckham_bot` (`nhOwpiGxikeU5DLR`) sigue `active=true` pero **sin tráfico desde
+> el 31/08 a las 11:00**. Y **lee el mismo tag `prod`, donde ahora vive el v15** — que nombra una tool
+> que ese workflow no tiene. Riesgo latente; se cierra despublicándolo.
 >
 > Este documento es la pieza que faltaba: el pivote tenía código, prompt y puertas, y **ni un
 > documento de diseño**. Los stickies del workflow tienen el detalle nodo a nodo; aquí está el porqué,
@@ -75,67 +85,86 @@ conversación. **No está construido.**
 
 ---
 
-## 4 · EL TRANSPORTE: `reuse_mobility` NO SE VA. Es lo único de Intercom que importa
+## 4 · EL TRANSPORTE — reescrito el 01/09 contra el sistema vivo
 
-**Alguien tiene que mandarle a n8n el body de cada mensaje del cliente.** El contrato del webhook
-nuevo son cinco claves —`conversation_id`, `user_id`, `user_email`, `message`,
-`conversation_part_id_debounce`— y son **las mismas de hoy menos `callback_token`**. Ese «alguien» es
-un workflow de Intercom con el trigger **«When customer sends any message»** más un Data Connector.
+> **Este apartado decía tres cosas que resultaron falsas y se corrigen abajo con su medición.**
+> Se conserva el error porque las tres se dedujeron de documentos y no de la plataforma, y esa es
+> la §8 de `CLAUDE.md` otra vez.
 
-**Eso es exactamente `reuse_mobility` (`66250478`)**, cuyo único paso es `Pass to n8n_BOT_mobility`.
-Verificado funcionando el 1/08 (`Sent` 0 → 1, `Engaged` 100 %, conversación `215475316515974`, tres
-ejecuciones correlativas de `beckham_bot`).
+### 4.1 · Lo que hay hoy, medido
 
-**Cambia de papel, y a más importante:** hoy relanza los **turnos 2..n**; mañana es **la única
-entrada de todos los turnos, incluido el primero**.
+| Pieza | Qué es | Estado |
+|---|---|---|
+| **DC `514525`** | `POST .../webhook/179cb7ee-…` → `Webhook1`. **12 claves** en el body | funcionando |
+| Workflow del **clic** | `When customer clicks a website element` → bienvenida bilingüe → `Pass to pass_to_n8n_mobility_bot` | funcionando |
+| Workflow del **mensaje** | `When customer sends any message` → `Pass to pass_to_n8n_mobility_bot` | **hubo que CREARLO** |
+| `Responder_Intercom` | `POST /conversations/{id}/reply`, `admin_id 4418209` | `success` en 611 ms |
 
-### 4.1 · Lo que hay que tocarle, y son tres cosas
+**Las tres correcciones:**
 
-**(a) Quitar el `wait_for_callback`.** Vive en el **paso** del reusable `n8n_BOT_mobility`
-(`66246057`), no en el Data Connector. Con el diseño nuevo nadie va a mandar ese callback: el paso se
-quedaría esperando, reteniendo el slot customer-facing, y el turno siguiente podría no disparar.
-Dos formas, y la segunda es más limpia:
-- dejar `Pass to n8n_BOT_mobility` y quitarle el `wait_for_callback` a ese paso; o
-- que `reuse_mobility` llame **al Data Connector directamente** y se quite el reusable de en medio.
+1. **NO hay casilla `wait_for_callback` que quitar.** El paso del reusable no la tiene: el DC dispara y
+   vuelve. Todo lo que se escribió sobre liberar el slot quitándola era falso.
+2. **NO existe un paso `End` en Intercom.** El `END` que se ve en el canvas es una **etiqueta** que
+   indica dónde acaba el camino, no una instrucción. No se puede cerrar un camino a mano.
+3. **La audiencia no era el bloqueante.** El team **sí** se asigna. Lo que faltaba era, simplemente,
+   **crear el workflow con el trigger del mensaje**.
 
-**(b) ⛔ LA AUDIENCIA, Y ESTO ES UN BLOQUEANTE QUE NADIE TENÍA APUNTADO.**
-La audiencia de `reuse_mobility`, auditada el 1/08, es
-**`Custom = Users AND 'Team assigned is Ops_BOT_Mobility'`** (team `11098265`).
+Y una que queda derogada: el workflow **`distribuidor - usuario envia mensaje`** era del workspace
+**TEST**. No aplica en producción y no se vuelve a mencionar.
 
-Y **quien asignaba ese team era el Custom Bot**: en el timeline del 28/07 la asignación cae a las
-`17:43:47`, justo después del turno 1 del canvas. **Comprobado el 31/08 por MCP: ni `beckham_bot` ni
-`beckham_bot_conversacional` asignan team en ningún nodo** — cero apariciones de `11098265`,
-`Ops_BOT_Mobility` o `team_assignee` en los dos workflows.
+### 4.2 · El bloqueante que queda: la prioridad
 
-**Si el canvas muere y nadie asigna el team, la condición de audiencia no se cumple nunca y
-`reuse_mobility` no dispara jamás: el bot no recibe un solo mensaje.** Tres salidas:
-1. **Cambiar la audiencia** de `reuse_mobility` a una condición que no dependa del canvas (un atributo
-   de plan, un tag, o el segmento de clientes full VIP que ya existe en producción).
-2. **Que n8n asigne el team** en el primer turno (`PUT /conversations/{id}` con `assignee`), lo que
-   añade una llamada más a la API pero deja la audiencia como está.
-3. **Dejar un workflow mínimo de entrada** en Intercom que salude y asigne el team, y que
-   `reuse_mobility` se ocupe del resto.
+**Solo un workflow customer-facing corre por evento, y gana el de más arriba de la lista**, que se
+ordena arrastrando. Los dos del proyecto **no compiten entre sí** — un clic no es un mensaje. La
+carrera es contra los demás workflows del workspace con el trigger `customer sends any message`.
 
-**(c) El saludo: quién abre la conversación.** «Customer sends any message» dispara **cuando el
-cliente escribe**, así que con solo `reuse_mobility` el cliente se encuentra un chat vacío y tiene
-que escribir primero. La rama `[ARRANQUE_EN_FRIO]` de `Preparar_Prompt` existe, pero es **defensiva**:
-solo entra si el texto llega vacío, y si el cliente ha escrito «hola» no entra. Decisión de producto:
-o se deja que el cliente escriba primero (más simple, un chat vacío), o se mantiene un workflow de
-bienvenida en Intercom (que además resuelve el punto (b) por la vía 3).
+**El criterio de seguridad, y es el que importa:** un workflow **arriba** con audiencia **estrecha**
+es inofensivo — se evalúa primero, no encaja y **cede el turno**. Uno arriba con audiencia **amplia**
+secuestra el soporte entero. La audiencia de este lleva `Team assigned is Ops_BOT_Mobility`, así que
+subirlo al tope es seguro; **si algún día se le quita esa condición, hay que bajarlo en el mismo
+movimiento**. Y **no se pausa el otro**: es el error del 28/07, que dejó el workspace sin reparto.
 
-### 4.2 · El riesgo heredado que sigue vivo: `WP-10`
+**Dos salidas que no tocan el orden:**
 
-**Sobre un `Customer ticket` los triggers de tipo «customer sends any message» NO se disparan.**
-Medido el 28/07 en la conversación `215475262949230`: el cliente responde a las `17:43:59`, a las
-`17:44:02` un `ticket_state_updated_by_admin`, y después **nada** — ni `custom_action_started`, ni
-ejecuciones en n8n. `reuse_mobility` marcaba `Sent: 0`.
+- **A · que este workflow deje de ser customer-facing.** Un workflow lo es porque **puede mandar
+  mensajes**; lo que solo enruta es *background* y no pide slot (medido el 1/08). Este no necesita
+  mandar nada, porque el bot contesta desde n8n por la API: el único mensaje que sale de Intercom es
+  el de error del reusable. **Quitando ese paso, deja de competir.** El precio es que si n8n se cae el
+  cliente no ve nada, y eso se cubre con `Mensaje_fallback`, que publica por la misma API.
+- **B · suscripción de webhook.** Un webhook **no es un workflow**: no compite, no tiene audiencia y
+  dispara en cada respuesta. Topic `conversation.user.replied` → el webhook de n8n. Cuesta dos cosas:
+  dispara para **todo** el workspace (el filtro se hace en n8n) y el payload es el JSON de Intercom,
+  no el body plano, así que hay que mapear cinco claves antes de `Formatear_conversacion1`. Se
+  descartó el 1/08 «por innecesaria»; vuelve a estar sobre la mesa.
 
-El causante era el workflow **`distribuidor - usuario envia mensaje`**, que al no encontrar destino
-convertía la conversación en ticket. `WP-10` sigue en `specified` y era del workspace **TEST**; en
-producción hay que **volver a medirlo**, porque toda la arquitectura nueva depende de ese trigger.
-Es la primera prueba que hay que hacer, antes de cablear nada más.
+**A primero**: es quitar un paso. Si Intercom sigue clasificándolo como customer-facing, B no falla
+porque se sale del sistema de workflows por completo.
 
----
+### 4.3 · ⚠️ ABIERTO · el DC manda en `message` el saludo del propio bot
+
+`{{last_conversation_part.body}}` coge la **última parte del hilo**, y en la entrada por clic esa
+parte es **lo que acaba de escribir el canvas**. Medido en las ejecuciones `8159910` y `8159914`:
+
+```
+"message": "🇪🇸 Español ¡Hola! 👋 Soy el Mobility Bot del equipo de TaxDown…"
+conversationPartId == conversation_part_id_debounce == First Message ID
+```
+
+Consecuencia: `Preparar_Prompt` ve texto no vacío, **`cold_start` sale `false`** y el agente
+**contesta a su propio saludo**. En `8159910` devolvió el pitch entero del régimen; en `8159914`, la
+pregunta del idioma. Comportamiento distinto en cada turno porque responde a basura.
+
+**El arreglo, con un dato que ya llega en el body:** si `conversationPartId == First Message ID` es la
+primera parte del hilo, o sea **arranque en frío**, no un mensaje del cliente. Va en `Preparar_Prompt`
+y hay que ampliar su puerta. **Escrito y sin hacer.**
+
+### 4.4 · El riesgo heredado, todavía sin medir en producción: `WP-10`
+
+**Sobre un `Customer ticket` los triggers `customer sends any message` NO se disparan.** Medido el
+28/07 en la conversación `215475262949230`: el cliente responde, dos segundos después un
+`ticket_state_updated_by_admin`, y después **nada**. Era del workspace TEST, así que **en producción
+hay que volver a medirlo**: abrir un hilo nuevo desde el Messenger como cliente y comprobar que nace
+con `"ticket": null`.
 
 ## 5 · Lo que se gana y lo que se paga
 

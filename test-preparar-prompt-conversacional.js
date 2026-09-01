@@ -100,7 +100,18 @@ c(SIN_COMENT.indexOf('Webhook1') !== -1,
 process.stdout.write('\n── 4 · arranque en frio vs mensaje que no ha llegado ──\n');
 const rFrio = correr({ conv: { last_message_content: '', chat_history: '' } });
 c(rFrio.json.cold_start === true && rFrio.json.mensaje_perdido === false, 'sin texto y sin historial = arranque en frio');
-c(/ARRANQUE_EN_FRIO/.test(rFrio.json.prompt), 'y el prompt lleva la instruccion de presentarse');
+c(/ARRANQUE_EN_FRIO/.test(rFrio.json.prompt), 'y el prompt lleva la instruccion de arranque');
+// 01/09 · LA BIENVENIDA LA MANDA EL CANVAS, ASI QUE EL AGENTE NO SE PRESENTA. Estas
+// cuatro son la puerta de ese cambio: sin ellas, alguien devuelve el «presentate» y el
+// cliente recibe DOS saludos seguidos sin que nada falle.
+c(/NO te presentes/.test(rFrio.json.prompt) && /YA SE LE HA SALUDADO/.test(rFrio.json.prompt),
+  'le PROHIBE presentarse: la bienvenida ya la mando el canvas');
+c(!/Presentate en una sola frase/.test(rFrio.json.prompt),
+  'y no queda rastro de la instruccion vieja de presentarse');
+c(/idioma de atencion \(D0\)/.test(rFrio.json.prompt),
+  'le manda arrancar por la PRIMERA pregunta, que es el idioma (D0)');
+c(/sin preambulo/.test(rFrio.json.prompt),
+  'y sin preambulo, para que no cuele un saludo por la puerta de atras');
 const rPerdido = correr({ conv: { last_message_content: '', chat_history: 'Usuario: hola\nBot: dime' } });
 c(rPerdido.json.cold_start === false && rPerdido.json.mensaje_perdido === true,
   'sin texto pero CON turno de usuario = mensaje perdido, NO arranque en frio');

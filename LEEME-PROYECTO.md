@@ -22,11 +22,18 @@ bus de eventos).
 | 4 | **[`docs/prds/fase2/map.html`](docs/prds/fase2/map.html)** | El mapa del backlog: fichas con estado y dependencias. Ábrelo en el navegador |
 | 5 | **[`.spartax/log.md`](.spartax/log.md)** | La bitácora. **Aquí está el 80% del conocimiento real**, incluidos los fallos y por qué se decidió cada cosa |
 
-**31/08 · SI ENTRAS HOY, EMPIEZA POR AQUÍ:**
+**01/09 · SI ENTRAS HOY, EMPIEZA POR AQUÍ:**
 [`docs/conversacional-2026-08-31.md`](docs/conversacional-2026-08-31.md) — el pivote a **un solo
-agente conversacional en n8n**. La lógica sale de Intercom, y ese documento tiene el diff nodo a nodo,
-lo que se gana, lo que se paga y **el bloqueante del transporte**. Los pasos:
-`bash docs/pasos-conversacional.sh`.
+agente conversacional en n8n**, que está **cableado y activo**. La lógica ha salido de Intercom.
+Ese documento tiene el diff nodo a nodo, lo que se gana, lo que se paga, el bloqueante que queda
+(**la prioridad de workflows de Intercom**) y el fallo abierto (**el Data Connector manda el saludo del
+propio bot y el agente se contesta a sí mismo**).
+
+Y para saber qué está hecho y qué falta, sin leer nada:
+
+```bash
+bash docs/pasos-conversacional.sh estado
+```
 
 ---
 

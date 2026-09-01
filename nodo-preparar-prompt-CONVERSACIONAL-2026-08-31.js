@@ -314,10 +314,23 @@ const historial = enmascararTexto(
   porLaCola(dato(conv0.chat_history), TOPE_HISTORIAL, MARCA_HISTORIAL, 'historial')
 ) || '(sin historial previo)';
 
+// 01/09 · EL AGENTE YA NO SE PRESENTA, Y NO ES UN OLVIDO.
+// El paso `A. Seleccion Idioma` del canvas de Intercom manda la bienvenida ANTES de
+// pasar el turno aqui, y esa bienvenida ya dice quien es el bot y para que sirve, en
+// español y en ingles. Con la instruccion anterior («presentate en una sola frase») el
+// cliente recibia DOS presentaciones seguidas: la del canvas y la del agente.
+// Se intento quitar el texto del canvas y la UI de Intercom no deja dejar el paso sin
+// contenido, asi que el arreglo vive aqui: el agente ARRANCA POR LA PRIMERA PREGUNTA.
+// Y esa primera pregunta es el idioma (D0 del prompt), que encaja con la bienvenida
+// bilingue: el cliente acaba de ver los dos idiomas y lo unico que falta es que elija.
+// SI ALGUN DIA SE QUITA LA BIENVENIDA DEL CANVAS, hay que devolver aqui la linea de
+// presentarse, o el cliente se encontrara una pregunta a secas sin saber con quien habla.
 const instruccionArranque = [
   '[ARRANQUE_EN_FRIO]',
   'El usuario todavia no ha escrito ningun mensaje en este hilo.',
-  'Presentate en una sola frase, di para que sirve esto y haz UNA sola pregunta para empezar.',
+  'YA SE LE HA SALUDADO: justo antes de este turno se le ha mandado la bienvenida, que ya dice quien eres y para que sirve esto, en español y en ingles.',
+  'Por eso NO te presentes, NO le saludes y NO repitas para que sirve esto: seria el segundo saludo seguido y queda mal.',
+  'Empieza DIRECTAMENTE por la primera pregunta del recorrido, que es el idioma de atencion (D0). Una sola pregunta, sin preambulo y sin repetir la bienvenida.',
   'No repitas preguntas ya respondidas en el historial ni pidas datos que ya conocemos.'
 ].join('\n');
 

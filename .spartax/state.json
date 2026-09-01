@@ -994,8 +994,58 @@
       "note": "el v14 esta escrito con su puerta de 110; falta pegar y mover el tag",
       "created_at": "2026-08-26T12:25:28Z",
       "in_progress_at": "2026-08-26T12:25:39Z"
+    },
+    "T086": {
+      "title": "Preparar_Prompt: si conversationPartId == First Message ID es arranque en frio (el DC manda el saludo del propio bot)",
+      "milestone": "",
+      "verify": "node docs/test-preparar-prompt-conversacional.js en verde con la comprobacion nueva, y una ejecucion real donde cold_start salga true en el turno del clic",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-09-01T20:10:31Z"
+    },
+    "T087": {
+      "title": "Intercom: resolver la prioridad de workflows customer-facing (salida A: quitar el paso de mensaje del reusable)",
+      "milestone": "",
+      "verify": "un mensaje del cliente dispara el workflow del mensaje y sale ejecucion en n8n, sin reordenar la lista",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-09-01T20:10:31Z"
+    },
+    "T088": {
+      "title": "Despublicar beckham_bot: lee el tag prod donde ahora vive el v15 y no tiene calcular_plazo",
+      "milestone": "",
+      "verify": "active=false por MCP, y scripts/contract-test.sh repuntado a los paths -v2",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-09-01T20:10:31Z"
+    },
+    "T089": {
+      "title": "Medir WP-10 en produccion: que una conversacion nueva nazca con ticket null",
+      "milestone": "",
+      "verify": "get_conversation devuelve ticket:null y hay una ejecucion por cada mensaje del cliente",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-09-01T20:10:31Z"
+    },
+    "T090": {
+      "title": "Comprobar las dos data table del respaldo del prompt desde el proyecto personal",
+      "milestone": "",
+      "verify": "abrir Prompt_De_Respaldo y Refrescar_Respaldo y ver la tabla seleccionada, no el desplegable vacio",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-09-01T20:10:31Z"
     }
   },
-  "next_task": 86,
-  "updated_at": "2026-08-26T12:25:39Z"
+  "next_task": 91,
+  "updated_at": "2026-09-01T20:10:31Z"
 }

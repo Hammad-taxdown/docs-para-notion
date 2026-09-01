@@ -30,6 +30,116 @@ Nivel alto: pide código entero y verificación real, no explicaciones de concep
   dentro del v6 y metió un bucle infinito en la pregunta del idioma.
 - **Slack** (MCP) para los avisos de negocio y de error.
 
+## Estado al 01/09/2026 · EL PIVOTE CONVERSACIONAL, CABLEADO Y VIVO
+
+**El cambio de arquitectura más grande del proyecto, y está en producción.** La lógica sale de
+Intercom: donde había un Custom Bot de **32 caminos** con botones cerrados, ahora hay **un solo agente
+conversacional en n8n** que se presenta, contesta preguntas sin límite, hace los tres filtros en
+conversación y sigue con el expediente.
+
+### El workflow
+
+**`beckham_bot_conversacional` = `n1jx7z9NtXWCD4VC`**, proyecto personal `XbyRcOSCxcL1TkeG`.
+**Activo y publicado** (`activeVersionId == versionId`), 49 nodos de lógica, **cuatro** aristas
+`ai_tool`: `guardar_datos_cliente` · `leer_expediente` · **`calcular_plazo`** · `analizar_documento`.
+
+Nació de una copia de `beckham_bot`, y el diff es exactamente:
+- **se van 9**: los 8 del sidecar del FAQ (ya no hay dos agentes que aislar) y `Callback_Intercom`
+- **entran 2**: `calcular_plazo` (era el Data Connector `beckham_plazo_f2` de Intercom) y
+  `Responder_Intercom`
+- **los otros 47 son idénticos**, con el mismo `onError`, `retryOnFail` y `alwaysOutputData`
+
+**Sin `callback_token` no hay canal de salida**, así que `Responder_Intercom` publica con la API
+normal: `POST /conversations/{id}/reply`, `message_type=comment`, `admin_id 4418209`, credencial
+`Intercom Spain PROD` (`fcMMohGbwXVY9sLk`). Los saltos de línea van a `<br>`.
+
+**Los paths llevan sufijo `-v2`** (`beckham-upsert-expediente-v2`, `beckham-get-expediente-v2`, UUID
+`179cb7ee-…`) porque dos workflows no pueden registrar el mismo path y `beckham_bot` sigue activo.
+
+### Lo verificado con datos, no leído
+
+- Los cuatro nodos de código **pegados con su contador exacto**: `Formatear_conversacion1` 11.288 ·
+  `Preparar_Prompt` **20.569** · `Validar y Normalizar` 76.156 · `Decidir_Status` 13.206
+- Settings completos: `errorWorkflow=beckham_alertas` · `executionTimeout=120` ·
+  `saveExecutionProgress` · `callerPolicy=workflowsFromSameOwner`
+- **LangSmith devuelve el prompt**: `¿Prompt vacio?` sale por la rama de «no vacío», no entra el respaldo
+- **`Responder_Intercom` publica**: `success` en 611 ms
+- El agente **llama a sus tools**: `leer_expediente` corre en su propia ejecución
+- Los 6 links correctos y las 4 aristas `ai_tool` exactas
+
+### El prompt v15, y una consecuencia que hay que recordar
+
+**86.548 caracteres** (+20.528 sobre el v14). Puerta `test-prompt-v15.js`: **206 verdes**, hereda las
+107 comprobaciones del v14 midiendo el v15. El bloque de conocimiento fiscal es **byte a byte** el del
+v14 y la puerta lo comprueba.
+
+**Está en `bot_mobility_prompt` tag `prod`, con el MISMO nombre** (decisión del usuario, ya ejecutada).
+Efecto bueno: el nodo del workflow nuevo ya apuntaba ahí. **Efecto latente: `beckham_bot` lee ese mismo
+tag y NO tiene `calcular_plazo`**, que el v15 nombra 14 veces. Hoy no muerde porque ese workflow no
+recibe tráfico desde el 31/08 a las 11:00, pero sigue `active=true`. Se cierra despublicándolo.
+
+### El transporte de Intercom: el bloqueante que queda
+
+**Solo un workflow customer-facing corre por evento, y gana el de más arriba de la lista.** Los dos del
+proyecto no compiten entre sí (un clic no es un mensaje); la carrera es contra los demás workflows del
+workspace con el trigger del mensaje. **Un workflow arriba con audiencia estrecha es inofensivo; con
+audiencia amplia secuestra el soporte entero.**
+
+Dos salidas que no tocan el orden, y la A es un paso menos: **(A)** que el workflow deje de ser
+customer-facing quitándole el paso de mensaje del reusable —el bot ya contesta desde n8n—; **(B)** una
+suscripción de webhook al topic `conversation.user.replied`, que no es un workflow y no compite.
+
+### El fallo ABIERTO
+
+**El DC manda en `message` el saludo del propio bot.** `{{last_conversation_part.body}}` coge la última
+parte del hilo, y en la entrada por clic esa parte es lo que acaba de escribir el canvas. Medido en las
+ejecuciones `8159910` y `8159914`. Consecuencia: `cold_start` sale `false` y **el agente contesta a su
+propio saludo**. Arreglo escrito y sin hacer: si `conversationPartId == First Message ID` es la primera
+parte del hilo, o sea arranque en frío — y ese dato **ya llega en el body**.
+
+### Cinco cosas que resultaron falsas, y las cinco las corrigió el usuario mirando la pantalla
+
+1. **No hay casilla `wait_for_callback`** que quitar en el paso del reusable.
+2. **No existe un paso `End` en Intercom**: el `END` del canvas es una etiqueta, no una instrucción.
+3. **La audiencia no era el bloqueante**: el team sí se asigna. Faltaba **crear** el workflow del mensaje.
+4. El workflow **`distribuidor - usuario envia mensaje` era de TEST**: no aplica en producción.
+5. **Solo había DOS Data Connectors**, no seis: el escritor **nunca** tuvo DC, escribe el agente.
+
+**Van cinco veces esta semana que doy pasos sobre una capacidad de Intercom que no existe.** La regla
+que queda: **antes de dar pasos sobre Intercom, mirar Intercom** — o pedir una captura.
+
+### Decisiones nuevas
+
+- **En el bot conversacional se enmascara SOLO el IBAN.** El NIF y el email **son el contrato** (están
+  entre los 40 parámetros de `guardar_datos_cliente` y el `.030` aborta sin NIF): enmascararlos deja al
+  agente guardando `[NIF]` o preguntando en bucle. Comprobado antes de decidirlo: `iban` sale **cero**
+  veces como campo en el validador y cero en el v15.
+- **El freno de coste sí se rescata, y ampliado a dos topes:** el mensaje del turno a 4.000 car. **por
+  la cabeza** y `chat_history` a 24.000 **por la cola**. Se recorta **antes** de enmascarar.
+- **El agente ya no se presenta.** La bienvenida la manda el canvas y el cliente recibía dos
+  presentaciones seguidas. La UI de Intercom no deja dejar un paso sin texto, así que el arreglo vive
+  en `Preparar_Prompt`: arranca por la primera pregunta, el idioma (D0).
+
+### Las puertas: 22, y la puerta de las puertas ya no miente
+
+Dos nuevas: `test-prompt-v15.js` (206) y `test-preparar-prompt-conversacional.js` (**62**, la del único
+código nuevo del cambio). Y **`bash docs/pasos.sh test` salía con `exit 0` aunque las 22 estuvieran
+rojas** — imprimía FALLA en rojo y devolvía el código del último `printf`. Arreglado y medido en los dos
+sentidos: verde → 0, una puerta mutada → 1.
+
+**Y la lección más cara de la semana:** una puerta se ancla en la **línea operativa**, nunca en la prosa
+de aviso. El ataque adversarial al v15 encontró tres falsos verdes del mismo tipo, y uno permitía
+**invertir la polaridad del filtro que descarta en duro** con `exit 0`.
+
+### Los pasos
+
+`bash docs/pasos-conversacional.sh estado` — qué está hecho y qué falta, auditado por MCP.
+`bash docs/pasos-conversacional.sh` — los pasos con su comando y su contador esperado.
+`bash docs/pasos.sh test` — las 22 puertas.
+Diseño completo: **`docs/conversacional-2026-08-31.md`**.
+
+---
+
 ## Estado al 26/08/2026 · EL DÍA DE LOS CONTRATOS Y DE LOS DOS TRACKERS QUE MENTÍAN
 
 ### La escalera de Status se renumeró (la renumeró Iciar) y se adaptó en SIETE sitios
