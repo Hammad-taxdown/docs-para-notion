@@ -15,6 +15,9 @@
     },
     "D1008": {
       "created_at": "2026-08-07T11:48:49Z"
+    },
+    "M9": {
+      "created_at": "2026-09-02T10:00:15Z"
     }
   },
   "tasks": {
@@ -79,9 +82,10 @@
         "T003"
       ],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-07-27T07:59:35Z"
+      "status": "done",
+      "note": "02/09 SUPERADA por el pivote al agente conversacional (31/08): el canvas de 32 caminos y sus DC por punto ya no existen; el unico DC es el 514525 y esta cableado y verificado el 01/09",
+      "created_at": "2026-07-27T07:59:35Z",
+      "done_at": "2026-09-02T08:09:01Z"
     },
     "T006": {
       "title": "Conectar DC principal en los 3 puntos de disparo (cualifica, descarta, lead potencial)",
@@ -91,9 +95,10 @@
         "T005"
       ],
       "effort": 1.5,
-      "status": "planned",
-      "note": "OJO: son 4 puntos (D/H/G/N), no 3 - la estructura real de OnClick Mobility se verifico el 27/07 por navegador. Y ADEMAS quedan pendientes de RECOLOCAR por la reestructura A/B (mar 4/08).",
-      "created_at": "2026-07-27T07:59:35Z"
+      "status": "done",
+      "note": "02/09 SUPERADA por el pivote al agente conversacional (31/08): el canvas de 32 caminos y sus DC por punto ya no existen; el unico DC es el 514525 y esta cableado y verificado el 01/09",
+      "created_at": "2026-07-27T07:59:35Z",
+      "done_at": "2026-09-02T08:09:01Z"
     },
     "T007": {
       "title": "Probar extremo a extremo en Messenger real (3 escenarios)",
@@ -104,9 +109,10 @@
         "T004"
       ],
       "effort": 1.5,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-07-27T07:59:35Z"
+      "status": "done",
+      "note": "02/09 SUPERADA por el pivote al agente conversacional (31/08): el canvas de 32 caminos y sus DC por punto ya no existen; el unico DC es el 514525 y esta cableado y verificado el 01/09",
+      "created_at": "2026-07-27T07:59:35Z",
+      "done_at": "2026-09-02T08:09:01Z"
     },
     "T008": {
       "title": "Publicar (Set changes live) tras OK del usuario",
@@ -116,9 +122,10 @@
         "T007"
       ],
       "effort": 0.5,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-07-27T07:59:35Z"
+      "status": "done",
+      "note": "02/09 SUPERADA por el pivote al agente conversacional (31/08): el canvas de 32 caminos y sus DC por punto ya no existen; el unico DC es el 514525 y esta cableado y verificado el 01/09",
+      "created_at": "2026-07-27T07:59:35Z",
+      "done_at": "2026-09-02T08:09:01Z"
     },
     "T009": {
       "title": "Bloque 1 · Los 11 valores del modelo en guardar_datos_cliente",
@@ -196,9 +203,10 @@
       "verify": "Close solo en D y N; ninguna rama toca ticket.state; lead persistido en H; conexiones auditadas por MCP",
       "depends": [],
       "effort": 2.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-08-05T09:01:04Z"
+      "status": "done",
+      "note": "02/09 SUPERADA por el pivote al agente conversacional (31/08): el canvas de 32 caminos y sus DC por punto ya no existen; el unico DC es el 514525 y esta cableado y verificado el 01/09",
+      "created_at": "2026-08-05T09:01:04Z",
+      "done_at": "2026-09-02T08:09:01Z"
     },
     "T016": {
       "title": "Actualizar documentacion: PRDs, roadmap Fase 2, plan maestro y contexto",
@@ -770,10 +778,11 @@
       "verify": "v2 publicado con errorWorkflow y escribiendo Status='4. Informe enviado'; v1 despublicado; una fila en Status 3 produce SU PDF por tick mode=trigger",
       "depends": [],
       "effort": 2.0,
-      "status": "in_progress",
-      "note": "21/08 02:15: A MEDIAS Y BLOQUEADA POR CREDENCIAL DE GOOGLE. Hecho y verificado: credencial Airtable Mobility2026 en los 5 nodos (leyendo y escribiendo), Resource=Record en Buscar filas pendientes, parche de fila cruda/aplanada en Preparar el informe (comprobado en la ejecucion 8127042: los 14 marcadores salen bien) y Status='4. Informe enviado' en su Marcar InformeListo. Se para en 'Copiar la plantilla': credencial 'Google Drive -DaniMario' (6926ysfsHBouOgnM) sin autorizar, 'Unable to sign without access token'. La tiene que conectar quien tenga acceso a las 8 plantillas. LOS DOS INFORMES ESTAN DESPUBLICADOS: si no se cablea el v2, republicar el v1 Y pegar antes el parche de T064.",
+      "status": "done",
+      "note": "02/09 HECHO POR ICIAR Y EL USUARIO: v2 publicado, v1 despublicado y archivado. Verificacion por MCP en el log.",
       "created_at": "2026-08-20T15:02:54Z",
-      "in_progress_at": "2026-08-21T01:11:08Z"
+      "in_progress_at": "2026-08-21T01:11:08Z",
+      "done_at": "2026-09-02T09:55:09Z"
     },
     "T066": {
       "title": "Pegar el nodo Decidir_Status del 21/08 y publicar el bot",
@@ -947,9 +956,10 @@
       "verify": "WP-212 cerrado o reescrito, y WP-227 con la regla de reentrada decidida",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-08-26T11:30:21Z"
+      "status": "done",
+      "note": "02/09 cerrada en el tracker; decidida el 28/08: B pura, el modo no se persiste",
+      "created_at": "2026-08-26T11:30:21Z",
+      "done_at": "2026-09-02T08:09:01Z"
     },
     "T082": {
       "title": "WP-232 cerrado: convencion de nombres como §30 del PRD maestro, con el coste de cada renombrado CONTADO (Webhook1 tiene 13 referencias y 2 en nodos code)",
@@ -979,10 +989,11 @@
       "verify": "el contador dice 76.156 y en el log de una ejecucion real sale UNA linea [conv:part] con 6 campos y cero datos del cliente",
       "depends": [],
       "effort": 2.0,
-      "status": "in_progress",
-      "note": "el COMPLETO esta montado y su puerta en 35 verdes EJECUTANDO el nodo; falta que el usuario lo pegue",
+      "status": "done",
+      "note": "02/09 cerrada en el tracker; PEGADO el 31/08: el vivo mide 76.156 y el sha256 coincide byte a byte",
       "created_at": "2026-08-26T12:25:28Z",
-      "in_progress_at": "2026-08-26T12:25:39Z"
+      "in_progress_at": "2026-08-26T12:25:39Z",
+      "done_at": "2026-09-02T08:09:01Z"
     },
     "T085": {
       "title": "PEGAR el prompt v14 en LangSmith Y MOVER EL TAG prod (66.020 car.). Sin mover el tag el bot sigue leyendo el v13",
@@ -990,10 +1001,11 @@
       "verify": "node docs/test-prompt-v14.js -> 110 verdes, y el tag prod apunta al v14",
       "depends": [],
       "effort": 1.0,
-      "status": "in_progress",
-      "note": "el v14 esta escrito con su puerta de 110; falta pegar y mover el tag",
+      "status": "done",
+      "note": "02/09 SUPERADA: el 01/09 el usuario pego el v15 (86.548) en bot_mobility_prompt tag prod con el mismo nombre; el v14 nunca se pego y ya no hace falta",
       "created_at": "2026-08-26T12:25:28Z",
-      "in_progress_at": "2026-08-26T12:25:39Z"
+      "in_progress_at": "2026-08-26T12:25:39Z",
+      "done_at": "2026-09-02T08:09:01Z"
     },
     "T086": {
       "title": "Preparar_Prompt: si conversationPartId == First Message ID es arranque en frio (el DC manda el saludo del propio bot)",
@@ -1001,9 +1013,11 @@
       "verify": "node docs/test-preparar-prompt-conversacional.js en verde con la comprobacion nueva, y una ejecucion real donde cold_start salga true en el turno del clic",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-09-01T20:10:31Z"
+      "status": "done",
+      "note": "02/09 CERRADA por decision del usuario: el arranque nuevo (idioma del canvas, sin D0) se medira en la fase de TEST, no ahora. El codigo esta pegado y verificado por MCP (8a2844f5 -> d7caf611).",
+      "created_at": "2026-09-01T20:10:31Z",
+      "in_progress_at": "2026-09-02T08:23:50Z",
+      "done_at": "2026-09-02T11:02:12Z"
     },
     "T087": {
       "title": "Intercom: resolver la prioridad de workflows customer-facing (salida A: quitar el paso de mensaje del reusable)",
@@ -1011,9 +1025,10 @@
       "verify": "un mensaje del cliente dispara el workflow del mensaje y sale ejecucion en n8n, sin reordenar la lista",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-09-01T20:10:31Z"
+      "status": "done",
+      "note": "02/09 RESUELTA POR EL USUARIO EN INTERCOM, y NO con la salida A que yo habia dado (quitar el paso de mensaje del reusable). Es la SEXTA vez que doy un paso sobre Intercom que no corresponde a la plataforma. El detalle del arreglo real no esta documentado aqui: preguntarselo al cerrar para dejarlo escrito.",
+      "created_at": "2026-09-01T20:10:31Z",
+      "done_at": "2026-09-02T08:16:56Z"
     },
     "T088": {
       "title": "Despublicar beckham_bot: lee el tag prod donde ahora vive el v15 y no tiene calcular_plazo",
@@ -1021,9 +1036,10 @@
       "verify": "active=false por MCP, y scripts/contract-test.sh repuntado a los paths -v2",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-09-01T20:10:31Z"
+      "status": "done",
+      "note": "02/09 CERRADA SIN HACER, decision del usuario: nada apunta ya a beckham_bot (cero trafico desde el 31/08 11:00), se deja activo.",
+      "created_at": "2026-09-01T20:10:31Z",
+      "done_at": "2026-09-02T09:55:08Z"
     },
     "T089": {
       "title": "Medir WP-10 en produccion: que una conversacion nueva nazca con ticket null",
@@ -1031,9 +1047,10 @@
       "verify": "get_conversation devuelve ticket:null y hay una ejecucion por cada mensaje del cliente",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-09-01T20:10:31Z"
+      "status": "done",
+      "note": "02/09 MEDIDO EN PROD por la ejecucion 8161068 (Traer_Conversacion_intercom1): la conversacion 215475750921547 nace con ticket=null, state=open, team_assignee_id=11098265 (Ops_BOT_Mobility), source admin_initiated por Luz (4418209). Y una ejecucion por cada mensaje del cliente en los 27 turnos. El MCP de Intercom NO sirve para esto: esta conectado al workspace q3bhdtoi (TEST); la conversacion vive en s1hap599.",
+      "created_at": "2026-09-01T20:10:31Z",
+      "done_at": "2026-09-02T09:36:34Z"
     },
     "T090": {
       "title": "Comprobar las dos data table del respaldo del prompt desde el proyecto personal",
@@ -1041,9 +1058,10 @@
       "verify": "abrir Prompt_De_Respaldo y Refrescar_Respaldo y ver la tabla seleccionada, no el desplegable vacio",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-09-01T20:10:31Z"
+      "status": "done",
+      "note": "02/09 COMPROBADO por MCP: las dos data tables existen en el proyecto ADm8RL3z3EJcozih (beckham_prompt_respaldo mTN65aN389Z3KMbe, 4 columnas; beckham_faq_estado Rnn7SUQ8RxFdK7Xp, 8 columnas). El workflow conversacional la alcanza: Prompt_De_Respaldo (get) y Refrescar_Respaldo (update) apuntan a mTN65aN389Z3KMbe y la tabla tiene updatedAt 02/09 08:45:06, en mitad de la conversacion medida.",
+      "created_at": "2026-09-01T20:10:31Z",
+      "done_at": "2026-09-02T09:36:34Z"
     },
     "T091": {
       "title": "Quitar el NIE y el apellido reales del comentario del nodo Montar el .030 (y de la pieza fuente), para que el export publico vuelva a ser byte a byte",
@@ -1051,11 +1069,67 @@
       "verify": "grep de Z0589116E y del apellido en docs/ y en el nodo vivo da cero, y el export reexportado coincide",
       "depends": [],
       "effort": 1.0,
+      "status": "done",
+      "note": "02/09 CERRADA SIN HACER, decision del usuario: el NIE y el apellido del comentario son un dato FALSO inventado, no PII real. Se deja.",
+      "created_at": "2026-09-01T20:22:28Z",
+      "done_at": "2026-09-02T09:33:29Z"
+    },
+    "T092": {
+      "title": "Decidir_Status: tabla ORDEN con el 9 y el 10 intercambiados (Airtable: 9. Confirmado / 10. Pte modificacion). Pegar nodo-decidir-status-2026-09-02.js (13.814)",
+      "milestone": "M9",
+      "verify": "test-decidir-status.js 36 verdes contra opciones-status-airtable-2026-09-02.txt; nodo vivo 13.814 car por MCP",
+      "depends": [],
+      "effort": 1.0,
       "status": "planned",
       "note": "",
-      "created_at": "2026-09-01T20:22:28Z"
+      "created_at": "2026-09-02T10:00:15Z"
+    },
+    "T093": {
+      "title": "Validador: nombres de pais en INGLES (69 huecos) y gentilicios en ingles (28) en la tabla GENTILICIOS",
+      "milestone": "M9",
+      "verify": "paisValido('Moldova')=MOLDAVIA, ('United Kingdom')=REINO UNIDO, ('american')=ESTADOS UNIDOS DE AMERICA; test-validador en verde",
+      "depends": [],
+      "effort": 2.0,
+      "status": "done",
+      "note": "02/09 PEGADO Y VERIFICADO POR MCP: Validar y Normalizar vivo 82.540 (con salto) == COMPLETO 82.539, workflow d7caf611 publicado. Export reexportado; montador y las 22 puertas en verde.",
+      "created_at": "2026-09-02T10:00:15Z",
+      "in_progress_at": "2026-09-02T10:32:05Z",
+      "done_at": "2026-09-02T10:43:24Z"
+    },
+    "T094": {
+      "title": "Deduplicar turnos solapados del cliente (dos mensajes en <10 s = dos ejecuciones y pregunta duplicada)",
+      "milestone": "M9",
+      "verify": "dos mensajes seguidos producen UNA respuesta",
+      "depends": [],
+      "effort": 3.0,
+      "status": "done",
+      "note": "02/09 CERRADA SIN HACER, decision del usuario: los turnos solapados no corrompen nada, solo responden seguido; no importa por ahora.",
+      "created_at": "2026-09-02T10:00:15Z",
+      "done_at": "2026-09-02T10:28:02Z"
+    },
+    "T095": {
+      "title": "Archivar en la UI de n8n los 5 workflows muertos (no tienen MCP habilitado): beckham_bot_test, Beckham - landbot, MensajeBeckham, FLUJO_revisionBeckham_Intercom test, Beckham - Analizar ficheros de conversacion",
+      "milestone": "M9",
+      "verify": "search_workflows no los lista o isArchived=true",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "note": "02/09 hecho por el usuario en la UI de n8n.",
+      "created_at": "2026-09-02T10:43:24Z",
+      "done_at": "2026-09-02T11:02:12Z"
+    },
+    "T096": {
+      "title": "Descargar beckham_informe_mobility_v2.json desde la UI de n8n y guardarlo en proyecto-mobility/workflows-n8n/",
+      "milestone": "M9",
+      "verify": "fichero presente con versionId 7b3c516f",
+      "depends": [],
+      "effort": 1.0,
+      "status": "done",
+      "note": "02/09 el usuario descargo el export desde la UI (~/Downloads) y se copio a proyecto-mobility/workflows-n8n/beckham_informe_mobility_v2.json.",
+      "created_at": "2026-09-02T10:43:24Z",
+      "done_at": "2026-09-02T11:06:47Z"
     }
   },
-  "next_task": 92,
-  "updated_at": "2026-09-01T20:22:28Z"
+  "next_task": 97,
+  "updated_at": "2026-09-02T11:06:47Z"
 }

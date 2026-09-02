@@ -125,5 +125,25 @@ c(!('last_corr_id' in correr(BASE).salida.fields),
 c(/_ESCRIBIR_LAST_CORR_ID = false/.test(code),
   'B · el interruptor de last_corr_id esta a false en el codigo');
 
+// ══ E · 02/09 · PAISES Y GENTILICIOS EN INGLES (T093) ═════════════════════════
+// Medido el 02/09: 'Moldova' y 'Moldovia' se rechazaban y el agente decia «el equipo
+// revisara el pais». Se anadieron 179 claves a GENTILICIOS. Estas comprobaciones
+// EJECUTAN el nodo con los tres campos de pais y miran lo que escribe en fields.
+r = correr(Object.assign({}, BASE, { pais_nacimiento: 'Moldova', nacionalidad: 'american', ultimo_pais_residencia: 'United Kingdom' }));
+c(r.salida && r.salida.fields.PaisNacimiento === 'MOLDAVIA', 'E · pais_nacimiento=Moldova -> MOLDAVIA');
+c(r.salida && r.salida.fields.Nacionalidad === 'ESTADOS UNIDOS DE AMERICA', 'E · nacionalidad=american -> ESTADOS UNIDOS DE AMERICA');
+c(r.salida && r.salida.fields.UltimoPaisResidencia === 'REINO UNIDO', 'E · ultimo_pais_residencia=United Kingdom -> REINO UNIDO');
+r = correr(Object.assign({}, BASE, { pais_nacimiento: 'Morocco', nacionalidad: 'moldava', ultimo_pais_residencia: 'Ivory Coast' }));
+c(r.salida && r.salida.fields.PaisNacimiento === 'MARRUECOS', 'E · Morocco -> MARRUECOS');
+c(r.salida && r.salida.fields.Nacionalidad === 'MOLDAVIA', 'E · el femenino moldava -> MOLDAVIA (faltaba)');
+c(r.salida && r.salida.fields.UltimoPaisResidencia === 'COSTA DE MARFIL', 'E · Ivory Coast -> COSTA DE MARFIL');
+r = correr(Object.assign({}, BASE, { pais_nacimiento: 'Czechia', nacionalidad: 'qatari', ultimo_pais_residencia: 'Philippines' }));
+c(r.salida && r.salida.fields.PaisNacimiento === 'CHECA, REPUBLICA', 'E · Czechia -> CHECA, REPUBLICA');
+c(r.salida && r.salida.fields.Nacionalidad === 'CATAR', 'E · qatari -> CATAR (el nombre de la opcion es CATAR, no QATAR)');
+c(r.salida && r.salida.fields.UltimoPaisResidencia === 'FILIPINAS', 'E · Philippines -> FILIPINAS');
+// y lo que NO debe cambiar: un pais que no existe sigue rechazandose, no se inventa
+r = correr(Object.assign({}, BASE, { pais_nacimiento: 'Narnia' }));
+c(r.salida && r.salida.fields.PaisNacimiento === undefined, 'E · un pais inexistente sigue SIN escribirse (no se inventa opcion)');
+
 process.stdout.write('\n  ' + ok + ' verdes, ' + ko + ' rojas\n');
 if (ko) process.exit(1);

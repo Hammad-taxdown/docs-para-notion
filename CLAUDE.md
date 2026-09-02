@@ -70,8 +70,9 @@ bash docs/montar-nodo-informe.sh
 node docs/test-generador-030.js
 node docs/test-informe-integracion.js
 
-# LAS VEINTIDOS PUERTAS: diecinueve de node plano mas los tres montadores. `bash docs/pasos.sh test`
-# las pasa las veintidos de una vez. Todas exit 1 si algo esta rojo.
+# LAS VEINTIUNA PUERTAS (22 hasta el 02/09): dieciocho de node plano mas los tres montadores. `bash docs/pasos.sh test`
+# las pasa las veintiuna de una vez. El 02/09 se retiro test-preparar-prompt-dos-agentes.js: media el
+# Preparar_Prompt del beckham_bot muerto contra un export que ya no esta en el repo. Todas exit 1 si algo esta rojo.
 # 31/08 · Y `pasos.sh test` TAMBIEN sale con exit 1 ahora. Hasta hoy imprimia FALLA en
 # rojo y devolvia 0 SIEMPRE, o sea que la puerta de las puertas mentia. Medido en los
 # dos sentidos: verde -> 0, una puerta mutada a proposito -> 1.
@@ -87,7 +88,7 @@ node docs/test-prompt-v14.js           # el v14 local (66.020 car., PENDIENTE de
 node docs/test-log-evento.js           # el corr_id y el Log_Evento de 6 campos: 25
 node docs/test-diagramas-mermaid.js    # los .mmd.md del repo publico: 28
 node docs/test-prompt-v15.js           # el v15 CONVERSACIONAL (86.548 car.): 206, hereda las 107 comp() del v14
-node docs/test-preparar-prompt-conversacional.js  # el UNICO codigo nuevo del cambio: 58
+node docs/test-preparar-prompt-conversacional.js  # el UNICO codigo nuevo del cambio: 89 (02/09: arranque por el canvas de dos botones)
 
 # Los pasos de un cambio, EN LA TERMINAL (no en un .md que hay que abrir)
 bash docs/pasos.sh          # las puertas + los pasos con workflow, nodo y casilla
@@ -211,7 +212,7 @@ No se editan en n8n. Se tocan las piezas fuente, se concatenan con su script, y 
 | `.030` (2700 bytes, **ISO-8859-1**) | `generador-030-*.js` · `tabla-municipios-ine-*.js` · `nodo-030-glue-*.js` | `nodo-montar-030-COMPLETO.js`, **198.509 car.** (el nodo vivo tiene 197.924: los 585 de diferencia son **solo comentarios**) | `beckham_generar_030` |
 | Informe PDF | `metrica-helvetica-*.js` · `pdf-motor-*.js` · `informe-datos-2026-08-19.js` · `informe-cuerpo-2026-08-19.js` · `nodo-informe-glue-*.js` | `nodo-montar-informe-COMPLETO.js`, **241.272 car.** (19/08: local y nodo vivo IDÉNTICOS) | `beckham_informe_mobility` |
 
-| Nodo `Validar y Normalizar` (el escritor) **con `corr_id`** | se monta del **código vivo del export**, por anclas | `nodo-validar-normalizar-COMPLETO.js`, **76.156 car.** (**31/08: PEGADO. El vivo mide 76.156 y su sha256 coincide byte a byte, salto de línea final incluido. Los 73.081 de antes eran el estado previo al pegado**) | `beckham_bot` |
+| Nodo `Validar y Normalizar` (el escritor) **con `corr_id`** | se monta del **código vivo del export**, por anclas | `nodo-validar-normalizar-COMPLETO.js`, **82.539 car. (02/09, T093: +179 gentilicios en inglés, PENDIENTE de pegar; el vivo sigue en 76.156)** (**31/08: PEGADO. El vivo mide 76.156 y su sha256 coincide byte a byte, salto de línea final incluido. Los 73.081 de antes eran el estado previo al pegado**) | `beckham_bot` |
 El PDF **se monta a mano byte a byte**, no se rellena un `.docx`: de los 17 marcadores, **15 están
 partidos entre varios `<w:r>`** del XML de Word, así que un buscar-y-reemplazar sustituiría 2 de 19
 apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin fallar**.
@@ -355,7 +356,7 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   tapaban entre sí).
   **Y LA PUERTA DABA 30 VERDES CON EL FALLO DENTRO**, porque comparaba el nodo contra su propia tabla
   `ORDEN`: se validaba a sí misma. Desde el 28/08 cotea contra las opciones **vivas**, congeladas por
-  MCP en `docs/opciones-status-airtable-2026-08-28.txt` — cinco comprobaciones que, apuntadas al nodo
+  MCP en `docs/opciones-status-airtable-2026-09-02.txt` — cinco comprobaciones que, apuntadas al nodo
   viejo, dan **7 rojas** y nombran los cinco peldaños fantasma. **Una prueba que solo se compara con
   su propio código no es una puerta.**
 - **`montar-nodo-informe.sh` REVIERTE el `COMPLETO` si falla la de integración**, y la de integración

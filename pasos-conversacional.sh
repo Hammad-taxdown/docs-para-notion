@@ -72,8 +72,13 @@ echo "${R}NO RENOMBRES ESTE NODO:${N} ${D}lee \$('Webhook1') dentro del codigo, 
 echo "${D}reescribe las referencias que viven dentro de un nodo code.${N}"; }
 
 p2(){ paso 2 "Preparar_Prompt" "Preparar_Prompt" "JavaScript Code  (es un TEXTAREA de codigo)"
-echo "${D}hoy dice:${N} throw new Error('PASO 2 · ...')  ${D}(179 car)${N}"
-pegar docs/nodo-preparar-prompt-CONVERSACIONAL-2026-08-31.js Preparar_Prompt 20569
+echo "${D}hoy dice:${N} la version del 01/09  ${D}(20.569 car; vivo 20.570 con el salto final)${N}"
+echo "${A}02/09 · REPEGAR:${N} ${D}el nodo sube a 26.974 car con el arranque por el canvas de dos botones:${N}"
+echo "${D}reconoce el texto fijo de B/C («Perfecto, seguimos en español» / «Perfect, let's${N}"
+echo "${D}continue in English»), saca el IDIOMA de ahi, salta D0 y manda guardarlo. Medido en${N}"
+echo "${D}la ejecucion 8160900: conversationPartId != First Message ID, asi que la regla del${N}"
+echo "${D}01/09 sola no bastaba. Puerta: test-preparar-prompt-conversacional.js, 89 verdes.${N}"
+pegar docs/nodo-preparar-prompt-CONVERSACIONAL-2026-08-31.js Preparar_Prompt 26974
 echo "${A}ES EL UNICO CODIGO NUEVO DE TODO EL CAMBIO.${N} ${D}Sustituye la fuente muerta${N}"
 echo "${D}(los custom attributes veredicto_f2 / fecha_limite_f2 / dias_pasados_f2 /${N}"
 echo "${D}fecha_alta_ss_f2, que los escribia el canvas de Intercom) por el bloque${N}"
@@ -86,19 +91,26 @@ echo "${A}OJO, EL PROPIO STUB DA UNA CIFRA VIEJA:${N} ${D}el throw del nodo dice
 echo "${D}caracteres, que es lo que medía antes de anadirle el freno de coste. La cifra${N}"
 echo "${D}buena es la de aqui arriba. Se corrige el dia que se toque el nodo por API.${N}"
 echo "${A}verificalo antes de pegar:${N} node docs/test-preparar-prompt-conversacional.js"
-echo "${D}tiene que decir ${N}${V}62 verdes, 0 rojas${N}"; }
+echo "${D}tiene que decir ${N}${V}89 verdes, 0 rojas${N}"; }
 
 p3(){ paso 3 "Validar y Normalizar" "Validar y Normalizar" "JavaScript Code  (es un TEXTAREA de codigo)"
 echo "${D}hoy dice:${N} throw new Error('PASO 3 · ...')  ${D}(177 car)${N}"
-pegar docs/nodo-validar-normalizar-COMPLETO.js "Validar y Normalizar" 76156
+echo "${A}02/09 · REPEGAR (T093):${N} ${D}179 claves nuevas en GENTILICIOS: nombres de pais en INGLES y gentilicios en${N}"
+echo "${D}ingles (Moldova, Morocco, United Kingdom, american, british, dutch...). Sin ellas un cliente ingles${N}"
+echo "${D}recibia «el equipo revisara el pais». Puerta: test-nodo-validar-completo.js, 45 verdes.${N}"
+pegar docs/nodo-validar-normalizar-COMPLETO.js "Validar y Normalizar" 82539
 echo "${D}el escritor, con el corr_id y el Log_Evento. Es BYTE A BYTE el del vivo${N}"
 echo "${D}(sha256 ea366fadf202): el pegado en produccion ya esta hecho.${N}"
-echo "${A}el mas grande de los cuatro. Si el contador de n8n no da 76.156 exactos,${N}"
+echo "${A}el mas grande de los cuatro. Si el contador de n8n no da 82.539 exactos,${N}"
 echo "${A}se ha truncado el pegado: vuelve a hacerlo, no lo dejes «casi».${N}"; }
 
 p4(){ paso 4 "Decidir_Status" "Decidir_Status" "JavaScript Code  (es un TEXTAREA de codigo)"
 echo "${D}hoy dice:${N} throw new Error('PASO 4 · ...')  ${D}(175 car)${N}"
-pegar docs/nodo-decidir-status-2026-08-28.js Decidir_Status 13206
+echo "${A}02/09 · REPEGAR:${N} ${D}Airtable tiene hoy «9. Confirmado» y «10. Pte modificación», al reves que la tabla${N}"
+echo "${D}ORDEN del 28/08. Con la tabla vieja, ORDEN[status] da undefined -> nActual=0 -> una fila CONFIRMADA${N}"
+echo "${D}puede volver al 3 o al 4 si el cliente reabre el chat, y el 4 vuelve a disparar informe y .030.${N}"
+echo "${D}Snapshot vivo: docs/opciones-status-airtable-2026-09-02.txt. Puerta: test-decidir-status.js, 36 verdes.${N}"
+pegar docs/nodo-decidir-status-2026-09-02.js Decidir_Status 13814
 echo "${D}la escalera renumerada de Iciar: la tabla ORDEN con los peldanos 9-14 reales,${N}"
 echo "${D}el descarte a '14. Descartado' y la guarda en nActual > 4.${N}"
 echo "${A}verificalo:${N} node docs/test-decidir-status.js ${D}-> 36 verdes${N}"; }
@@ -312,7 +324,7 @@ EOF
 
 estado(){ cat <<EOF
 
-${B}${C}━━━ ESTADO AL CIERRE DEL 01/09 ━━━${N} ${D}(auditado por MCP)${N}
+${B}${C}━━━ ESTADO AL 02/09 ━━━${N} ${D}(auditado por MCP)${N}
 
 ${V}HECHO Y VERIFICADO${N}
   ${V}✓${N} los 4 nodos de codigo PEGADOS con el contador exacto (11.288 · 20.569 · 76.156 · 13.206)
@@ -325,17 +337,28 @@ ${V}HECHO Y VERIFICADO${N}
   ${V}✓${N} el DC 514525 con el body arreglado y el trigger del mensaje disparando
   ${V}✓${N} el agente ya NO se presenta: la bienvenida la manda el canvas
 
-${R}BLOQUEANTE${N}
-  ${R}✗${N} ${B}la prioridad de los workflows customer-facing${N} -> ${A}paso 10${N}
+  ${V}✓${N} 02/09 · la prioridad de los workflows customer-facing: RESUELTA POR EL USUARIO en
+      Intercom (y no con la salida A del paso 10). Los turnos 2..n llegan: 8160903 y 8160910.
+  ${V}✓${N} 02/09 · el canvas elige el idioma con DOS BOTONES (A -> B/C -> D, un solo DC)
+  ${V}✓${N} 02/09 · Preparar_Prompt REPEGADO (26.974) y verificado por MCP (8a2844f5); falta medir una conv nueva
+  ${V}✓${N} 02/09 · informe v2 PUBLICADO por Iciar, v1 despublicado y archivado; end-to-end manual OK (PDF 135.100 bytes)
 
-${A}ABIERTO, con arreglo escrito y sin hacer${N}
-  ${A}!${N} ${B}el DC manda en \`message\` EL SALUDO DEL PROPIO BOT.${N} \`{{last_conversation_part.body}}\`
-      coge la ultima parte del hilo, y en la entrada por clic esa parte es lo que acaba
-      de escribir el canvas. Medido en 8159910 y 8159914. Consecuencia: cold_start sale
-      FALSE y ${R}el agente contesta a su propio saludo${N} -- una vez con el pitch de la ley,
-      otra con la pregunta del idioma.
-      ${D}Arreglo, con el dato que YA llega: si conversationPartId == First Message ID es${N}
-      ${D}la primera parte del hilo, o sea arranque en frio. Va en Preparar_Prompt + puerta.${N}
+${R}ABIERTO Y URGENTE: la escalera de Status vuelve a estar rota en el 9 y el 10${N} -> ${A}paso 4${N}
+  ${R}✗${N} Airtable: «9. Confirmado» / «10. Pte modificación». Decidir_Status: «9. Pte modificación» / «10. Confirmado».
+      La puerta contra el snapshot VIVO da 3 rojas. Nodo corregido: nodo-decidir-status-2026-09-02.js (13.814).
+
+${A}ABIERTO, con el codigo ESCRITO y su puerta en verde: falta PEGAR (paso 2)${N}
+  ${A}!${N} ${B}el DC manda en \`message\` el texto del PROPIO canvas.${N} Con los dos botones ya no es la
+      bienvenida sino la confirmacion de B/C («🇪🇸 Perfecto, seguimos en español.»), y
+      conversationPartId (53026457386) != First Message ID (3929836526): hay TRES partes
+      antes. Medido en 8160900 (02/09 10:14). Consecuencia: cold_start sale FALSE y
+      ${R}el agente contesta a su propio texto${N}; y si entrara en frio con la version del
+      01/09, ${R}preguntaria el idioma que el cliente acaba de pulsar${N}.
+      ${D}Arreglo en Preparar_Prompt (26.974 car): cuatro señales de arranque (texto fijo de B/C,${N}
+      ${D}bienvenida de A, rebote de la ultima linea del Agente, misma parte que la primera) y${N}
+      ${D}el boton del idioma NO cuenta como turno. El idioma sale del texto de B/C o del boton,${N}
+      ${D}y la instruccion pasa a «IDIOMA YA ELEGIDO: X. D0 esta RESPONDIDA: NO la hagas».${N}
+      ${D}Puerta ampliada de 62 a 89 verdes; 9 mutaciones, 9 cazadas.${N}
   ${A}!${N} el paso 8 (la data table del respaldo) sigue SIN COMPROBAR
   ${A}!${N} el paso 12 (que la conversacion no nazca ticket) sigue SIN MEDIR en prod
 

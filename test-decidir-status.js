@@ -5,7 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const RUTA = path.join(__dirname, 'nodo-decidir-status-2026-08-28.js');
+const RUTA = path.join(__dirname, 'nodo-decidir-status-2026-09-02.js');
 const CODIGO = fs.readFileSync(RUTA, 'utf8');
 
 // Corre el nodo con $ y $input simulados, igual que haria n8n.
@@ -196,11 +196,11 @@ else { console.log("verde cero $(...).item"); ok++; }
 // contra SU PROPIA tabla ORDEN: se validaba a si misma. Del 1 al 8 los nombres
 // coincidian con Airtable y del 9 al 14 NO, y nadie lo veia.
 // Ahora ORDEN se cotea contra las opciones VIVAS del singleSelect, leidas por MCP
-// y congeladas en docs/opciones-status-airtable-2026-08-28.txt. Node plano no
+// y congeladas en docs/opciones-status-airtable-2026-09-02.txt. Node plano no
 // puede llamar a Airtable, asi que la cadena es: MCP -> fichero -> puerta. Si
 // alguien renumera, se regenera el fichero y esta comprobacion muerde.
 {
-  const REF = path.join(__dirname, 'opciones-status-airtable-2026-08-28.txt');
+  const REF = path.join(__dirname, 'opciones-status-airtable-2026-09-02.txt');
   const vivas = fs.readFileSync(REF, 'utf8').split('\n')
     .filter(l => l && !l.startsWith('#'))
     .map(l => l.split('\t')[1]).filter(Boolean);

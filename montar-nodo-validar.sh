@@ -26,7 +26,7 @@ TMP=docs/.nodo-validar-en-curso.js
 YA=$(python3 - <<'FIN'
 import json, io, sys
 try:
-    wf = json.load(io.open('proyecto-mobility/workflows-n8n/beckham_bot.json', encoding='utf-8'))
+    wf = json.load(io.open('proyecto-mobility/workflows-n8n/beckham_bot_conversacional.json', encoding='utf-8'))
     cod = next(n['parameters']['jsCode'] for n in wf['nodes'] if n['name'] == 'Validar y Normalizar')
     sys.stdout.write('si' if ('corr_id' in cod and 'Log_Evento' in cod) else 'no')
 except Exception:
@@ -41,7 +41,7 @@ if [ "$YA" = "si" ]; then
   printf "  ${V}OK${N}   parsea como JavaScript\n"
   python3 - <<'FIN' || exit 1
 import json, io, sys, hashlib
-wf = json.load(io.open('proyecto-mobility/workflows-n8n/beckham_bot.json', encoding='utf-8'))
+wf = json.load(io.open('proyecto-mobility/workflows-n8n/beckham_bot_conversacional.json', encoding='utf-8'))
 vivo = next(n['parameters']['jsCode'] for n in wf['nodes'] if n['name'] == 'Validar y Normalizar')
 disco = io.open('docs/nodo-validar-normalizar-COMPLETO.js', encoding='utf-8').read()
 h = lambda t: hashlib.sha256(t.encode('utf-8')).hexdigest()[:12]

@@ -18,7 +18,7 @@ const X = s => { process.stdout.write('  FALLA ' + s + '\n'); ko++; };
 const comprobar = (cond, s) => cond ? V(s) : X(s);
 
 const schema = JSON.parse(fs.readFileSync(path.join(D, 'contrato-upsert-expediente-v1.json'), 'utf8'));
-const wf = JSON.parse(fs.readFileSync(path.join(D, '../proyecto-mobility/workflows-n8n/beckham_bot.json'), 'utf8'));
+const wf = JSON.parse(fs.readFileSync(path.join(D, '../proyecto-mobility/workflows-n8n/beckham_bot_conversacional.json'), 'utf8'));
 const nodo = wf.nodes.find(n => n.name === 'Validar y Normalizar');
 comprobar(!!nodo, 'el nodo "Validar y Normalizar" sigue existiendo en el export');
 if (!nodo) { process.stdout.write('\n  sin nodo no hay nada que comparar\n'); process.exit(1); }
@@ -37,7 +37,7 @@ comprobar(soloContrato.length === 0,
   'toda clave del contrato la sigue leyendo el codigo' + (soloContrato.length ? ' · MUERTAS EN EL CONTRATO: ' + soloContrato.join(', ') : ''));
 // 01/09 · EL CANARIO SUBE DE 46 A 51, Y COMO SE ENTERO IMPORTA MAS QUE EL NUMERO.
 // Esta comprobacion es un canario: si el numero cambia, alguien ha tocado el contrato de
-// entrada del escritor. Salto hoy al reexportar `proyecto-mobility/workflows-n8n/beckham_bot.json`
+// entrada del escritor. Salto hoy al reexportar `proyecto-mobility/workflows-n8n/beckham_bot_conversacional.json` (desde el 02/09; antes beckham_bot.json)
 // desde el nodo vivo -- el export llevaba RANCIO desde el 26/08, con 46 claves, mientras el
 // nodo vivo tenia 51 desde el pegado del corr_id del 31/08.
 // O sea que la deriva no estaba en el codigo: estaba en el ESPEJO contra el que mide la

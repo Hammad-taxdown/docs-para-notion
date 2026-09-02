@@ -68,7 +68,7 @@ function correr(o) {
 process.stdout.write('\n── 1 · el contrato de salida ──\n');
 const r0 = correr({});
 c(!!r0.json, 'el nodo devuelve un item con json');
-for (const k of ['prompt', 'contexto', 'cold_start', 'mensaje_perdido', '_pii', '_recortes',
+for (const k of ['prompt', 'contexto', 'cold_start', 'mensaje_perdido', 'idioma_canvas', '_arranque', '_pii', '_recortes',
                  '_expediente_existe', '_expediente_filas', '_expediente_record_id']) {
   c(r0.json && Object.prototype.hasOwnProperty.call(r0.json, k), 'la salida lleva `' + k + '`');
 }
@@ -120,6 +120,80 @@ c(/MENSAJE_NO_RECIBIDO/.test(rPerdido.json.prompt) && !/ARRANQUE_EN_FRIO/.test(r
 const rVacio = correr({ conv: { last_message_content: '', chat_history: 'Bot: hola' } });
 c(rVacio.json.cold_start === true,
   'un historial con SOLO turnos del bot sigue siendo arranque en frio');
+
+process.stdout.write('\n── 4b · el canvas de dos botones: el DC manda el texto del PROPIO canvas (02/09) ──\n');
+// Fixture VERBATIM de la ejecucion 8160900 (02/09 10:14, conversacion 215475750921547):
+// message es la confirmacion del paso B, el historial lleva la bienvenida de A, el
+// boton pulsado y la confirmacion, y conversationPartId != First Message ID.
+const HIST_CANVAS_ES = 'Agente: 🇪🇸 Español\n¡Hola! 👋 Soy el Mobility Bot del equipo de TaxDown y estoy aquí para ayudarte con tu solicitud al régimen Beckham.\n\n¿En qué idioma quieres que continuemos?\n\n🇬🇧/🇺🇸 English\nHi! 👋 I’m the TaxDown Mobility Team Bot, and I’m here to help you with your Beckham regime application.\n\nWhich language would you like to continue in?\nUsuario: 🇪🇸 Español\nAgente: 🇪🇸 Perfecto, seguimos en español.\n';
+const BODY_CANVAS = { conversationPartId: '53026457386', 'First Message ID': '3929836526' };
+const rEs = correr({ conv: { last_message_content: '🇪🇸 Perfecto, seguimos en español.', chat_history: HIST_CANVAS_ES }, body: BODY_CANVAS });
+c(rEs.json.cold_start === true && rEs.json.mensaje_perdido === false,
+  'la confirmacion «Perfecto, seguimos en español» del canvas = ARRANQUE EN FRIO, aunque conversationPartId != First Message ID');
+c(rEs.json.idioma_canvas === 'Español', 'y saca el idioma del texto del canvas: Español');
+c(rEs.json._arranque.confirmacion_canvas === true && rEs.json._arranque.primera_parte === false && rEs.json._arranque.turnos_reales === 0,
+  '_arranque dice POR QUE: confirmacion_canvas=true, primera_parte=false, turnos_reales=0 (el boton no es un turno)');
+c(/^\[ARRANQUE_EN_FRIO\]/.test(rEs.json.prompt), 'el prompt arranca por [ARRANQUE_EN_FRIO], no por el texto del canvas');
+c(!/^🇪🇸 Perfecto, seguimos en español\./m.test(rEs.json.prompt.split('--- HISTORIAL')[0]),
+  'y la confirmacion del canvas NO viaja como si fuera el mensaje del cliente');
+// Las lineas OPERATIVAS, ancladas literal y contadas (regla del 31/08: la rama, no el aviso).
+c((rEs.json.prompt.match(/IDIOMA YA ELEGIDO: Español\./g) || []).length === 1,
+  'dice UNA vez «IDIOMA YA ELEGIDO: Español.»');
+c(/La pregunta D0 esta RESPONDIDA: NO la hagas y NO mandes los dos mensajes del idioma\./.test(rEs.json.prompt),
+  'y la rama operativa: «D0 esta RESPONDIDA: NO la hagas y NO mandes los dos mensajes»');
+c(!/Empieza DIRECTAMENTE por la primera pregunta del recorrido, que es el idioma de atencion \(D0\)/.test(rEs.json.prompt),
+  'y NO queda la orden vieja de arrancar preguntando D0 (seria el bucle del idioma)');
+c(/parametro idioma = Español\./.test(rEs.json.prompt), 'le manda guardar el idioma con guardar_datos_cliente (idioma = Español)');
+c(/apertura del BLOQUE 0 en español/.test(rEs.json.prompt) && /cuatro opciones de arranque/.test(rEs.json.prompt),
+  'y arrancar por la apertura del BLOQUE 0 en español con sus cuatro opciones');
+c(/NO te presentes/.test(rEs.json.prompt) && /YA SE LE HA SALUDADO/.test(rEs.json.prompt),
+  'sigue PROHIBIDO presentarse: la bienvenida ya la mando el canvas');
+c(/Situacion: primer turno, el cliente solo ha pulsado el boton del idioma \(Español\)/.test(rEs.json.contexto),
+  'y la Situacion del contexto lo dice');
+
+// El paso C, en ingles, con el apostrofo tipografico (’) que usa Intercom y con el recto.
+const HIST_CANVAS_EN = HIST_CANVAS_ES.replace('Usuario: 🇪🇸 Español\nAgente: 🇪🇸 Perfecto, seguimos en español.', 'Usuario: 🇬🇧/🇺🇸 English\nAgente: 🇬🇧/🇺🇸 Perfect, let’s continue in English.');
+const rEn = correr({ conv: { last_message_content: '🇬🇧/🇺🇸 Perfect, let’s continue in English.', chat_history: HIST_CANVAS_EN }, body: BODY_CANVAS });
+c(rEn.json.cold_start === true && rEn.json.idioma_canvas === 'Ingles', 'la confirmacion inglesa (con ’) = arranque en frio con idioma Ingles');
+c((rEn.json.prompt.match(/IDIOMA YA ELEGIDO: Ingles\./g) || []).length === 1 && /Toda la conversacion va en inglés\./.test(rEn.json.prompt),
+  'y le dice que TODA la conversacion va en inglés');
+const rEn2 = correr({ conv: { last_message_content: "Perfect, let's continue in English", chat_history: HIST_CANVAS_EN }, body: BODY_CANVAS });
+c(rEn2.json.idioma_canvas === 'Ingles', 'con apostrofo recto, sin bandera y sin punto tambien casa');
+// La regla del 01/09 sigue viva para un canvas de UN paso (fixture de la 8159910).
+const BIENVENIDA = '🇪🇸 Español ¡Hola! 👋 Soy el Mobility Bot del equipo de TaxDown y estoy aquí para ayudarte con tu solicitud al régimen Beckham. \n 🇬🇧 English Hi! 👋 I’m the TaxDown Mobility Team Bot, and I’m here to help you with your Beckham regime application.';
+const rAyer = correr({ conv: { last_message_content: BIENVENIDA, chat_history: 'Agente: ' + BIENVENIDA + '\n' }, body: { conversationPartId: '3928679626', 'First Message ID': '3928679626' } });
+c(rAyer.json.cold_start === true && rAyer.json.idioma_canvas === null,
+  'la bienvenida bilingue de A (01/09, misma parte que la primera) = arranque en frio SIN idioma');
+c(/idioma de atencion \(D0\)/.test(rAyer.json.prompt) && !/IDIOMA YA ELEGIDO/.test(rAyer.json.prompt),
+  'y ahi SI pregunta D0, porque nadie ha elegido idioma');
+const rAyerSinIds = correr({ conv: { last_message_content: BIENVENIDA, chat_history: '' }, body: {} });
+c(rAyerSinIds.json.cold_start === true && rAyerSinIds.json._arranque.bienvenida_canvas === true,
+  'la bienvenida se reconoce por sus DOS frases de presentacion aunque el body no traiga los ids');
+// La regla de los ids SOLA: ni frase fija, ni bienvenida, ni rebote (el historial dice otra cosa).
+const rSoloIds = correr({ conv: { last_message_content: 'Bienvenido a TaxDown', chat_history: 'Agente: Bienvenido a TaxDown Mobility\n' }, body: { conversationPartId: '777', 'First Message ID': '777' } });
+c(rSoloIds.json.cold_start === true && rSoloIds.json._arranque.primera_parte === true && rSoloIds.json._arranque.rebotado === false,
+  'conversationPartId == First Message ID sigue bastando por si solo (canvas de un paso)');
+// Red de seguridad: nuestro propio texto rebotado, con una frase que no es ninguna de las fijas.
+const rRebote = correr({ conv: { last_message_content: 'Genial, vamos allá.', chat_history: 'Agente: bienvenida\nUsuario: 🇪🇸 Español\nAgente: Genial, vamos allá.\n' }, body: BODY_CANVAS });
+c(rRebote.json.cold_start === true && rRebote.json._arranque.rebotado === true && rRebote.json.idioma_canvas === 'Español',
+  'si cambian el texto de B, la ultima linea del Agente == message lo caza igual, y el idioma sale del BOTON del historial');
+
+// Y LO QUE NO DEBE SER ARRANQUE: el cliente escribe de verdad.
+const rTurno2 = correr({ conv: { last_message_content: 'Sí, quiero comprobar si cuento con los requisitos', chat_history: HIST_CANVAS_ES + 'Usuario: Sí, quiero comprobar si cuento con los requisitos\n' }, body: { conversationPartId: '53026487356', 'First Message ID': '3929836526' } });
+c(rTurno2.json.cold_start === false && rTurno2.json.mensaje_perdido === false && rTurno2.json._arranque.turnos_reales === 1,
+  'el turno 2 real (fixture de la 8160903) NO es arranque: el mensaje del cliente viaja tal cual');
+c(rTurno2.json.prompt.split('\n')[0] === 'Sí, quiero comprobar si cuento con los requisitos', 'y va en la primera linea del prompt');
+const rImita = correr({ conv: { last_message_content: 'perfecto, seguimos en español', chat_history: HIST_CANVAS_ES + 'Usuario: hola tengo una duda\nAgente: dime\nUsuario: perfecto, seguimos en español\n' }, body: { conversationPartId: '99', 'First Message ID': '1' } });
+c(rImita.json.cold_start === false, 'un cliente que ESCRIBE la frase del canvas a mitad de hilo NO reinicia la conversacion');
+const rPerdido2 = correr({ conv: { last_message_content: '', chat_history: HIST_CANVAS_ES + 'Usuario: llegue el 1/6/2026\n' }, body: BODY_CANVAS });
+c(rPerdido2.json.cold_start === false && rPerdido2.json.mensaje_perdido === true,
+  'texto vacio con un turno real detras del boton = MENSAJE PERDIDO, no arranque');
+const rSoloBoton = correr({ conv: { last_message_content: '', chat_history: 'Agente: bienvenida\nUsuario: 🇬🇧/🇺🇸 English\n' }, body: {} });
+c(rSoloBoton.json.cold_start === true && rSoloBoton.json.mensaje_perdido === false && rSoloBoton.json.idioma_canvas === 'Ingles',
+  'texto vacio y en el historial SOLO el boton = arranque en frio con el idioma del boton');
+// El aislamiento ($json/$now/$input) ya lo prueba el arnes EJECUTANDO: correr() solo
+// inyecta $ y console. Una comprobacion por texto aqui anclaria en la prosa de los
+// comentarios, que si nombran $json para explicar por que no se usa.
 
 process.stdout.write('\n── 5 · el freno de coste: los dos topes ──\n');
 const LARGO = 'a'.repeat(9000);

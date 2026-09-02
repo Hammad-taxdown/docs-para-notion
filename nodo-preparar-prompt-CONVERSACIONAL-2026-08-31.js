@@ -61,12 +61,84 @@ const existe = typeof fila.id === 'string' && fila.id.startsWith('rec');
 // Asi que se separan los dos casos con el historial, que es el dato que los
 // distingue: sin historial de usuario es la primera vez; con historial es un
 // mensaje que no nos ha llegado, y ahi el bot NO se presenta: pide que lo repita.
+//
+// 02/09 · EL DC MANDA EN `message` TEXTO DEL PROPIO CANVAS, NO DEL CLIENTE.
+// `{{last_conversation_part.body}}` coge la ULTIMA parte del hilo, y en la entrada
+// por clic esa parte es lo que acaba de escribir el canvas. Medido dos veces:
+//   · 01/09, ejecucion 8159910: message = la bienvenida bilingue del paso A, y
+//     conversationPartId == First Message ID (era la primera parte del hilo).
+//   · 02/09, ejecucion 8160900, ya con el canvas de dos botones (A -> B/C -> D):
+//     message = '🇪🇸 Perfecto, seguimos en español.', y conversationPartId
+//     53026457386 != First Message ID 3929836526, porque ahora hay TRES partes
+//     antes (bienvenida, boton del cliente, confirmacion). O sea que la regla
+//     «misma parte que la primera» del 01/09 sola YA NO SIRVE.
+// Con `cold=false` el agente contestaba a su propio texto: una vez con el pitch
+// entero, otra preguntando el idioma que el cliente acababa de pulsar.
+// Lo que SI es fijo es el texto de B y C del canvas, y lleva el IDIOMA dentro:
+// es la unica fuente determinista del idioma desde que el canvas lo elige con
+// botones (decision del 28/08: el idioma lo declara la rama, no el LLM).
 const raw = conv0.last_message_content;
 const sinTexto = !raw || String(raw).trim() === '';
 const historialCrudo = typeof conv0.chat_history === 'string' ? conv0.chat_history : '';
-const hayTurnoDeUsuario = /(^|\n)Usuario:/.test(historialCrudo);
-const cold = sinTexto && !hayTurnoDeUsuario;
-const mensajePerdido = sinTexto && hayTurnoDeUsuario;
+
+// Quita banderas, emojis, la barra de «🇬🇧/🇺🇸» y espacios repetidos, para comparar
+// solo las palabras. `\u{FE0F}` es el selector de variante que acompaña a algunos emojis.
+const soloPalabras = function (t) {
+  return String(t || '')
+    .replace(/[\u{1F1E6}-\u{1F1FF}\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\/]/gu, ' ')
+    .replace(/[’`´]/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim();
+};
+const mensajePlano = soloPalabras(raw);
+
+// Los dos textos de confirmacion del canvas (pasos B y C), anclados entero: si
+// alguien cambia esa frase en Intercom, esto deja de casar y se vuelve al
+// comportamiento de hoy (cold=false), que es ruidoso y se ve en la ejecucion.
+const CONFIRMACION_CANVAS = [
+  { idioma: 'Español', re: /^perfecto,? seguimos en espa[nñ]ol\.?$/i },
+  { idioma: 'Ingles',  re: /^perfect,? let'?s continue in english\.?$/i }
+];
+const confirmacion = CONFIRMACION_CANVAS.find(function (x) { return x.re.test(mensajePlano); }) || null;
+
+// La bienvenida bilingue del paso A (el caso del 01/09): las dos frases de
+// presentacion a la vez solo las escribe el canvas, nunca un cliente.
+const esBienvenidaCanvas = /soy el mobility bot/i.test(mensajePlano) && /mobility team bot/i.test(mensajePlano);
+
+// La ultima linea del historial es del agente y dice lo mismo que `message`: es
+// nuestro propio texto rebotado. Red de seguridad para el dia en que cambien los
+// textos del canvas y las dos reglas de arriba dejen de casar.
+const lineasHist = historialCrudo.split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+const ultimaLinea = lineasHist.length ? lineasHist[lineasHist.length - 1] : '';
+const ultimaEsDelAgente = /^Agente:/.test(ultimaLinea);
+const rebotado = ultimaEsDelAgente && mensajePlano !== '' && soloPalabras(ultimaLinea.replace(/^Agente:\s*/, '')) === mensajePlano;
+
+// La regla del 01/09, que sigue valiendo para un canvas de un solo paso.
+const partId = body.conversationPartId !== undefined && body.conversationPartId !== null ? String(body.conversationPartId) : '';
+const firstId = body['First Message ID'] !== undefined && body['First Message ID'] !== null ? String(body['First Message ID']) : '';
+const esPrimeraParte = partId !== '' && firstId !== '' && partId === firstId;
+
+const textoDelCanvas = !!confirmacion || esBienvenidaCanvas || rebotado || esPrimeraParte;
+
+// Turnos REALES del cliente: las lineas `Usuario:` que NO son el boton del idioma.
+// Pulsar «🇪🇸 Español» o «🇬🇧/🇺🇸 English» cuenta como parte en Intercom, pero el
+// cliente todavia no ha dicho nada, y con la regla vieja eso ya era «hay turno».
+const ES_BOTON_IDIOMA = /^(espa[nñ]ol|english)$/i;
+const lineasUsuario = lineasHist
+  .filter(function (l) { return /^Usuario:/.test(l); })
+  .map(function (l) { return soloPalabras(l.replace(/^Usuario:\s*/, '')); });
+const turnosReales = lineasUsuario.filter(function (t) { return t !== '' && !ES_BOTON_IDIOMA.test(t); }).length;
+const botonHistorial = lineasUsuario.filter(function (t) { return ES_BOTON_IDIOMA.test(t); }).pop() || '';
+
+// El idioma que el cliente ha ELEGIDO con el boton: primero la confirmacion de B/C,
+// y si no casa, el propio boton en el historial. Si no hay ninguno, null y el
+// agente pregunta D0 como hasta ahora.
+const idiomaCanvas = confirmacion
+  ? confirmacion.idioma
+  : (/^espa/i.test(botonHistorial) ? 'Español' : (/^english$/i.test(botonHistorial) ? 'Ingles' : null));
+
+const cold = (sinTexto || textoDelCanvas) && turnosReales === 0;
+const mensajePerdido = sinTexto && turnosReales > 0;
 
 // ── FRENO DE COSTE Y ENMASCARADO PARCIAL ──────────────────────────────────────
 // 31/08 · LO QUE SE RESCATA DEL SIDECAR DEL FAQ Y LO QUE NO. La auditoria dijo que
@@ -300,7 +372,9 @@ if (nFilas > 1) {
 
 trozos.push('');
 trozos.push('Situacion: ' + (cold
-  ? 'primer turno, el usuario todavia no ha escrito nada'
+  ? (idiomaCanvas
+    ? 'primer turno, el cliente solo ha pulsado el boton del idioma (' + idiomaCanvas + ') y todavia no ha escrito nada'
+    : 'primer turno, el usuario todavia no ha escrito nada')
   : (mensajePerdido
     ? 'conversacion en curso, pero el texto del ultimo mensaje del cliente NO nos ha llegado'
     : 'conversacion en curso')));
@@ -321,18 +395,34 @@ const historial = enmascararTexto(
 // cliente recibia DOS presentaciones seguidas: la del canvas y la del agente.
 // Se intento quitar el texto del canvas y la UI de Intercom no deja dejar el paso sin
 // contenido, asi que el arreglo vive aqui: el agente ARRANCA POR LA PRIMERA PREGUNTA.
-// Y esa primera pregunta es el idioma (D0 del prompt), que encaja con la bienvenida
-// bilingue: el cliente acaba de ver los dos idiomas y lo unico que falta es que elija.
 // SI ALGUN DIA SE QUITA LA BIENVENIDA DEL CANVAS, hay que devolver aqui la linea de
 // presentarse, o el cliente se encontrara una pregunta a secas sin saber con quien habla.
-const instruccionArranque = [
-  '[ARRANQUE_EN_FRIO]',
-  'El usuario todavia no ha escrito ningun mensaje en este hilo.',
-  'YA SE LE HA SALUDADO: justo antes de este turno se le ha mandado la bienvenida, que ya dice quien eres y para que sirve esto, en español y en ingles.',
-  'Por eso NO te presentes, NO le saludes y NO repitas para que sirve esto: seria el segundo saludo seguido y queda mal.',
-  'Empieza DIRECTAMENTE por la primera pregunta del recorrido, que es el idioma de atencion (D0). Una sola pregunta, sin preambulo y sin repetir la bienvenida.',
-  'No repitas preguntas ya respondidas en el historial ni pidas datos que ya conocemos.'
-].join('\n');
+//
+// 02/09 · Y LA PRIMERA PREGUNTA YA NO ES EL IDIOMA CUANDO EL CANVAS LO HA ELEGIDO.
+// Con los dos botones de A, D0 llega RESPONDIDA: preguntarla otra vez es el bucle que
+// el propio prompt v15 llama «el peor fallo que puedes cometer aqui». Asi que hay dos
+// arranques: con idioma (se salta D0, se guarda el idioma y se va a la apertura del
+// BLOQUE 0 en ese idioma) y sin idioma (el de siempre: D0).
+const NOMBRE_IDIOMA = { 'Español': 'español', 'Ingles': 'inglés' };
+const instruccionArranque = (idiomaCanvas
+  ? [
+    '[ARRANQUE_EN_FRIO]',
+    'El cliente todavia no ha escrito ningun mensaje en este hilo: lo unico que ha hecho es pulsar el boton del idioma.',
+    'IDIOMA YA ELEGIDO: ' + idiomaCanvas + '. La pregunta D0 esta RESPONDIDA: NO la hagas y NO mandes los dos mensajes del idioma. Toda la conversacion va en ' + NOMBRE_IDIOMA[idiomaCanvas] + '.',
+    'Guardalo de inmediato con guardar_datos_cliente, parametro idioma = ' + idiomaCanvas + '.',
+    'YA SE LE HA SALUDADO: justo antes de este turno se le ha mandado la bienvenida, que ya dice quien eres y para que sirve esto, en español y en ingles.',
+    'Por eso NO te presentes, NO le saludes y NO repitas para que sirve esto: seria el segundo saludo seguido y queda mal.',
+    'Empieza DIRECTAMENTE por la apertura del BLOQUE 0 en ' + NOMBRE_IDIOMA[idiomaCanvas] + ': el texto aprobado y las cuatro opciones de arranque, sin el «¡Hola!» del principio, que ya lo ha dado el canvas.',
+    'No repitas preguntas ya respondidas en el historial ni pidas datos que ya conocemos.'
+  ]
+  : [
+    '[ARRANQUE_EN_FRIO]',
+    'El usuario todavia no ha escrito ningun mensaje en este hilo.',
+    'YA SE LE HA SALUDADO: justo antes de este turno se le ha mandado la bienvenida, que ya dice quien eres y para que sirve esto, en español y en ingles.',
+    'Por eso NO te presentes, NO le saludes y NO repitas para que sirve esto: seria el segundo saludo seguido y queda mal.',
+    'Empieza DIRECTAMENTE por la primera pregunta del recorrido, que es el idioma de atencion (D0). Una sola pregunta, sin preambulo y sin repetir la bienvenida.',
+    'No repitas preguntas ya respondidas en el historial ni pidas datos que ya conocemos.'
+  ]).join('\n');
 
 // El caso nuevo del diseno conversacional: hay historial pero el texto del turno
 // no ha llegado. Presentarse aqui seria el fallo visible.
@@ -363,7 +453,9 @@ const prompt = [
 
 // Se devuelve conv0 entero y no $json, porque los nodos de despues siguen
 // esperando last_message_content, attachments_list y files_analysis_blocks.
+// `idioma_canvas` y `_arranque` dicen POR QUE se ha decidido el arranque: si un dia el
+// agente vuelve a contestarse a si mismo, ahi se ve cual de las cuatro reglas fallo.
 // `_pii` y `_recortes` salen para que se vean en la ejecucion: un turno con
 // `_recortes.historial=true` es la senal de que la conversacion se esta yendo de
 // largo, y `_pii.iban>0` de que alguien esta pegando datos bancarios en el chat.
-return { json: { ...conv0, prompt, contexto, cold_start: cold, mensaje_perdido: mensajePerdido, _pii: pii, _recortes: recortes, _expediente_existe: existe, _expediente_filas: nFilas, _expediente_record_id: fila.id || null } };
+return { json: { ...conv0, prompt, contexto, cold_start: cold, mensaje_perdido: mensajePerdido, idioma_canvas: idiomaCanvas, _arranque: { sin_texto: sinTexto, confirmacion_canvas: !!confirmacion, bienvenida_canvas: esBienvenidaCanvas, rebotado: rebotado, primera_parte: esPrimeraParte, turnos_reales: turnosReales }, _pii: pii, _recortes: recortes, _expediente_existe: existe, _expediente_filas: nFilas, _expediente_record_id: fila.id || null } };
