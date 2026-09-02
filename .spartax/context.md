@@ -764,3 +764,25 @@ cualifica, descarta, lead potencial. Cliente interno: equipo Mobility (Paula, Al
 ## Fechas
 - **Fecha límite del proyecto entero: 31/08/2026.** Alcance completo, sin recortes (decisión del 5/08).
 - Plan maestro vigente: `PLAN-31-08-2026.md`.
+
+## Estado al 02/09 · CIERRE DE FASE: todo lo vivo verificado, repo público regenerado
+
+- **Vivo y verificado por MCP:** `beckham_bot_conversacional` (d7caf611) con `Preparar_Prompt` 26.974
+  (arranque por el canvas de dos botones, idioma del texto de B/C, D0 saltada), `Decidir_Status` 13.814
+  (ORDEN con 9 = Confirmado, 10 = Pte modificación), `Validar y Normalizar` 82.539 (179 gentilicios y
+  nombres en inglés). Informe v2 publicado (7b3c516f) y v1 archivado. Upser refrescado: 57 campos, caché
+  de Status = Airtable. T087 resuelta por el usuario en Intercom (workflow «cualquier mensaje» 68939819).
+- **Medido:** conversación `215475750921547` de 27 turnos siguió el orden del v15; `ticket: null`; una
+  ejecución por mensaje. Turnos solapados responden dos veces (aceptado, T094 cerrada). La medición del
+  arranque nuevo se pospone a la fase de test (T086 cerrada).
+- **21 puertas** (se retiró la de dos agentes). El snapshot del Status se regenera por MCP:
+  `docs/opciones-status-airtable-2026-09-02.txt`.
+- **Repo público** (commit bfba5bc): README 1.104 líneas, INFRAESTRUCTURA.md, 7 diagramas Mermaid nuevos
+  + 15 SVG, exports al día (6 + informe v2), fuera beckham_bot y el informe v1. Cinco workflows muertos
+  archivados en la UI. **El MCP de Intercom está en el workspace TEST (q3bhdtoi).**
+- **Presentaciones:** `informes/presentacion-mobility-2026-09-02.html` (18) y `-completa.html` (24, con
+  capturas). Paquete en `~/Desktop/presentacion-mobility-02-09` (15 ficheros: prompts PPTX y diagramas,
+  brand guide, estado, capturas).
+- **Siguiente fase: TEST.** El usuario está montando la evaluación del prompt en LangSmith (dataset
+  `mobility-bot`, 59 ejemplos de julio, a renovar).
+
