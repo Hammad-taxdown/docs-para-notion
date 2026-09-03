@@ -88,7 +88,7 @@ node docs/test-prompt-v14.js           # el v14 local (66.020 car., PENDIENTE de
 node docs/test-log-evento.js           # el corr_id y el Log_Evento de 6 campos: 25
 node docs/test-diagramas-mermaid.js    # los .mmd.md del repo publico: 28
 node docs/test-prompt-v15.js           # el v15 CONVERSACIONAL (86.548 car.): 206, hereda las 107 comp() del v14
-node docs/test-prompt-v16.js           # el v16 (89.015 car., 03/09, PENDIENTE de pegar): 244, hereda las 206 del v15 MIDIENDO el v16
+node docs/test-prompt-v16.js           # el v16 (89.448 car., 03/09, PENDIENTE de pegar): 249, hereda las 206 del v15 MIDIENDO el v16
 node docs/test-preparar-prompt-conversacional.js  # el UNICO codigo nuevo del cambio: 89 (02/09: arranque por el canvas de dos botones)
 
 # Los pasos de un cambio, EN LA TERMINAL (no en un .md que hay que abrir)

@@ -1159,9 +1159,10 @@
       "verify": "versionId==activeVersionId por MCP y un PUT 200 en una ejecucion real",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-09-03T10:15:14Z"
+      "status": "done",
+      "note": "CANCELADA por decision del usuario (03/09 12:30): la fecha limite no va a Intercom, va a Airtable via guardar_datos_cliente (T100). Borrador del f2 revertido por MCP al codigo original de 3 nodos.",
+      "created_at": "2026-09-03T10:15:14Z",
+      "done_at": "2026-09-03T10:29:08Z"
     },
     "T100": {
       "title": "Tool calcular_plazo: body param user_id con la expresion de Webhook1 y publicar",
@@ -1170,8 +1171,9 @@
       "depends": [],
       "effort": 1.0,
       "status": "planned",
-      "note": "",
-      "created_at": "2026-09-03T10:15:14Z"
+      "note": "REDEFINIDA: la tool guardar_datos_cliente anade el Body Field fecha_limite_plazo ($fromAI, copiar.sh 10); columna, validador, Upser y Preparar_Prompt ya existen. Verificar por MCP: 40 -> 41 parametros.",
+      "created_at": "2026-09-03T10:15:14Z",
+      "planned_at": "2026-09-03T10:29:08Z"
     },
     "T101": {
       "title": "Landing P00027: entregar docs/landing-P00027-copy-2026-09-03.md a quien edite la landing y poner la URL de la calculadora",
@@ -1185,5 +1187,5 @@
     }
   },
   "next_task": 102,
-  "updated_at": "2026-09-03T10:15:14Z"
+  "updated_at": "2026-09-03T10:29:08Z"
 }

@@ -267,7 +267,9 @@ es un cliente perdido por una resta mal hecha.
 
 QUÉ HACER CON CADA VEREDICTO, Y SON CUATRO CASOS, NO TRES:
 - `en_plazo` → CUALIFICA. Dile hasta cuándo tiene usando la `fecha_limite` que te ha dado la herramienta y ninguna otra, y
-  pasa al Bloque 2.
+  pasa al Bloque 2. Y EN LA MISMA LLAMADA a guardar_datos_cliente en la que mandes `fecha_alta_ss`, manda también
+  `fecha_limite_plazo` con esa `fecha_limite` TAL CUAL te la ha devuelto la herramienta (DD/MM/AAAA): así queda en el
+  expediente y el equipo la ve sin recalcularla. Nunca la calcules tú ni la copies de otro día.
 - `fuera_plazo` → DESCARTE. Usa la PANTALLA DE DESCARTE de aquí abajo. Puedes decirle su `fecha_limite` y sus `dias_pasados`,
   tal como te los ha devuelto la herramienta; nunca los estimes tú.
 - `no_valida` → LA CULPA ES DEL DATO, NO DEL CLIENTE, y se repregunta con un ejemplo: "no consigo leer esa fecha, ¿me la
@@ -284,7 +286,8 @@ fecha normalizada que te ha devuelto la herramienta (`fecha_alta_ddmmaaaa`), y c
 escritura del camino normal y no se salta: hasta el 31/08/2026 esa fecha la escribía el formulario previo y ya no la escribe
 nadie más que tú. De ella dependen el plazo de la siguiente sesión y la fecha de alta que sale impresa en el informe del
 cliente, así que si no la guardas la conversación parece perfecta y el expediente sale mudo en el dato que manda todo el
-flujo. No existe ningún parámetro para la fecha límite y no hace falta: se recalcula con la herramienta.
+flujo. Y la fecha límite va en su propio parámetro, `fecha_limite_plazo`, siempre copiada de la herramienta: se guarda para
+que el equipo la vea en el expediente, pero para DECIDIR el plazo se recalcula en cada sesión (regla 14).
 
 SECUENCIA: fecha de llegada → FILTRO A (residencia) → FILTRO B (alta en la SS) → FILTRO C (fecha de alta + plazo con
 calcular_plazo) → Bloque 2.

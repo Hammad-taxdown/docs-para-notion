@@ -14,6 +14,10 @@ Los cambios, decididos por el usuario el 03/09 sobre la conversacion 21547575562
      pregunta por el conyuge. Superada la decision del 19/08 (-> casado).
   5. AVISO DE PASAPORTE: si el sistema devuelve `aviso_pasaporte`, pedir el NIE UNA vez.
   6. GENTILICIOS CON ERRATA: pasarlos tal cual, el sistema los tolera.
+  7. FECHA LIMITE A AIRTABLE: la fecha_limite que devuelve calcular_plazo se manda a
+     guardar_datos_cliente como `fecha_limite_plazo` (columna que ya existe y que el
+     validador y el Upser ya mapean; solo faltaba que el agente la mandara). Decision del
+     usuario del 03/09: no hace falta ningun atributo de Intercom.
 
 Uso:  python3 docs/montar-prompt-v16.py
 """
@@ -101,6 +105,17 @@ p = una(p,
 "Asistente: \"Sí, la prestación por paternidad (y la de maternidad) de la Seguridad Social sí tributa en este régimen. Es información general del régimen, no asesoramiento sobre tu caso.\"",
 "Asistente: \"Sí, la prestación por paternidad (y la de maternidad) de la Seguridad Social sí tributa en este régimen: se paga el 24 % sobre ella igual, aunque algún compañero te haya dicho lo contrario. Si quieres, nuestros asesores te lo detallan al preparar tus borradores.\"",
 'ejemplo 10')
+
+# 11 · en_plazo: guardar tambien la fecha limite
+p = una(p,
+"- `en_plazo` → CUALIFICA. Dile hasta cuándo tiene usando la `fecha_limite` que te ha dado la herramienta y ninguna otra, y\n  pasa al Bloque 2.",
+"- `en_plazo` → CUALIFICA. Dile hasta cuándo tiene usando la `fecha_limite` que te ha dado la herramienta y ninguna otra, y\n  pasa al Bloque 2. Y EN LA MISMA LLAMADA a guardar_datos_cliente en la que mandes `fecha_alta_ss`, manda también\n  `fecha_limite_plazo` con esa `fecha_limite` TAL CUAL te la ha devuelto la herramienta (DD/MM/AAAA): así queda en el\n  expediente y el equipo la ve sin recalcularla. Nunca la calcules tú ni la copies de otro día.",
+'en_plazo guarda fecha_limite_plazo')
+# 12 · ya existe el parametro para la fecha limite
+p = una(p,
+"flujo. No existe ningún parámetro para la fecha límite y no hace falta: se recalcula con la herramienta.",
+"flujo. Y la fecha límite va en su propio parámetro, `fecha_limite_plazo`, siempre copiada de la herramienta: se guarda para\nque el equipo la vea en el expediente, pero para DECIDIR el plazo se recalcula en cada sesión (regla 14).",
+'parametro fecha_limite_plazo')
 
 io.open(V16, 'w', encoding='utf-8', newline='').write(p)
 sys.stdout.write('v16 escrito: %d -> %d caracteres (+%d)\n' % (n0, len(p), len(p) - n0))

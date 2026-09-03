@@ -547,8 +547,9 @@ comp('N4 · usa la fecha limite y los dias pasados DE LA HERRAMIENTA, no los suy
 comp('N4 · LA ROTURA MAS CARA TAPADA: la fecha de alta se guarda tras el veredicto',
      /Y EN CUANTO EL VEREDICTO SEA `en_plazo`, GUARDA LA FECHA DE ALTA/.test(p) &&
      /hasta el 31\/08\/2026 esa fecha la escribía el formulario previo y ya no la escribe/.test(p));
-comp('N4 · y dice que no hay parametro para la fecha limite',
-     /No existe ningún parámetro para la fecha límite y no hace falta: se recalcula con la herramienta/.test(p));
+// 03/09 · RE-BASELINE EXPLICITO: ahora SI hay parametro (fecha_limite_plazo) y se dice; el v15 decia que no.
+comp('N4 · ya dice que la fecha limite tiene parametro (fecha_limite_plazo), y el v15 decia que no habia',
+     /la fecha límite va en su propio parámetro, `fecha_limite_plazo`/.test(p) && /No existe ningún parámetro para la fecha límite/.test(v15));
 comp('N4 · el veredicto del plazo NO se hereda del contexto: se recalcula',
      /EL VEREDICTO DEL PLAZO NO SE HEREDA NUNCA/.test(p));
 comp('N4 · y la mentira del v14 sobre el formulario previo ha desaparecido',
@@ -785,6 +786,18 @@ comp('V16-6 · solo se repregunta si vuelve en descartados, con un ejemplo',
      /Solo si te lo devuelve en descartados pídele el nombre del país, con un ejemplo\./.test(p));
 comp('V16-6 · ya no dice «Corregir typos evidentes» (eso hacia que el agente adivinara)',
      !/Corregir typos evidentes/.test(p) && /Corregir typos evidentes/.test(v15));
+
+// ── V16-8 · LA FECHA LIMITE VA A AIRTABLE por guardar_datos_cliente (03/09) ────
+comp('V16-8 · en en_plazo se manda fecha_limite_plazo en la MISMA llamada que fecha_alta_ss',
+     /pasa al Bloque 2\. Y EN LA MISMA LLAMADA a guardar_datos_cliente en la que mandes `fecha_alta_ss`, manda también\n  `fecha_limite_plazo` con esa `fecha_limite` TAL CUAL te la ha devuelto la herramienta \(DD\/MM\/AAAA\)/.test(p));
+comp('V16-8 · ya no dice que no existe parametro para la fecha limite (el v15 si)',
+     !/No existe ningún parámetro para la fecha límite/.test(p) && /No existe ningún parámetro para la fecha límite/.test(v15));
+comp('V16-8 · el parametro se nombra y se dice que para DECIDIR se recalcula (regla 14 intacta)',
+     /la fecha límite va en su propio parámetro, `fecha_limite_plazo`, siempre copiada de la herramienta/.test(p) &&
+     /para DECIDIR el plazo se recalcula en cada sesión \(regla 14\)/.test(p) && /EL PLAZO DE 6 MESES NO LO CALCULAS TÚ NUNCA/.test(p));
+comp('V16-8 · `fecha_limite_plazo` aparece exactamente 2 veces (las dos instrucciones, ninguna mas)',
+     cuenta(p, 'fecha_limite_plazo') === 2 && cuenta(v15, 'fecha_limite_plazo') === 0);
+comp('V16-8 · sigue prohibido calcularla el mismo', /Nunca la calcules tú ni la copies de otro día\./.test(p));
 
 // ── V16-7 · TAMAÑO Y NADA MAS ROTO ─────────────────────────────────────────────
 comp('V16-7 · el v16 crece entre 1.500 y 4.000 caracteres sobre el v15 (caza un fichero truncado o inflado)',

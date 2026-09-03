@@ -186,8 +186,8 @@ p7(){ paso 7 "el prompt v16 · copy: habla por los asesores, paternidad, pareja 
   "LANGSMITH · bot_mobility_prompt · tag prod (lo lee el conversacional)" "el prompt entero" \
   "pegar con Cmd+A y mover el tag prod al commit nuevo"
 echo "${A}fichero:${N} docs/prompt-final-2026-09-03-v16.txt  ${D}(montado por anclas desde el v15: docs/montar-prompt-v16.py)${N}"
-echo "${A}el contador tiene que decir:${N} ${V}89.015 caracteres${N} ${D}(v15: 86.548, +2.467)${N}"
-echo "${D}que cambia respecto al v15 (nueve parches, cada uno con su comprobacion):${N}"
+echo "${A}el contador tiene que decir:${N} ${V}89.448 caracteres${N} ${D}(v15: 86.548, +2.900)${N}"
+echo "${D}que cambia respecto al v15 (once parches, cada uno con su comprobacion):${N}"
 echo "${D}  · FUERA el «no es asesoramiento» / «es informacion general»: cero apariciones. El bot habla en${N}"
 echo "${D}    nombre de NUESTROS ASESORES, que preparan, revisan y envian los borradores (7 menciones).${N}"
 echo "${D}  · los dos mensajes de cierre y la ficha AEAT: los borradores los hacen los asesores y se envian${N}"
@@ -196,39 +196,38 @@ echo "${D}  · paternidad: sigue tributando, y NO exime del 24 % aunque un compa
 echo "${D}  · pareja de hecho -> SOLTERO ante Hacienda, y no se pregunta PF6b. (El v15 decia casado.)${N}"
 echo "${D}  · D3: si el sistema devuelve aviso_pasaporte, pide el NIE UNA sola vez; si lo da, va en nif.${N}"
 echo "${D}  · nacionalidad con errata: pasarla TAL CUAL, el sistema la tolera (paso 6).${N}"
+echo "${D}  · en en_plazo manda fecha_limite_plazo a guardar_datos_cliente, en la misma llamada que fecha_alta_ss (paso 9).${N}"
 echo "${A}intacto salvo 3 frases de copy:${N} ${D}el bloque de CONOCIMIENTO FISCAL. La puerta aplica esos 3 parches al${N}"
 echo "${D}bloque del v15 y exige igualdad byte a byte: un cuarto cambio la pone en rojo.${N}"
 echo "${R}ORDEN:${N} ${D}despues del paso 6 (el aviso_pasaporte lo produce el validador nuevo). Antes no rompe nada:${N}"
 echo "${D}el aviso simplemente no llega.${N}"
 echo "${B}copiar:${N}     bash docs/copiar.sh 9"
-echo "${B}verificar:${N}  node docs/test-prompt-v16.js   ${D}-> 244 verdes, 0 rojas (206 heredadas del v15 MIDIENDO el v16 + 38 nuevas)${N}"
+echo "${B}verificar:${N}  node docs/test-prompt-v16.js   ${D}-> 249 verdes, 0 rojas (206 heredadas del v15 MIDIENDO el v16, 4 re-baselineadas explicitas, + 44 nuevas)${N}"
 [ "$1" = copia ] && bash docs/copiar.sh 9; }
 
-p8(){ paso 8 "calcular_plazo escribe fecha_limite_bot en el contacto de Intercom (borrador ya subido por MCP)" \
-  "beckham_f2_plazo. (wdOOF0ecCkgFOUjt) · BORRADOR 7b20512c, publicado sigue 09147598" \
-  "'Buscar el contacto en Intercom' y 'Escribir fecha_limite_bot en el contacto'  (DESPLEGABLE de credencial)" \
-  "elegir la credencial de Intercom en los DOS nodos HTTP y PUBLISH"
-echo "${D}que hay en el borrador (7 nodos, validado por MCP): Webhook -> Calcular el plazo -> Respond to Webhook ->${N}"
-echo "${D}  Hay user_id y fecha limite? -> Buscar el contacto (POST /contacts/search por external_id) ->${N}"
-echo "${D}  Contacto encontrado? -> Escribir fecha_limite_bot (PUT /contacts/{id}). Los dos HTTP con${N}"
-echo "${D}  onError=continueRegularOutput: si Intercom falla, la tool ya ha respondido y el bot no se entera.${N}"
-echo "${R}ANTES de publicar, en Intercom:${N} ${D}Settings -> Data -> People -> Create attribute:${N}"
-echo "${D}  nombre ${N}${V}fecha_limite_bot${N}${D} · tipo ${N}${V}Text${N}${D}. Sin el atributo creado, el PUT devuelve error (y el bot sigue igual).${N}"
-echo "${D}la credencial: la misma intercomApi que usan Traer_Conversacion_intercom1 y Responder_Intercom del bot.${N}"
-echo "${D}el codigo del nodo Calcular el plazo esta en docs/nodo-f2-calcular-plazo-2026-09-03.js (por si hay que repegarlo);${N}"
-echo "${D}ademas de user_id, entiende meses en ingles ('9th of August 2026'): la compañera lo escribio asi el 02/09.${N}"
-echo "${B}verificar:${N}  ${D}yo, por MCP: versionId == activeVersionId y 7 nodos; y en la primera ejecucion con user_id,${N}"
-echo "${D}            el PUT con 200 y el atributo visible en el perfil del contacto en Intercom.${N}"
-[ "$1" = copia ] && echo "${D}(no hay valor que copiar: son dos desplegables y un Publish)${N}"; }
+p8(){ paso 8 "SUPERADO el 03/09 a las 12:30: la fecha limite NO va a Intercom, va a Airtable (paso 9)" \
+  "beckham_f2_plazo. (wdOOF0ecCkgFOUjt)" "nada" "nada que tocar"
+echo "${D}Se habia subido por MCP un borrador que escribia fecha_limite_bot en el contacto de Intercom. El usuario${N}"
+echo "${D}lo descarto: la tool ya devuelve fecha_limite al agente, asi que basta con que el agente la guarde en el${N}"
+echo "${D}expediente. El borrador se REVIRTIO por MCP al codigo original (3 nodos, identico al publicado 09147598).${N}"
+echo "${D}Si ves en n8n un borrador sin publicar en beckham_f2_plazo., es ese: no cambia nada y se puede publicar o ignorar.${N}"
+[ "$1" = copia ] && echo "${D}(no hay valor que copiar)${N}"; }
 
-p9(){ paso 9 "la tool calcular_plazo manda el user_id (para que el paso 8 sepa a quien escribir)" \
-  "beckham_bot_conversacional (n1jx7z9NtXWCD4VC) · PRODUCCION" "calcular_plazo (la tool HTTP)  · Body Parameters" \
-  "Add Parameter: Name = user_id · Value = la expresion (modo Expression, sin el = inicial) · PUBLISH"
-echo "${A}valor:${N} ${V}{{ \$('Webhook1').first().json.body.user_id }}${N}"
-echo "${D}es la MISMA expresion que ya usa guardar_datos_cliente para su user_id: copiada de ahi, no inventada.${N}"
-echo "${D}(.first() y no .item: en una tool bajo el agente no hay item emparejado)${N}"
+p9(){ paso 9 "la tool guardar_datos_cliente manda fecha_limite_plazo (la columna, el validador y el Upser YA existen)" \
+  "beckham_bot_conversacional (n1jx7z9NtXWCD4VC) · PRODUCCION" "guardar_datos_cliente (la tool HTTP)  · Body Parameters (40 hoy)" \
+  "Add Body Field: Name = fecha_limite_plazo · Value = la expresion \$fromAI (modo Expression, sin el = inicial) · PUBLISH"
+echo "${A}valor:${N} ${D}(se copia con copiar.sh 10; es un \$fromAI como el de fecha_alta_ss, que esta justo encima)${N}"
+echo "${D}por que solo este sitio: de los CINCO de un campo nuevo, cuatro ya estan hechos. La columna fecha_limite_plazo${N}"
+echo "${D}existe en Airtable, el validador la acepta (ponerFecha, DD/MM/AAAA), el Upser la mapea y Preparar_Prompt la${N}"
+echo "${D}lee ('Fecha limite para solicitar (calculada en una sesion anterior)'). Lo unico que faltaba era que el${N}"
+echo "${D}agente la mandara: la tool no tenia el parametro y el prompt v15 decia que no existia. El v16 (paso 7) ya${N}"
+echo "${D}lo manda en en_plazo, en la misma llamada que fecha_alta_ss. El lector NO la devuelve a proposito: el plazo${N}"
+echo "${D}no se hereda nunca, se recalcula con calcular_plazo (regla 14).${N}"
+echo "${R}ORDEN:${N} ${D}antes del paso 7 o a la vez: si el prompt v16 manda el parametro y la tool no lo tiene, el agente${N}"
+echo "${D}no puede mandarlo y el dato no se guarda (sin error). Al reves no rompe nada.${N}"
 echo "${B}copiar:${N}     bash docs/copiar.sh 10"
-echo "${B}verificar:${N}  ${D}yo, por MCP: bodyParameters de calcular_plazo pasa de 1 a 2 (fecha_alta_ss, user_id)${N}"
+echo "${B}verificar:${N}  ${D}yo, por MCP: bodyParameters de guardar_datos_cliente pasa de 40 a 41; y en la primera conversacion${N}"
+echo "${D}            real con en_plazo, la fila de Airtable trae fecha_limite_plazo = la fecha que dijo el bot.${N}"
 [ "$1" = copia ] && bash docs/copiar.sh 10; }
 
 p10(){ paso 10 "la landing P00027 · solo copy, con la calculadora y el proceso real" \
@@ -276,8 +275,8 @@ case "$1" in
     for i in 6 7 8 9 10; do "p$i"; done
     echo; echo "${B}${C}━━━ ORDEN DEL 03/09 ━━━${N}"
     echo "  ${R}6 primero${N} (arregla tres fallos vistos en produccion y es un Cmd+A), ${R}7 despues${N} (el prompt"
-    echo "  lee el aviso que produce el 6). ${D}8 y 9 van juntos y en cualquier orden: sin el 9 el 8 no escribe${N}"
-    echo "  ${D}nada, y sin el 8 el 9 manda un dato que nadie lee. El 10 es copy: lo hace quien edite la landing.${N}"
+    echo "  lee el aviso que produce el 6). ${D}El 9 (un Body Field en la tool) va antes del 7 o a la vez. El 8 esta${N}"
+    echo "  ${D}SUPERADO (la fecha limite va a Airtable, no a Intercom). El 10 es copy: lo hace quien edite la landing.${N}"
     echo; echo "${B}${C}════ EL AGENTE CONVERSACIONAL UNICO · 31/08 ════${N}"
     p5
     echo; echo "${B}${C}════ ADAPTAR A LA ESCALERA NUEVA · 26/08 ════${N}"
