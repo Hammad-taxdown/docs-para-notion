@@ -1216,11 +1216,12 @@
       "verify": "por MCP: f2 versionId==activeVersionId con el Code nuevo; tool con 2 params y Description con fecha_documento; Langsmith Prompt de una ejecucion == v16",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-09-03T14:18:28Z"
+      "status": "done",
+      "note": "Verificado por MCP 15:58Z: f2 016877a5 publicado con el Code nuevo (3 nodos); tool calcular_plazo con fecha_alta_ss+fecha_documento y Description con fecha_documento (conversacional d699da05); Langsmith Prompt de la ejecucion 8167149 = v16 91.628 (la diferencia son las variables {current_date}/{contexto} rellenas).",
+      "created_at": "2026-09-03T14:18:28Z",
+      "done_at": "2026-09-03T16:01:47Z"
     }
   },
   "next_task": 105,
-  "updated_at": "2026-09-03T14:18:28Z"
+  "updated_at": "2026-09-03T16:01:47Z"
 }
