@@ -206,8 +206,10 @@ comp('P4+P5 · la regla del 20/08 anade dos «expediente completo» y la de D3 d
      `v10=${cuenta(v10, 'expediente completo')} v15=${cuenta(p, 'expediente completo')}`);
 
 comp('sigue sin preguntarse la fecha de la llamada', !p.includes('fecha_llamada'));
-comp('sigue el aviso de la discrepancia con su formato exacto',
-     p.includes('"Declarada DD/MM/AAAA vs documento DD/MM/AAAA"'));
+// 03/09 tarde · RE-BASELINE EXPLICITO: el formato del aviso lleva ahora el TRAMO (leve/grave).
+comp('sigue el aviso de la discrepancia con su formato exacto, ahora con el tramo (03/09)',
+     p.includes('"Declarada DD/MM/AAAA vs documento DD/MM/AAAA (leve, se toma la del documento)"') &&
+     p.includes('"Declarada DD/MM/AAAA vs documento DD/MM/AAAA (grave, llamada)"') && v15.includes('"Declarada DD/MM/AAAA vs documento DD/MM/AAAA"'));
 comp('sigue diciendo que la discrepancia NO BLOQUEA NADA', p.includes('Esto NO BLOQUEA NADA'));
 comp('los cinco documentos siguen listados en su orden',
      ['NIE o pasaporte','Contrato de trabajo','Autorización de TaxDown','Autorización de la empresa','Documento de alta en la Seguridad Social']
@@ -816,13 +818,34 @@ comp('V16-8 · ya no dice que no existe parametro para la fecha limite (el v15 s
 comp('V16-8 · el parametro se nombra y se dice que para DECIDIR se recalcula (regla 14 intacta)',
      /la fecha límite va en su propio parámetro, `fecha_limite_plazo`, siempre copiada de la herramienta/.test(p) &&
      /para DECIDIR el plazo se recalcula en cada sesión \(regla 14\)/.test(p) && /EL PLAZO DE 6 MESES NO LO CALCULAS TÚ NUNCA/.test(p));
-comp('V16-8 · `fecha_limite_plazo` aparece exactamente 2 veces (las dos instrucciones, ninguna mas)',
-     cuenta(p, 'fecha_limite_plazo') === 2 && cuenta(v15, 'fecha_limite_plazo') === 0);
+comp('V16-8 · `fecha_limite_plazo` aparece exactamente 3 veces (en_plazo, el parametro y la discrepancia leve), ninguna mas',
+     cuenta(p, 'fecha_limite_plazo') === 3 && cuenta(v15, 'fecha_limite_plazo') === 0);
 comp('V16-8 · sigue prohibido calcularla el mismo', /Nunca la calcules tú ni la copies de otro día\./.test(p));
 
+// ── V16-9 · DISCREPANCIA DE FECHA DE ALTA POR TRAMOS (03/09 tarde) ─────────────
+comp('V16-9 · los 7 dias NO los cuenta el modelo: llama a calcular_plazo con fecha_alta_ss y fecha_documento',
+     /NO decidas tú cuánto importa: llama a calcular_plazo con `fecha_alta_ss` = la que te dijo el cliente y `fecha_documento` = la que trae el documento, y mira `discrepancia`\./.test(p));
+comp('V16-9 · leve: se TOMA la del documento y se sigue, con la frase literal',
+     /· `leve` \(7 días o menos, y con la fecha del documento sigue en plazo\): TOMAMOS LA DEL DOCUMENTO Y SEGUIMOS CON ELLA\./.test(p) &&
+     /Como la diferencia es de pocos días, nos quedamos con la del documento, el 13\/07\/2026: tu plazo para solicitarlo queda hasta el 13\/01\/2027\. Si no estás de acuerdo, dímelo y lo revisa contigo un asesor\./.test(p));
+comp('V16-9 · leve: se guarda la del documento (fecha_alta_ss, fecha_limite_plazo) y NO se ofrece la llamada',
+     /manda `fecha_alta_ss` = `doc_fecha_ddmmaaaa`, `fecha_limite_plazo` = `doc_fecha_limite` y `discrepancia_fecha_alta`\. NO le ofrezcas la llamada\./.test(p));
+comp('V16-9 · leve: SOLO si el cliente no esta de acuerdo -> llamada, y la fecha ya no se toca',
+     /SOLO si el cliente te contesta que no está de acuerdo o que la buena es la suya, entonces sí: ofrécele la llamada como en el caso grave, no cambies más la fecha/.test(p));
+comp('V16-9 · grave: mas de 7 dias, o fuera de plazo, o documento_no_valido -> llamada, como hasta hoy',
+     /· `grave` \(más de 7 días, o la fecha del documento le deja fuera de plazo, o `documento_no_valido`\): es motivo de LLAMADA con el asesor fiscal aunque su caso fuera CLARO/.test(p) && /NO cambies la fecha guardada\./.test(p));
+comp('V16-9 · grave conserva la frase literal de siempre al cliente',
+     /No te preocupes, no es un problema: lo revisa el equipo contigo en una llamada, porque de esa fecha depende el plazo\. Seguimos con el resto de los documentos\./.test(p));
+comp('V16-9 · ninguna: no se dice nada', /· `ninguna`: coinciden, no digas nada\./.test(p));
+comp('V16-9 · «leve» y «grave» aparecen como tramos exactamente una vez cada uno en la regla (caza el volteo)',
+     cuenta(p, '· `leve` (') === 1 && cuenta(p, '· `grave` (') === 1 && /`leve`[^\n]*NO le ofrezcas la llamada/.test(p.split('\n').filter(l => l.includes('· `leve` (')).join('')));
+comp('V16-9 · el v15 no tenia tramos (el cambio es real)', !/`leve`/.test(v15) && !/fecha_documento/.test(v15));
+comp('V16-9 · lo que NO cambia: la discrepancia sigue sin bloquear, sin cambiar el motivo de cierre y sin convertir en llamada agendada',
+     /Esto NO BLOQUEA NADA/.test(p) && /LA DISCREPANCIA NO CAMBIA EL MOTIVO DE CIERRE/.test(p) && /una discrepancia en la fecha de alta NO convierte esto en "llamada agendada"/.test(p));
+
 // ── V16-7 · TAMAÑO Y NADA MAS ROTO ─────────────────────────────────────────────
-comp('V16-7 · el v16 crece entre 1.500 y 4.000 caracteres sobre el v15 (caza un fichero truncado o inflado)',
-     car(p) - car(v15) >= 1500 && car(p) - car(v15) <= 4000, `+${car(p) - car(v15)}`);
+comp('V16-7 · el v16 crece entre 4.000 y 6.500 caracteres sobre el v15 (caza un fichero truncado o inflado; 15 parches)',
+     car(p) - car(v15) >= 4000 && car(p) - car(v15) <= 6500, `+${car(p) - car(v15)}`);
 comp('V16-7 · las cuatro tools siguen nombradas',
      ['leer_expediente', 'calcular_plazo', 'guardar_datos_cliente', 'analizar_documento'].every(t => p.includes(t)));
 comp('V16-7 · el bloque fiscal sigue midiendo mas de 12.000 caracteres',

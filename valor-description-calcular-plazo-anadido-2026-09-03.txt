@@ -1,0 +1,7 @@
+
+
+DISCREPANCIA CON EL DOCUMENTO DE ALTA (03/09): si el documento de alta trae una fecha distinta de la que dijo el cliente, llamame otra vez con fecha_alta_ss = la que dijo el cliente y fecha_documento = la del documento. Te devuelvo ademas doc_fecha_ddmmaaaa, doc_veredicto, doc_fecha_limite, dias_diferencia y discrepancia:
+- ninguna: coinciden, no digas nada.
+- leve: 7 dias o menos y con la del documento sigue en plazo. Se TOMA LA DEL DOCUMENTO: diselo, guarda fecha_alta_ss = doc_fecha_ddmmaaaa y fecha_limite_plazo = doc_fecha_limite, y sigue sin ofrecer llamada (salvo que el cliente no este de acuerdo).
+- grave: mas de 7 dias, o el documento le deja fuera de plazo, o documento_no_valido. Llamada con el asesor, y la fecha guardada no se toca.
+TU NO CUENTAS LOS DIAS: los cuenta la herramienta.

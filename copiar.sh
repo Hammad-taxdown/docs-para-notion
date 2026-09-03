@@ -12,6 +12,9 @@
 #   bash docs/copiar.sh 10    el $fromAI de fecha_limite_plazo para la tool guardar_datos_cliente (sin el =)
 #   bash docs/copiar.sh 11    el copy propuesto de la landing P00027 (markdown)
 #   bash docs/copiar.sh 12    el Response Body de Respond OK con el aviso de cierre (sin el =)
+#   bash docs/copiar.sh 13    el $fromAI de fecha_documento para la tool calcular_plazo (sin el =)
+#   bash docs/copiar.sh 14    el TEXTO que se AÑADE al final de la Description de la tool calcular_plazo
+#   bash docs/copiar.sh 15    el Code entero del nodo 'Calcular el plazo' de beckham_f2_plazo.
 # Todo sin el '=' inicial y sin salto de linea final, como pide n8n.
 cd "$(dirname "$0")/.." || exit 1
 V=$(printf '\033[32m'); D=$(printf '\033[2m'); N=$(printf '\033[0m'); R=$(printf '\033[31m')
@@ -66,5 +69,14 @@ case "$1" in
      printf '%s' "$RB" | pbcopy
      echo "${V}copiado el Response Body de Respond OK${N}"
      echo "${D}$RB${N}" ;;
-  *) echo "uso: bash docs/copiar.sh [1-12]" ;;
+  13) pbcopy < docs/valor-fecha-documento-fromai-2026-09-03.txt
+     echo "${V}copiado el \$fromAI de fecha_documento para calcular_plazo${N}"
+     echo "${D}Body Parameters -> Add Body Field -> Name: fecha_documento · Value en modo Expression (pega, sin el =)${N}" ;;
+  14) pbcopy < docs/valor-description-calcular-plazo-anadido-2026-09-03.txt
+     echo "${V}copiado el texto que se ANADE al final de la Description de la tool calcular_plazo${N}"
+     echo "${D}Description -> ir al final del texto -> pegar (NO sustituir lo que hay)${N}" ;;
+  15) pbcopy < docs/nodo-f2-calcular-plazo-2026-09-03.js
+     n=$(python3 -c "import io;print(len(io.open('docs/nodo-f2-calcular-plazo-2026-09-03.js',encoding='utf-8').read()))")
+     echo "${V}copiado el Code de 'Calcular el plazo' (beckham_f2_plazo.)${N}"; echo "${D}n8n tiene que decir: ${N}${V}$n caracteres${N}" ;;
+  *) echo "uso: bash docs/copiar.sh [1-15]" ;;
 esac

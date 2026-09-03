@@ -186,7 +186,7 @@ p7(){ paso 7 "el prompt v16 · copy: habla por los asesores, paternidad, pareja 
   "LANGSMITH · bot_mobility_prompt · tag prod (lo lee el conversacional)" "el prompt entero" \
   "pegar con Cmd+A y mover el tag prod al commit nuevo"
 echo "${A}fichero:${N} docs/prompt-final-2026-09-03-v16.txt  ${D}(montado por anclas desde el v15: docs/montar-prompt-v16.py)${N}"
-echo "${A}el contador tiene que decir:${N} ${V}90.275 caracteres${N} ${D}(v15: 86.548)${N}"
+echo "${A}el contador tiene que decir:${N} ${V}91.628 caracteres${N} ${D}(v15: 86.548)${N}"
 echo "${D}que cambia respecto al v15 (once parches, cada uno con su comprobacion):${N}"
 echo "${D}  · FUERA el «no es asesoramiento» / «es informacion general»: cero apariciones. El bot habla en${N}"
 echo "${D}    nombre de NUESTROS ASESORES, que preparan, revisan y envian los borradores (7 menciones).${N}"
@@ -198,6 +198,8 @@ echo "${D}  · D3: si el sistema devuelve aviso_pasaporte, pide el NIE UNA sola 
 echo "${D}  · nacionalidad con errata: pasarla TAL CUAL, el sistema la tolera (paso 6).${N}"
 echo "${D}  · en en_plazo manda fecha_limite_plazo a guardar_datos_cliente, en la misma llamada que fecha_alta_ss (paso 9).${N}"
 echo "${D}  · D3 (tarde): sin NIE la conversacion NO AVANZA. No sigue con D4 ni pide documentos; deja el hilo abierto.${N}"
+echo "${D}  · discrepancia de fecha de alta POR TRAMOS (tarde): calcular_plazo con fecha_documento; leve (<=7 dias) toma la del${N}"
+echo "${D}    documento y sigue; grave (>7 o fuera de plazo) llamada como hasta hoy. Requiere los pasos 13 y 14.${N}"
 echo "${A}intacto salvo 3 frases de copy:${N} ${D}el bloque de CONOCIMIENTO FISCAL. La puerta aplica esos 3 parches al${N}"
 echo "${D}bloque del v15 y exige igualdad byte a byte: un cuarto cambio la pone en rojo.${N}"
 echo "${R}ORDEN:${N} ${D}despues del paso 6 (el aviso_pasaporte lo produce el validador nuevo). Antes no rompe nada:${N}"
@@ -266,6 +268,28 @@ echo "${B}copiar:${N}     bash docs/copiar.sh 12"
 echo "${B}verificar:${N}  ${D}yo, por MCP: el responseBody de Respond OK contiene _aviso_cierre${N}"
 [ "$1" = copia ] && bash docs/copiar.sh 12; }
 
+p13(){ paso 13 "beckham_f2_plazo. cuenta la discrepancia con el documento (borrador subido por MCP)" \
+  "beckham_f2_plazo. (wdOOF0ecCkgFOUjt) · el BORRADOR; el publicado sigue igual hasta el Publish" "Calcular el plazo  (Code)" \
+  "revisar el borrador y PUBLISH (no hay credenciales: no se pierde nada)"
+n=$(python3 -c "import io;print(len(io.open('docs/nodo-f2-calcular-plazo-2026-09-03.js',encoding='utf-8').read()))")
+echo "${A}fichero:${N} docs/nodo-f2-calcular-plazo-2026-09-03.js  ${D}($n caracteres; si prefieres pegarlo a mano: bash docs/copiar.sh 15)${N}"
+echo "${D}que cambia: las 6 claves de siempre NO cambian. Si llega fecha_documento, devuelve ademas doc_fecha_ddmmaaaa,${N}"
+echo "${D}doc_veredicto, doc_fecha_limite, dias_diferencia y discrepancia: ninguna / leve (<=7 dias y en plazo) /${N}"
+echo "${D}grave (>7, o fuera de plazo, o sin fecha declarada) / documento_no_valido / sin_documento. Y entiende ingles.${N}"
+echo "${B}verificar:${N}  node docs/test-f2-plazo.js   ${D}-> 19 verdes, 0 rojas (EJECUTA el codigo)${N}"
+echo "${D}            tras publicar: yo por MCP, versionId == activeVersionId y 3 nodos${N}"
+[ "$1" = copia ] && bash docs/copiar.sh 15; }
+
+p14(){ paso 14 "la tool calcular_plazo manda fecha_documento y sabe que le devuelven" \
+  "beckham_bot_conversacional (n1jx7z9NtXWCD4VC) · PRODUCCION" "calcular_plazo (la tool HTTP)  · Body Parameters (1 hoy) y Description" \
+  "Add Body Field: Name = fecha_documento · Value = el \$fromAI (Expression, sin el =) · y ANADIR al final de la Description el texto de copiar.sh 14 · PUBLISH"
+echo "${B}copiar:${N}     bash docs/copiar.sh 13   ${D}(el Value del Body Field)${N}"
+echo "${B}copiar:${N}     bash docs/copiar.sh 14   ${D}(el parrafo que se ANADE al final de la Description, sin borrar lo que hay)${N}"
+echo "${R}ORDEN:${N} ${D}despues del 13. Si la tool manda fecha_documento y el f2 viejo la ignora, el prompt ve discrepancia${N}"
+echo "${D}vacia y trata el caso como grave, que es lo de hoy: no rompe. El prompt (paso 7) ya lleva la regla.${N}"
+echo "${B}verificar:${N}  ${D}yo, por MCP: bodyParameters de calcular_plazo pasa de 1 a 2 y la Description contiene 'fecha_documento'${N}"
+[ "$1" = copia ] && bash docs/copiar.sh 13; }
+
 # 31/08 · ESTA FUNCION SALIA CON exit 0 AUNQUE LAS VEINTIDOS ESTUVIERAN ROJAS.
 # Imprimia FALLA en rojo y devolvia el codigo del ultimo printf, que siempre es 0.
 # O sea que la puerta de las puertas mentia, que es exactamente el corolario que el
@@ -275,9 +299,9 @@ echo "${B}verificar:${N}  ${D}yo, por MCP: el responseBody de Respond OK contien
 # (el bot del canvas) contra su export, y ese export se quito del repo hoy porque el workflow
 # no recibe trafico desde el 31/08. El Preparar_Prompt vivo es el del conversacional y lo mide
 # test-preparar-prompt-conversacional.js (89). El fichero de la puerta se conserva por historia.
-puertas(){ echo "${B}${C}━━━ LAS VEINTIDOS PUERTAS ━━━${N}"
+puertas(){ echo "${B}${C}━━━ LAS VEINTITRES PUERTAS ━━━${N}"
   fallos=0
-for t in test-decidir-status.js test-validador-2026-08-19.js test-prompt-v10.js test-prompt-v12.js test-prompt-v13.js test-prompt-v14.js test-prompt-v15.js test-prompt-v16.js test-lector-expediente.js test-v2-preparar-informe.js test-contrato-upsert.js test-log-evento.js test-diagramas-mermaid.js test-guarda-punto-modo.js test-nodo-validar-subworkflow.js test-resolver-modo.js test-preparar-prompt-faq.js test-preparar-prompt-conversacional.js test-registrar-optout.js; do
+for t in test-decidir-status.js test-validador-2026-08-19.js test-prompt-v10.js test-prompt-v12.js test-prompt-v13.js test-prompt-v14.js test-prompt-v15.js test-prompt-v16.js test-f2-plazo.js test-lector-expediente.js test-v2-preparar-informe.js test-contrato-upsert.js test-log-evento.js test-diagramas-mermaid.js test-guarda-punto-modo.js test-nodo-validar-subworkflow.js test-resolver-modo.js test-preparar-prompt-faq.js test-preparar-prompt-conversacional.js test-registrar-optout.js; do
   r=$(node "docs/$t" 2>&1 | grep -oE "[0-9]+ verdes, [0-9]+ rojas|TODO PASA · [0-9]+ comprobaciones"); node "docs/$t" >/dev/null 2>&1 \
     && printf "  ${V}OK${N}   %-38s %s\n" "$t" "$r" || { printf "  ${R}FALLA${N} %-38s %s\n" "$t" "$r"; fallos=$((fallos+1)); }
 done
@@ -286,7 +310,7 @@ bash docs/montar-nodo-informe.sh >/dev/null 2>&1 && printf "  ${V}OK${N}   %-38s
 r=$(bash docs/montar-nodo-validar.sh 2>&1 | grep -oE "[0-9]+ verdes, [0-9]+ rojas"); bash docs/montar-nodo-validar.sh >/dev/null 2>&1 \
   && printf "  ${V}OK${N}   %-38s %s\n" montar-nodo-validar.sh "$r" || { printf "  ${R}FALLA${N} %-38s %s\n" montar-nodo-validar.sh "$r"; fallos=$((fallos+1)); }
   if [ "$fallos" -gt 0 ]; then echo "  ${R}${B}$fallos PUERTA(S) ROJA(S). No se publica nada.${N}"; return 1; fi
-  echo "  ${V}las veintidos verdes.${N}"; return 0
+  echo "  ${V}las veintitres verdes.${N}"; return 0
 }
 
 case "$1" in
@@ -297,12 +321,13 @@ case "$1" in
   19|viejo) bash docs/pasos-2026-08-19.sh ;;
   ''|todos) puertas
     echo; echo "${B}${C}════ LO DE LA CONVERSACION DEL 02/09 · 03/09 ════${N}"
-    for i in 6 7 8 9 10 11 12; do "p$i"; done
+    for i in 6 7 8 9 10 11 12 13 14; do "p$i"; done
     echo; echo "${B}${C}━━━ ORDEN DEL 03/09 ━━━${N}"
     echo "  ${R}6 primero${N} (arregla tres fallos vistos en produccion y es un Cmd+A), ${R}7 despues${N} (el prompt"
     echo "  lee el aviso que produce el 6). ${D}El 9 (un Body Field en la tool) va antes del 7 o a la vez. El 8 esta${N}"
     echo "  ${D}SUPERADO (la fecha limite va a Airtable, no a Intercom). El 10 es copy: lo hace quien edite la landing.${N}"
     echo "  ${R}11 y 12 (03/09 tarde): el bloqueo duro sin NIF${N}, dos Cmd+A en el mismo workflow y un Publish."
+    echo "  ${R}13 y 14 (03/09 tarde): la discrepancia de 7 dias${N}: publicar el f2, y en la tool un Body Field + un parrafo. Luego el 7."
     echo; echo "${B}${C}════ EL AGENTE CONVERSACIONAL UNICO · 31/08 ════${N}"
     p5
     echo; echo "${B}${C}════ ADAPTAR A LA ESCALERA NUEVA · 26/08 ════${N}"
@@ -317,6 +342,6 @@ case "$1" in
     echo "  ${D}El 2 esta SUPERADO: el canvas se construye desde cero en una copia${N}"
     echo "  ${D}(docs/canvas-desde-cero-2026-08-27.md); sus correcciones van dentro del rebuild.${N}"
     echo; echo "${D}un paso suelto y copiado al portapapeles:${N}  bash docs/pasos.sh 6" ;;
-  [1-9]|1[0-2]) "p$1" copia ;;
-  *) echo "uso: bash docs/pasos.sh [1-12|test|26|24|21|19]" ;;
+  [1-9]|1[0-4]) "p$1" copia ;;
+  *) echo "uso: bash docs/pasos.sh [1-14|test|26|24|21|19]" ;;
 esac

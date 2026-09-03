@@ -1205,11 +1205,22 @@
       "verify": "por MCP: Decidir_Status vivo == fichero, responseBody de Respond OK con _aviso_cierre; test-decidir-status y test-prompt-v16 verdes",
       "depends": [],
       "effort": 1.0,
+      "status": "done",
+      "note": "Verificado por MCP 11:13Z: Decidir_Status vivo 15.153 sha ab8dfd7e1466 == fichero; Respond OK con _aviso_cierre; publicado 0047745d. Reexportado.",
+      "created_at": "2026-09-03T11:10:59Z",
+      "done_at": "2026-09-03T11:15:21Z"
+    },
+    "T104": {
+      "title": "Discrepancia por tramos: publicar el f2 (paso 13), Body Field fecha_documento + Description en la tool calcular_plazo (paso 14), repegar v16 91.628 (paso 7)",
+      "milestone": "TEST",
+      "verify": "por MCP: f2 versionId==activeVersionId con el Code nuevo; tool con 2 params y Description con fecha_documento; Langsmith Prompt de una ejecucion == v16",
+      "depends": [],
+      "effort": 1.0,
       "status": "planned",
       "note": "",
-      "created_at": "2026-09-03T11:10:59Z"
+      "created_at": "2026-09-03T14:18:28Z"
     }
   },
-  "next_task": 104,
-  "updated_at": "2026-09-03T11:10:59Z"
+  "next_task": 105,
+  "updated_at": "2026-09-03T14:18:28Z"
 }

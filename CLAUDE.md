@@ -70,8 +70,8 @@ bash docs/montar-nodo-informe.sh
 node docs/test-generador-030.js
 node docs/test-informe-integracion.js
 
-# LAS VEINTIDOS PUERTAS (21 del 02/09 al 03/09): diecinueve de node plano mas los tres montadores. `bash docs/pasos.sh test`
-# las pasa las veintidos de una vez. El 03/09 entro test-prompt-v16.js (244). El 02/09 se retiro test-preparar-prompt-dos-agentes.js: media el
+# LAS VEINTITRES PUERTAS (21 del 02/09 al 03/09): veinte de node plano mas los tres montadores. `bash docs/pasos.sh test`
+# las pasa las veintitres de una vez. El 03/09 entraron test-prompt-v16.js y test-f2-plazo.js (19, EJECUTA el Code del f2). El 02/09 se retiro test-preparar-prompt-dos-agentes.js: media el
 # Preparar_Prompt del beckham_bot muerto contra un export que ya no esta en el repo. Todas exit 1 si algo esta rojo.
 # 31/08 · Y `pasos.sh test` TAMBIEN sale con exit 1 ahora. Hasta hoy imprimia FALLA en
 # rojo y devolvia 0 SIEMPRE, o sea que la puerta de las puertas mentia. Medido en los
@@ -88,7 +88,7 @@ node docs/test-prompt-v14.js           # el v14 local (66.020 car., PENDIENTE de
 node docs/test-log-evento.js           # el corr_id y el Log_Evento de 6 campos: 25
 node docs/test-diagramas-mermaid.js    # los .mmd.md del repo publico: 28
 node docs/test-prompt-v15.js           # el v15 CONVERSACIONAL (86.548 car.): 206, hereda las 107 comp() del v14
-node docs/test-prompt-v16.js           # el v16 (90.275 car., 03/09, PENDIENTE de pegar): 255, hereda las 206 del v15 MIDIENDO el v16
+node docs/test-prompt-v16.js           # el v16 (91.628 car., 03/09, PENDIENTE de pegar): 265, hereda las 206 del v15 MIDIENDO el v16
 node docs/test-preparar-prompt-conversacional.js  # el UNICO codigo nuevo del cambio: 89 (02/09: arranque por el canvas de dos botones)
 
 # Los pasos de un cambio, EN LA TERMINAL (no en un .md que hay que abrir)
@@ -426,6 +426,12 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   de la fila del formulario: Airtable no tiene acción nativa de borrar, así que se acumulan huérfanas
   y se barren con la vista `Filas huerfanas del formulario` (`viwg0qUDTQVZvuadi`). Son inofensivas —
   desde el 13/08 el enlace no prefija `UserId`, y sin `UserId` el bot no las ve.
+- **LA DISCREPANCIA DE FECHA DE ALTA VA POR TRAMOS, Y LOS 7 DÍAS LOS CUENTA EL CÓDIGO** (03/09, decisión del
+  usuario). `calcular_plazo` admite `fecha_documento` y devuelve `discrepancia`: **`leve`** (7 días o menos y
+  con la del documento sigue en plazo) → el bot **toma la fecha del documento**, guarda `fecha_alta_ss` y
+  `fecha_limite_plazo` con ella y sigue **sin ofrecer llamada**, salvo que el cliente no esté de acuerdo;
+  **`grave`** (más de 7, o fuera de plazo, o documento ilegible) → llamada, como hasta hoy. Puerta:
+  `test-f2-plazo.js`. La regla de abajo (no cambia el `motivo_cierre`) sigue igual en los dos tramos.
 - **`DiscrepanciaFechaAlta` NO cambia el `motivo_cierre`** (20/08, decidido con datos). El 20/08 el
   bot cerró como `Llamada agendada` un expediente **completo, con los cinco documentos dentro**,
   solo porque la fecha declarada no cuadraba con la del documento: la fila se quedó en el peldaño

@@ -1,0 +1,1 @@
+{{ $fromAI('fecha_documento', `SOLO cuando el documento de alta en la Seguridad Social traiga una fecha de alta distinta de la que dijo el cliente: la fecha que aparece en el documento, tal cual la leas (DD/MM/AAAA o como venga). Si no hay documento o las fechas coinciden, dejalo vacio.`, 'string') }}
