@@ -12,7 +12,7 @@ Los cambios, decididos por el usuario el 03/09 sobre la conversacion 21547575562
   3. PATERNIDAD: sigue tributando al 24 % aunque un companero le haya dicho lo contrario.
   4. PAREJA DE HECHO -> SOLTERO (ante Hacienda, a estos efectos), y por tanto NO se
      pregunta por el conyuge. Superada la decision del 19/08 (-> casado).
-  5. AVISO DE PASAPORTE: si el sistema devuelve `aviso_pasaporte`, pedir el NIE UNA vez.
+  5. NIF/NIE OBLIGATORIO: el pasaporte se guarda pero no sustituye; sin NIE no hay «expediente completo».
   6. GENTILICIOS CON ERRATA: pasarlos tal cual, el sistema los tolera.
   7. FECHA LIMITE A AIRTABLE: la fecha_limite que devuelve calcular_plazo se manda a
      guardar_datos_cliente como `fecha_limite_plazo` (columna que ya existe y que el
@@ -45,12 +45,20 @@ p = una(p,
 "- No dar cálculos de cuota concretos ni prometer un resultado: el número de cada caso lo dan nuestros asesores al preparar los borradores (sí puedes explicar en qué consiste el régimen y sus umbrales generales).\n- No decirle NUNCA al cliente que «esto no es asesoramiento» ni que «es información general»: tú hablas en nombre del equipo de asesores de TaxDown, que son quienes preparan, revisan y le envían sus borradores. Si algo depende de su caso concreto, di que nuestros asesores lo revisan al preparar sus borradores.",
 'lo que no debes hacer: asesoramiento')
 
-# 3 · D3: el aviso de pasaporte
+# 3 · D3: el NIF/NIE es OBLIGATORIO (03/09 tarde, decision del usuario). El pasaporte se guarda, no sustituye.
+p = una(p,
+"  SI TE DICE QUE NO TIENE NINGUNO DE LOS DOS, no insistas ni le bloquees la conversación: pídele entonces el número de pasaporte, guárdalo y sigue. Es un caso real y frecuente en alguien que acaba de llegar, y el equipo lo completa después.\n",
+"  EL NIF O EL NIE ES OBLIGATORIO, SÍ O SÍ: sin él no se pueden presentar los Modelos 030 y 149 ni generar el fichero para Hacienda. Si te dice que no tiene ninguno de los dos, pídele el número de pasaporte y mándalo en `nif` igual (el sistema lo reconoce y lo archiva como pasaporte), pero un pasaporte NO sustituye al NIE: díselo y pídele que nos mande el NIE en cuanto lo tenga.\n",
+'D3 obligatorio')
 p = una(p,
 "  NO valides el dato ni juzgues si es correcto: cópialo literal tal como lo escriba el usuario y pásalo a la herramienta. La validación la hace el sistema, no tú. Y NO DEDUZCAS TÚ si lo que te ha dado es un NIE o un pasaporte: eso también lo decide el sistema.\n",
 "  NO valides el dato ni juzgues si es correcto: cópialo literal tal como lo escriba el usuario y pásalo a la herramienta. La validación la hace el sistema, no tú. Y NO DEDUZCAS TÚ si lo que te ha dado es un NIE o un pasaporte: eso también lo decide el sistema.\n"
-"  SI EL SISTEMA TE DEVUELVE `aviso_pasaporte` EN DESCARTADOS, es que lo que te ha dado es un pasaporte y el NIF/NIE sigue vacío. Entonces, UNA SOLA VEZ: \"Ese número es de pasaporte. ¿Tienes ya el NIE? Si todavía no lo tienes, seguimos con el pasaporte y nuestros asesores lo completan después.\" Si te da el NIE, mándalo en `nif` (sustituye al pasaporte). Si te dice que no lo tiene, sigue con D4 y NO vuelvas a preguntarlo aunque el aviso se repita en llamadas posteriores. Medido el 02/09/2026: se guardó el pasaporte, nadie pidió el NIE y el cliente tuvo que darlo por su cuenta.\n",
+"  SI EL SISTEMA TE DEVUELVE `aviso_pasaporte` EN DESCARTADOS, es que lo que te ha dado es un pasaporte y el NIF/NIE sigue vacío. Pídele el NIE en el siguiente mensaje: \"Ese número es de pasaporte; lo guardo, pero para presentar la solicitud necesitamos sí o sí tu NIE. ¿Cuál es?\" Si te lo da, mándalo en `nif` (sustituye al pasaporte). SI TE DICE QUE AÚN NO LO TIENE, no le bloquees: dile que sin el NIE no podremos presentar la solicitud y que nos lo mande aquí mismo en cuanto lo tenga, y sigue con D4 y el resto de datos y documentos. PERO EL EXPEDIENTE NO ESTÁ COMPLETO SIN NIF/NIE: al llegar al cierre recuérdaselo, NO mandes `motivo_cierre` = \"expediente completo\" y deja la conversación abierta hasta que llegue el NIE. Pídelo dos veces en total, al recibir el aviso y al cerrar, no en cada mensaje. Medido el 02/09/2026: se guardó el pasaporte, nadie pidió el NIE y el cliente tuvo que darlo por su cuenta.\n",
 'D3 aviso_pasaporte')
+p = una(p,
+"   - \"expediente completo\": se ha recogido todo, documentos incluidos, y no queda nada pendiente.",
+"   - \"expediente completo\": se ha recogido todo, documentos incluidos, y no queda nada pendiente. Y HAY NIF O NIE GUARDADO: con solo un pasaporte el expediente NO está completo (D3), aunque estén todos los documentos.",
+'cierre exige NIF')
 
 # 4 · PF6a: pareja de hecho -> soltero
 p = una(p,

@@ -88,7 +88,7 @@ node docs/test-prompt-v14.js           # el v14 local (66.020 car., PENDIENTE de
 node docs/test-log-evento.js           # el corr_id y el Log_Evento de 6 campos: 25
 node docs/test-diagramas-mermaid.js    # los .mmd.md del repo publico: 28
 node docs/test-prompt-v15.js           # el v15 CONVERSACIONAL (86.548 car.): 206, hereda las 107 comp() del v14
-node docs/test-prompt-v16.js           # el v16 (89.448 car., 03/09, PENDIENTE de pegar): 249, hereda las 206 del v15 MIDIENDO el v16
+node docs/test-prompt-v16.js           # el v16 (90.041 car., 03/09, PENDIENTE de pegar): 253, hereda las 206 del v15 MIDIENDO el v16
 node docs/test-preparar-prompt-conversacional.js  # el UNICO codigo nuevo del cambio: 89 (02/09: arranque por el canvas de dos botones)
 
 # Los pasos de un cambio, EN LA TERMINAL (no en un .md que hay que abrir)
@@ -213,7 +213,7 @@ No se editan en n8n. Se tocan las piezas fuente, se concatenan con su script, y 
 | `.030` (2700 bytes, **ISO-8859-1**) | `generador-030-*.js` · `tabla-municipios-ine-*.js` · `nodo-030-glue-*.js` | `nodo-montar-030-COMPLETO.js`, **198.509 car.** (el nodo vivo tiene 197.924: los 585 de diferencia son **solo comentarios**) | `beckham_generar_030` |
 | Informe PDF | `metrica-helvetica-*.js` · `pdf-motor-*.js` · `informe-datos-2026-08-19.js` · `informe-cuerpo-2026-08-19.js` · `nodo-informe-glue-*.js` | `nodo-montar-informe-COMPLETO.js`, **241.272 car.** (19/08: local y nodo vivo IDÉNTICOS) | `beckham_informe_mobility` |
 
-| Nodo `Validar y Normalizar` (el escritor) **con `corr_id`** | se monta del **código vivo del export**, por anclas | `nodo-validar-normalizar-COMPLETO.js`, **86.471 car. (03/09: los 4 parches de la conversación 215475755624195 —aviso_pasaporte, gentilicios con errata, vías catalanas, pareja de hecho→soltero— montados por `montar-validador-2026-09-03.py`, PENDIENTE de pegar; el vivo sigue en 82.539 = T093 pegada el 02/09)** (**31/08: PEGADO. El vivo mide 76.156 y su sha256 coincide byte a byte, salto de línea final incluido. Los 73.081 de antes eran el estado previo al pegado**) | `beckham_bot` |
+| Nodo `Validar y Normalizar` (el escritor) **con `corr_id`** | se monta del **código vivo del export**, por anclas | `nodo-validar-normalizar-COMPLETO.js`, **86.587 car. (03/09 tarde: el aviso_pasaporte pasa a decir que el NIF/NIE es OBLIGATORIO, `montar-validador-2026-09-03b.py`, PENDIENTE de pegar; el vivo tiene 86.471 = los 4 parches de la mañana pegados a las 10:36Z)** (**31/08: PEGADO. El vivo mide 76.156 y su sha256 coincide byte a byte, salto de línea final incluido. Los 73.081 de antes eran el estado previo al pegado**) | `beckham_bot` |
 El PDF **se monta a mano byte a byte**, no se rellena un `.docx`: de los 17 marcadores, **15 están
 partidos entre varios `<w:r>`** del XML de Word, así que un buscar-y-reemplazar sustituiría 2 de 19
 apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin fallar**.

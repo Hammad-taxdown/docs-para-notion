@@ -167,10 +167,10 @@ p6(){ paso 6 "el validador con los 4 parches del 03/09 (pasaporte, gentilicios, 
   "beckham_bot_conversacional (n1jx7z9NtXWCD4VC) · PRODUCCION" "Validar y Normalizar  (TEXTAREA de codigo)" \
   "Cmd+A dentro del textarea y pegar · despues PUBLISH"
 echo "${A}fichero:${N} docs/nodo-validar-normalizar-COMPLETO.js  ${D}(montado por anclas desde el nodo vivo: docs/montar-validador-2026-09-03.py)${N}"
-echo "${A}el contador tiene que decir:${N} ${V}86.471 caracteres${N} ${D}(vivo hoy: 82.539, +3.932)${N}"
+echo "${A}el contador tiene que decir:${N} ${V}86.587 caracteres${N} ${D}(vivo: 86.471 desde las 10:36Z; el parche de la tarde solo cambia el texto del aviso_pasaporte)${N}"
 echo "${D}que arregla, cada cosa medida en la conversacion del 02/09:${N}"
 echo "${D}  1. PASAPORTE: si el cliente da un pasaporte al pedirle el NIF/NIE, el nodo lo guarda igual que hoy${N}"
-echo "${D}     pero devuelve ${N}${V}aviso_pasaporte${N}${D} en descartados, y el prompt v16 (paso 7) pide el NIE UNA vez.${N}"
+echo "${D}     pero devuelve ${N}${V}aviso_pasaporte${N}${D} en descartados: el NIF/NIE es OBLIGATORIO y sin el no hay expediente completo (prompt v16, paso 7).${N}"
 echo "${D}  2. GENTILICIOS: 'algerino' (y 3 formas mas) + fallback por errata de 1-2 letras ('marroqi', 'colmbia').${N}"
 echo "${D}     Un empate (irlandia) se descarta, no se adivina.${N}"
 echo "${D}  3. VIAS CATALANAS: Carrer/Passeig/Avinguda (+ PG, Avgda, Plaça) -> CALLE/PASEO/AVENIDA, en tipo_via${N}"
@@ -186,7 +186,7 @@ p7(){ paso 7 "el prompt v16 · copy: habla por los asesores, paternidad, pareja 
   "LANGSMITH · bot_mobility_prompt · tag prod (lo lee el conversacional)" "el prompt entero" \
   "pegar con Cmd+A y mover el tag prod al commit nuevo"
 echo "${A}fichero:${N} docs/prompt-final-2026-09-03-v16.txt  ${D}(montado por anclas desde el v15: docs/montar-prompt-v16.py)${N}"
-echo "${A}el contador tiene que decir:${N} ${V}89.448 caracteres${N} ${D}(v15: 86.548, +2.900)${N}"
+echo "${A}el contador tiene que decir:${N} ${V}90.041 caracteres${N} ${D}(v15: 86.548)${N}"
 echo "${D}que cambia respecto al v15 (once parches, cada uno con su comprobacion):${N}"
 echo "${D}  · FUERA el «no es asesoramiento» / «es informacion general»: cero apariciones. El bot habla en${N}"
 echo "${D}    nombre de NUESTROS ASESORES, que preparan, revisan y envian los borradores (7 menciones).${N}"
@@ -202,7 +202,7 @@ echo "${D}bloque del v15 y exige igualdad byte a byte: un cuarto cambio la pone 
 echo "${R}ORDEN:${N} ${D}despues del paso 6 (el aviso_pasaporte lo produce el validador nuevo). Antes no rompe nada:${N}"
 echo "${D}el aviso simplemente no llega.${N}"
 echo "${B}copiar:${N}     bash docs/copiar.sh 9"
-echo "${B}verificar:${N}  node docs/test-prompt-v16.js   ${D}-> 249 verdes, 0 rojas (206 heredadas del v15 MIDIENDO el v16, 4 re-baselineadas explicitas, + 44 nuevas)${N}"
+echo "${B}verificar:${N}  node docs/test-prompt-v16.js   ${D}-> 253 verdes, 0 rojas (206 heredadas del v15 MIDIENDO el v16, 7 re-baselineadas explicitas)${N}"
 [ "$1" = copia ] && bash docs/copiar.sh 9; }
 
 p8(){ paso 8 "SUPERADO el 03/09 a las 12:30: la fecha limite NO va a Intercom, va a Airtable (paso 9)" \

@@ -1187,8 +1187,18 @@
       "status": "planned",
       "note": "",
       "created_at": "2026-09-03T10:15:14Z"
+    },
+    "T102": {
+      "title": "Repegar validador (86.587) y prompt v16 (90.041) con el NIF/NIE obligatorio",
+      "milestone": "TEST",
+      "verify": "vivo == COMPLETO por MCP; test-prompt-v16 verde",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-09-03T10:54:21Z"
     }
   },
-  "next_task": 102,
-  "updated_at": "2026-09-03T10:40:33Z"
+  "next_task": 103,
+  "updated_at": "2026-09-03T10:54:21Z"
 }

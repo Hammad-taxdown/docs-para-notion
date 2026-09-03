@@ -1633,9 +1633,9 @@ if (idBruto) {
       // 03/09 · el agente NO distingue NIE de pasaporte (y no debe: lo decide este nodo).
       // Medido en la conversacion 215475755624195: guardo el pasaporte, no pidio el NIE
       // y siguio con la nacionalidad; sin NIF el .030 no se puede generar. Se le avisa
-      // por `descartados` para que pida el NIE UNA sola vez (lo dice el prompt v16).
+      // por `descartados` para que pida el NIE: es OBLIGATORIO y sin el no se cierra (prompt v16).
       // No es un rechazo: el pasaporte queda guardado y _invalid sigue en false.
-      descartadas.push('aviso_pasaporte=' + pas + ' guardado como PASAPORTE; el NIF/NIE sigue vacio: pide el NIE UNA sola vez y, si todavia no lo tiene, sigue con el pasaporte');
+      descartadas.push('aviso_pasaporte=' + pas + ' guardado como PASAPORTE; el NIF/NIE sigue VACIO y es OBLIGATORIO para presentar los Modelos 030 y 149: pide el NIE ahora; si aun no lo tiene, sigue con los demas datos pero NO cierres el expediente como completo hasta tenerlo');
     }
     else descartadas.push('NIF/Pasaporte=' + idBruto);
   }

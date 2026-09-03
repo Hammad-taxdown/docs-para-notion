@@ -199,8 +199,10 @@ comp('P5 · la misma regla esta TAMBIEN donde se decide el cierre',
      /una discrepancia en la fecha de alta NO convierte esto en "llamada agendada"/.test(p));
 comp('P5 · y el punto de "expediente completo" sigue entero',
      p.includes('"expediente completo": se ha recogido todo, documentos incluidos, y no queda nada pendiente.'));
-comp('P4+P5 · la regla anade EXACTAMENTE dos «expediente completo», uno por sitio',
-     cuenta(p, 'expediente completo') === cuenta(v10, 'expediente completo') + 2,
+// 03/09 tarde · RE-BASELINE EXPLICITO: el v16 anade UNA aparicion mas (la regla de D3 que prohibe
+// mandar motivo_cierre="expediente completo" sin NIF/NIE), asi que son v10 + 3, y v15 + 1.
+comp('P4+P5 · la regla del 20/08 anade dos «expediente completo» y la de D3 del 03/09 una mas: v10+3, v15+1',
+     cuenta(p, 'expediente completo') === cuenta(v10, 'expediente completo') + 3 && cuenta(p, 'expediente completo') === cuenta(v15, 'expediente completo') + 1,
      `v10=${cuenta(v10, 'expediente completo')} v15=${cuenta(p, 'expediente completo')}`);
 
 comp('sigue sin preguntarse la fecha de la llamada', !p.includes('fecha_llamada'));
@@ -273,10 +275,15 @@ comp('C1 · dice explicitamente que no nombre el pasaporte',
      /NO NOMBRES EL PASAPORTE EN ESTA PREGUNTA/.test(p));
 comp('C1 · explica el porque: el .030 se llama con el NIF',
      /no se puede generar sin él/.test(p));
-comp('C1 · el pasaporte sigue siendo salida valida si no tiene ninguno',
-     /SI TE DICE QUE NO TIENE NINGUNO DE LOS DOS[\s\S]{0,200}pídele entonces el número de pasaporte/.test(p));
-comp('C1 · y NO bloquea la conversacion por esto',
-     /no insistas ni le bloquees la conversación/.test(p));
+// 03/09 tarde · RE-BASELINE EXPLICITO: el pasaporte se sigue guardando pero YA NO es salida valida
+// como sustituto del NIE (decision del usuario: NIF/NIE obligatorio, si o si).
+comp('C1 · el pasaporte se guarda pero NO sustituye al NIE (03/09); el v15 si lo daba por bueno',
+     /EL NIF O EL NIE ES OBLIGATORIO, SÍ O SÍ/.test(p) && /un pasaporte NO sustituye al NIE/.test(p) &&
+     !/pídele entonces el número de pasaporte, guárdalo y sigue/.test(p) && /pídele entonces el número de pasaporte, guárdalo y sigue/.test(v15));
+// 03/09 tarde · RE-BASELINE EXPLICITO: la frase cambia (el NIE pasa a ser obligatorio) pero la
+// conversacion sigue sin bloquearse: se sigue con D4 y se pide el NIE al cerrar.
+comp('C1 · y NO bloquea la conversacion por esto (03/09: «no le bloquees» sigue, aunque el NIE sea obligatorio)',
+     /SI TE DICE QUE AÚN NO LO TIENE, no le bloquees/.test(p) && /no insistas ni le bloquees la conversación/.test(v15));
 comp('C1 · sigue prohibido que el agente valide el identificador',
      /NO valides el dato ni juzgues si es correcto/.test(p));
 comp('C1 · y tampoco decide el si es NIE o pasaporte',
@@ -768,12 +775,20 @@ comp('V16-4 · la pregunta al cliente sigue ofreciendo solo las tres opciones',
 // ── V16-5 · AVISO DE PASAPORTE: pedir el NIE una vez ───────────────────────────
 comp('V16-5 · D3 explica que hacer con `aviso_pasaporte`',
      /SI EL SISTEMA TE DEVUELVE `aviso_pasaporte` EN DESCARTADOS, es que lo que te ha dado es un pasaporte y el NIF\/NIE sigue vacío\./.test(p));
-comp('V16-5 · la pregunta literal al cliente esta escrita, y se hace UNA SOLA VEZ',
-     /UNA SOLA VEZ: "Ese número es de pasaporte\. ¿Tienes ya el NIE\? Si todavía no lo tienes, seguimos con el pasaporte y nuestros asesores lo completan después\."/.test(p));
+comp('V16-5 · la pregunta literal al cliente esta escrita, y dice que el NIE es si o si',
+     /"Ese número es de pasaporte; lo guardo, pero para presentar la solicitud necesitamos sí o sí tu NIE\. ¿Cuál es\?"/.test(p));
+comp('V16-5 · sin NIE no hay expediente completo: no se manda motivo_cierre y la conversacion queda abierta',
+     /PERO EL EXPEDIENTE NO ESTÁ COMPLETO SIN NIF\/NIE: al llegar al cierre recuérdaselo, NO mandes `motivo_cierre` = "expediente completo" y deja la conversación abierta hasta que llegue el NIE\./.test(p));
+comp('V16-5 · la definicion de «expediente completo» del CIERRE exige NIF o NIE',
+     /Y HAY NIF O NIE GUARDADO: con solo un pasaporte el expediente NO está completo \(D3\)/.test(p));
+comp('V16-5 · ya no dice «seguimos con el pasaporte» ni «sigue con D4 y NO vuelvas a preguntarlo»',
+     !/seguimos con el pasaporte/.test(p) && !/NO vuelvas a preguntarlo aunque el aviso se repita/.test(p));
+comp('V16-5 · se pide dos veces en total, no en cada mensaje (caza el bucle)',
+     /Pídelo dos veces en total, al recibir el aviso y al cerrar, no en cada mensaje\./.test(p));
 comp('V16-5 · si da el NIE, va en `nif` y sustituye al pasaporte',
-     /Si te da el NIE, mándalo en `nif` \(sustituye al pasaporte\)\./.test(p));
-comp('V16-5 · si no lo tiene, se sigue con D4 y NO se repregunta aunque el aviso se repita',
-     /Si te dice que no lo tiene, sigue con D4 y NO vuelvas a preguntarlo aunque el aviso se repita en llamadas posteriores\./.test(p));
+     /Si te lo da, mándalo en `nif` \(sustituye al pasaporte\)\./.test(p));
+comp('V16-5 · si aun no lo tiene, no se le bloquea: se sigue con D4 y se le pide que lo mande en cuanto lo tenga',
+     /SI TE DICE QUE AÚN NO LO TIENE, no le bloquees: dile que sin el NIE no podremos presentar la solicitud y que nos lo mande aquí mismo en cuanto lo tenga, y sigue con D4/.test(p));
 comp('V16-5 · las reglas de D3 del v15 siguen intactas (no nombrar el pasaporte, no deducir)',
      /NO NOMBRES EL PASAPORTE EN ESTA PREGUNTA/.test(p) && /NO DEDUZCAS TÚ si lo que te ha dado es un NIE o un pasaporte/.test(p));
 comp('V16-5 · `aviso_pasaporte` aparece exactamente 1 vez (una sola instruccion, no dos contradictorias)',

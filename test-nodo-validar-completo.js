@@ -156,7 +156,8 @@ r = correr(Object.assign({}, BASE, { nif: 'AB1234567' }));
 c(r.salida._invalid === false && r.salida.fields.PasaporteNumero === 'AB1234567', 'C1 · el pasaporte se sigue guardando en PasaporteNumero y el body NO se rechaza');
 c(!('NIF' in r.salida.fields), 'C1 · y NIF sigue vacio');
 c(/^aviso_pasaporte=AB1234567 guardado como PASAPORTE/.test(r.salida._fechas_descartadas), 'C1 · descartados lleva el aviso_pasaporte, que es lo que lee el prompt v16');
-c(/UNA sola vez/.test(r.salida._fechas_descartadas), 'C1 · el aviso dice UNA sola vez (la instruccion viaja en el propio aviso)');
+c(/es OBLIGATORIO para presentar los Modelos 030 y 149: pide el NIE ahora/.test(r.salida._fechas_descartadas) && /NO cierres el expediente como completo/.test(r.salida._fechas_descartadas) && !/sigue con el pasaporte/.test(r.salida._fechas_descartadas),
+  'C1 · el aviso dice que el NIF/NIE es OBLIGATORIO y que no se cierra sin el (03/09 tarde: antes decia «sigue con el pasaporte»)');
 c(r.salida._hay_fechas_descartadas === false, 'C1 · el aviso NO enciende la rama de fechas descartadas');
 c(F({ nif: '12345678Z' }).NIF === '12345678Z' && DESC({ nif: '12345678Z' }) === '', 'C1 · contraprueba: un DNI valido va a NIF sin ningun aviso');
 c(/NIF\/Pasaporte=12345678A/.test(DESC({ nif: '12345678A' })) && !/aviso_pasaporte/.test(DESC({ nif: '12345678A' })), 'C1 · contraprueba: un DNI con la letra mal sigue siendo rechazo, no aviso');
