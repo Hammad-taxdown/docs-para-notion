@@ -76,7 +76,7 @@ node docs/test-informe-integracion.js
 # 31/08 · Y `pasos.sh test` TAMBIEN sale con exit 1 ahora. Hasta hoy imprimia FALLA en
 # rojo y devolvia 0 SIEMPRE, o sea que la puerta de las puertas mentia. Medido en los
 # dos sentidos: verde -> 0, una puerta mutada a proposito -> 1.
-node docs/test-decidir-status.js        # la escalera de Status: 36 comprobaciones
+node docs/test-decidir-status.js        # la escalera de Status: 45 comprobaciones (03/09: +9 del cierre sin NIF)
 node docs/test-validador-2026-08-19.js  # gentilicios, umbral, estado civil: 31
 node docs/test-prompt-v10.js           # los 17 cambios del prompt v10: 35
 node docs/test-prompt-v12.js           # el prompt v12, 77 (hereda las 60 del v11)
@@ -88,7 +88,7 @@ node docs/test-prompt-v14.js           # el v14 local (66.020 car., PENDIENTE de
 node docs/test-log-evento.js           # el corr_id y el Log_Evento de 6 campos: 25
 node docs/test-diagramas-mermaid.js    # los .mmd.md del repo publico: 28
 node docs/test-prompt-v15.js           # el v15 CONVERSACIONAL (86.548 car.): 206, hereda las 107 comp() del v14
-node docs/test-prompt-v16.js           # el v16 (90.041 car., 03/09, PENDIENTE de pegar): 253, hereda las 206 del v15 MIDIENDO el v16
+node docs/test-prompt-v16.js           # el v16 (90.275 car., 03/09, PENDIENTE de pegar): 255, hereda las 206 del v15 MIDIENDO el v16
 node docs/test-preparar-prompt-conversacional.js  # el UNICO codigo nuevo del cambio: 89 (02/09: arranque por el canvas de dos botones)
 
 # Los pasos de un cambio, EN LA TERMINAL (no en un .md que hay que abrir)
@@ -385,6 +385,11 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   un documento que concluía lo contrario y **se descartó**. **03/09: el prompt v16 lo dice con más
   fuerza** («NO exime de pagar el 24 % aunque un compañero le haya dicho lo contrario»), porque los
   clientes llegan con esa idea de sus compañeros.
+- **SIN NIF/NIE LA CONVERSACIÓN NO AVANZA, Y `Decidir_Status` RECHAZA EL CIERRE** (03/09 tarde, decisión
+  del usuario: «sí o sí»). El pasaporte se guarda en `PasaporteNumero` pero no cuenta. Dos capas: el prompt
+  v16 no pasa de D3 sin NIE (deja el hilo abierto y no pide documentos), y `Decidir_Status` no sube al 4 ni
+  marca `MotivoCierre` si ni la llamada ni la fila traen NIF, devolviendo `_aviso_cierre` que `Respond OK`
+  añade a `descartados`. Superada la regla del 21/08 «si no tiene ninguno, pídele el pasaporte y sigue».
 - **EL BOT NO DICE «ESTO NO ES ASESORAMIENTO» NI «ES INFORMACIÓN GENERAL»** (03/09, decisión del
   usuario). Habla en nombre de **nuestros asesores**, que preparan, revisan y envían los borradores
   para el visto bueno antes de presentarlos. El DISCLAIMER del bloque fiscal se retiró en el v16;

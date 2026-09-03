@@ -1194,11 +1194,22 @@
       "verify": "vivo == COMPLETO por MCP; test-prompt-v16 verde",
       "depends": [],
       "effort": 1.0,
+      "status": "done",
+      "note": "Verificado por MCP 10:57Z: validador vivo 86.587 sha ed47b0bcfeb1 == COMPLETO, publicado 25df0511. Prompt v16 (90.041) pegado segun el usuario; sin ejecuciones desde las 10:00Z, se mide en la primera conversacion.",
+      "created_at": "2026-09-03T10:54:21Z",
+      "done_at": "2026-09-03T11:01:31Z"
+    },
+    "T103": {
+      "title": "Pegar Decidir_Status 03/09 (15.153), Respond OK con _aviso_cierre, y repegar prompt v16 (90.275): bloqueo duro sin NIF",
+      "milestone": "TEST",
+      "verify": "por MCP: Decidir_Status vivo == fichero, responseBody de Respond OK con _aviso_cierre; test-decidir-status y test-prompt-v16 verdes",
+      "depends": [],
+      "effort": 1.0,
       "status": "planned",
       "note": "",
-      "created_at": "2026-09-03T10:54:21Z"
+      "created_at": "2026-09-03T11:10:59Z"
     }
   },
-  "next_task": 103,
-  "updated_at": "2026-09-03T10:54:21Z"
+  "next_task": 104,
+  "updated_at": "2026-09-03T11:10:59Z"
 }

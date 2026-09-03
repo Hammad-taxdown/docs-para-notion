@@ -186,7 +186,7 @@ p7(){ paso 7 "el prompt v16 · copy: habla por los asesores, paternidad, pareja 
   "LANGSMITH · bot_mobility_prompt · tag prod (lo lee el conversacional)" "el prompt entero" \
   "pegar con Cmd+A y mover el tag prod al commit nuevo"
 echo "${A}fichero:${N} docs/prompt-final-2026-09-03-v16.txt  ${D}(montado por anclas desde el v15: docs/montar-prompt-v16.py)${N}"
-echo "${A}el contador tiene que decir:${N} ${V}90.041 caracteres${N} ${D}(v15: 86.548)${N}"
+echo "${A}el contador tiene que decir:${N} ${V}90.275 caracteres${N} ${D}(v15: 86.548)${N}"
 echo "${D}que cambia respecto al v15 (once parches, cada uno con su comprobacion):${N}"
 echo "${D}  · FUERA el «no es asesoramiento» / «es informacion general»: cero apariciones. El bot habla en${N}"
 echo "${D}    nombre de NUESTROS ASESORES, que preparan, revisan y envian los borradores (7 menciones).${N}"
@@ -197,12 +197,13 @@ echo "${D}  · pareja de hecho -> SOLTERO ante Hacienda, y no se pregunta PF6b. 
 echo "${D}  · D3: si el sistema devuelve aviso_pasaporte, pide el NIE UNA sola vez; si lo da, va en nif.${N}"
 echo "${D}  · nacionalidad con errata: pasarla TAL CUAL, el sistema la tolera (paso 6).${N}"
 echo "${D}  · en en_plazo manda fecha_limite_plazo a guardar_datos_cliente, en la misma llamada que fecha_alta_ss (paso 9).${N}"
+echo "${D}  · D3 (tarde): sin NIE la conversacion NO AVANZA. No sigue con D4 ni pide documentos; deja el hilo abierto.${N}"
 echo "${A}intacto salvo 3 frases de copy:${N} ${D}el bloque de CONOCIMIENTO FISCAL. La puerta aplica esos 3 parches al${N}"
 echo "${D}bloque del v15 y exige igualdad byte a byte: un cuarto cambio la pone en rojo.${N}"
 echo "${R}ORDEN:${N} ${D}despues del paso 6 (el aviso_pasaporte lo produce el validador nuevo). Antes no rompe nada:${N}"
 echo "${D}el aviso simplemente no llega.${N}"
 echo "${B}copiar:${N}     bash docs/copiar.sh 9"
-echo "${B}verificar:${N}  node docs/test-prompt-v16.js   ${D}-> 253 verdes, 0 rojas (206 heredadas del v15 MIDIENDO el v16, 7 re-baselineadas explicitas)${N}"
+echo "${B}verificar:${N}  node docs/test-prompt-v16.js   ${D}-> 255 verdes, 0 rojas (206 heredadas del v15 MIDIENDO el v16, 8 re-baselineadas explicitas)${N}"
 [ "$1" = copia ] && bash docs/copiar.sh 9; }
 
 p8(){ paso 8 "SUPERADO el 03/09 a las 12:30: la fecha limite NO va a Intercom, va a Airtable (paso 9)" \
@@ -241,6 +242,30 @@ echo "${D}y el plazo cuenta desde el ALTA EN LA SS, no desde la llegada (la land
 echo "${B}copiar:${N}     bash docs/copiar.sh 11"
 [ "$1" = copia ] && bash docs/copiar.sh 11; }
 
+p11(){ paso 11 "Decidir_Status rechaza el cierre sin NIF/NIE (bloqueo DURO, en codigo)" \
+  "beckham_bot_conversacional (n1jx7z9NtXWCD4VC) · PRODUCCION" "Decidir_Status  (TEXTAREA de codigo)" \
+  "Cmd+A dentro del textarea y pegar · despues PUBLISH"
+echo "${A}fichero:${N} docs/nodo-decidir-status-2026-09-03.js  ${D}(montado por anclas sobre el 2026-09-02, que es el vivo)${N}"
+n=$(python3 -c "import io;print(len(io.open('docs/nodo-decidir-status-2026-09-03.js',encoding='utf-8').read()))")
+echo "${A}el contador tiene que decir:${N} ${V}$n caracteres${N} ${D}(vivo: 13.814)${N}"
+echo "${D}que hace: si llega (o ya hay en la fila) motivo 'Expediente completo' y NI esta llamada NI la fila traen NIF,${N}"
+echo "${D}NO sube al 4, BORRA MotivoCierre del guardado (asi '¿Cerrar conversacion?' no cierra el hilo) y devuelve${N}"
+echo "${D}_aviso_cierre = 'cierre_rechazado=...'. Un pasaporte NO cuenta. El NIF puede venir de la fila (turno anterior).${N}"
+echo "${D}El resto de la escalera no cambia: la puerta lo comprueba con los 36 casos de antes + 9 nuevos.${N}"
+echo "${B}copiar:${N}     bash docs/copiar.sh 1"
+echo "${B}verificar:${N}  node docs/test-decidir-status.js   ${D}-> 45 verdes, 0 rojas${N}"
+[ "$1" = copia ] && bash docs/copiar.sh 1; }
+
+p12(){ paso 12 "Respond OK devuelve tambien el aviso de cierre (para que el agente lo lea)" \
+  "beckham_bot_conversacional (n1jx7z9NtXWCD4VC) · PRODUCCION" "Respond OK  · Response Body (campo de EXPRESION, un solo valor)" \
+  "sustituir el valor entero por el copiado (sin el = inicial) · PUBLISH"
+echo "${D}hoy dice: { ok: true, action: 'upserted', record_id: \$json.id, descartados: \$('Validar y Normalizar').first().json._fechas_descartadas || null }${N}"
+echo "${D}nuevo:    lo mismo, pero descartados junta ademas \$('Decidir_Status').first().json._aviso_cierre (si lo hay).${N}"
+echo "${D}Sin este paso el bloqueo del 11 funciona igual (no se cierra ni sube), pero el agente no sabe por que.${N}"
+echo "${B}copiar:${N}     bash docs/copiar.sh 12"
+echo "${B}verificar:${N}  ${D}yo, por MCP: el responseBody de Respond OK contiene _aviso_cierre${N}"
+[ "$1" = copia ] && bash docs/copiar.sh 12; }
+
 # 31/08 · ESTA FUNCION SALIA CON exit 0 AUNQUE LAS VEINTIDOS ESTUVIERAN ROJAS.
 # Imprimia FALLA en rojo y devolvia el codigo del ultimo printf, que siempre es 0.
 # O sea que la puerta de las puertas mentia, que es exactamente el corolario que el
@@ -272,11 +297,12 @@ case "$1" in
   19|viejo) bash docs/pasos-2026-08-19.sh ;;
   ''|todos) puertas
     echo; echo "${B}${C}════ LO DE LA CONVERSACION DEL 02/09 · 03/09 ════${N}"
-    for i in 6 7 8 9 10; do "p$i"; done
+    for i in 6 7 8 9 10 11 12; do "p$i"; done
     echo; echo "${B}${C}━━━ ORDEN DEL 03/09 ━━━${N}"
     echo "  ${R}6 primero${N} (arregla tres fallos vistos en produccion y es un Cmd+A), ${R}7 despues${N} (el prompt"
     echo "  lee el aviso que produce el 6). ${D}El 9 (un Body Field en la tool) va antes del 7 o a la vez. El 8 esta${N}"
     echo "  ${D}SUPERADO (la fecha limite va a Airtable, no a Intercom). El 10 es copy: lo hace quien edite la landing.${N}"
+    echo "  ${R}11 y 12 (03/09 tarde): el bloqueo duro sin NIF${N}, dos Cmd+A en el mismo workflow y un Publish."
     echo; echo "${B}${C}════ EL AGENTE CONVERSACIONAL UNICO · 31/08 ════${N}"
     p5
     echo; echo "${B}${C}════ ADAPTAR A LA ESCALERA NUEVA · 26/08 ════${N}"
@@ -291,6 +317,6 @@ case "$1" in
     echo "  ${D}El 2 esta SUPERADO: el canvas se construye desde cero en una copia${N}"
     echo "  ${D}(docs/canvas-desde-cero-2026-08-27.md); sus correcciones van dentro del rebuild.${N}"
     echo; echo "${D}un paso suelto y copiado al portapapeles:${N}  bash docs/pasos.sh 6" ;;
-  [1-9]|10) "p$1" copia ;;
-  *) echo "uso: bash docs/pasos.sh [1-10|test|26|24|21|19]" ;;
+  [1-9]|1[0-2]) "p$1" copia ;;
+  *) echo "uso: bash docs/pasos.sh [1-12|test|26|24|21|19]" ;;
 esac

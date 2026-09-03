@@ -282,8 +282,10 @@ comp('C1 · el pasaporte se guarda pero NO sustituye al NIE (03/09); el v15 si l
      !/pídele entonces el número de pasaporte, guárdalo y sigue/.test(p) && /pídele entonces el número de pasaporte, guárdalo y sigue/.test(v15));
 // 03/09 tarde · RE-BASELINE EXPLICITO: la frase cambia (el NIE pasa a ser obligatorio) pero la
 // conversacion sigue sin bloquearse: se sigue con D4 y se pide el NIE al cerrar.
-comp('C1 · y NO bloquea la conversacion por esto (03/09: «no le bloquees» sigue, aunque el NIE sea obligatorio)',
-     /SI TE DICE QUE AÚN NO LO TIENE, no le bloquees/.test(p) && /no insistas ni le bloquees la conversación/.test(v15));
+// 03/09 (2a vuelta) · RE-BASELINE EXPLICITO E INVERTIDO: sin NIE la conversacion NO AVANZA. El v15 decia
+// «no insistas ni le bloquees»; ahora se bloquea a proposito (decision del usuario: si o si).
+comp('C1 · 03/09: sin NIE la conversacion NO avanza (el v15 decia lo contrario)',
+     /SI TE DICE QUE AÚN NO LO TIENE, LA CONVERSACIÓN NO AVANZA/.test(p) && !/no le bloquees/.test(p) && /no insistas ni le bloquees la conversación/.test(v15));
 comp('C1 · sigue prohibido que el agente valide el identificador',
      /NO valides el dato ni juzgues si es correcto/.test(p));
 comp('C1 · y tampoco decide el si es NIE o pasaporte',
@@ -777,18 +779,22 @@ comp('V16-5 · D3 explica que hacer con `aviso_pasaporte`',
      /SI EL SISTEMA TE DEVUELVE `aviso_pasaporte` EN DESCARTADOS, es que lo que te ha dado es un pasaporte y el NIF\/NIE sigue vacío\./.test(p));
 comp('V16-5 · la pregunta literal al cliente esta escrita, y dice que el NIE es si o si',
      /"Ese número es de pasaporte; lo guardo, pero para presentar la solicitud necesitamos sí o sí tu NIE\. ¿Cuál es\?"/.test(p));
-comp('V16-5 · sin NIE no hay expediente completo: no se manda motivo_cierre y la conversacion queda abierta',
-     /PERO EL EXPEDIENTE NO ESTÁ COMPLETO SIN NIF\/NIE: al llegar al cierre recuérdaselo, NO mandes `motivo_cierre` = "expediente completo" y deja la conversación abierta hasta que llegue el NIE\./.test(p));
+comp('V16-5 · sin NIE: NO sigue con D4, NO pide mas datos ni documentos y NO manda motivo_cierre',
+     /NO sigas con D4, NO pidas más datos ni documentos y NO mandes `motivo_cierre`\./.test(p));
+comp('V16-5 · la frase literal al cliente esta escrita y deja la conversacion abierta',
+     /"Para seguir necesitamos tu NIE\. En cuanto lo tengas, escríbenos aquí mismo y continuamos donde lo dejamos: lo que ya nos has contado queda guardado\."/.test(p) && /Deja la conversación abierta y no preguntes nada más en ese turno\./.test(p));
+comp('V16-5 · el prompt sabe que el sistema devuelve cierre_rechazado y que hacer con el',
+     /vuelve en descartados como `cierre_rechazado`; si lo ves, pide el NIE/.test(p));
 comp('V16-5 · la definicion de «expediente completo» del CIERRE exige NIF o NIE',
      /Y HAY NIF O NIE GUARDADO: con solo un pasaporte el expediente NO está completo \(D3\)/.test(p));
 comp('V16-5 · ya no dice «seguimos con el pasaporte» ni «sigue con D4 y NO vuelvas a preguntarlo»',
      !/seguimos con el pasaporte/.test(p) && !/NO vuelvas a preguntarlo aunque el aviso se repita/.test(p));
-comp('V16-5 · se pide dos veces en total, no en cada mensaje (caza el bucle)',
-     /Pídelo dos veces en total, al recibir el aviso y al cerrar, no en cada mensaje\./.test(p));
+comp('V16-5 · si insiste, se repite UNA vez y se remite a soporte (caza el bucle)',
+     /Si insiste en seguir sin NIE, repíteselo una vez y ofrécele support@taxdown\.es\./.test(p));
 comp('V16-5 · si da el NIE, va en `nif` y sustituye al pasaporte',
      /Si te lo da, mándalo en `nif` \(sustituye al pasaporte\)\./.test(p));
-comp('V16-5 · si aun no lo tiene, no se le bloquea: se sigue con D4 y se le pide que lo mande en cuanto lo tenga',
-     /SI TE DICE QUE AÚN NO LO TIENE, no le bloquees: dile que sin el NIE no podremos presentar la solicitud y que nos lo mande aquí mismo en cuanto lo tenga, y sigue con D4/.test(p));
+comp('V16-5 · «expediente completo» aparece v15+1 (el cierre_rechazado de D3), ni una mas',
+     cuenta(p, 'expediente completo') === cuenta(v15, 'expediente completo') + 1);
 comp('V16-5 · las reglas de D3 del v15 siguen intactas (no nombrar el pasaporte, no deducir)',
      /NO NOMBRES EL PASAPORTE EN ESTA PREGUNTA/.test(p) && /NO DEDUZCAS TÚ si lo que te ha dado es un NIE o un pasaporte/.test(p));
 comp('V16-5 · `aviso_pasaporte` aparece exactamente 1 vez (una sola instruccion, no dos contradictorias)',

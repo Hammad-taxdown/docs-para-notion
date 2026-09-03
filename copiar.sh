@@ -1,6 +1,6 @@
 #!/bin/bash
 # 26/08 · Deja en el portapapeles cada valor de los pasos, ya listo para pegar.
-#   bash docs/copiar.sh 1     el nodo Decidir_Status entero
+#   bash docs/copiar.sh 1     el nodo Decidir_Status entero (03/09: rechaza el cierre sin NIF)
 #   bash docs/copiar.sh 2     el filtro del .030
 #   bash docs/copiar.sh 3     el filtro del informe (v1 y v2, es el mismo)
 #   bash docs/copiar.sh 4     el JSON Body de Marcar InformeListo del v2
@@ -11,6 +11,7 @@
 #   bash docs/copiar.sh 9     el prompt v16 entero (03/09: copy asesores, paternidad, pareja de hecho, aviso pasaporte)
 #   bash docs/copiar.sh 10    el $fromAI de fecha_limite_plazo para la tool guardar_datos_cliente (sin el =)
 #   bash docs/copiar.sh 11    el copy propuesto de la landing P00027 (markdown)
+#   bash docs/copiar.sh 12    el Response Body de Respond OK con el aviso de cierre (sin el =)
 # Todo sin el '=' inicial y sin salto de linea final, como pide n8n.
 cd "$(dirname "$0")/.." || exit 1
 V=$(printf '\033[32m'); D=$(printf '\033[2m'); N=$(printf '\033[0m'); R=$(printf '\033[31m')
@@ -20,8 +21,8 @@ FINF='AND(OR({Status}="4. Pte hacer informe",{Status}="5. Informe enviado"), OR(
 BODY="{{ JSON.stringify({ fields: { Status: '5. Informe enviado', InformeListo: true, RegenerarInforme: false, ErrorInforme: '', InformeEnviadoEl: \$now.toISO() } }) }}"
 
 case "$1" in
-  1) pbcopy < docs/nodo-decidir-status-2026-08-26.js
-     n=$(python3 -c "import io;print(len(io.open('docs/nodo-decidir-status-2026-08-26.js',encoding='utf-8').read()))")
+  1) pbcopy < docs/nodo-decidir-status-2026-09-03.js
+     n=$(python3 -c "import io;print(len(io.open('docs/nodo-decidir-status-2026-09-03.js',encoding='utf-8').read()))")
      echo "${V}copiado el nodo Decidir_Status entero${N}"
      echo "${D}el contador de n8n tiene que decir: ${N}${V}$n caracteres${N}" ;;
   2) printf '%s' "$F030" | pbcopy; echo "${V}copiado el filtro del .030${N}"; echo "${D}$F030${N}" ;;
@@ -61,5 +62,9 @@ case "$1" in
      echo "${D}$FL${N}" ;;
   11) pbcopy < docs/landing-P00027-copy-2026-09-03.md; echo "${V}copiado el copy de la landing P00027 (markdown)${N}"
      echo "${D}el unico hueco es ENLACE-CALCULADORA${N}" ;;
-  *) echo "uso: bash docs/copiar.sh [1-11]" ;;
+  12) RB="{{ { ok: true, action: 'upserted', record_id: \$json.id, descartados: [ \$('Validar y Normalizar').first().json._fechas_descartadas, \$('Decidir_Status').first().json._aviso_cierre ].filter(Boolean).join(' · ') || null } }}"
+     printf '%s' "$RB" | pbcopy
+     echo "${V}copiado el Response Body de Respond OK${N}"
+     echo "${D}$RB${N}" ;;
+  *) echo "uso: bash docs/copiar.sh [1-12]" ;;
 esac

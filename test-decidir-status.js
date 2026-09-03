@@ -5,7 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const RUTA = path.join(__dirname, 'nodo-decidir-status-2026-09-02.js');
+const RUTA = path.join(__dirname, 'nodo-decidir-status-2026-09-03.js');
 const CODIGO = fs.readFileSync(RUTA, 'utf8');
 
 // Corre el nodo con $ y $input simulados, igual que haria n8n.
@@ -21,7 +21,12 @@ function correr({ enviado, filas }) {
 }
 
 // Lo que manda el bot en un cierre por expediente completo.
-const COMPLETO = { fields: { UserId: 'u1', MotivoCierre: 'Expediente completo' } };
+// 03/09 · RE-BASELINE EXPLICITO: el cierre por expediente completo lleva NIF desde hoy, porque sin
+// NIF el nodo lo RECHAZA (decision del usuario). Los casos sin NIF estan mas abajo, en su bloque.
+const COMPLETO = { fields: { UserId: 'u1', MotivoCierre: 'Expediente completo', NIF: '12345678Z' } };
+const COMPLETO_SIN_NIF = { fields: { UserId: 'u1', MotivoCierre: 'Expediente completo' } };
+const COMPLETO_PASAPORTE = { fields: { UserId: 'u1', MotivoCierre: 'Expediente completo', PasaporteNumero: 'AB1234567' } };
+const filaConNif = (status) => ({ id: 'recX', fields: { Status: status, Empresa: 'TaxDown', NIF: '12345678Z' } });
 const LLAMADA  = { fields: { UserId: 'u1', MotivoCierre: 'Llamada agendada' } };
 const DESCARTE = { fields: { UserId: 'u1', Descarte: true } };
 const SUELTO   = { fields: { UserId: 'u1', Salario: 80000 } };
@@ -115,7 +120,8 @@ const CASOS = [
    { enviado: SENAL, filas: [fila('5. Informe enviado')] }, null],
 
   ['NO REGRESION: senales Y expediente completo -> manda el 3, no el 2',
-   { enviado: { fields: { UserId: 'u1', MotivoCierre: 'Expediente completo', SenalesComplejidad: ['Salario no definido o en el límite'] } },
+   // 03/09 · lleva NIF porque sin NIF el cierre se rechaza (bloque de abajo)
+   { enviado: { fields: { UserId: 'u1', MotivoCierre: 'Expediente completo', NIF: '12345678Z', SenalesComplejidad: ['Salario no definido o en el límite'] } },
      filas: [fila('3. Pendiente llamada TD')] }, '4. Pte hacer informe'],
 
   ['NO REGRESION: senales Y descarte -> manda el descarte (hoy el 14)',
@@ -196,6 +202,27 @@ else { console.log("verde cero $(...).item"); ok++; }
 // contra SU PROPIA tabla ORDEN: se validaba a si misma. Del 1 al 8 los nombres
 // coincidian con Airtable y del 9 al 14 NO, y nadie lo veia.
 // Ahora ORDEN se cotea contra las opciones VIVAS del singleSelect, leidas por MCP
+// ── 03/09 · SIN NIF/NIE NO HAY CIERRE ───────────────────────────────────────────
+{
+  const comp = (n, c, d) => { if (c) { console.log(`verde ${n}`); ok++; } else { console.log(`ROJO  ${n}${d ? '\n      ' + d : ''}`); mal++; } };
+  const sin = correr({ enviado: COMPLETO_SIN_NIF, filas: [fila('3. Pendiente llamada TD')] });
+  comp('sin NIF: expediente completo NO sube al 4 (se queda donde estaba)', sin._status_escrito === null && sin._status_propuesto !== '4. Pte hacer informe', JSON.stringify([sin._status_propuesto, sin._status_escrito]));
+  comp('sin NIF: se borra MotivoCierre del guardado, para que la conversacion no se cierre', !('MotivoCierre' in sin.fields) && sin._cierre_sin_nif === true);
+  comp('sin NIF: viaja un aviso para el agente', /cierre_rechazado=/.test(sin._aviso_cierre || '') && /Pide el NIE/.test(sin._aviso_cierre));
+  const pas = correr({ enviado: COMPLETO_PASAPORTE, filas: [fila('3. Pendiente llamada TD')] });
+  comp('solo pasaporte: tampoco cierra (el pasaporte no cuenta como NIF)', pas._cierre_sin_nif === true && pas._status_escrito === null);
+  const enFila = correr({ enviado: COMPLETO_SIN_NIF, filas: [filaConNif('3. Pendiente llamada TD')] });
+  comp('el NIF puede venir de la FILA (guardado en un turno anterior): entonces si cierra al 4', enFila._status_escrito === '4. Pte hacer informe' && enFila._cierre_sin_nif === false && enFila._aviso_cierre === null);
+  const enBody = correr({ enviado: COMPLETO, filas: [fila('3. Pendiente llamada TD')] });
+  comp('el NIF en el body de la misma llamada tambien vale', enBody._status_escrito === '4. Pte hacer informe' && enBody.fields.MotivoCierre === 'Expediente completo');
+  const nuevo = correr({ enviado: COMPLETO_SIN_NIF, filas: [{}] });
+  comp('cliente nuevo sin NIF: se crea la fila pero sin cierre ni 4', nuevo._cierre_sin_nif === true && nuevo._status_escrito !== '4. Pte hacer informe');
+  const llamada = correr({ enviado: LLAMADA, filas: [fila('1. Interesado')] });
+  comp('contraprueba: un cierre por llamada agendada NO mira el NIF', llamada._cierre_sin_nif === false && llamada._status_escrito === '3. Pendiente llamada TD');
+  const suelto = correr({ enviado: SUELTO, filas: [fila('1. Interesado')] });
+  comp('contraprueba: un guardado suelto sin motivo no lleva aviso', suelto._aviso_cierre === null && suelto._cierre_sin_nif === false);
+}
+
 // y congeladas en docs/opciones-status-airtable-2026-09-02.txt. Node plano no
 // puede llamar a Airtable, asi que la cadena es: MCP -> fichero -> puerta. Si
 // alguien renumera, se regenera el fichero y esta comprobacion muerde.
