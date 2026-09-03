@@ -109,13 +109,7 @@ const TIPOS_VIA = ['ACEQUIA','ACERA','ALAMEDA','ALDEA','AMPLIACION','ANGOSTA','A
 
 const ALIAS_VIA = { 'C/':'CALLE','C':'CALLE','CL':'CALLE','AV':'AVENIDA','AVDA':'AVENIDA',
 'AVD':'AVENIDA','PZ':'PLAZA','PLZ':'PLAZA','PL':'PLAZA','PS':'PASEO','PSO':'PASEO','CTRA':'CARRETERA',
-'CRA':'CARRETERA','CMNO':'CAMINO','TRV':'TRAVESIA','GTA':'GLORIETA','RBLA':'RAMBLA','URB':'URBANIZACION',
-// 03/09 · vias en CATALAN: Hacienda recibe la direccion en castellano, asi que 'Carrer',
-// 'Passeig' y 'Avinguda' (y sus abreviaturas) se guardan como CALLE, PASEO y AVENIDA.
-// 'PASSEIG' sigue en TIPOS_VIA porque es una opcion de Airtable, pero el alias gana
-// antes de mirar la lista, asi que ya no se escribe nunca.
-'CARRER':'CALLE','CR':'CALLE','PASSEIG':'PASEO','PG':'PASEO','AVINGUDA':'AVENIDA','AVGDA':'AVENIDA',
-'AVG':'AVENIDA','PLACA':'PLAZA','PLAÇA':'PLAZA','PÇA':'PLAZA','RONDA':'RONDA','TRAVESSERA':'TRAVESIA' };
+'CRA':'CARRETERA','CMNO':'CAMINO','TRV':'TRAVESIA','GTA':'GLORIETA','RBLA':'RAMBLA','URB':'URBANIZACION' };
 
 function tipoViaValido(s) {
   let t = s.toUpperCase().replace(/\./g, '').trim();
@@ -395,16 +389,11 @@ ponerSelect('hijos', body.hijos, [
 // que ya las tuvieran: no se borran, simplemente el bot deja de escribirlas.
 // El orden importa: 'pareja de hecho' va ANTES que casado y que soltero para que la
 // frase entera se cace aqui y no por la palabra suelta.
-// 03/09 · CAMBIO DE CRITERIO (decision del usuario): la PAREJA DE HECHO pasa a SOLTERO.
-// Aunque en Espana tenga ciertos beneficios, ante Hacienda a estos efectos cuenta como
-// soltero, asi que tampoco dispara la pregunta del conyuge. Hasta hoy se plegaba sobre
-// casado (decision del 19/08, superada). 'pareja' a secas tambien va a soltero: quien
-// dice "tengo pareja" no esta casado. Sigue yendo ANTES que las palabras sueltas.
 ponerSelect('estadoCivil', body.estado_civil, [
-  ['soltero',    ['pareja de hecho', 'union de hecho', 'unión de hecho', 'domestic partner',
-                  'civil partnership', 'registered partnership', 'pareja',
-                  'soltero', 'soltera', 'single', 'viudo', 'viuda', 'widowed', 'widow', 'widower']],
-  ['casado',     ['casado', 'casada', 'married']],
+  ['casado',     ['pareja de hecho', 'union de hecho', 'unión de hecho', 'domestic partner',
+                  'civil partnership', 'registered partnership',
+                  'casado', 'casada', 'married', 'pareja']],
+  ['soltero',    ['soltero', 'soltera', 'single', 'viudo', 'viuda', 'widowed', 'widow', 'widower']],
   ['divorciado', ['divorciado', 'divorciada', 'divorced', 'separado', 'separada', 'separated']]
 ], { rechazarSiNiega: true });
 
@@ -1286,11 +1275,6 @@ const GENTILICIOS = {
   'egipcia': 'EGIPTO',
   'argelino': 'ARGELIA',
   'argelina': 'ARGELIA',
-  // 03/09 · medido: un cliente escribio 'Algerino' (del frances/ingles) y el bot repregunto
-  'algerino': 'ARGELIA',
-  'algerina': 'ARGELIA',
-  'algeriano': 'ARGELIA',
-  'algeriana': 'ARGELIA',
   'tunecino': 'TUNEZ',
   'tunecina': 'TUNEZ',
   'senegales': 'SENEGAL',
@@ -1547,41 +1531,6 @@ const GENTILICIOS = {
 const PAIS_POR_CLAVE = {};
 for (const p of PAISES) PAIS_POR_CLAVE[normSel(p)] = p;
 
-// 03/09 · ERRATAS DE UNA O DOS LETRAS ('marroqi', 'colmbia', 'algerino' antes de anadirlo).
-// Distancia de edicion contra los gentilicios y los nombres de pais. Es el ULTIMO
-// recurso de paisValido(): solo entra si nada casa exacto, solo con 6 letras o mas
-// (1 errata hasta 7 letras, 2 a partir de 8), y solo si hay UN destino claramente
-// mejor. Un empate ('irlandia' esta a 1 de IRLANDA y a 1 de ISLANDIA) devuelve null y
-// el agente repregunta: mejor preguntar que guardar el pais equivocado en el .030.
-function distanciaEdicion(a, b) {
-  const m = a.length, n = b.length;
-  let prev = new Array(n + 1), cur = new Array(n + 1);
-  for (let j = 0; j <= n; j++) prev[j] = j;
-  for (let i = 1; i <= m; i++) {
-    cur[0] = i;
-    for (let j = 1; j <= n; j++) {
-      const coste = a[i - 1] === b[j - 1] ? 0 : 1;
-      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + coste);
-    }
-    const t = prev; prev = cur; cur = t;
-  }
-  return prev[n];
-}
-function paisAproximado(k) {
-  if (k.length < 6) return null;
-  const maxD = k.length >= 8 ? 2 : 1;
-  let mejor = null, mejorD = maxD + 1, empate = false;
-  const mirar = function (clave, destino) {
-    if (Math.abs(clave.length - k.length) > maxD) return;
-    const d = distanciaEdicion(k, clave);
-    if (d < mejorD) { mejorD = d; mejor = destino; empate = false; }
-    else if (d === mejorD && destino !== mejor) empate = true;
-  };
-  for (const c in GENTILICIOS) mirar(c, GENTILICIOS[c]);
-  for (const c in PAIS_POR_CLAVE) mirar(c, PAIS_POR_CLAVE[c]);
-  return (mejor && !empate && mejorD <= maxD) ? mejor : null;
-}
-
 function paisValido(s) {
   const k = normSel(s);
   if (!k) return null;
@@ -1600,8 +1549,7 @@ function paisValido(s) {
   const sinArt = k.replace(/^(el|la|los|las|the) /, '');
   if (PAIS_POR_CLAVE[sinArt]) return PAIS_POR_CLAVE[sinArt];
   if (GENTILICIOS[sinArt]) return GENTILICIOS[sinArt];
-  // 5 · 03/09 · errata de una o dos letras (ver paisAproximado, justo arriba)
-  return paisAproximado(k) || paisAproximado(sinArt);
+  return null;
 }
 ponerValidado('PaisNacimiento', body.pais_nacimiento, paisValido);
 ponerValidado('UltimoPaisResidencia', body.ultimo_pais_residencia, paisValido);
@@ -1628,15 +1576,7 @@ if (idBruto) {
     fields.NIF = dni;
   } else {
     const pas = pasaporteValido(idBruto);
-    if (pas) {
-      fields.PasaporteNumero = pas;
-      // 03/09 · el agente NO distingue NIE de pasaporte (y no debe: lo decide este nodo).
-      // Medido en la conversacion 215475755624195: guardo el pasaporte, no pidio el NIE
-      // y siguio con la nacionalidad; sin NIF el .030 no se puede generar. Se le avisa
-      // por `descartados` para que pida el NIE UNA sola vez (lo dice el prompt v16).
-      // No es un rechazo: el pasaporte queda guardado y _invalid sigue en false.
-      descartadas.push('aviso_pasaporte=' + pas + ' guardado como PASAPORTE; el NIF/NIE sigue vacio: pide el NIE UNA sola vez y, si todavia no lo tiene, sigue con el pasaporte');
-    }
+    if (pas) fields.PasaporteNumero = pas;
     else descartadas.push('NIF/Pasaporte=' + idBruto);
   }
 }
@@ -1705,11 +1645,7 @@ if (tipoDoc) {
 
 // ── DOMICILIO ATOMICO: calle + numero + CP, los tres o ninguno ────────────────
 // Medio domicilio es peor que ninguno: parece bueno y va a Hacienda.
-// 03/09 · si el nombre de la calle trae la via en catalan delante ("Carrer de Balmes",
-// "Passeig de Gracia"), se traduce solo esa primera palabra. El resto va tal cual.
-const VIA_CATALANA = { carrer: 'Calle', passeig: 'Paseo', avinguda: 'Avenida', 'plaça': 'Plaza', placa: 'Plaza', travessera: 'Travesia' };
-const dCalle = limpio(body.calle).replace(/^(carrer|passeig|avinguda|plaça|placa|travessera)(?=\s|$)/i,
-  function (m) { return VIA_CATALANA[m.toLowerCase()] || m; });
+const dCalle = limpio(body.calle);
 const dNumero = limpio(body.numero);
 const dCpRaw = limpio(body.codigo_postal);
 if (dCalle || dNumero || dCpRaw) {

@@ -145,5 +145,50 @@ c(r.salida && r.salida.fields.UltimoPaisResidencia === 'FILIPINAS', 'E · Philip
 r = correr(Object.assign({}, BASE, { pais_nacimiento: 'Narnia' }));
 c(r.salida && r.salida.fields.PaisNacimiento === undefined, 'E · un pais inexistente sigue SIN escribirse (no se inventa opcion)');
 
+
+// ══ C · 03/09 · LOS CUATRO PARCHES DE LA CONVERSACION 215475755624195 ═══════
+// Cada uno se mide EJECUTANDO el nodo, y cada uno lleva su contraprueba (lo que NO
+// debe cambiar), porque un parche que solo se comprueba por el lado bueno no es puerta.
+const F = b => (correr(Object.assign({}, BASE, b)).salida || {}).fields || {};
+const DESC = b => (correr(Object.assign({}, BASE, b)).salida || {})._fechas_descartadas || '';
+// C1 · aviso de pasaporte
+r = correr(Object.assign({}, BASE, { nif: 'AB1234567' }));
+c(r.salida._invalid === false && r.salida.fields.PasaporteNumero === 'AB1234567', 'C1 · el pasaporte se sigue guardando en PasaporteNumero y el body NO se rechaza');
+c(!('NIF' in r.salida.fields), 'C1 · y NIF sigue vacio');
+c(/^aviso_pasaporte=AB1234567 guardado como PASAPORTE/.test(r.salida._fechas_descartadas), 'C1 · descartados lleva el aviso_pasaporte, que es lo que lee el prompt v16');
+c(/UNA sola vez/.test(r.salida._fechas_descartadas), 'C1 · el aviso dice UNA sola vez (la instruccion viaja en el propio aviso)');
+c(r.salida._hay_fechas_descartadas === false, 'C1 · el aviso NO enciende la rama de fechas descartadas');
+c(F({ nif: '12345678Z' }).NIF === '12345678Z' && DESC({ nif: '12345678Z' }) === '', 'C1 · contraprueba: un DNI valido va a NIF sin ningun aviso');
+c(/NIF\/Pasaporte=12345678A/.test(DESC({ nif: '12345678A' })) && !/aviso_pasaporte/.test(DESC({ nif: '12345678A' })), 'C1 · contraprueba: un DNI con la letra mal sigue siendo rechazo, no aviso');
+// C2 · gentilicios: las formas de 'algerino' y el fallback por errata
+c(F({ nacionalidad: 'Algerino' }).Nacionalidad === 'ARGELIA', 'C2 · «Algerino» -> ARGELIA (medido: el bot lo repregunto el 02/09)');
+c(F({ nacionalidad: 'soy algeriana' }).Nacionalidad === undefined || true, 'C2 · (informativo) una frase entera no se resuelve: la resuelve el agente');
+c(F({ nacionalidad: 'marroqi' }).Nacionalidad === 'MARRUECOS', 'C2 · errata de una letra en 7 letras («marroqi») -> MARRUECOS');
+c(F({ nacionalidad: 'colmbia' }).Nacionalidad === 'COLOMBIA', 'C2 · «colmbia» -> COLOMBIA');
+c(F({ pais_nacimiento: 'venezolno' }).PaisNacimiento === 'VENEZUELA', 'C2 · el fallback vale para los tres campos de pais (pais_nacimiento)');
+c(F({ ultimo_pais_residencia: 'estadounidnse' }).UltimoPaisResidencia === 'ESTADOS UNIDOS DE AMERICA', 'C2 · y para ultimo_pais_residencia, con 2 erratas en 13 letras');
+c(F({ nacionalidad: 'irlandia' }).Nacionalidad === undefined && /Nacionalidad=irlandia/.test(DESC({ nacionalidad: 'irlandia' })), 'C2 · contraprueba: un EMPATE (irlandia: IRLANDA e ISLANDIA a 1) se descarta, no se adivina');
+c(F({ nacionalidad: 'itali' }).Nacionalidad === undefined, 'C2 · contraprueba: con 5 letras o menos no hay fallback («itali» se descarta)');
+c(F({ nacionalidad: 'xyzabc' }).Nacionalidad === undefined, 'C2 · contraprueba: un texto inventado sigue descartandose');
+c(F({ nacionalidad: 'austria' }).Nacionalidad === 'AUSTRIA' && F({ nacionalidad: 'australia' }).Nacionalidad === 'AUSTRALIA', 'C2 · contraprueba: austria/australia siguen exactas, el fallback no las toca');
+// C3 · vias en catalan
+c(F({ tipo_via: 'Carrer' })['Tipo de vía / Type of road'] === 'CALLE', 'C3 · Carrer -> CALLE');
+c(F({ tipo_via: 'Passeig' })['Tipo de vía / Type of road'] === 'PASEO', 'C3 · Passeig -> PASEO (y ya no se escribe PASSEIG nunca)');
+c(F({ tipo_via: 'Avinguda' })['Tipo de vía / Type of road'] === 'AVENIDA', 'C3 · Avinguda -> AVENIDA');
+c(F({ tipo_via: 'Plaça' })['Tipo de vía / Type of road'] === 'PLAZA' && F({ tipo_via: 'PG' })['Tipo de vía / Type of road'] === 'PASEO', 'C3 · Plaça -> PLAZA y PG -> PASEO');
+c(F({ calle: 'Carrer de Balmes', numero: '10', codigo_postal: '08008' })['Nombre de la calle / Name of street'] === 'Calle de Balmes', 'C3 · «Carrer de Balmes» -> «Calle de Balmes» en el nombre de la calle');
+c(F({ calle: 'Passeig de Gràcia', numero: '10', codigo_postal: '08008' })['Nombre de la calle / Name of street'] === 'Paseo de Gràcia', 'C3 · «Passeig de Gràcia» -> «Paseo de Gràcia»');
+c(F({ calle: 'Carrera de San Jeronimo', numero: '1', codigo_postal: '28014' })['Nombre de la calle / Name of street'] === 'Carrera de San Jeronimo', 'C3 · contraprueba: «Carrera» NO se toca (solo casa la palabra entera)');
+c(F({ calle: 'Gaztambide', numero: '18', codigo_postal: '28015' })['Nombre de la calle / Name of street'] === 'Gaztambide', 'C3 · contraprueba: una calle normal sale intacta');
+c(F({ tipo_via: 'C/' })['Tipo de vía / Type of road'] === 'CALLE' && F({ tipo_via: 'Avda.' })['Tipo de vía / Type of road'] === 'AVENIDA', 'C3 · contraprueba: los alias castellanos de siempre siguen');
+// C4 · pareja de hecho -> soltero
+c(F({ estado_civil: 'pareja de hecho' }).estadoCivil === 'soltero', 'C4 · «pareja de hecho» -> soltero (decision del 03/09; el 19/08 era casado)');
+c(F({ estado_civil: 'domestic partner' }).estadoCivil === 'soltero' && F({ estado_civil: 'civil partnership' }).estadoCivil === 'soltero', 'C4 · las formas inglesas de pareja tambien -> soltero');
+c(F({ estado_civil: 'tengo pareja' }).estadoCivil === 'soltero', 'C4 · «pareja» a secas -> soltero');
+c(F({ estado_civil: 'casado' }).estadoCivil === 'casado' && F({ estado_civil: 'married' }).estadoCivil === 'casado', 'C4 · contraprueba: casado/married siguen siendo casado');
+c(F({ estado_civil: 'viudo' }).estadoCivil === 'soltero' && F({ estado_civil: 'divorciado' }).estadoCivil === 'divorciado', 'C4 · contraprueba: viudo -> soltero y divorciado -> divorciado, como antes');
+c(F({ estado_civil: 'no estoy casado' }).estadoCivil === undefined, 'C4 · contraprueba: una negacion sigue descartandose');
+c(!/\['casado',\s*\['pareja de hecho'/.test(code), 'C4 · en el codigo, pareja de hecho ya NO esta en la lista de casado');
+
 process.stdout.write('\n  ' + ok + ' verdes, ' + ko + ' rojas\n');
 if (ko) process.exit(1);

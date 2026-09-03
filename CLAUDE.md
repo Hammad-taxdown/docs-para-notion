@@ -70,8 +70,8 @@ bash docs/montar-nodo-informe.sh
 node docs/test-generador-030.js
 node docs/test-informe-integracion.js
 
-# LAS VEINTIUNA PUERTAS (22 hasta el 02/09): dieciocho de node plano mas los tres montadores. `bash docs/pasos.sh test`
-# las pasa las veintiuna de una vez. El 02/09 se retiro test-preparar-prompt-dos-agentes.js: media el
+# LAS VEINTIDOS PUERTAS (21 del 02/09 al 03/09): diecinueve de node plano mas los tres montadores. `bash docs/pasos.sh test`
+# las pasa las veintidos de una vez. El 03/09 entro test-prompt-v16.js (244). El 02/09 se retiro test-preparar-prompt-dos-agentes.js: media el
 # Preparar_Prompt del beckham_bot muerto contra un export que ya no esta en el repo. Todas exit 1 si algo esta rojo.
 # 31/08 · Y `pasos.sh test` TAMBIEN sale con exit 1 ahora. Hasta hoy imprimia FALLA en
 # rojo y devolvia 0 SIEMPRE, o sea que la puerta de las puertas mentia. Medido en los
@@ -88,6 +88,7 @@ node docs/test-prompt-v14.js           # el v14 local (66.020 car., PENDIENTE de
 node docs/test-log-evento.js           # el corr_id y el Log_Evento de 6 campos: 25
 node docs/test-diagramas-mermaid.js    # los .mmd.md del repo publico: 28
 node docs/test-prompt-v15.js           # el v15 CONVERSACIONAL (86.548 car.): 206, hereda las 107 comp() del v14
+node docs/test-prompt-v16.js           # el v16 (89.015 car., 03/09, PENDIENTE de pegar): 244, hereda las 206 del v15 MIDIENDO el v16
 node docs/test-preparar-prompt-conversacional.js  # el UNICO codigo nuevo del cambio: 89 (02/09: arranque por el canvas de dos botones)
 
 # Los pasos de un cambio, EN LA TERMINAL (no en un .md que hay que abrir)
@@ -212,7 +213,7 @@ No se editan en n8n. Se tocan las piezas fuente, se concatenan con su script, y 
 | `.030` (2700 bytes, **ISO-8859-1**) | `generador-030-*.js` · `tabla-municipios-ine-*.js` · `nodo-030-glue-*.js` | `nodo-montar-030-COMPLETO.js`, **198.509 car.** (el nodo vivo tiene 197.924: los 585 de diferencia son **solo comentarios**) | `beckham_generar_030` |
 | Informe PDF | `metrica-helvetica-*.js` · `pdf-motor-*.js` · `informe-datos-2026-08-19.js` · `informe-cuerpo-2026-08-19.js` · `nodo-informe-glue-*.js` | `nodo-montar-informe-COMPLETO.js`, **241.272 car.** (19/08: local y nodo vivo IDÉNTICOS) | `beckham_informe_mobility` |
 
-| Nodo `Validar y Normalizar` (el escritor) **con `corr_id`** | se monta del **código vivo del export**, por anclas | `nodo-validar-normalizar-COMPLETO.js`, **82.539 car. (02/09, T093: +179 gentilicios en inglés, PENDIENTE de pegar; el vivo sigue en 76.156)** (**31/08: PEGADO. El vivo mide 76.156 y su sha256 coincide byte a byte, salto de línea final incluido. Los 73.081 de antes eran el estado previo al pegado**) | `beckham_bot` |
+| Nodo `Validar y Normalizar` (el escritor) **con `corr_id`** | se monta del **código vivo del export**, por anclas | `nodo-validar-normalizar-COMPLETO.js`, **86.471 car. (03/09: los 4 parches de la conversación 215475755624195 —aviso_pasaporte, gentilicios con errata, vías catalanas, pareja de hecho→soltero— montados por `montar-validador-2026-09-03.py`, PENDIENTE de pegar; el vivo sigue en 82.539 = T093 pegada el 02/09)** (**31/08: PEGADO. El vivo mide 76.156 y su sha256 coincide byte a byte, salto de línea final incluido. Los 73.081 de antes eran el estado previo al pegado**) | `beckham_bot` |
 El PDF **se monta a mano byte a byte**, no se rellena un `.docx`: de los 17 marcadores, **15 están
 partidos entre varios `<w:r>`** del XML de Word, así que un buscar-y-reemplazar sustituiría 2 de 19
 apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin fallar**.
@@ -381,15 +382,22 @@ apariciones y dejaría 17 `{{...}}` literales en el documento del cliente, **sin
   quien dice si compensa es el fiscal, no el bot. La opción `Salario por debajo de 55.000` de
   `SenalesComplejidad` **se renombró** a 50.000 (renombrada, conserva su `id` `seltUAhJWITkOhsE0`).
 - **La prestación por paternidad TRIBUTA** en Beckham, igual que la de maternidad. El 17/08 se aportó
-  un documento que concluía lo contrario y **se descartó**.
+  un documento que concluía lo contrario y **se descartó**. **03/09: el prompt v16 lo dice con más
+  fuerza** («NO exime de pagar el 24 % aunque un compañero le haya dicho lo contrario»), porque los
+  clientes llegan con esa idea de sus compañeros.
+- **EL BOT NO DICE «ESTO NO ES ASESORAMIENTO» NI «ES INFORMACIÓN GENERAL»** (03/09, decisión del
+  usuario). Habla en nombre de **nuestros asesores**, que preparan, revisan y envían los borradores
+  para el visto bueno antes de presentarlos. El DISCLAIMER del bloque fiscal se retiró en el v16;
+  la regla interna de no dar cálculos de cuota ni prometer resultados **se queda**.
 - **La llegada posterior al 1 de julio YA NO ES SEÑAL DE COMPLEJIDAD** (19/08). Sale de `CASO CLARO`
   y de `CASO COMPLEJO` del Bloque 6 y de la lista cerrada de `SenalesComplejidad`. **OJO Y NO
   CONFUNDIR: la lógica FISCAL del 1 de julio no se toca** — `fechaEfectos()` del `.030` sigue con
   llegada ≤ 30/06 → 01/01 del mismo año y ≥ 01/07 → 01/01 del siguiente, y las fórmulas de situación
   fiscal de Airtable siguen igual. Lo que se cayó es el **enrutado**, no el cálculo.
-- **El estado civil son TRES opciones** (19/08): `soltero`, `casado`, `divorciado`. «Pareja de hecho»
-  se pliega sobre **casado** y «viudo» sobre **soltero**, porque para Hacienda solo cuenta si está o
-  no en pareja. Las dos palabras siguen en el validador **como patrón de entrada**: hacen falta para
+- **El estado civil son TRES opciones** (19/08): `soltero`, `casado`, `divorciado`. **«Pareja de hecho»
+  se pliega sobre SOLTERO desde el 03/09** (decisión del usuario: aunque en España tenga ciertos
+  beneficios, ante Hacienda a estos efectos cuenta como soltero, y por tanto **no dispara la pregunta
+  del cónyuge**; del 19/08 al 03/09 iba a casado) y «viudo» sobre **soltero**. Las dos palabras siguen en el validador **como patrón de entrada**: hacen falta para
   reconocer lo que dice la gente. El `.030` no usa el estado civil y el informe ya no lo imprime.
 - **La fecha de la llamada NO SE PREGUNTA** (19/08). Al reservar en Calendly el cliente ya recibe la
   cita con su fecha. Salió del prompt (incluido el recordatorio `11b`), del parámetro de la tool

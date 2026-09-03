@@ -162,6 +162,86 @@ echo "${B}verificar:${N}  node docs/test-prompt-v15.js   ${D}-> 198 verdes, 0 ro
 echo "${D}            (110 heredadas del v14 MIDIENDO EL v15 + 88 nuevas)${N}"
 [ "$1" = copia ] && bash docs/copiar.sh 8; }
 
+# ══ 03/09 · LO DE LA CONVERSACION 215475755624195 (oneshot) ══════════════════════════
+p6(){ paso 6 "el validador con los 4 parches del 03/09 (pasaporte, gentilicios, vias catalanas, pareja de hecho)" \
+  "beckham_bot_conversacional (n1jx7z9NtXWCD4VC) · PRODUCCION" "Validar y Normalizar  (TEXTAREA de codigo)" \
+  "Cmd+A dentro del textarea y pegar · despues PUBLISH"
+echo "${A}fichero:${N} docs/nodo-validar-normalizar-COMPLETO.js  ${D}(montado por anclas desde el nodo vivo: docs/montar-validador-2026-09-03.py)${N}"
+echo "${A}el contador tiene que decir:${N} ${V}86.471 caracteres${N} ${D}(vivo hoy: 82.539, +3.932)${N}"
+echo "${D}que arregla, cada cosa medida en la conversacion del 02/09:${N}"
+echo "${D}  1. PASAPORTE: si el cliente da un pasaporte al pedirle el NIF/NIE, el nodo lo guarda igual que hoy${N}"
+echo "${D}     pero devuelve ${N}${V}aviso_pasaporte${N}${D} en descartados, y el prompt v16 (paso 7) pide el NIE UNA vez.${N}"
+echo "${D}  2. GENTILICIOS: 'algerino' (y 3 formas mas) + fallback por errata de 1-2 letras ('marroqi', 'colmbia').${N}"
+echo "${D}     Un empate (irlandia) se descarta, no se adivina.${N}"
+echo "${D}  3. VIAS CATALANAS: Carrer/Passeig/Avinguda (+ PG, Avgda, Plaça) -> CALLE/PASEO/AVENIDA, en tipo_via${N}"
+echo "${D}     y en el nombre de la calle ('Carrer de Balmes' -> 'Calle de Balmes').${N}"
+echo "${D}  4. PAREJA DE HECHO -> soltero (ante Hacienda). Hasta hoy -> casado y disparaba la pregunta del conyuge.${N}"
+echo "${B}copiar:${N}     bash docs/copiar.sh 7"
+echo "${B}verificar:${N}  bash docs/montar-nodo-validar.sh   ${D}-> 78 verdes, 0 rojas (45 de antes + 33 del 03/09)${N}"
+echo "${D}            tras pegar: yo leo el nodo por MCP (86.471 car.) y reexporto beckham_bot_conversacional.json${N}"
+echo "${D}            prueba en el chat: nacionalidad 'algerino', domicilio 'Carrer de Balmes 10', NIF = un pasaporte${N}"
+[ "$1" = copia ] && bash docs/copiar.sh 7; }
+
+p7(){ paso 7 "el prompt v16 · copy: habla por los asesores, paternidad, pareja de hecho, aviso de pasaporte" \
+  "LANGSMITH · bot_mobility_prompt · tag prod (lo lee el conversacional)" "el prompt entero" \
+  "pegar con Cmd+A y mover el tag prod al commit nuevo"
+echo "${A}fichero:${N} docs/prompt-final-2026-09-03-v16.txt  ${D}(montado por anclas desde el v15: docs/montar-prompt-v16.py)${N}"
+echo "${A}el contador tiene que decir:${N} ${V}89.015 caracteres${N} ${D}(v15: 86.548, +2.467)${N}"
+echo "${D}que cambia respecto al v15 (nueve parches, cada uno con su comprobacion):${N}"
+echo "${D}  · FUERA el «no es asesoramiento» / «es informacion general»: cero apariciones. El bot habla en${N}"
+echo "${D}    nombre de NUESTROS ASESORES, que preparan, revisan y envian los borradores (7 menciones).${N}"
+echo "${D}  · los dos mensajes de cierre y la ficha AEAT: los borradores los hacen los asesores y se envian${N}"
+echo "${D}    para el visto bueno ANTES de presentarlos. El SLA 24-48 h no cambia de recuento.${N}"
+echo "${D}  · paternidad: sigue tributando, y NO exime del 24 % aunque un compañero diga lo contrario (x2).${N}"
+echo "${D}  · pareja de hecho -> SOLTERO ante Hacienda, y no se pregunta PF6b. (El v15 decia casado.)${N}"
+echo "${D}  · D3: si el sistema devuelve aviso_pasaporte, pide el NIE UNA sola vez; si lo da, va en nif.${N}"
+echo "${D}  · nacionalidad con errata: pasarla TAL CUAL, el sistema la tolera (paso 6).${N}"
+echo "${A}intacto salvo 3 frases de copy:${N} ${D}el bloque de CONOCIMIENTO FISCAL. La puerta aplica esos 3 parches al${N}"
+echo "${D}bloque del v15 y exige igualdad byte a byte: un cuarto cambio la pone en rojo.${N}"
+echo "${R}ORDEN:${N} ${D}despues del paso 6 (el aviso_pasaporte lo produce el validador nuevo). Antes no rompe nada:${N}"
+echo "${D}el aviso simplemente no llega.${N}"
+echo "${B}copiar:${N}     bash docs/copiar.sh 9"
+echo "${B}verificar:${N}  node docs/test-prompt-v16.js   ${D}-> 244 verdes, 0 rojas (206 heredadas del v15 MIDIENDO el v16 + 38 nuevas)${N}"
+[ "$1" = copia ] && bash docs/copiar.sh 9; }
+
+p8(){ paso 8 "calcular_plazo escribe fecha_limite_bot en el contacto de Intercom (borrador ya subido por MCP)" \
+  "beckham_f2_plazo. (wdOOF0ecCkgFOUjt) · BORRADOR 7b20512c, publicado sigue 09147598" \
+  "'Buscar el contacto en Intercom' y 'Escribir fecha_limite_bot en el contacto'  (DESPLEGABLE de credencial)" \
+  "elegir la credencial de Intercom en los DOS nodos HTTP y PUBLISH"
+echo "${D}que hay en el borrador (7 nodos, validado por MCP): Webhook -> Calcular el plazo -> Respond to Webhook ->${N}"
+echo "${D}  Hay user_id y fecha limite? -> Buscar el contacto (POST /contacts/search por external_id) ->${N}"
+echo "${D}  Contacto encontrado? -> Escribir fecha_limite_bot (PUT /contacts/{id}). Los dos HTTP con${N}"
+echo "${D}  onError=continueRegularOutput: si Intercom falla, la tool ya ha respondido y el bot no se entera.${N}"
+echo "${R}ANTES de publicar, en Intercom:${N} ${D}Settings -> Data -> People -> Create attribute:${N}"
+echo "${D}  nombre ${N}${V}fecha_limite_bot${N}${D} · tipo ${N}${V}Text${N}${D}. Sin el atributo creado, el PUT devuelve error (y el bot sigue igual).${N}"
+echo "${D}la credencial: la misma intercomApi que usan Traer_Conversacion_intercom1 y Responder_Intercom del bot.${N}"
+echo "${D}el codigo del nodo Calcular el plazo esta en docs/nodo-f2-calcular-plazo-2026-09-03.js (por si hay que repegarlo);${N}"
+echo "${D}ademas de user_id, entiende meses en ingles ('9th of August 2026'): la compañera lo escribio asi el 02/09.${N}"
+echo "${B}verificar:${N}  ${D}yo, por MCP: versionId == activeVersionId y 7 nodos; y en la primera ejecucion con user_id,${N}"
+echo "${D}            el PUT con 200 y el atributo visible en el perfil del contacto en Intercom.${N}"
+[ "$1" = copia ] && echo "${D}(no hay valor que copiar: son dos desplegables y un Publish)${N}"; }
+
+p9(){ paso 9 "la tool calcular_plazo manda el user_id (para que el paso 8 sepa a quien escribir)" \
+  "beckham_bot_conversacional (n1jx7z9NtXWCD4VC) · PRODUCCION" "calcular_plazo (la tool HTTP)  · Body Parameters" \
+  "Add Parameter: Name = user_id · Value = la expresion (modo Expression, sin el = inicial) · PUBLISH"
+echo "${A}valor:${N} ${V}{{ \$('Webhook1').first().json.body.user_id }}${N}"
+echo "${D}es la MISMA expresion que ya usa guardar_datos_cliente para su user_id: copiada de ahi, no inventada.${N}"
+echo "${D}(.first() y no .item: en una tool bajo el agente no hay item emparejado)${N}"
+echo "${B}copiar:${N}     bash docs/copiar.sh 10"
+echo "${B}verificar:${N}  ${D}yo, por MCP: bodyParameters de calcular_plazo pasa de 1 a 2 (fecha_alta_ss, user_id)${N}"
+[ "$1" = copia ] && bash docs/copiar.sh 10; }
+
+p10(){ paso 10 "la landing P00027 · solo copy, con la calculadora y el proceso real" \
+  "app.taxdown.es/procedure/P00027 (quien edite la landing)" "el texto entero" \
+  "sustituir por el copy propuesto; ENLACE-CALCULADORA es el unico hueco"
+echo "${A}fichero:${N} docs/landing-P00027-copy-2026-09-03.md"
+echo "${D}que cambia: el proceso pasa del formulario+email al chat con el bot; aparece que recibe el cliente${N}"
+echo "${D}(borradores del 030 y 149 revisados por un asesor, visto bueno antes de presentar); enlace a la${N}"
+echo "${D}calculadora ANTES de solicitar; el salario sale de los requisitos (nunca descarta) y pasa a orientacion;${N}"
+echo "${D}y el plazo cuenta desde el ALTA EN LA SS, no desde la llegada (la landing actual mezcla los dos).${N}"
+echo "${B}copiar:${N}     bash docs/copiar.sh 11"
+[ "$1" = copia ] && bash docs/copiar.sh 11; }
+
 # 31/08 · ESTA FUNCION SALIA CON exit 0 AUNQUE LAS VEINTIDOS ESTUVIERAN ROJAS.
 # Imprimia FALLA en rojo y devolvia el codigo del ultimo printf, que siempre es 0.
 # O sea que la puerta de las puertas mentia, que es exactamente el corolario que el
@@ -171,9 +251,9 @@ echo "${D}            (110 heredadas del v14 MIDIENDO EL v15 + 88 nuevas)${N}"
 # (el bot del canvas) contra su export, y ese export se quito del repo hoy porque el workflow
 # no recibe trafico desde el 31/08. El Preparar_Prompt vivo es el del conversacional y lo mide
 # test-preparar-prompt-conversacional.js (89). El fichero de la puerta se conserva por historia.
-puertas(){ echo "${B}${C}━━━ LAS VEINTIUNA PUERTAS ━━━${N}"
+puertas(){ echo "${B}${C}━━━ LAS VEINTIDOS PUERTAS ━━━${N}"
   fallos=0
-for t in test-decidir-status.js test-validador-2026-08-19.js test-prompt-v10.js test-prompt-v12.js test-prompt-v13.js test-prompt-v14.js test-prompt-v15.js test-lector-expediente.js test-v2-preparar-informe.js test-contrato-upsert.js test-log-evento.js test-diagramas-mermaid.js test-guarda-punto-modo.js test-nodo-validar-subworkflow.js test-resolver-modo.js test-preparar-prompt-faq.js test-preparar-prompt-conversacional.js test-registrar-optout.js; do
+for t in test-decidir-status.js test-validador-2026-08-19.js test-prompt-v10.js test-prompt-v12.js test-prompt-v13.js test-prompt-v14.js test-prompt-v15.js test-prompt-v16.js test-lector-expediente.js test-v2-preparar-informe.js test-contrato-upsert.js test-log-evento.js test-diagramas-mermaid.js test-guarda-punto-modo.js test-nodo-validar-subworkflow.js test-resolver-modo.js test-preparar-prompt-faq.js test-preparar-prompt-conversacional.js test-registrar-optout.js; do
   r=$(node "docs/$t" 2>&1 | grep -oE "[0-9]+ verdes, [0-9]+ rojas|TODO PASA · [0-9]+ comprobaciones"); node "docs/$t" >/dev/null 2>&1 \
     && printf "  ${V}OK${N}   %-38s %s\n" "$t" "$r" || { printf "  ${R}FALLA${N} %-38s %s\n" "$t" "$r"; fallos=$((fallos+1)); }
 done
@@ -182,7 +262,7 @@ bash docs/montar-nodo-informe.sh >/dev/null 2>&1 && printf "  ${V}OK${N}   %-38s
 r=$(bash docs/montar-nodo-validar.sh 2>&1 | grep -oE "[0-9]+ verdes, [0-9]+ rojas"); bash docs/montar-nodo-validar.sh >/dev/null 2>&1 \
   && printf "  ${V}OK${N}   %-38s %s\n" montar-nodo-validar.sh "$r" || { printf "  ${R}FALLA${N} %-38s %s\n" montar-nodo-validar.sh "$r"; fallos=$((fallos+1)); }
   if [ "$fallos" -gt 0 ]; then echo "  ${R}${B}$fallos PUERTA(S) ROJA(S). No se publica nada.${N}"; return 1; fi
-  echo "  ${V}las veintiuna verdes.${N}"; return 0
+  echo "  ${V}las veintidos verdes.${N}"; return 0
 }
 
 case "$1" in
@@ -192,6 +272,12 @@ case "$1" in
   21) bash docs/pasos-2026-08-21.sh ;;
   19|viejo) bash docs/pasos-2026-08-19.sh ;;
   ''|todos) puertas
+    echo; echo "${B}${C}════ LO DE LA CONVERSACION DEL 02/09 · 03/09 ════${N}"
+    for i in 6 7 8 9 10; do "p$i"; done
+    echo; echo "${B}${C}━━━ ORDEN DEL 03/09 ━━━${N}"
+    echo "  ${R}6 primero${N} (arregla tres fallos vistos en produccion y es un Cmd+A), ${R}7 despues${N} (el prompt"
+    echo "  lee el aviso que produce el 6). ${D}8 y 9 van juntos y en cualquier orden: sin el 9 el 8 no escribe${N}"
+    echo "  ${D}nada, y sin el 8 el 9 manda un dato que nadie lee. El 10 es copy: lo hace quien edite la landing.${N}"
     echo; echo "${B}${C}════ EL AGENTE CONVERSACIONAL UNICO · 31/08 ════${N}"
     p5
     echo; echo "${B}${C}════ ADAPTAR A LA ESCALERA NUEVA · 26/08 ════${N}"
@@ -205,7 +291,7 @@ case "$1" in
     echo "  ${D}El 1 es pegar y mover el tag: dos minutos. El 3 es higiene y no corre prisa.${N}"
     echo "  ${D}El 2 esta SUPERADO: el canvas se construye desde cero en una copia${N}"
     echo "  ${D}(docs/canvas-desde-cero-2026-08-27.md); sus correcciones van dentro del rebuild.${N}"
-    echo; echo "${D}un paso suelto y copiado al portapapeles:${N}  bash docs/pasos.sh 1" ;;
-  [1-5]) "p$1" copia ;;
-  *) echo "uso: bash docs/pasos.sh [1-5|test|26|24|21|19]" ;;
+    echo; echo "${D}un paso suelto y copiado al portapapeles:${N}  bash docs/pasos.sh 6" ;;
+  [1-9]|10) "p$1" copia ;;
+  *) echo "uso: bash docs/pasos.sh [1-10|test|26|24|21|19]" ;;
 esac

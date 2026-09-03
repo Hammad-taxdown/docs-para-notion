@@ -47,6 +47,13 @@ disco = io.open('docs/nodo-validar-normalizar-COMPLETO.js', encoding='utf-8').re
 h = lambda t: hashlib.sha256(t.encode('utf-8')).hexdigest()[:12]
 if vivo == disco:
     sys.stdout.write('  \033[32mOK\033[0m   el COMPLETO es BYTE A BYTE el nodo vivo (%d car, sha256 %s)\n' % (len(disco), h(disco)))
+elif __import__('subprocess').run(['python3', 'docs/montar-validador-2026-09-03.py', 'docs/.validador-derivado-del-vivo.js'], capture_output=True).returncode == 0 \
+        and io.open('docs/.validador-derivado-del-vivo.js', encoding='utf-8').read() == disco:
+    # 03/09 · ESTADO INTERMEDIO LEGITIMO: el COMPLETO es el nodo vivo MAS los cuatro parches del
+    # 03/09 montados por anclas, pendiente de pegar. Se acepta SOLO si regenerar el parche desde el
+    # export da byte a byte el COMPLETO del disco: un COMPLETO editado a mano seguiria en rojo.
+    __import__('os').remove('docs/.validador-derivado-del-vivo.js')
+    sys.stdout.write('  \033[32mOK\033[0m   el COMPLETO es el nodo vivo + los parches del 03/09 (%d car, sha256 %s) \033[2m· PENDIENTE DE PEGAR\033[0m\n' % (len(disco), h(disco)))
 else:
     sys.stdout.write('  \033[31mFALLA\033[0m el COMPLETO y el nodo vivo se han separado: disco %d car (%s) vs vivo %d car (%s)\n'
                      % (len(disco), h(disco), len(vivo), h(vivo)))
@@ -54,7 +61,12 @@ else:
 FIN
   node docs/test-nodo-validar-completo.js || { printf "  ${R}FALLA la puerta del COMPLETO${N}\n"; exit 1; }
   CAR=$(python3 -c "import io,sys;sys.stdout.write(str(len(io.open('$DEST',encoding='utf-8').read())))")
-  printf "\n  ${V}%s caracteres${N} ${D}· ya pegado en produccion, nada que hacer${N}\n" "$CAR"
+  if bash -c "python3 - <<'FIN'
+import json,io,sys
+wf=json.load(io.open('proyecto-mobility/workflows-n8n/beckham_bot_conversacional.json',encoding='utf-8'))
+vivo=next(n['parameters']['jsCode'] for n in wf['nodes'] if n['name']=='Validar y Normalizar')
+sys.exit(0 if vivo==io.open('docs/nodo-validar-normalizar-COMPLETO.js',encoding='utf-8').read() else 1)
+FIN"; then printf "\n  ${V}%s caracteres${N} ${D}· ya pegado en produccion, nada que hacer${N}\n" "$CAR"; else printf "\n  ${V}%s caracteres${N} ${R}· PENDIENTE DE PEGAR${N} ${D}(bash docs/pasos.sh 6)${N}\n" "$CAR"; fi
   exit 0
 fi
 

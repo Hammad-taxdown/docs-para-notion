@@ -18,6 +18,9 @@
     },
     "M9": {
       "created_at": "2026-09-02T10:00:15Z"
+    },
+    "TEST": {
+      "created_at": "2026-09-03T10:15:14Z"
     }
   },
   "tasks": {
@@ -1080,9 +1083,10 @@
       "verify": "test-decidir-status.js 36 verdes contra opciones-status-airtable-2026-09-02.txt; nodo vivo 13.814 car por MCP",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-09-02T10:00:15Z"
+      "status": "done",
+      "note": "Verificado por MCP el 02/09 (log 1298): Decidir_Status vivo == nodo-decidir-status-2026-09-02.js, Upser refrescado limpio. El tracker se quedo en planned.",
+      "created_at": "2026-09-02T10:00:15Z",
+      "done_at": "2026-09-03T09:21:58Z"
     },
     "T093": {
       "title": "Validador: nombres de pais en INGLES (69 huecos) y gentilicios en ingles (28) en la tabla GENTILICIOS",
@@ -1128,8 +1132,58 @@
       "note": "02/09 el usuario descargo el export desde la UI (~/Downloads) y se copio a proyecto-mobility/workflows-n8n/beckham_informe_mobility_v2.json.",
       "created_at": "2026-09-02T10:43:24Z",
       "done_at": "2026-09-02T11:06:47Z"
+    },
+    "T097": {
+      "title": "Pegar el validador 03/09 (86.471) en Validar y Normalizar del conversacional y reexportar",
+      "milestone": "TEST",
+      "verify": "montar-nodo-validar.sh dice 'ya pegado' y el vivo mide 86.471 por MCP",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-09-03T10:15:14Z"
+    },
+    "T098": {
+      "title": "Pegar el prompt v16 (89.015) en bot_mobility_prompt tag prod",
+      "milestone": "TEST",
+      "verify": "LangSmith cuenta 89.015 y el conversacional responde sin 'no es asesoramiento'",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-09-03T10:15:14Z"
+    },
+    "T099": {
+      "title": "f2_plazo: crear fecha_limite_bot en Intercom, credencial en los 2 HTTP y publicar el borrador 7b20512c",
+      "milestone": "TEST",
+      "verify": "versionId==activeVersionId por MCP y un PUT 200 en una ejecucion real",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-09-03T10:15:14Z"
+    },
+    "T100": {
+      "title": "Tool calcular_plazo: body param user_id con la expresion de Webhook1 y publicar",
+      "milestone": "TEST",
+      "verify": "bodyParameters pasa de 1 a 2 por MCP",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-09-03T10:15:14Z"
+    },
+    "T101": {
+      "title": "Landing P00027: entregar docs/landing-P00027-copy-2026-09-03.md a quien edite la landing y poner la URL de la calculadora",
+      "milestone": "TEST",
+      "verify": "la landing publica el copy nuevo con el enlace a la calculadora",
+      "depends": [],
+      "effort": 1.0,
+      "status": "planned",
+      "note": "",
+      "created_at": "2026-09-03T10:15:14Z"
     }
   },
-  "next_task": 97,
-  "updated_at": "2026-09-02T11:06:47Z"
+  "next_task": 102,
+  "updated_at": "2026-09-03T10:15:14Z"
 }
