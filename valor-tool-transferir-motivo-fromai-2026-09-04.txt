@@ -1,0 +1,1 @@
+{{ $fromAI('motivo', `Por qué se transfiere, en una frase corta: pide hablar con una persona / está enfadado o frustrado / bloqueo documental (no consigue el certificado de su empresa) / problema que no puedo resolver. Añade el detalle concreto.`, 'string') }}

@@ -1,0 +1,1 @@
+{{ $fromAI('idioma', `Idioma en el que estás hablando con el cliente: es (español) o en (inglés). Nada más.`, 'string') }}

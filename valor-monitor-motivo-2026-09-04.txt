@@ -1,0 +1,1 @@
+{{ 'Detectado por el monitor: ' + $('Decisor_LLM').item.json.output.motivo_escalado + ($('Decisor_LLM').item.json.output.detalle_alerta ? ' · ' + $('Decisor_LLM').item.json.output.detalle_alerta : '') }}

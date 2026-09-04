@@ -15,6 +15,18 @@
 #   bash docs/copiar.sh 13    el $fromAI de fecha_documento para la tool calcular_plazo (sin el =)
 #   bash docs/copiar.sh 14    el TEXTO que se AÑADE al final de la Description de la tool calcular_plazo
 #   bash docs/copiar.sh 15    el Code entero del nodo 'Calcular el plazo' de beckham_f2_plazo.
+#   bash docs/copiar.sh 16    04/09 · la Description de la tool enviar_autorizacion
+#   bash docs/copiar.sh 17    04/09 · el input user_id de la tool (Expression, sin el =)
+#   bash docs/copiar.sh 18    04/09 · el input conversation_id de la tool (Expression, sin el =)
+#   bash docs/copiar.sh 19    04/09 · el input idioma de la tool: el $fromAI (Expression, sin el =)
+#   bash docs/copiar.sh 20    04/09 · el prompt v17 entero (SUPERADO por el 23)
+#   bash docs/copiar.sh 21    04/09 tarde · la Description de la tool transferir_humano
+#   bash docs/copiar.sh 22    04/09 tarde · el input motivo de la tool: el $fromAI (Expression, sin el =)
+#   bash docs/copiar.sh 23    04/09 tarde · el prompt v18 entero (transferencia por la tool + mejoras de Notion + foral fuera)
+#   bash docs/copiar.sh 24    04/09 tarde · el $fromAI de senales_complejidad para guardar_datos_cliente (6 etiquetas, foral aclarado)
+#   bash docs/copiar.sh 25    04/09 tarde · MONITOR: el Input Schema del Structured Output Parser (escalar + alerta)
+#   bash docs/copiar.sh 26    04/09 tarde · MONITOR: el input motivo del Execute Workflow -> mobility_transferir_humano (Expression, sin el =)
+#   bash docs/copiar.sh 27    04/09 tarde · CONVERSACIONAL: el input respuesta_bot del nodo Monitor_escalado, con guarda para el fallback (Expression, sin el =)
 # Todo sin el '=' inicial y sin salto de linea final, como pide n8n.
 cd "$(dirname "$0")/.." || exit 1
 V=$(printf '\033[32m'); D=$(printf '\033[2m'); N=$(printf '\033[0m'); R=$(printf '\033[31m')
@@ -78,5 +90,34 @@ case "$1" in
   15) pbcopy < docs/nodo-f2-calcular-plazo-2026-09-03.js
      n=$(python3 -c "import io;print(len(io.open('docs/nodo-f2-calcular-plazo-2026-09-03.js',encoding='utf-8').read()))")
      echo "${V}copiado el Code de 'Calcular el plazo' (beckham_f2_plazo.)${N}"; echo "${D}n8n tiene que decir: ${N}${V}$n caracteres${N}" ;;
-  *) echo "uso: bash docs/copiar.sh [1-15]" ;;
+  16) pbcopy < docs/valor-description-enviar-autorizacion-2026-09-04.txt
+     echo "${V}copiado la Description de la tool enviar_autorizacion${N}"; echo "${D}n8n tiene que decir: 1.062 caracteres${N}" ;;
+  17) pbcopy < docs/valor-tool-autorizacion-user-id-2026-09-04.txt
+     echo "${V}copiado el input user_id${N}"; echo "${D}Workflow Inputs -> user_id -> modo Expression -> pegar (sin el =)${N}"; cat docs/valor-tool-autorizacion-user-id-2026-09-04.txt; echo ;;
+  18) pbcopy < docs/valor-tool-autorizacion-conversation-id-2026-09-04.txt
+     echo "${V}copiado el input conversation_id${N}"; echo "${D}Workflow Inputs -> conversation_id -> modo Expression -> pegar (sin el =)${N}"; cat docs/valor-tool-autorizacion-conversation-id-2026-09-04.txt; echo ;;
+  19) pbcopy < docs/valor-tool-autorizacion-idioma-fromai-2026-09-04.txt
+     echo "${V}copiado el input idioma (\$fromAI)${N}"; echo "${D}Workflow Inputs -> idioma -> modo Expression -> pegar (sin el =)${N}"; cat docs/valor-tool-autorizacion-idioma-fromai-2026-09-04.txt; echo ;;
+  20) printf '%s' "$(cat docs/prompt-final-2026-09-04-v17.txt)" | pbcopy
+     n=$(python3 -c "import io;print(len(io.open('docs/prompt-final-2026-09-04-v17.txt',encoding='utf-8').read().rstrip('\n')))")
+     echo "${V}copiado el prompt v17 entero${N}"; echo "${D}el contador de LangSmith tiene que decir: ${N}${V}$n caracteres${N}"
+     echo "${R}Si Alina o Iciar han tocado el prompt vivo, NO pegar este: montar sobre el vivo con montar-prompt-v17.py y copiar ese.${N}" ;;
+  21) pbcopy < docs/valor-description-transferir-humano-2026-09-04.txt
+     n=$(python3 -c "import io;print(len(io.open('docs/valor-description-transferir-humano-2026-09-04.txt',encoding='utf-8').read()))")
+     echo "${V}copiado la Description de la tool transferir_humano${N}"; echo "${D}n8n tiene que decir: $n caracteres${N}" ;;
+  22) pbcopy < docs/valor-tool-transferir-motivo-fromai-2026-09-04.txt
+     echo "${V}copiado el input motivo (\$fromAI)${N}"; echo "${D}Workflow Inputs -> motivo -> modo Expression -> pegar (sin el =)${N}"; cat docs/valor-tool-transferir-motivo-fromai-2026-09-04.txt; echo ;;
+  23) printf '%s' "$(cat docs/prompt-final-2026-09-04-v18.txt)" | pbcopy
+     n=$(python3 -c "import io;print(len(io.open('docs/prompt-final-2026-09-04-v18.txt',encoding='utf-8').read().rstrip('\n')))")
+     echo "${V}copiado el prompt v18 entero${N}"; echo "${D}el contador de LangSmith tiene que decir: ${N}${V}$n caracteres${N}"
+     echo "${R}Si Alina o Iciar han tocado el prompt vivo, NO pegar este: montar sobre el vivo (v17 y luego v18) y copiar ese.${N}" ;;
+  24) pbcopy < docs/valor-senales-complejidad-fromai-2026-09-04.txt
+     echo "${V}copiado el \$fromAI de senales_complejidad (6 etiquetas)${N}"; echo "${D}guardar_datos_cliente -> Body Parameters -> senales_complejidad -> Value (Expression): sustituir entero, sin el =${N}" ;;
+  25) pbcopy < docs/valor-monitor-parser-schema-2026-09-04.json
+     echo "${V}copiado el Input Schema del parser del monitor${N}"; echo "${D}Structured Output Parser -> Schema Type: Define below (JSON Schema) -> Input Schema: sustituir entero${N}" ;;
+  26) pbcopy < docs/valor-monitor-motivo-2026-09-04.txt
+     echo "${V}copiado el input motivo del Execute Workflow del monitor${N}"; cat docs/valor-monitor-motivo-2026-09-04.txt; echo ;;
+  27) pbcopy < docs/valor-monitor-respuesta-bot-2026-09-04.txt
+     echo "${V}copiado el input respuesta_bot (con guarda) para Monitor_escalado${N}"; cat docs/valor-monitor-respuesta-bot-2026-09-04.txt; echo ;;
+  *) echo "uso: bash docs/copiar.sh [1-27]" ;;
 esac

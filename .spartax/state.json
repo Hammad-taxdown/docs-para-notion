@@ -826,9 +826,11 @@
       "verify": "una fila NRF+BCK o NRF+RF trae los cuatro marcadores con su pais; hoy solo esta probado en local con test-v2-preparar-informe",
       "depends": [],
       "effort": 0.5,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-08-21T10:09:50Z"
+      "status": "done",
+      "note": "Cerrada con datos el 04/09: el tick 8164049 (03/09 07:15Z) del informe v2 proceso recPz1LBCT3GNQpez NRF+RF|EN y Preparar el informe devolvio los 4 marcadores NR rellenos: m_TipoNR '24 %', m_NotaTipoNR 'Afganistan is outside the European Union...', frase y alquiler; la fila BCK+BCK|ES del mismo tick los trae vacios. El parche del 21/08 hace las dos cosas bien en vivo.",
+      "created_at": "2026-08-21T10:09:50Z",
+      "planned_at": "2026-09-04T13:35:38Z",
+      "done_at": "2026-09-04T13:36:02Z"
     },
     "T070": {
       "title": "Comprobar que hace el generador del .030 con un expediente que solo trae pasaporte",
@@ -1184,9 +1186,10 @@
       "verify": "la landing publica el copy nuevo con el enlace a la calculadora",
       "depends": [],
       "effort": 1.0,
-      "status": "planned",
-      "note": "",
-      "created_at": "2026-09-03T10:15:14Z"
+      "status": "done",
+      "note": "CANCELADA por el usuario el 04/09: olvidar la calculadora",
+      "created_at": "2026-09-03T10:15:14Z",
+      "done_at": "2026-09-04T13:36:02Z"
     },
     "T102": {
       "title": "Repegar validador (86.587) y prompt v16 (90.041) con el NIF/NIE obligatorio",
@@ -1220,8 +1223,74 @@
       "note": "Verificado por MCP 15:58Z: f2 016877a5 publicado con el Code nuevo (3 nodos); tool calcular_plazo con fecha_alta_ss+fecha_documento y Description con fecha_documento (conversacional d699da05); Langsmith Prompt de la ejecucion 8167149 = v16 91.628 (la diferencia son las variables {current_date}/{contexto} rellenas).",
       "created_at": "2026-09-03T14:18:28Z",
       "done_at": "2026-09-03T16:01:47Z"
+    },
+    "T105": {
+      "title": "Autorizacion a Intercom · paso 15: credenciales de los 2 HTTP de mobility_autorizacion_intercom (wMdJ0PRsXdWWdXL4) y Publish",
+      "milestone": "TEST",
+      "verify": "por MCP: active=true, 17 nodos, versionId==activeVersionId; una ejecucion manual deja el PDF en la conversacion",
+      "depends": [],
+      "effort": 0.2,
+      "status": "done",
+      "note": "Verificado por MCP 04/09 ~15:50 Madrid: wMdJ0PRsXdWWdXL4 (renombrado por el usuario a mobility_autorizacion_intercom_chat) active=true, 17 nodos, versionId==activeVersionId=57ee7415, upd 13:44Z.",
+      "created_at": "2026-09-04T13:35:38Z",
+      "done_at": "2026-09-04T13:51:32Z"
+    },
+    "T106": {
+      "title": "Autorizacion a Intercom · paso 16: tool enviar_autorizacion (toolWorkflow, 3 inputs) en el AI Agent del conversacional",
+      "milestone": "TEST",
+      "verify": "por MCP: nodo toolWorkflow enviar_autorizacion con workflowId wMdJ0PRsXdWWdXL4 conectado ai_tool al AI Agent; versionId==activeVersionId",
+      "depends": [],
+      "effort": 0.2,
+      "status": "done",
+      "note": "Verificado por MCP: beckham_bot_conversacional e5a652db==activeVersionId (13:47Z), 54 nodos; toolWorkflow enviar_autorizacion -> wMdJ0PRsXdWWdXL4 con los 3 inputs (user_id, conversation_id, idioma ) y la Description de 1.062, conectado ai_tool al AI Agent.",
+      "created_at": "2026-09-04T13:35:38Z",
+      "done_at": "2026-09-04T13:51:32Z"
+    },
+    "T107": {
+      "title": "Autorizacion a Intercom · paso 17: prompt v17 montado sobre el prompt VIVO y tag prod movido",
+      "milestone": "TEST",
+      "verify": "el Langsmith Prompt de una ejecucion posterior trae enviar_autorizacion x3 y 0 Autorizacion_Generica",
+      "depends": [],
+      "effort": 0.1,
+      "status": "done",
+      "note": "SUPERADA el 04/09 tarde por T109 (prompt v18, que incluye el v17)",
+      "created_at": "2026-09-04T13:35:38Z",
+      "done_at": "2026-09-04T14:06:58Z"
+    },
+    "T108": {
+      "title": "Paso 18 · tool transferir_humano: publicar ErttueeJzWfTkiWH (2 credenciales Intercom) y apuntar el nodo del agente (sustituye a Gestionar_escalado MOB, que snoozea 7 dias)",
+      "milestone": "TEST",
+      "verify": "por MCP: ErttueeJzWfTkiWH active; toolWorkflow transferir_humano con 3 inputs; ningun nodo apunta a iIs0vU6ngiQAiA8u",
+      "depends": [],
+      "effort": 0.2,
+      "status": "done",
+      "note": "Verificado por MCP 04/09 16:27 Madrid: mobility_transferir_humano ErttueeJzWfTkiWH active=true, cab84299==activeVersionId, callerPolicy=any; conversacional b50f2292==activeVersionId (14:26Z), 54 nodos, toolWorkflow transferir_humano -> ErttueeJzWfTkiWH con description y 3 inputs (conversation_id, user_id, motivo $fromAI), conectado ai_tool; CERO nodos apuntando a iIs0vU6ngiQAiA8u.",
+      "created_at": "2026-09-04T14:06:58Z",
+      "done_at": "2026-09-04T14:28:18Z"
+    },
+    "T109": {
+      "title": "Paso 19 · prompt v18 (transferencia por la tool + 13 mejoras de Notion) sobre el prompt VIVO y tag prod",
+      "milestone": "TEST",
+      "verify": "Langsmith Prompt de una ejecucion posterior: transferir_humano x8, SEIS HERRAMIENTAS x1, 0 calendly viejo",
+      "depends": [],
+      "effort": 0.1,
+      "status": "done",
+      "note": "04/09: el usuario dice pegado el v18 y movido el tag; la tool ya lleva el senales_complejidad de 6 etiquetas (verificado en b50f2292). El prompt en prod se MIDE en la primera ejecucion posterior a las 16:20 (no hay ninguna aun).",
+      "created_at": "2026-09-04T14:06:58Z",
+      "done_at": "2026-09-04T14:32:40Z"
+    },
+    "T110": {
+      "title": "Paso 20 · Gestionar_escalado MOB como monitor post-respuesta: parser con escalar, If Escalar? -> mobility_transferir_humano, snooze desactivado, y nodo Monitor_escalado en el conversacional detras de Responder_Intercom (sin esperar, on error continue)",
+      "milestone": "TEST",
+      "verify": "por MCP: iIs0vU6ngiQAiA8u activo con la rama nueva y el snooze disabled; conversacional con executeWorkflow Monitor_escalado waitForSubWorkflow=false",
+      "depends": [],
+      "effort": 0.3,
+      "status": "planned",
+      "note": "04/09 18:00: A1 (input user_id) y A2 (schema del parser) HECHOS por el usuario (iIs0vU6ngiQAiA8u 66ed97c7, 14:56Z, inactivo). FALTAN: A3 If Escalar?, A4 Transferir_por_monitor, A5 desactivar los 4 del snooze, A6 publish, y la Parte B (Monitor_escalado en el conversacional). Pasos en docs/monitor-escalado-2026-09-04.md y pasos.sh 20.",
+      "created_at": "2026-09-04T14:32:40Z",
+      "planned_at": "2026-09-04T15:03:44Z"
     }
   },
-  "next_task": 105,
-  "updated_at": "2026-09-03T16:01:47Z"
+  "next_task": 111,
+  "updated_at": "2026-09-04T15:03:44Z"
 }

@@ -5,7 +5,9 @@
 #   bash docs/pasos.sh        -> los pasos y el orden
 #   bash docs/pasos.sh 1      -> un paso suelto, Y lo copia al portapapeles
 #   bash docs/pasos.sh 5      -> 31/08 · el prompt v15, el agente conversacional unico
-#   bash docs/pasos.sh test   -> pasa las VEINTIUNA puertas (22 hasta el 02/09)
+#   bash docs/pasos.sh test   -> pasa las VEINTISEIS puertas (25 hasta el 04/09 mediodia, 23 el 03/09)
+#   bash docs/pasos.sh 18..19 -> 04/09 tarde · la tool transferir_humano (de Iciar) y el prompt v18 (Notion + transferencia)
+#   bash docs/pasos.sh 15..17 -> 04/09 · la autorizacion prerrellenada viaja a Intercom (tool enviar_autorizacion)
 cd "$(dirname "$0")/.." || exit 1
 B=$(printf '\033[1m'); D=$(printf '\033[2m'); V=$(printf '\033[32m'); A=$(printf '\033[33m')
 R=$(printf '\033[31m'); C=$(printf '\033[36m'); N=$(printf '\033[0m')
@@ -290,6 +292,65 @@ echo "${D}vacia y trata el caso como grave, que es lo de hoy: no rompe. El promp
 echo "${B}verificar:${N}  ${D}yo, por MCP: bodyParameters de calcular_plazo pasa de 1 a 2 y la Description contiene 'fecha_documento'${N}"
 [ "$1" = copia ] && bash docs/copiar.sh 13; }
 
+# ── 04/09 · LA AUTORIZACION PRERRELLENADA VIAJA A INTERCOM ─────────────────────────────
+p15(){ paso 15 "mobility_autorizacion_intercom (wMdJ0PRsXdWWdXL4): credenciales de 2 nodos HTTP y Publish" \
+  "mobility_autorizacion_intercom (wMdJ0PRsXdWWdXL4) · proyecto Ops / Fiscal · CREADO POR MCP el 04/09, inactivo" \
+  "Enviar_a_Intercom  y  Subir_la_autorizacion_a_Airtable  (los dos HTTP Request)" \
+  "en cada uno: Authentication = Predefined Credential Type (ya puesto) -> desplegable 'Credential for Intercom API' / 'Credential for Airtable Personal Access Token': elegir la MISMA credencial que usan Responder_Intercom (en beckham_bot_conversacional) y 'Subir la autorizacion a Airtable' (en mobility_autorizacion_prerrellenada C3lKxKwi1bRyokf7). Luego PUBLISH."
+echo "${A}ya asignadas solas al crearlo (COMPROBAR que son las de C3lKxKwi1bRyokf7):${N}"
+echo "${D}  Buscar_Expediente -> N8N_traza_Alina (airtable) · Copiar_la_plantilla y Descargar_como_PDF -> 'Google Drive -DaniMario' · Rellenar_los_huecos -> Google-Docs_RodrigoCabo${N}"
+echo "${R}OJO Drive:${N} ${D}el 21/08 'Google Drive -DaniMario' estaba SIN autorizar. Abrir 'Copiar la plantilla' del C3lKxKwi1bRyokf7, mirar que credencial de Drive usa HOY (funciona desde el 03/09) y poner ESA en los dos nodos de Drive de este.${N}"
+echo "${A}Settings del workflow:${N} ${D}'This workflow can be called by' -> si beckham_bot_conversacional NO esta en Ops / Fiscal, poner 'Any workflow'. (analizar_documento, que tambien es tool, ya funciona: copiar su ajuste.)${N}"
+echo "${A}Descargar_la_existente:${N} ${D}sin credencial a proposito: baja la URL firmada de Airtable.${N}"
+echo "${B}verificar:${N}  ${D}yo, por MCP: active=true, 17 nodos, versionId==activeVersionId. Y una ejecucion manual con un user_id real de prueba: el PDF aparece en la conversacion de Intercom.${N}"
+echo "${B}puerta:${N}     node docs/test-autorizacion-preparar.js  ${D}-> 24 verdes (EJECUTA el Code del nodo)${N}"; }
+
+p16(){ paso 16 "la tool enviar_autorizacion en el AI Agent del conversacional (nodo NUEVO, no el de Iciar)" \
+  "beckham_bot_conversacional (n1jx7z9NtXWCD4VC) · PRODUCCION" "nodo NUEVO 'Call n8n Workflow Tool' colgado del AI Agent como Tool" \
+  "OJO: hay YA un 'Call n8n Workflow Tool' VACIO en el borrador (14:56 de hoy): es el de Iciar (escalado a humano). NO tocarlo. Anadir OTRO: + Tool -> Call n8n Workflow Tool. Name = enviar_autorizacion · Description = copiar.sh 16 · Workflow = From list -> mobility_autorizacion_intercom · Workflow Inputs (Define below): user_id = copiar.sh 17 (Expression, sin el =) · conversation_id = copiar.sh 18 (Expression) · idioma = copiar.sh 19 (Expression, es el \$fromAI). PUBLISH solo si el nodo de Iciar ya esta configurado o lo quita ella: un toolWorkflow sin workflow rompe al agente."
+echo "${B}copiar:${N}     bash docs/copiar.sh 16   ${D}(Description, 1.062 car.)${N}   copiar.sh 17 / 18 / 19 ${D}(los tres inputs)${N}"
+echo "${R}ORDEN:${N} ${D}despues del 15 (la tool tiene que existir publicada para elegirla en la lista) y ANTES del 17 (el prompt la nombra).${N}"
+echo "${B}verificar:${N}  ${D}yo, por MCP: un nodo @n8n/n8n-nodes-langchain.toolWorkflow llamado enviar_autorizacion con workflowId wMdJ0PRsXdWWdXL4 y 3 inputs, conectado ai_tool al AI Agent; versionId==activeVersionId.${N}"; }
+
+p17(){ paso 17 "SUPERADO POR EL 19 (04/09 tarde): el prompt v17 no se pega; se pega el v18, que lo incluye" \
+  "LANGSMITH" "bot_mobility_prompt" "pegar Y mover el tag prod"
+echo "${R}ANTES DE MONTARLO:${N} ${D}Alina e Iciar editan ya el prompt. Copiar el prompt VIVO (tag prod) de LangSmith a un fichero y montar sobre EL:${N}"
+echo "${D}  python3 docs/montar-prompt-v17.py <prompt-vivo.txt> docs/prompt-final-2026-09-04-v17.txt   (4 parches por ancla; ABORTA si un ancla no esta)${N}"
+echo "${D}  Si se monta sobre el v16 local (por defecto) el contador es:${N} ${V}92.765 caracteres${N} ${D}(v16: 91.628, +1.137)${N}"
+echo "${B}copiar:${N}     bash docs/copiar.sh 20"
+echo "${R}GUARDAR **Y** MOVER EL TAG prod.${N} ${R}ORDEN: DESPUES del 16.${N} ${D}Si el prompt nombra la tool y el agente no la tiene, se la inventa o se bloquea en el paso de la autorizacion.${N}"
+echo "${B}puerta:${N}     node docs/test-prompt-v17.js  ${D}-> 281 verdes (hereda las 265 del v16 con 3 re-baselines explicitos + 16 nuevas; 4 mutaciones cazadas)${N}"
+echo "${B}verificar:${N}  ${D}yo, por MCP: el nodo Langsmith Prompt de la primera ejecucion posterior contiene 'enviar_autorizacion' 3 veces y 0 'Autorizacion_Generica'.${N}"; }
+
+# ── 04/09 TARDE · LA TOOL transferir_humano Y EL PROMPT v18 ──────────────────────────────
+p18(){ paso 18 "la tool transferir_humano: publicar el subworkflow de Iciar y apuntarle el nodo del agente (SUSTITUYE al 'Gestionar_escalado MOB')" \
+  "mobility_transferir_humano (ErttueeJzWfTkiWH, inactivo) y beckham_bot_conversacional (n1jx7z9NtXWCD4VC) · PRODUCCION" \
+  "en el subworkflow: Asignar_Ops_Mobility y Nota_Transferencia (los 2 HTTP) · en el conversacional: el nodo 'Gestionar_escalado MOB' colgado del AI Agent" \
+  "SUBWORKFLOW: en los 2 HTTP elegir la credencial de Intercom API (la de Responder_Intercom) · Settings -> 'can be called by' como analizar_documento · Publish. AGENTE: abrir 'Gestionar_escalado MOB' -> Workflow = From list -> mobility_transferir_humano · Name = transferir_humano · Description = copiar.sh 21 · Workflow Inputs (Define below): conversation_id = copiar.sh 18 · user_id = copiar.sh 17 · motivo = copiar.sh 22 (los tres en Expression, sin el =) · Save · Publish."
+echo "${R}POR QUE SE SUSTITUYE:${N} ${D}'Gestionar_escalado MOB' (iIs0vU6ngiQAiA8u) esta PUBLICADO como tool con Description e inputs VACIOS, y no transfiere: es un monitor post-respuesta que necesita respuesta_bot y que SNOOZEA la conversacion 7 dias. Si el agente lo llama, la conversacion del cliente se duerme una semana. Si Iciar quiere el monitor, va como Execute Workflow detras de Responder_Intercom, no como tool.${N}"
+echo "${B}copiar:${N}     bash docs/copiar.sh 21 ${D}(Description)${N} · 17 ${D}(user_id)${N} · 18 ${D}(conversation_id)${N} · 22 ${D}(motivo, \$fromAI)${N}"
+echo "${B}verificar:${N}  ${D}yo, por MCP: ErttueeJzWfTkiWH active=true; en el conversacional un toolWorkflow 'transferir_humano' -> ErttueeJzWfTkiWH con 3 inputs y NINGUN nodo apuntando a iIs0vU6ngiQAiA8u; versionId==activeVersionId.${N}"; }
+
+p19(){ paso 19 "el prompt v18: transferir por la tool (fuera la contradiccion) + las 13 mejoras de la pagina de Notion" \
+  "LANGSMITH" "bot_mobility_prompt" "pegar Y mover el tag prod"
+echo "${R}ANTES DE MONTARLO:${N} ${D}si Alina o Iciar han tocado el prompt vivo despues de las 11:24 del 04/09, copiarlo a un fichero y montar sobre EL, encadenando los dos montadores:${N}"
+echo "${D}  python3 docs/montar-prompt-v17.py <vivo.txt> /tmp/v17.txt && python3 docs/montar-prompt-v18.py /tmp/v17.txt docs/prompt-final-2026-09-04-v18.txt${N}"
+echo "${D}  Si se monta sobre el v16 local (por defecto) el contador es:${N} ${V}99.412 caracteres${N} ${D}(v17: 92.765, +6.647; v16: 91.628)${N}"
+echo "${B}copiar:${N}     bash docs/copiar.sh 23"
+echo "${A}Y EN LA MISMA PASADA, la tool guardar_datos_cliente del conversacional:${N} ${D}Body Parameters -> senales_complejidad -> Value = copiar.sh 24 (Expression, sin el =). El texto vivo lista SIETE etiquetas con la de '1 de julio' (retirada el 19/08) y el 55.000 (es 50.000 desde el 19/08); el nuevo lista SEIS y aclara que el foral por si solo NO se manda. Sin esto, el agente sigue viendo el foral como etiqueta valida en la tool.${N}"
+echo "${R}GUARDAR **Y** MOVER EL TAG prod. ORDEN: DESPUES del 18.${N} ${D}El prompt nombra transferir_humano y enviar_autorizacion: sin las dos tools cableadas el agente se las inventa o se bloquea.${N}"
+echo "${A}Lo que NO entra del Notion, y por que:${N} ${D}reordenar bloques (datos personales despues del veredicto) es un cambio de estructura, va aparte; 'me contesta dos veces' y '¿y ahora que?' son los turnos solapados (deuda aceptada); el declarante foral ES senal de complejidad a proposito; '¿tienes alguna otra pregunta?' antes del resumen: falta saber que resumen.${N}"
+echo "${B}puerta:${N}     node docs/test-prompt-v18.js  ${D}-> 312 verdes (hereda las 281 del v17 con 14 re-baselines explicitos + 31 nuevas; 7 mutaciones cazadas)${N}"
+echo "${B}verificar:${N}  ${D}yo, por MCP: el Langsmith Prompt de la primera ejecucion posterior contiene 'transferir_humano' 8 veces, 'SEIS HERRAMIENTAS' 1 y 0 'calendly.com/d/csbw'.${N}"; }
+
+p20(){ paso 20 "Gestionar_escalado MOB como MONITOR post-respuesta (red de seguridad del agente), no como tool" \
+  "Gestionar_escalado MOB (iIs0vU6ngiQAiA8u, inactivo, de Iciar) y beckham_bot_conversacional (n1jx7z9NtXWCD4VC) · PRODUCCION" \
+  "en el monitor: trigger (+user_id), Structured Output Parser (schema), If nuevo 'Escalar?', Execute Workflow nuevo 'Transferir_por_monitor', y los 4 nodos del snooze DESACTIVADOS · en el conversacional: Execute Workflow nuevo 'Monitor_escalado' detras de Responder_Intercom, sin esperar" \
+  "TODO EN LA UI (el prompt del decisor es de Iciar y no se reescribe por API). Valores: copiar.sh 25 (schema del parser) · 26 (motivo) · 27 (respuesta_bot con guarda). Detalle clic a clic en el chat del 04/09 tarde y en docs/monitor-escalado-2026-09-04.md"
+echo "${R}POR QUE ASI:${N} ${D}como tool el decisor no tiene respuesta_bot (no existe cuando el agente decide) y su rama por defecto SNOOZEA 7 dias. Detras de Responder_Intercom SI tiene la respuesta, las alertas van a Notificaciones_error y, con la rama 'Escalar?' -> mobility_transferir_humano, pilla lo que al agente se le escape. Gate: no transfiere si la respuesta ya dice 'te paso' (el agente ya lo hizo).${N}"
+echo "${A}El snooze se DESACTIVA, no se borra:${N} ${D}decision pendiente de Iciar. Con el bot llevando el hilo, dormirlo 7 dias en cada turno no aporta; si lo quiere, se reactivan los 4 nodos.${N}"
+echo "${B}verificar:${N}  ${D}yo, por MCP: iIs0vU6ngiQAiA8u active=true con If 'Escalar?' + executeWorkflow -> ErttueeJzWfTkiWH y los 4 del snooze disabled; conversacional con executeWorkflow 'Monitor_escalado' -> iIs0vU6ngiQAiA8u, waitForSubWorkflow=false, onError=continueRegularOutput, colgado de Responder_Intercom. Y una conversacion de prueba: 'ESTO ES UNA PERDIDA DE TIEMPO' x2 -> asignada a Ops_Mobility con nota 'Detectado por el monitor'.${N}"; }
+
 # 31/08 · ESTA FUNCION SALIA CON exit 0 AUNQUE LAS VEINTIDOS ESTUVIERAN ROJAS.
 # Imprimia FALLA en rojo y devolvia el codigo del ultimo printf, que siempre es 0.
 # O sea que la puerta de las puertas mentia, que es exactamente el corolario que el
@@ -299,9 +360,9 @@ echo "${B}verificar:${N}  ${D}yo, por MCP: bodyParameters de calcular_plazo pasa
 # (el bot del canvas) contra su export, y ese export se quito del repo hoy porque el workflow
 # no recibe trafico desde el 31/08. El Preparar_Prompt vivo es el del conversacional y lo mide
 # test-preparar-prompt-conversacional.js (89). El fichero de la puerta se conserva por historia.
-puertas(){ echo "${B}${C}━━━ LAS VEINTITRES PUERTAS ━━━${N}"
+puertas(){ echo "${B}${C}━━━ LAS VEINTISEIS PUERTAS ━━━${N}"
   fallos=0
-for t in test-decidir-status.js test-validador-2026-08-19.js test-prompt-v10.js test-prompt-v12.js test-prompt-v13.js test-prompt-v14.js test-prompt-v15.js test-prompt-v16.js test-f2-plazo.js test-lector-expediente.js test-v2-preparar-informe.js test-contrato-upsert.js test-log-evento.js test-diagramas-mermaid.js test-guarda-punto-modo.js test-nodo-validar-subworkflow.js test-resolver-modo.js test-preparar-prompt-faq.js test-preparar-prompt-conversacional.js test-registrar-optout.js; do
+for t in test-decidir-status.js test-validador-2026-08-19.js test-prompt-v10.js test-prompt-v12.js test-prompt-v13.js test-prompt-v14.js test-prompt-v15.js test-prompt-v16.js test-f2-plazo.js test-lector-expediente.js test-v2-preparar-informe.js test-contrato-upsert.js test-log-evento.js test-diagramas-mermaid.js test-guarda-punto-modo.js test-nodo-validar-subworkflow.js test-resolver-modo.js test-preparar-prompt-faq.js test-preparar-prompt-conversacional.js test-registrar-optout.js test-autorizacion-preparar.js test-prompt-v17.js test-prompt-v18.js; do
   r=$(node "docs/$t" 2>&1 | grep -oE "[0-9]+ verdes, [0-9]+ rojas|TODO PASA · [0-9]+ comprobaciones"); node "docs/$t" >/dev/null 2>&1 \
     && printf "  ${V}OK${N}   %-38s %s\n" "$t" "$r" || { printf "  ${R}FALLA${N} %-38s %s\n" "$t" "$r"; fallos=$((fallos+1)); }
 done
@@ -310,7 +371,7 @@ bash docs/montar-nodo-informe.sh >/dev/null 2>&1 && printf "  ${V}OK${N}   %-38s
 r=$(bash docs/montar-nodo-validar.sh 2>&1 | grep -oE "[0-9]+ verdes, [0-9]+ rojas"); bash docs/montar-nodo-validar.sh >/dev/null 2>&1 \
   && printf "  ${V}OK${N}   %-38s %s\n" montar-nodo-validar.sh "$r" || { printf "  ${R}FALLA${N} %-38s %s\n" montar-nodo-validar.sh "$r"; fallos=$((fallos+1)); }
   if [ "$fallos" -gt 0 ]; then echo "  ${R}${B}$fallos PUERTA(S) ROJA(S). No se publica nada.${N}"; return 1; fi
-  echo "  ${V}las veintitres verdes.${N}"; return 0
+  echo "  ${V}las veintiseis verdes.${N}"; return 0
 }
 
 case "$1" in
@@ -320,6 +381,15 @@ case "$1" in
   21) bash docs/pasos-2026-08-21.sh ;;
   19|viejo) bash docs/pasos-2026-08-19.sh ;;
   ''|todos) puertas
+    echo; echo "${B}${C}════ 04/09 TARDE · transferir_humano Y PROMPT v18 ════${N}"
+    for i in 18 19 20; do "p$i"; done
+    echo; echo "${B}${C}━━━ ORDEN DEL 04/09 TARDE ━━━${N}"
+    echo "  ${R}18 -> 19${N}. El 15 y el 16 ya estan hechos y verificados; el 17 queda SUPERADO por el 19."
+    echo; echo "${B}${C}════ 04/09 · LA AUTORIZACION PRERRELLENADA VIAJA A INTERCOM ════${N}"
+    for i in 15 16 17; do "p$i"; done
+    echo; echo "${B}${C}━━━ ORDEN DEL 04/09 ━━━${N}"
+    echo "  ${R}15 -> 16 -> 17${N}: primero el subworkflow publicado (credenciales), luego la tool en el agente, y el prompt el ULTIMO."
+    echo "  ${D}Ninguno rompe produccion hasta el 17: sin el prompt el agente no llama a la tool. El 17 sin el 16 SI rompe el paso de la autorizacion.${N}"
     echo; echo "${B}${C}════ LO DE LA CONVERSACION DEL 02/09 · 03/09 ════${N}"
     for i in 6 7 8 9 10 11 12 13 14; do "p$i"; done
     echo; echo "${B}${C}━━━ ORDEN DEL 03/09 ━━━${N}"
@@ -342,6 +412,6 @@ case "$1" in
     echo "  ${D}El 2 esta SUPERADO: el canvas se construye desde cero en una copia${N}"
     echo "  ${D}(docs/canvas-desde-cero-2026-08-27.md); sus correcciones van dentro del rebuild.${N}"
     echo; echo "${D}un paso suelto y copiado al portapapeles:${N}  bash docs/pasos.sh 6" ;;
-  [1-9]|1[0-4]) "p$1" copia ;;
-  *) echo "uso: bash docs/pasos.sh [1-14|test|26|24|21|19]" ;;
+  [1-9]|1[0-9]|20) "p$1" copia ;;
+  *) echo "uso: bash docs/pasos.sh [1-20|test|26|24|21|19]" ;;
 esac

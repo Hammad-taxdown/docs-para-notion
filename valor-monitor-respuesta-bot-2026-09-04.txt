@@ -1,0 +1,1 @@
+{{ $('AI Agent').isExecuted ? ($('AI Agent').first().json.output || '') : '' }}

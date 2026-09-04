@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "escalar": { "type": "boolean", "description": "True si hay que pasar la conversacion a una persona (peticion de agente, enfado, bloqueo documental o caso complejo)" },
+    "motivo_escalado": { "type": ["string", "null"], "enum": ["peticion_agente", "usuario_enfadado", "bloqueo_documental", "caso_complejo", null], "description": "Motivo del escalado (null si escalar es false)" },
+    "alerta": { "type": "boolean", "description": "True SOLO si el bot ha hecho algo mal que requiere revision humana" },
+    "tipo_alerta": { "type": ["string", "null"], "enum": ["dato_inventado", "bucle", "requisito_no_resuelto", "error_logico", "fuera_scope", "tono_inadecuado", null], "description": "Tipo de anomalia (null si alerta es false)" },
+    "detalle_alerta": { "type": ["string", "null"], "description": "Descripcion breve del escalado o de la anomalia (null si no hay ninguno)" }
+  },
+  "required": ["escalar", "alerta"]
+}

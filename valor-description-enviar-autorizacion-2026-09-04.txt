@@ -1,0 +1,10 @@
+Manda a la conversación de Intercom, como fichero adjunto, la autorización de TaxDown ya rellena con el nombre, el NIF y el domicilio del cliente, para que solo tenga que firmarla.
+
+Llámala UNA vez, en el paso «Autorización de TaxDown» de la recogida de documentos, y SOLO cuando el NIF/NIE del cliente ya esté guardado con guardar_datos_cliente. Pásale idioma = es o en (el idioma en que estás hablando con el cliente).
+
+Ella misma escribe en el chat el mensaje con el PDF adjunto: tú NO repitas ningún enlace, NO describas el fichero y NO digas que lo has generado.
+
+TE DEVUELVE:
+- ok: true, fichero: el nombre del PDF -> sigue con la frase de ese paso (que la firme y la adjunte aquí).
+- ok: false, error: el motivo -> resuélvelo (casi siempre falta el NIF: pídelo, guárdalo y vuelve a llamarla). Si falla dos veces, di que nuestros asesores le harán llegar la autorización y sigue con el siguiente documento.
+- aviso: si viene relleno, es una nota interna (por ejemplo que el documento ha salido en español para un cliente inglés). No se la digas al cliente.

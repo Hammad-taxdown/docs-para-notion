@@ -1,0 +1,5 @@
+Transfiere la conversación a una persona del equipo de Mobility: la asigna al equipo y les deja el motivo. Úsala SOLO cuando: 1. El cliente está enfadado o frustrado de forma repetida. 2. Pide explícitamente hablar con un humano, un agente, una persona, un asesor o un responsable (basta con que lo pida una vez). 3. Tiene un problema que no puedes resolver. 4. No puede conseguir el certificado de su empresa y la conversación se queda bloqueada.
+
+ANTES de llamarla, mándale un mensaje corto explicando que le pasas con una persona del equipo, que sigue desde aquí con todo lo que habéis hablado. Pásale el motivo en una frase.
+
+DESPUÉS de llamarla no sigas con el flujo: no hagas más preguntas ni pidas más documentos. La conversación ya es de una persona.
